@@ -8,19 +8,14 @@ namespace TradingConsole.InputParser
         public DateTime StartDate;
         public int EndTime;
         public DateTime EndDate;
+
+        public TimeSpan TradingGap;
+
         public string StockFilePath;
         public string PortfolioFilePath;
 
         public double StartingCash;
 
         public FunctionType funtionType;
-    }
-
-    public enum FunctionType
-    {
-        Nothing,
-        Download,
-        Simulate,
-        Trade
     }
 }

@@ -12,7 +12,8 @@ namespace TradingConsole.InputParser
         {
             foreach (TextTokenType type in Enum.GetValues(typeof(TextTokenType)))
             {
-                if (arg == type.ToString())
+                string parameter = arg.Remove(0, 2);
+                if (parameter == type.ToString())
                 {
                     return type;
                 }
@@ -33,6 +34,9 @@ namespace TradingConsole.InputParser
             return GenerateOptionsFromInputs(tokens, reports);
         }
 
+        /// <summary>
+        /// From comman line inputs, converts into types of input and the value specified.
+        /// </summary>
         private static List<TextToken> ParseInput(string[] args, ErrorReports reports)
         {
             var outputTokens = new List<TextToken>();
@@ -74,12 +78,44 @@ namespace TradingConsole.InputParser
                         }
                     case (TextTokenType.Download):
                         {
-                            inputs.funtionType = FunctionType.Download;
+                            if (token.Value == "all")
+                            {
+                                inputs.funtionType = FunctionType.DownloadAll;
+                            }
+                            else
+                            {
+                                inputs.funtionType = FunctionType.DownloadLatest;
+                            }
+                            break;
+                        }
+                    case (TextTokenType.Configure):
+                        {
+                            inputs.funtionType = FunctionType.Configure;
+                            inputs.StockFilePath = token.Value;
                             break;
                         }
                     case (TextTokenType.Simulate):
                         {
                             inputs.funtionType = FunctionType.Simulate;
+                            break;
+                        }
+                    case TextTokenType.StartDate:
+                        {
+                            inputs.StartDate = DateTime.Parse(token.Value);
+                            break;
+                        }
+                    case TextTokenType.EndDate:
+                        {
+                            inputs.EndDate = DateTime.Parse(token.Value);
+                            break;
+                        }
+                    case TextTokenType.TradingGap:
+                        {
+                            inputs.TradingGap = TimeSpan.Parse(token.Value);
+                            break;
+                        }
+                    default:
+                        {
                             break;
                         }
                 }

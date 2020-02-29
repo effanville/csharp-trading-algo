@@ -1,5 +1,6 @@
 ﻿using FinancialStructures.GUIFinanceStructures;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace TradingConsole.DecisionSystem
 {
@@ -27,9 +28,19 @@ namespace TradingConsole.DecisionSystem
             return GetDecisions(StockTradeDecision.Buy);
         }
 
+        public List<string> GetBuyDecisionsStockNames()
+        {
+            return GetBuyDecisions().Select(decision => decision.StockName.Name).ToList();
+        }
+
         public List<Decision> GetSellDecisions()
         { 
             return GetDecisions(StockTradeDecision.Sell);
+        }
+
+        public List<string> GetSellDecisionsStockNames()
+        {
+            return GetSellDecisions().Select(decision => decision.StockName.Name).ToList();
         }
 
         private List<Decision> GetDecisions(StockTradeDecision buySell)

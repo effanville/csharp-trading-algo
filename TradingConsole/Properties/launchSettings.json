@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "TradingConsole": {
+      "commandName": "Project",
+      "commandLineArgs": "--Download \"C:\\Users\\masdoc\\source\\repos\\StockTradingConsole\\TradingConsole\\bin\\New Text Document.xml\""
+    }
+  }
+}
