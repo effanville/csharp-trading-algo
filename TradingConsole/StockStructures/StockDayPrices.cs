@@ -11,6 +11,19 @@ namespace TradingConsole.StockStructures
         public double Close;
         public double Volume;
 
+        public StockDayPrices()
+        { }
+
+        public StockDayPrices(DateTime time, double open, double high, double low, double close, double volume)
+        {
+            Time = time;
+            Open = open;
+            High = high;
+            Low = low;
+            Close = close;
+            Volume = volume;
+        }
+
         public int CompareTo(object obj)
         {
             if (obj is DateTime date)

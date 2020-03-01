@@ -9,4 +9,12 @@
     <ProjectReference Include="..\..\Portfolio Analysis Database\FinancialStructures\FinancialStructures.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="DecisionSystem\BasicMLSystem\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\.editorconfig" Link=".editorconfig" />
+  </ItemGroup>
+
 </Project>

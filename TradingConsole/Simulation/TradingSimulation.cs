@@ -14,7 +14,7 @@ namespace TradingConsole.Simulation
     {
         private static IDecisionSystem decisionSystem;
         private static IBuySellSystem buySellSystem;
-        private static BuySellParams tradingParameters;
+        private static BuySellParams tradingParameters = new BuySellParams();
         private static SimulationParameters simulationParameters;
 
         public static void SetupSystemsAndRun(UserInputOptions inputOptions, TradingStatistics stats)

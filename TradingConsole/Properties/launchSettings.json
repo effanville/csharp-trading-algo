@@ -2,7 +2,7 @@
   "profiles": {
     "TradingConsole": {
       "commandName": "Project",
-      "commandLineArgs": "--Download \"C:\\Users\\masdoc\\source\\repos\\StockTradingConsole\\TradingConsole\\bin\\New Text Document.xml\""
+      "commandLineArgs": "--Download latest --StockFilePath \"C:\\Users\\masdoc\\source\\repos\\StockTradingConsole\\TradingConsole\\bin\\New Text Document.xml\""
     }
   }
 }

@@ -12,10 +12,10 @@ namespace TradingConsole
             switch (inputOptions.funtionType)
             {
                 case FunctionType.DownloadAll:
-                    DownloadAll(inputOptions);
+                    Download(DownloadType.All, inputOptions);
                     break;
                 case FunctionType.DownloadLatest:
-                    DownloadLatest(inputOptions);
+                    Download(DownloadType.Latest, inputOptions);
                     break;
                 case FunctionType.Configure:
                     Configure(inputOptions);
@@ -36,20 +36,13 @@ namespace TradingConsole
             exchange.SaveExchangeStocks(filePath, reports);
         }
 
-        private static void DownloadLatest(UserInputOptions inputOptions)
+        private static void Download(DownloadType downloadType, UserInputOptions inputOptions)
         {
             var reports = new ErrorReports();
             var exchange = new ExchangeStocks();
             exchange.LoadExchangeStocks(inputOptions.StockFilePath, reports);
-            exchange.DownloadLatest();
-        }
-
-        private static void DownloadAll(UserInputOptions inputOptions)
-        {
-            var reports = new ErrorReports();
-            var exchange = new ExchangeStocks();
-            exchange.LoadExchangeStocks(inputOptions.StockFilePath, reports);
-            exchange.DownloadAll();
+            exchange.Download(downloadType);
+            exchange.SaveExchangeStocks(inputOptions.StockFilePath, reports);
         }
     }
 }

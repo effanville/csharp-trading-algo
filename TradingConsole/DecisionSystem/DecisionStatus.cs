@@ -17,7 +17,7 @@ namespace TradingConsole.DecisionSystem
 
     public class DecisionStatus
     {
-        private List<Decision> decisions;
+        private List<Decision> decisions = new List<Decision>();
         public void AddDecision(NameData stock, StockTradeDecision buySell)
         {
             decisions.Add(new Decision(stock, buySell));

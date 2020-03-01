@@ -9,6 +9,7 @@ namespace TradingConsole.Simulation
     {
         public static void GenerateSimulationParameters(SimulationParameters parameters, UserInputOptions inputOptions, ExchangeStocks exchange)
         {
+            parameters = new SimulationParameters();
             parameters.StartTime = inputOptions.StartDate != null ? inputOptions.StartDate : exchange.EarliestDate();
             parameters.EndTime = inputOptions.EndDate != null ? inputOptions.EndDate : exchange.LastDate();
             parameters.EvolutionIncrement = inputOptions.TradingGap;

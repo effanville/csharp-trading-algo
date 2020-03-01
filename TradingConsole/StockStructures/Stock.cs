@@ -16,7 +16,7 @@ namespace TradingConsole.StockStructures
         public List<StockDayPrices> Valuations
         {
             get { return fValuations; }
-            set { value.Sort(); fValuations = value; }
+            set { fValuations = value; fValuations.Sort(); }
         }
 
         internal int LastAccessedValuationIndex = 0;
@@ -30,9 +30,36 @@ namespace TradingConsole.StockStructures
             Name = new NameData(name.Trim(), company.Trim(), "", url.Trim());
             Valuations = new List<StockDayPrices>();
         }
-        public double GetValue(DateTime date)
+
+        public void AddValue(DateTime time, double open, double high, double low, double close, double volume)
         {
-            return 1.0;
+            Valuations.Add(new StockDayPrices(time, open, high, low, close, volume));
+        }
+
+        /// <summary>
+        /// Calculates the value of the stock at the time specified.
+        /// </summary>
+        public double Value(DateTime date)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Calculates the value on the date specified, where the last query was at index given.
+        /// A quick method for getting new values.
+        /// </summary>
+        public double PreviousValue(DateTime date, int index)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Calculates the value on the date specified, where the last query was at index given.
+        /// A quick method for getting new values.
+        /// </summary>
+        public double NextValue(DateTime date, int lastIndex)
+        {
+            throw new NotImplementedException();
         }
 
         public DateTime EarliestTime()

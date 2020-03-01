@@ -30,7 +30,6 @@ namespace TradingConsole
                     break;
                 default:
                     Console.WriteLine("No admissible input selected");
-                    
                     break;
             }
 
