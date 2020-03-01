@@ -26,10 +26,11 @@ namespace TradingConsole.StockStructures
 
         public int CompareTo(object obj)
         {
-            if (obj is DateTime date)
+            if (obj is StockDayPrices otherPrice)
             {
-                return Time.CompareTo(date);
+                return Time.CompareTo(otherPrice.Time);
             }
+
             return 0;
         }
     }

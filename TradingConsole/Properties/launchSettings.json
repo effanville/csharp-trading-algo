@@ -2,7 +2,7 @@
   "profiles": {
     "TradingConsole": {
       "commandName": "Project",
-      "commandLineArgs": "--Download latest --StockFilePath \"C:\\Users\\masdoc\\source\\repos\\StockTradingConsole\\TradingConsole\\bin\\New Text Document.xml\""
+      "commandLineArgs": "--Download all --StockFilePath \"C:\\Users\\masdoc\\source\\repos\\StockTradingConsole\\TradingConsole\\bin\\New Text Document.xml\" --StartDate 1/1/2019 --EndDate 28/2/2020"
     }
   }
 }

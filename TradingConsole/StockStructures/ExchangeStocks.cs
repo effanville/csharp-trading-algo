@@ -91,7 +91,7 @@ namespace TradingConsole.StockStructures
             XmlFileAccess.WriteToXmlFile<ExchangeStocks>(filePath, this);
         }
 
-        public void Download(DownloadType downloadType)
+        public void Download(DownloadType downloadType, UserInputOptions inputOptions)
         {
             var reports = new ErrorReports();
             foreach (var stock in Stocks)
@@ -99,11 +99,11 @@ namespace TradingConsole.StockStructures
                 Uri downloadUrl;
                 if (downloadType == DownloadType.All)
                 {
-                    downloadUrl = new Uri(stock.Name.Url);
+                    downloadUrl = new Uri(stock.Name.Url + $"/history?period1={DateToYahooInt(inputOptions.StartDate)}&period2={DateToYahooInt(inputOptions.EndDate)}&interval=1d&filter=history&frequency=1d");
                 }
                 else
                 {
-                    downloadUrl = new Uri(stock.Name.Url); 
+                    downloadUrl = new Uri(stock.Name.Url);
                 }
                 string stockWebsite = DataUpdater.DownloadFromURL(downloadUrl.ToString(), reports).Result;
                 ProcessAndAddData(downloadType, stock, stockWebsite);
@@ -112,18 +112,55 @@ namespace TradingConsole.StockStructures
 
         private int DateToYahooInt(DateTime date)
         {
+            return int.Parse((date - new DateTime(1970, 1, 1)).TotalSeconds.ToString());
             throw new NotImplementedException();
         }
 
         private DateTime YahooIntToDate(int yahooInt)
         {
-            throw new NotImplementedException();
+            return new DateTime(1970, 1, 1).AddSeconds(yahooInt);
         }
+
+
 
         private void ProcessAndAddData(DownloadType download, Stock stock, string websiteHtml)
         {
             if (download == DownloadType.All)
-            { }
+            {
+                string findString = "\"HistoricalPriceStore\":{\"prices\":";
+                int historyStartIndex = websiteHtml.IndexOf(findString);
+
+                string dataLeft = websiteHtml.Substring(historyStartIndex + findString.Length);
+                // data is of form {"date":1582907959,"open":150.4199981689453,"high":152.3000030517578,"low":146.60000610351562,"close":148.74000549316406,"volume":120763559,"adjclose":148.74000549316406}. 
+                // Iterate through these until stop.
+                while (dataLeft.Length > 0)
+                {
+                    int dayFirstIndex = dataLeft.IndexOf('{');
+                    int dayEndIndex = dataLeft.IndexOf('}', dayFirstIndex);
+                    string dayValues = dataLeft.Substring(dayFirstIndex, dayEndIndex - dayFirstIndex);
+                    if (dayValues.Contains("DIVIDEND"))
+                    {
+                        dataLeft = dataLeft.Substring(dayEndIndex);
+                        continue;
+                    }
+                    else if (dayValues.Contains("date"))
+                    {
+                        int yahooInt = int.Parse(FindAndGetSingleValue(dayValues, "date").ToString());
+                        DateTime date = YahooIntToDate(yahooInt);
+                        double open = FindAndGetSingleValue(dayValues, "open", false);
+                        double high = FindAndGetSingleValue(dayValues, "high", false);
+                        double low = FindAndGetSingleValue(dayValues, "low", false);
+                        double close = FindAndGetSingleValue(dayValues, "close", false);
+                        double volume = FindAndGetSingleValue(dayValues, "volume", false);
+                        stock.AddValue(date, open, high, low, close, volume);
+                        dataLeft = dataLeft.Substring(dayEndIndex);
+                    }
+                    else
+                    {
+                        break;
+                    }
+                }
+            }
 
             if (download == DownloadType.Latest)
             {
@@ -135,13 +172,15 @@ namespace TradingConsole.StockStructures
                 DateTime date = DateTime.Now.TimeOfDay > new DateTime(2010, 1, 1, 16, 30, 0).TimeOfDay ? DateTime.Today : DateTime.Today.AddDays(-1);
                 stock.AddValue(date, open, range.Item2, range.Item1, close, volume);
             }
+
+            stock.Sort();
         }
 
-        private double FindAndGetSingleValue(string searchString, string findString, int containedWithin = 50)
+        private double FindAndGetSingleValue(string searchString, string findString, bool includeCommas = true, int containedWithin = 50)
         {
             bool continuer(char c)
             {
-                if (char.IsDigit(c) || c == '.' || c == ',')
+                if (char.IsDigit(c) || c == '.' || (includeCommas && c == ','))
                 {
                     return true;
                 }
@@ -150,8 +189,8 @@ namespace TradingConsole.StockStructures
             };
 
             int index = searchString.IndexOf(findString);
-
-            string value = searchString.Substring(index + findString.Length, 40);
+            int lengthToSearch = Math.Min(containedWithin,searchString.Length - index - findString.Length);
+            string value = searchString.Substring(index + findString.Length, lengthToSearch);
 
             var digits = value.SkipWhile(c => !char.IsDigit(c)).TakeWhile(continuer).ToArray();
 
@@ -163,11 +202,11 @@ namespace TradingConsole.StockStructures
             return double.Parse(str);
         }
 
-        private Tuple<double, double> FindAndGetDoubleValues(string searchString, string findString, int containedWithin = 50)
+        private Tuple<double, double> FindAndGetDoubleValues(string searchString, string findString, bool includeCommas = true, int containedWithin = 50)
         {
             bool continuer(char c)
             {
-                if (char.IsDigit(c) || c == '.' || c == ',')
+                if (char.IsDigit(c) || c == '.' || (includeCommas && c == ','))
                 {
                     return true;
                 }
@@ -176,8 +215,8 @@ namespace TradingConsole.StockStructures
             };
 
             int index = searchString.IndexOf(findString);
-
-            string value = searchString.Substring(index + findString.Length, 40);
+            int lengthToSearch = Math.Min(containedWithin, searchString.Length - index - findString.Length);
+            string value = searchString.Substring(index + findString.Length, lengthToSearch);
 
             var digits = value.SkipWhile(c => !char.IsDigit(c)).TakeWhile(continuer).ToArray();
 

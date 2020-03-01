@@ -41,7 +41,7 @@ namespace TradingConsole
             var reports = new ErrorReports();
             var exchange = new ExchangeStocks();
             exchange.LoadExchangeStocks(inputOptions.StockFilePath, reports);
-            exchange.Download(downloadType);
+            exchange.Download(downloadType, inputOptions);
             exchange.SaveExchangeStocks(inputOptions.StockFilePath, reports);
         }
     }

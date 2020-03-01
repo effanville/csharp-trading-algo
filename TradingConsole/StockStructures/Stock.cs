@@ -36,6 +36,11 @@ namespace TradingConsole.StockStructures
             Valuations.Add(new StockDayPrices(time, open, high, low, close, volume));
         }
 
+        public void Sort()
+        {
+            Valuations.Sort();
+        }
+
         /// <summary>
         /// Calculates the value of the stock at the time specified.
         /// </summary>
