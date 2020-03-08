@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace TradingConsole.StockStructures
 {
-    public class Stock
+    public partial class Stock
     {
         public NameData Name;
 
@@ -39,42 +39,6 @@ namespace TradingConsole.StockStructures
         public void Sort()
         {
             Valuations.Sort();
-        }
-
-        /// <summary>
-        /// Calculates the value of the stock at the time specified.
-        /// </summary>
-        public double Value(DateTime date)
-        {
-            throw new NotImplementedException();
-        }
-
-        /// <summary>
-        /// Calculates the value on the date specified, where the last query was at index given.
-        /// A quick method for getting new values.
-        /// </summary>
-        public double PreviousValue(DateTime date, int index)
-        {
-            throw new NotImplementedException();
-        }
-
-        /// <summary>
-        /// Calculates the value on the date specified, where the last query was at index given.
-        /// A quick method for getting new values.
-        /// </summary>
-        public double NextValue(DateTime date, int lastIndex)
-        {
-            throw new NotImplementedException();
-        }
-
-        public DateTime EarliestTime()
-        {
-            return Valuations[0].Time;
-        }
-
-        public DateTime LastTime()
-        {
-            return Valuations[Valuations.Count - 1].Time;
         }
     }
 }
