@@ -7,7 +7,7 @@ namespace TradingConsole.Statistics
     public class TradingDaySnapshot
     {
         public DateTime Time;
-        public List<Holding> stocksHeld;
+        public List<Holding> stocksHeld = new List<Holding>();
         public double freeCash;
 
         public void AddHolding(NameData name, DayDataView data)

@@ -22,7 +22,7 @@ namespace TradingConsole.StockStructures
         {
             foreach (var stock in Stocks)
             {
-                if (stock.Name == name)
+                if (stock.Name.IsEqualTo(name))
                 {
                     return stock.Value(date);
                 }
@@ -49,7 +49,7 @@ namespace TradingConsole.StockStructures
 
         public DateTime LastDate()
         {
-            DateTime last = Stocks[0].EarliestTime();
+            DateTime last = Stocks[0].LastTime();
 
             for (int stockIndex = 1; stockIndex < Stocks.Count; stockIndex++)
             {

@@ -4,6 +4,7 @@
     {
         StockFilePath,
         PortfolioFilePath,
+        StartingCash,
         Download,
         StartDate,
         EndDate,

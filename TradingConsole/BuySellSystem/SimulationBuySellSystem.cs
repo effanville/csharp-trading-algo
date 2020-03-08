@@ -17,7 +17,7 @@ namespace TradingConsole.BuySellSystem
             var reports = new ErrorReports();
             double price = stocks.GetValue(sell.StockName, day);
             portfolio.TryAddDataToSecurity(reports, sell.StockName.Company, sell.StockName.Name, day, 0.0, price);
-            double numShares = portfolio.SecurityLatestShares(sell.StockName.Company, sell.StockName.Name);
+            double numShares = portfolio.SecurityShares(sell.StockName.Company, sell.StockName.Name, day);
             portfolio.TryAddDataToBankAccount(simulationParameters.bankAccData, new DayValue_ChangeLogged(day, numShares * price - simulationParameters.tradeCost), reports);
             stats.AddTrade(new TradeDetails(TradeType.Sell, "", sell.StockName.Company, sell.StockName.Name, day, numShares * price, numShares, price, simulationParameters.tradeCost));
         }
@@ -30,18 +30,26 @@ namespace TradingConsole.BuySellSystem
             if (price != 0)
             {
                 int numShares = 0;
-                while (numShares * price < parameters.fractionInvest)
+                while (numShares * price < parameters.fractionInvest * cashAvailable)
                 {
                     numShares++;
                 }
                 numShares--;
 
-                double costOfPurchase = numShares * price + simulationParameters.tradeCost;
-                if (cashAvailable > costOfPurchase)
+                if (numShares != 0)
                 {
-                    portfolio.TryAddDataToSecurity(reports, buy.StockName.Company, buy.StockName.Name, day, numShares, price);
-                    portfolio.TryAddDataToBankAccount(new NameData("Cash", "Portfolio"), new DayValue_ChangeLogged(day, cashAvailable - numShares * costOfPurchase), reports);
-                    stats.AddTrade(new TradeDetails(TradeType.Buy, "", buy.StockName.Company, buy.StockName.Name, day, numShares * price, numShares, price, simulationParameters.tradeCost));
+                    double costOfPurchase = numShares * price + simulationParameters.tradeCost;
+                    if (cashAvailable > costOfPurchase)
+                    {
+                        if (!portfolio.DoesSecurityExist(buy.StockName.Company, buy.StockName.Name))
+                        {
+                            portfolio.TryAddSecurity(reports, buy.StockName.Company, buy.StockName.Name, "GBP", buy.StockName.Url, "");
+                        }
+                        double existingShares = portfolio.SecurityShares(buy.StockName.Company, buy.StockName.Name, day);
+                        portfolio.TryAddDataToSecurity(reports, buy.StockName.Company, buy.StockName.Name, day, numShares + existingShares, price);
+                        portfolio.TryAddDataToBankAccount(new NameData("Cash", "Portfolio"), new DayValue_ChangeLogged(day, cashAvailable - costOfPurchase), reports);
+                        stats.AddTrade(new TradeDetails(TradeType.Buy, "", buy.StockName.Company, buy.StockName.Name, day, numShares * price, numShares, price, simulationParameters.tradeCost));
+                    }
                 }
             }
         }

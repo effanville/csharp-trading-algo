@@ -13,9 +13,6 @@ namespace TradingConsole
             var reports = new ErrorReports();
             Console.WriteLine("Trading Console");
             UserInputOptions inputOptions = UIOGenerator.ParseUserInput(args, reports);
-            DateTime now = DateTime.Now;
-            var then = now.AddSeconds(-1582907959);
-            var thenagain = new DateTime(2020, 2, 27).AddSeconds(-1582790400);
 
             switch (inputOptions.funtionType)
             {

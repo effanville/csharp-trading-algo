@@ -17,7 +17,7 @@ namespace TradingConsole.BuySellSystem
             var reports = new ErrorReports();
             double price = stocks.GetValue(sell.StockName, day);
             portfolio.TryAddDataToSecurity(reports, sell.StockName.Company, sell.StockName.Name, day, 0.0, price);
-            double numShares = portfolio.SecurityLatestShares(sell.StockName.Company, sell.StockName.Name);
+            double numShares = portfolio.SecurityShares(sell.StockName.Company, sell.StockName.Name, day);
             portfolio.TryAddDataToBankAccount(simulationParameters.bankAccData, new DayValue_ChangeLogged(day, numShares * price - simulationParameters.tradeCost), reports);
             stats.AddTrade(new TradeDetails(TradeType.Sell, "", sell.StockName.Company, sell.StockName.Name, day, numShares * price, numShares, price, simulationParameters.tradeCost));
         }

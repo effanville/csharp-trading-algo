@@ -1,4 +1,7 @@
 ﻿using FinancialStructures.Database;
+using FinancialStructures.FinanceStructures;
+using FinancialStructures.GUIFinanceStructures;
+using FinancialStructures.ReportingStructures;
 using System;
 using TradingConsole.DecisionSystem;
 using TradingConsole.Simulation;
@@ -23,6 +26,14 @@ namespace TradingConsole.BuySellSystem
             foreach (var buy in buyDecisions)
             {
                 BuyHolding(day, buy, stocks, portfolio, stats, parameters, simulationParameters);
+            }
+
+            foreach (Security security in portfolio.Funds)
+            {
+                if (security.Value(day).Value > 0)
+                {
+                    security.UpdateSecurityData(stocks.GetValue(new NameData(security.GetName(), security.GetCompany()), day), new ErrorReports(), day);
+                }
             }
         }
 

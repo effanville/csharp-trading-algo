@@ -2,6 +2,6 @@
 {
     public class BuySellParams
     {
-        public double fractionInvest;
+        public double fractionInvest = 1;
     }
 }

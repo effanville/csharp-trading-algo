@@ -109,6 +109,11 @@ namespace TradingConsole.InputParser
                             inputs.EndDate = DateTime.Parse(token.Value);
                             break;
                         }
+                    case TextTokenType.StartingCash:
+                        {
+                            inputs.StartingCash = double.Parse(token.Value);
+                            break;
+                        }
                     case TextTokenType.TradingGap:
                         {
                             inputs.TradingGap = TimeSpan.Parse(token.Value);

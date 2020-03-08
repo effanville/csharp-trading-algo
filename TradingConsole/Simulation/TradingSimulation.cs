@@ -15,7 +15,7 @@ namespace TradingConsole.Simulation
         private static IDecisionSystem decisionSystem;
         private static IBuySellSystem buySellSystem;
         private static BuySellParams tradingParameters = new BuySellParams();
-        private static SimulationParameters simulationParameters;
+        private static SimulationParameters simulationParameters = new SimulationParameters();
 
         public static void SetupSystemsAndRun(UserInputOptions inputOptions, TradingStatistics stats)
         {
@@ -46,16 +46,23 @@ namespace TradingConsole.Simulation
 
             while (time < simulationParameters.EndTime)
             {
+                if ((time.DayOfWeek == DayOfWeek.Saturday) || (time.DayOfWeek == DayOfWeek.Sunday))
+                {
+                    time += simulationParameters.EvolutionIncrement;
+                    continue;
+                }
+
                 PerformDailyTrades(time, exchange, portfolio, stats);
 
                 stats.GenerateDayStats();
-                time = time + simulationParameters.EvolutionIncrement;
+                time += simulationParameters.EvolutionIncrement;
+                Console.WriteLine(time + " - " + portfolio.Value(time));
             }
 
             stats.GenerateSimulationStats();
         }
 
-        private static void PerformDailyTrades(DateTime day, ExchangeStocks exchange, Portfolio portfolio,  TradingStatistics stats)
+        private static void PerformDailyTrades(DateTime day, ExchangeStocks exchange, Portfolio portfolio, TradingStatistics stats)
         {
             // Decide which stocks to buy, sell or do nothing with.
             var status = new DecisionStatus();
