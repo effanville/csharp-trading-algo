@@ -1,7 +1,8 @@
-﻿using FileSupport;
-using FinancialStructures.Database;
-using FinancialStructures.GUIFinanceStructures;
-using FinancialStructures.ReportingStructures;
+﻿using FinancialStructures.FileAccess;
+using FinancialStructures.NamingStructures;
+using FinancialStructures.PortfolioAPI;
+using FinancialStructures.Reporting;
+using FinancialStructures.ReportLogging;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -18,6 +19,9 @@ namespace TradingConsole.StockStructures
 
     public class ExchangeStocks
     {
+        public ExchangeStocks()
+        { }
+
         public double GetValue(NameData name, DateTime date)
         {
             foreach (var stock in Stocks)
@@ -70,11 +74,11 @@ namespace TradingConsole.StockStructures
             set { fStocks = value; }
         }
 
-        public void LoadExchangeStocks(string filePath, ErrorReports reports)
+        public void LoadExchangeStocks(string filePath, LogReporter reportLogger)
         {
             if (File.Exists(filePath))
             {
-                var database = XmlFileAccess.ReadFromXmlFile<ExchangeStocks>(filePath);
+                var database = XmlFileAccess.ReadFromXmlFile<ExchangeStocks>(filePath, out string error);
                 if (database != null)
                 {
                     Stocks = database.Stocks;
@@ -82,16 +86,20 @@ namespace TradingConsole.StockStructures
                 return;
             }
 
-            reports.AddReport("Loaded Empty New Database.", Location.Loading);
+            reportLogger.Log("Report", "Loading", "Loaded Empty New Database.");
             Stocks = new List<Stock>();
         }
 
-        public void SaveExchangeStocks(string filePath, ErrorReports reports)
+        public void SaveExchangeStocks(string filePath, LogReporter reportLogger)
         {
-            XmlFileAccess.WriteToXmlFile<ExchangeStocks>(filePath, this);
+            XmlFileAccess.WriteToXmlFile<ExchangeStocks>(filePath, this, out string error);
+            if (error != null)
+            {
+                reportLogger.LogError("Saving", error);
+            }
         }
 
-        public void Download(DownloadType downloadType, UserInputOptions inputOptions)
+        public void Download(DownloadType downloadType, UserInputOptions inputOptions, LogReporter reportLogger)
         {
             var reports = new ErrorReports();
             foreach (var stock in Stocks)
@@ -105,7 +113,7 @@ namespace TradingConsole.StockStructures
                 {
                     downloadUrl = new Uri(stock.Name.Url);
                 }
-                string stockWebsite = DataUpdater.DownloadFromURL(downloadUrl.ToString(), reports).Result;
+                string stockWebsite = PortfolioDataUpdater.DownloadFromURL(downloadUrl.ToString(), reportLogger).Result;
                 ProcessAndAddData(downloadType, stock, stockWebsite);
             }
         }
@@ -189,7 +197,7 @@ namespace TradingConsole.StockStructures
             };
 
             int index = searchString.IndexOf(findString);
-            int lengthToSearch = Math.Min(containedWithin,searchString.Length - index - findString.Length);
+            int lengthToSearch = Math.Min(containedWithin, searchString.Length - index - findString.Length);
             string value = searchString.Substring(index + findString.Length, lengthToSearch);
 
             var digits = value.SkipWhile(c => !char.IsDigit(c)).TakeWhile(continuer).ToArray();

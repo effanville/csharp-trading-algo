@@ -1,4 +1,4 @@
-﻿using FinancialStructures.ReportingStructures;
+﻿using FinancialStructures.ReportLogging;
 using System;
 using System.Collections.Generic;
 
@@ -22,22 +22,22 @@ namespace TradingConsole.InputParser
             return TextTokenType.Error;
         }
 
-        public static UserInputOptions ParseUserInput(string[] args, ErrorReports reports)
+        public static UserInputOptions ParseUserInput(string[] args, LogReporter reportLogger)
         {
             if (args.Length == 0)
             {
                 return new UserInputOptions();
             }
 
-            List<TextToken> tokens = ParseInput(args, reports);
+            List<TextToken> tokens = ParseInput(args, reportLogger);
 
-            return GenerateOptionsFromInputs(tokens, reports);
+            return GenerateOptionsFromInputs(tokens, reportLogger);
         }
 
         /// <summary>
         /// From comman line inputs, converts into types of input and the value specified.
         /// </summary>
-        private static List<TextToken> ParseInput(string[] args, ErrorReports reports)
+        private static List<TextToken> ParseInput(string[] args, LogReporter reportLogger)
         {
             var outputTokens = new List<TextToken>();
             for (int i = 0; i < args.Length; i++)
@@ -51,7 +51,7 @@ namespace TradingConsole.InputParser
                     else
                     {
                         outputTokens.Add(new TextToken(TextTokenType.Error, TokenTypeSelector(args[i]).ToString() + " - NoValueSelected"));
-                        reports.AddError("Token does not have proper value", Location.Parsing);
+                        reportLogger.LogError("Parsing", "Token does not have proper value");
                     }
                 }
             }
@@ -59,7 +59,7 @@ namespace TradingConsole.InputParser
             return outputTokens;
         }
 
-        private static UserInputOptions GenerateOptionsFromInputs(List<TextToken> inputTokens, ErrorReports reports)
+        private static UserInputOptions GenerateOptionsFromInputs(List<TextToken> inputTokens, LogReporter reportLogger)
         {
             var inputs = new UserInputOptions();
             foreach (var token in inputTokens)

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using FinancialStructures.ReportLogging;
+using System;
 using System.Collections.Generic;
 using TradingConsole.Simulation;
 using TradingConsole.Statistics;
@@ -8,6 +9,12 @@ namespace TradingConsole.DecisionSystem
 {
     public class BasicDecisionSystem : IDecisionSystem
     {
+        public LogReporter ReportLogger { get; }
+
+        public BasicDecisionSystem(LogReporter reportLogger)
+        {
+            ReportLogger = reportLogger;
+        }
         public void AddDailyDecisionStats(TradingStatistics stats, DateTime day, List<string> buys, List<string> sells)
         {
             stats.AddDailyDecisionStats(day, buys, sells);

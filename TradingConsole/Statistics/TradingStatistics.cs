@@ -1,5 +1,6 @@
 ﻿using FinancialStructures.Database;
-using FinancialStructures.GUIFinanceStructures;
+using FinancialStructures.NamingStructures;
+using FinancialStructures.PortfolioAPI;
 using FinancialStructures.StockData;
 using System;
 using System.Collections.Generic;
@@ -42,12 +43,12 @@ namespace TradingConsole.Statistics
         public void AddSnapshot(DateTime day, Portfolio portfolio)
         {
             var snapshot = new TradingDaySnapshot();
-            foreach (var security in portfolio.GetSecurities())
+            foreach (var security in portfolio.Funds)
             {
-                snapshot.AddHolding(new NameData(security.GetName(), security.GetCompany()), security.DayData(day));
+                snapshot.AddHolding(new NameData(security.Company, security.Name), security.DayData(day));
             }
 
-            snapshot.freeCash = portfolio.AllBankAccountsValue(day);
+            snapshot.freeCash = portfolio.TotalValue(AccountType.BankAccount, day);
             DayData.Add(snapshot);
         }
     }

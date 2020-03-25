@@ -1,4 +1,4 @@
-﻿using FinancialStructures.GUIFinanceStructures;
+﻿using FinancialStructures.NamingStructures;
 using System;
 using TradingConsole.InputParser;
 using TradingConsole.StockStructures;

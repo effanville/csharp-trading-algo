@@ -1,4 +1,4 @@
-﻿using FinancialStructures.GUIFinanceStructures;
+﻿using FinancialStructures.NamingStructures;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -34,7 +34,7 @@ namespace TradingConsole.DecisionSystem
         }
 
         public List<Decision> GetSellDecisions()
-        { 
+        {
             return GetDecisions(StockTradeDecision.Sell);
         }
 

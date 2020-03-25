@@ -1,4 +1,4 @@
-﻿using FinancialStructures.ReportingStructures;
+﻿using FinancialStructures.ReportLogging;
 using System;
 using TradingConsole.InputParser;
 using TradingConsole.Simulation;
@@ -10,9 +10,9 @@ namespace TradingConsole
     {
         static void Main(string[] args)
         {
-            var reports = new ErrorReports();
+            LogReporter reportLogger = new LogReporter((critical, type, location, message) => Console.WriteLine($"{type} - {location} - {message}"));
             Console.WriteLine("Trading Console");
-            UserInputOptions inputOptions = UIOGenerator.ParseUserInput(args, reports);
+            UserInputOptions inputOptions = UIOGenerator.ParseUserInput(args, reportLogger);
 
             switch (inputOptions.funtionType)
             {
@@ -20,13 +20,13 @@ namespace TradingConsole
                 case FunctionType.DownloadLatest:
                 case FunctionType.Configure:
                     Console.WriteLine("Downloading:");
-                    DownloadStocks.Download(inputOptions);
+                    DownloadStocks.Download(inputOptions, reportLogger);
                     break;
                 case FunctionType.Simulate:
                 case FunctionType.Trade:
                     Console.WriteLine("Simulation Starting");
                     var stats = new TradingStatistics();
-                    TradingSimulation.SetupSystemsAndRun(inputOptions, stats);
+                    TradingSimulation.SetupSystemsAndRun(inputOptions, stats, reportLogger);
                     break;
                 default:
                     Console.WriteLine("No admissible input selected");

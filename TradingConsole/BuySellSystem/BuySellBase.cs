@@ -1,7 +1,7 @@
 ﻿using FinancialStructures.Database;
-using FinancialStructures.FinanceStructures;
-using FinancialStructures.GUIFinanceStructures;
-using FinancialStructures.ReportingStructures;
+using FinancialStructures.FinanceInterfaces;
+using FinancialStructures.NamingStructures;
+using FinancialStructures.ReportLogging;
 using System;
 using TradingConsole.DecisionSystem;
 using TradingConsole.Simulation;
@@ -12,6 +12,12 @@ namespace TradingConsole.BuySellSystem
 {
     public class BuySellBase : IBuySellSystem
     {
+        public LogReporter ReportLogger { get; }
+
+        public BuySellBase(LogReporter reportLogger)
+        {
+            ReportLogger = reportLogger;
+        }
         public virtual void BuySell(DateTime day, DecisionStatus status, ExchangeStocks stocks, Portfolio portfolio, TradingStatistics stats, BuySellParams parameters, SimulationParameters simulationParameters)
         {
             var sellDecisions = status.GetSellDecisions();
@@ -28,11 +34,11 @@ namespace TradingConsole.BuySellSystem
                 BuyHolding(day, buy, stocks, portfolio, stats, parameters, simulationParameters);
             }
 
-            foreach (Security security in portfolio.Funds)
+            foreach (ISecurity security in portfolio.Funds)
             {
                 if (security.Value(day).Value > 0)
                 {
-                    security.UpdateSecurityData(stocks.GetValue(new NameData(security.GetName(), security.GetCompany()), day), new ErrorReports(), day);
+                    security.UpdateSecurityData(stocks.GetValue(new NameData(security.Company, security.Name), day), ReportLogger, day);
                 }
             }
         }
