@@ -1,7 +1,7 @@
 ﻿using FinancialStructures.NamingStructures;
+using FinancialStructures.StockStructures;
 using System;
 using TradingConsole.InputParser;
-using TradingConsole.StockStructures;
 
 namespace TradingConsole.Simulation
 {

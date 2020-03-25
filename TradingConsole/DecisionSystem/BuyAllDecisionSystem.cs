@@ -1,9 +1,9 @@
 ﻿using FinancialStructures.ReportLogging;
+using FinancialStructures.StockStructures;
 using System;
 using System.Collections.Generic;
 using TradingConsole.Simulation;
 using TradingConsole.Statistics;
-using TradingConsole.StockStructures;
 
 namespace TradingConsole.DecisionSystem
 {

@@ -2,11 +2,11 @@
 using FinancialStructures.FinanceInterfaces;
 using FinancialStructures.NamingStructures;
 using FinancialStructures.ReportLogging;
+using FinancialStructures.StockStructures;
 using System;
 using TradingConsole.DecisionSystem;
 using TradingConsole.Simulation;
 using TradingConsole.Statistics;
-using TradingConsole.StockStructures;
 
 namespace TradingConsole.BuySellSystem
 {

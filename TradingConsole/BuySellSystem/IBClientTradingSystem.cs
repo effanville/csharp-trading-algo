@@ -1,14 +1,14 @@
 ﻿using FinancialStructures.Database;
-using System;
-using TradingConsole.Statistics;
-using TradingConsole.DecisionSystem;
-using TradingConsole.StockStructures;
-using FinancialStructures.StockData;
-using TradingConsole.Simulation;
-using FinancialStructures.PortfolioAPI;
 using FinancialStructures.DataStructures;
 using FinancialStructures.NamingStructures;
+using FinancialStructures.PortfolioAPI;
 using FinancialStructures.ReportLogging;
+using FinancialStructures.StockData;
+using FinancialStructures.StockStructures;
+using System;
+using TradingConsole.DecisionSystem;
+using TradingConsole.Simulation;
+using TradingConsole.Statistics;
 
 namespace TradingConsole.BuySellSystem
 {

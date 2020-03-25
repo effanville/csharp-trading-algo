@@ -2,12 +2,12 @@
 using FinancialStructures.DataStructures;
 using FinancialStructures.PortfolioAPI;
 using FinancialStructures.ReportLogging;
+using FinancialStructures.StockStructures;
 using System;
 using TradingConsole.BuySellSystem;
 using TradingConsole.DecisionSystem;
 using TradingConsole.InputParser;
 using TradingConsole.Statistics;
-using TradingConsole.StockStructures;
 
 namespace TradingConsole.Simulation
 {
