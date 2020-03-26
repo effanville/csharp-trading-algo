@@ -14,6 +14,6 @@ namespace TradingConsole.InputParser
 
         public double StartingCash;
 
-        public FunctionType funtionType;
+        public ProgramType funtionType;
     }
 }

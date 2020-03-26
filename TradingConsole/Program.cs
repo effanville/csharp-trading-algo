@@ -16,14 +16,14 @@ namespace TradingConsole
 
             switch (inputOptions.funtionType)
             {
-                case FunctionType.DownloadAll:
-                case FunctionType.DownloadLatest:
-                case FunctionType.Configure:
+                case ProgramType.DownloadAll:
+                case ProgramType.DownloadLatest:
+                case ProgramType.Configure:
                     Console.WriteLine("Downloading:");
                     DownloadStocks.Download(inputOptions, reportLogger);
                     break;
-                case FunctionType.Simulate:
-                case FunctionType.Trade:
+                case ProgramType.Simulate:
+                case ProgramType.Trade:
                     Console.WriteLine("Simulation Starting");
                     var stats = new TradingStatistics();
                     TradingSimulation.SetupSystemsAndRun(inputOptions, stats, reportLogger);

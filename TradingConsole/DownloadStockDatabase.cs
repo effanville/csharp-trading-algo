@@ -11,13 +11,13 @@ namespace TradingConsole
         {
             switch (inputOptions.funtionType)
             {
-                case FunctionType.DownloadAll:
+                case ProgramType.DownloadAll:
                     Download(DownloadType.All, inputOptions, reportLogger);
                     break;
-                case FunctionType.DownloadLatest:
+                case ProgramType.DownloadLatest:
                     Download(DownloadType.Latest, inputOptions, reportLogger);
                     break;
-                case FunctionType.Configure:
+                case ProgramType.Configure:
                     Configure(inputOptions, reportLogger);
                     break;
                 default:

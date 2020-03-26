@@ -35,7 +35,7 @@ namespace TradingConsole.InputParser
         }
 
         /// <summary>
-        /// From comman line inputs, converts into types of input and the value specified.
+        /// From command line inputs, converts into types of input and the value specified.
         /// </summary>
         private static List<TextToken> ParseInput(string[] args, LogReporter reportLogger)
         {
@@ -80,23 +80,23 @@ namespace TradingConsole.InputParser
                         {
                             if (token.Value == "all")
                             {
-                                inputs.funtionType = FunctionType.DownloadAll;
+                                inputs.funtionType = ProgramType.DownloadAll;
                             }
                             else
                             {
-                                inputs.funtionType = FunctionType.DownloadLatest;
+                                inputs.funtionType = ProgramType.DownloadLatest;
                             }
                             break;
                         }
                     case (TextTokenType.Configure):
                         {
-                            inputs.funtionType = FunctionType.Configure;
+                            inputs.funtionType = ProgramType.Configure;
                             inputs.StockFilePath = token.Value;
                             break;
                         }
                     case (TextTokenType.Simulate):
                         {
-                            inputs.funtionType = FunctionType.Simulate;
+                            inputs.funtionType = ProgramType.Simulate;
                             break;
                         }
                     case TextTokenType.StartDate:

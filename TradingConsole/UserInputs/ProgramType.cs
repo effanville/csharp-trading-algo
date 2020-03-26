@@ -1,12 +1,13 @@
 ﻿namespace TradingConsole.InputParser
 {
-    public enum FunctionType
+    public enum ProgramType
     {
         Nothing,
         DownloadAll,
         DownloadLatest,
         Configure,
         Simulate,
-        Trade
+        Trade,
+        Help
     }
 }
