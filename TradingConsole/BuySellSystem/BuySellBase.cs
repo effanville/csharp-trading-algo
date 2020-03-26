@@ -18,6 +18,7 @@ namespace TradingConsole.BuySellSystem
         {
             ReportLogger = reportLogger;
         }
+
         public virtual void BuySell(DateTime day, DecisionStatus status, ExchangeStocks stocks, Portfolio portfolio, TradingStatistics stats, BuySellParams parameters, SimulationParameters simulationParameters)
         {
             var sellDecisions = status.GetSellDecisions();

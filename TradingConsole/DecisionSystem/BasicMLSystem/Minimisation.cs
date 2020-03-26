@@ -2,7 +2,6 @@
 {
     public static class MatrixFunctions
     {
-
         public static double[,] Identity(int n)
         {
             var Id = new double[n, n];
@@ -81,8 +80,8 @@
         public static double[,] XTX(double[,] matrix)
         {
 
-            double[,] multiply = new double[matrix.GetLength(0), matrix.GetLength(0)];
-            for (int firstMatrixRowIndex = 0; firstMatrixRowIndex < matrix.GetLength(0); firstMatrixRowIndex++)
+            double[,] multiply = new double[matrix.GetLength(1), matrix.GetLength(1)];
+            for (int firstMatrixRowIndex = 0; firstMatrixRowIndex < matrix.GetLength(1); firstMatrixRowIndex++)
             {
                 for (int secondMatrixColumnIndex = 0; secondMatrixColumnIndex < matrix.GetLength(1); secondMatrixColumnIndex++)
                 {
@@ -101,26 +100,8 @@
 
         public static double[,] Inverse(double[,] matrix)
         {
-            if (!matrix.GetLength(1).Equals(matrix.GetLength(0)))
-            {
-                return new double[0, 0];
-            }
-            double[,] multiply = new double[matrix.GetLength(0), matrix.GetLength(0)];
-            for (int firstMatrixRowIndex = 0; firstMatrixRowIndex < matrix.GetLength(0); firstMatrixRowIndex++)
-            {
-                for (int secondMatrixColumnIndex = 0; secondMatrixColumnIndex < matrix.GetLength(1); secondMatrixColumnIndex++)
-                {
-                    double thisIndexSum = 0.0;
-                    for (int innerIndex = 0; innerIndex < matrix.GetLength(0); innerIndex++)
-                    {
-                        thisIndexSum += matrix[innerIndex, firstMatrixRowIndex] * matrix[innerIndex, secondMatrixColumnIndex];
-                    }
-
-                    multiply[firstMatrixRowIndex, secondMatrixColumnIndex] = thisIndexSum;
-                }
-            }
-
-            return multiply;
+            var decomp = new LUDecomposition(matrix);
+            return decomp.Inverse();
         }
     }
 }

@@ -15,6 +15,7 @@ namespace TradingConsole.DecisionSystem
         {
             ReportLogger = reportLogger;
         }
+
         public void AddDailyDecisionStats(TradingStatistics stats, DateTime day, List<string> buys, List<string> sells)
         {
             stats.AddDailyDecisionStats(day, buys, sells);
@@ -24,7 +25,24 @@ namespace TradingConsole.DecisionSystem
         {
             foreach (var stock in exchange.Stocks)
             {
-                status.AddDecision(stock.Name, StockTradeDecision.Buy);
+                StockTradeDecision decision;
+                var values = stock.Values(date, 0, 5, DataStream.Open).ToArray();
+                double value = simulationParameters.Estimator.Evaluate(values);
+
+                if (value > 1.05)
+                {
+                    decision = StockTradeDecision.Buy;
+                }
+                else if (value < 1)
+                {
+                    decision = StockTradeDecision.Sell;
+                }
+                else
+                {
+                    decision = StockTradeDecision.Hold;
+                }
+
+                status.AddDecision(stock.Name, decision);
             }
         }
     }

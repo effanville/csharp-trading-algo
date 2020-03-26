@@ -51,5 +51,9 @@ namespace TradingConsole.Statistics
             snapshot.freeCash = portfolio.TotalValue(AccountType.BankAccount, day);
             DayData.Add(snapshot);
         }
+
+        public void ExportToFile()
+        {
+        }
     }
 }

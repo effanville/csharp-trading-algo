@@ -1,6 +1,9 @@
 ﻿namespace TradingConsole.DecisionSystem.BasicMLSystem
 {
-    public class LSEstimator
+    /// <summary>
+    /// Holds data on least squares estimator for a matrix of data inputs and corresponding y values.
+    /// </summary>
+    public class LSEstimator : IEstimator
     {
         private double[] Estimator;
 
@@ -30,7 +33,8 @@
 
         private void GenerateEstimator(double[,] data, double[] values)
         {
-            Estimator = MatrixFunctions.VectorMultiply(MatrixFunctions.Inverse(MatrixFunctions.XTX(data)), MatrixFunctions.VectorMultiply(MatrixFunctions.Transpose(data), values));
+            var XTY = MatrixFunctions.VectorMultiply(MatrixFunctions.Transpose(data), values);
+            Estimator = MatrixFunctions.VectorMultiply(MatrixFunctions.Inverse(MatrixFunctions.XTX(data)), XTY);
         }
     }
 }

@@ -20,21 +20,21 @@ namespace TradingConsole.Simulation
 
         public static void SetupSystemsAndRun(UserInputOptions inputOptions, TradingStatistics stats, LogReporter reportLogger)
         {
-            if (inputOptions.funtionType == InputParser.FunctionType.Simulate)
+            if (inputOptions.funtionType == ProgramType.Simulate)
             {
                 decisionSystem = new BuyAllDecisionSystem(reportLogger);
                 buySellSystem = new SimulationBuySellSystem(reportLogger);
+                SimulateRun(inputOptions, stats, reportLogger);
             }
-            if (inputOptions.funtionType == InputParser.FunctionType.Trade)
+            if (inputOptions.funtionType == ProgramType.Trade)
             {
                 decisionSystem = new BasicDecisionSystem(reportLogger);
                 buySellSystem = new IBClientTradingSystem(reportLogger);
+                Run(inputOptions, stats, reportLogger);
             }
-
-            Run(inputOptions, stats, reportLogger);
         }
 
-        private static void Run(UserInputOptions inputOptions, TradingStatistics stats, LogReporter reportLogger)
+        private static void SimulateRun(UserInputOptions inputOptions, TradingStatistics stats, LogReporter reportLogger)
         {
             var exchange = new ExchangeStocks();
             LoadStockDatabase(inputOptions, stats, exchange, reportLogger);
@@ -63,6 +63,21 @@ namespace TradingConsole.Simulation
             stats.GenerateSimulationStats();
         }
 
+        private static void Run(UserInputOptions inputOptions, TradingStatistics stats, LogReporter reportLogger)
+        {
+            var exchange = new ExchangeStocks();
+            LoadStockDatabase(inputOptions, stats, exchange, reportLogger);
+            ParameterGenerators.GenerateSimulationParameters(simulationParameters, inputOptions, exchange);
+
+            var portfolio = new Portfolio();
+            LoadStartPortfolio(simulationParameters.StartTime, inputOptions, stats, portfolio, reportLogger);
+            PerformDailyTrades(DateTime.Today, exchange, portfolio, stats, reportLogger);
+
+            stats.GenerateDayStats();
+            stats.GenerateSimulationStats();
+            portfolio.SavePortfolio(inputOptions.PortfolioFilePath, reportLogger);
+        }
+
         private static void PerformDailyTrades(DateTime day, ExchangeStocks exchange, Portfolio portfolio, TradingStatistics stats, LogReporter reportLogger)
         {
             // Decide which stocks to buy, sell or do nothing with.
@@ -85,8 +100,7 @@ namespace TradingConsole.Simulation
         {
             if (inputOptions.PortfolioFilePath != null)
             {
-                string filePath = inputOptions.PortfolioFilePath;
-                portfolio.LoadPortfolio(filePath, reportLogger);
+                portfolio.LoadPortfolio(inputOptions.PortfolioFilePath, reportLogger);
                 stats.StartingCash = portfolio.TotalValue(AccountType.BankAccount, startTime);
             }
             else
