@@ -28,6 +28,13 @@ namespace TradingConsole
                     var stats = new TradingStatistics();
                     TradingSimulation.SetupSystemsAndRun(inputOptions, stats, reportLogger);
                     break;
+                case ProgramType.Help:
+                    Console.WriteLine("User input options are:");
+                    foreach (var tokenType in Enum.GetValues(typeof(TextTokenType)))
+                    {
+                        Console.WriteLine(tokenType.ToString());
+                    }
+                    break;
                 default:
                     Console.WriteLine("No admissible input selected");
                     break;

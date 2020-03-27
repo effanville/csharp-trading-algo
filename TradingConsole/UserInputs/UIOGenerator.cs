@@ -1,6 +1,8 @@
 ﻿using FinancialStructures.ReportLogging;
+using StringFunctions;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace TradingConsole.InputParser
 {
@@ -30,6 +32,10 @@ namespace TradingConsole.InputParser
             }
 
             List<TextToken> tokens = ParseInput(args, reportLogger);
+            if (tokens.Any(tokens => tokens.TokenType == TextTokenType.Error))
+            {
+                return new UserInputOptions();
+            }
 
             return GenerateOptionsFromInputs(tokens, reportLogger);
         }
@@ -40,7 +46,10 @@ namespace TradingConsole.InputParser
         private static List<TextToken> ParseInput(string[] args, LogReporter reportLogger)
         {
             var outputTokens = new List<TextToken>();
-            for (int i = 0; i < args.Length; i++)
+
+            outputTokens.Add(DetermineProgramType(args[0]));
+
+            for (int i = 1; i < args.Length; i++)
             {
                 if (args[i].StartsWith(parameterArg))
                 {
@@ -59,6 +68,19 @@ namespace TradingConsole.InputParser
             return outputTokens;
         }
 
+        private static TextToken DetermineProgramType(string argument)
+        {
+            foreach (ProgramType type in Enum.GetValues(typeof(ProgramType)))
+            {
+                if (argument == type.ToString())
+                {
+                    return new TextToken(TextTokenType.ProgramType, argument);
+                }
+            }
+
+            return new TextToken(TextTokenType.Error, argument);
+        }
+
         private static UserInputOptions GenerateOptionsFromInputs(List<TextToken> inputTokens, LogReporter reportLogger)
         {
             var inputs = new UserInputOptions();
@@ -66,6 +88,21 @@ namespace TradingConsole.InputParser
             {
                 switch (token.TokenType)
                 {
+                    case (TextTokenType.ProgramType):
+                        {
+                            foreach (ProgramType type in Enum.GetValues(typeof(ProgramType)))
+                            {
+                                if (token.Value == type.ToString())
+                                {
+                                    inputs.funtionType = type;
+                                }
+                            }
+                            break;
+                        }
+                    case TextTokenType.ParameterFilePath:
+                        {
+                            break;
+                        }
                     case (TextTokenType.StockFilePath):
                         {
                             inputs.StockFilePath = token.Value;
@@ -76,27 +113,9 @@ namespace TradingConsole.InputParser
                             inputs.PortfolioFilePath = token.Value;
                             break;
                         }
-                    case (TextTokenType.Download):
+                    case TextTokenType.StartingCash:
                         {
-                            if (token.Value == "all")
-                            {
-                                inputs.funtionType = ProgramType.DownloadAll;
-                            }
-                            else
-                            {
-                                inputs.funtionType = ProgramType.DownloadLatest;
-                            }
-                            break;
-                        }
-                    case (TextTokenType.Configure):
-                        {
-                            inputs.funtionType = ProgramType.Configure;
-                            inputs.StockFilePath = token.Value;
-                            break;
-                        }
-                    case (TextTokenType.Simulate):
-                        {
-                            inputs.funtionType = ProgramType.Simulate;
+                            inputs.StartingCash = double.Parse(token.Value);
                             break;
                         }
                     case TextTokenType.StartDate:
@@ -109,14 +128,19 @@ namespace TradingConsole.InputParser
                             inputs.EndDate = DateTime.Parse(token.Value);
                             break;
                         }
-                    case TextTokenType.StartingCash:
-                        {
-                            inputs.StartingCash = double.Parse(token.Value);
-                            break;
-                        }
                     case TextTokenType.TradingGap:
                         {
                             inputs.TradingGap = TimeSpan.Parse(token.Value);
+                            break;
+                        }
+                    case TextTokenType.DecisionSystemType:
+                        {
+                            inputs.DecisionType = token.Value.ToEnum<DecisionSystemType>();
+                            break;
+                        }
+                    case TextTokenType.BuySellType:
+                        {
+                            inputs.BuyingSellingType = token.Value.ToEnum<BuySellType>();
                             break;
                         }
                     default:

@@ -2,17 +2,16 @@
 {
     public enum TextTokenType
     {
+        ProgramType,
+        ParameterFilePath,
         StockFilePath,
         PortfolioFilePath,
         StartingCash,
-        Download,
         StartDate,
         EndDate,
         TradingGap,
-        Configure,
-        Simulate,
-        Parameter,
-        Help,
+        DecisionSystemType,
+        BuySellType,
         Error
     }
 }
