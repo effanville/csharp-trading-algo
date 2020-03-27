@@ -11,37 +11,46 @@ using TradingConsole.Statistics;
 
 namespace TradingConsole.Simulation
 {
-    internal static class TradingSimulation
+    internal class TradingSimulation
     {
-        private static IDecisionSystem decisionSystem;
-        private static IBuySellSystem buySellSystem;
-        private static BuySellParams tradingParameters = new BuySellParams();
-        private static SimulationParameters simulationParameters = new SimulationParameters();
+        private IDecisionSystem decisionSystem;
+        private IBuySellSystem buySellSystem;
+        private BuySellParams tradingParameters = new BuySellParams();
+        private SimulationParameters simulationParameters = new SimulationParameters();
 
-        public static void SetupSystemsAndRun(UserInputOptions inputOptions, TradingStatistics stats, LogReporter reportLogger)
+        private UserInputOptions InputOptions;
+        private LogReporter ReportLogger;
+
+        public TradingSimulation(UserInputOptions inputOptions, LogReporter reportLogger)
         {
-            if (inputOptions.funtionType == ProgramType.Simulate)
+            InputOptions = inputOptions;
+            ReportLogger = reportLogger;
+        }
+
+        public void SetupSystemsAndRun(TradingStatistics stats)
+        {
+            if (InputOptions.funtionType == ProgramType.Simulate)
             {
-                decisionSystem = new BuyAllDecisionSystem(reportLogger);
-                buySellSystem = new SimulationBuySellSystem(reportLogger);
-                SimulateRun(inputOptions, stats, reportLogger);
+                decisionSystem = new BuyAllDecisionSystem(ReportLogger);
+                buySellSystem = new SimulationBuySellSystem(ReportLogger);
+                SimulateRun(stats);
             }
-            if (inputOptions.funtionType == ProgramType.Trade)
+            if (InputOptions.funtionType == ProgramType.Trade)
             {
-                decisionSystem = new BasicDecisionSystem(reportLogger);
-                buySellSystem = new IBClientTradingSystem(reportLogger);
-                Run(inputOptions, stats, reportLogger);
+                decisionSystem = new BasicDecisionSystem(ReportLogger);
+                buySellSystem = new IBClientTradingSystem(ReportLogger);
+                Run(stats);
             }
         }
 
-        private static void SimulateRun(UserInputOptions inputOptions, TradingStatistics stats, LogReporter reportLogger)
+        private void SimulateRun(TradingStatistics stats)
         {
             var exchange = new ExchangeStocks();
-            LoadStockDatabase(inputOptions, stats, exchange, reportLogger);
-            ParameterGenerators.GenerateSimulationParameters(simulationParameters, inputOptions, exchange);
+            exchange.LoadExchangeStocks(InputOptions.StockFilePath, ReportLogger);
+            ParameterGenerators.GenerateSimulationParameters(simulationParameters, InputOptions, exchange);
 
             var portfolio = new Portfolio();
-            LoadStartPortfolio(simulationParameters.StartTime, inputOptions, stats, portfolio, reportLogger);
+            LoadStartPortfolio(simulationParameters.StartTime, stats, portfolio);
 
             DateTime time = simulationParameters.StartTime;
 
@@ -53,7 +62,7 @@ namespace TradingConsole.Simulation
                     continue;
                 }
 
-                PerformDailyTrades(time, exchange, portfolio, stats, reportLogger);
+                PerformDailyTrades(time, exchange, portfolio, stats, ReportLogger);
 
                 stats.GenerateDayStats();
                 time += simulationParameters.EvolutionIncrement;
@@ -63,22 +72,22 @@ namespace TradingConsole.Simulation
             stats.GenerateSimulationStats();
         }
 
-        private static void Run(UserInputOptions inputOptions, TradingStatistics stats, LogReporter reportLogger)
+        private void Run(TradingStatistics stats)
         {
             var exchange = new ExchangeStocks();
-            LoadStockDatabase(inputOptions, stats, exchange, reportLogger);
-            ParameterGenerators.GenerateSimulationParameters(simulationParameters, inputOptions, exchange);
+            exchange.LoadExchangeStocks(InputOptions.StockFilePath, ReportLogger);
+            ParameterGenerators.GenerateSimulationParameters(simulationParameters, InputOptions, exchange);
 
             var portfolio = new Portfolio();
-            LoadStartPortfolio(simulationParameters.StartTime, inputOptions, stats, portfolio, reportLogger);
-            PerformDailyTrades(DateTime.Today, exchange, portfolio, stats, reportLogger);
+            LoadStartPortfolio(simulationParameters.StartTime, stats, portfolio);
+            PerformDailyTrades(DateTime.Today, exchange, portfolio, stats, ReportLogger);
 
             stats.GenerateDayStats();
             stats.GenerateSimulationStats();
-            portfolio.SavePortfolio(inputOptions.PortfolioFilePath, reportLogger);
+            portfolio.SavePortfolio(InputOptions.PortfolioFilePath, ReportLogger);
         }
 
-        private static void PerformDailyTrades(DateTime day, ExchangeStocks exchange, Portfolio portfolio, TradingStatistics stats, LogReporter reportLogger)
+        private void PerformDailyTrades(DateTime day, ExchangeStocks exchange, Portfolio portfolio, TradingStatistics stats, LogReporter reportLogger)
         {
             // Decide which stocks to buy, sell or do nothing with.
             var status = new DecisionStatus();
@@ -90,24 +99,18 @@ namespace TradingConsole.Simulation
             stats.AddSnapshot(day, portfolio);
         }
 
-        private static void LoadStockDatabase(UserInputOptions inputOptions, TradingStatistics stats, ExchangeStocks exchange, LogReporter reportLogger)
+        private void LoadStartPortfolio(DateTime startTime, TradingStatistics stats, Portfolio portfolio)
         {
-            string filepath = inputOptions.StockFilePath;
-            exchange.LoadExchangeStocks(filepath, reportLogger);
-        }
-
-        private static void LoadStartPortfolio(DateTime startTime, UserInputOptions inputOptions, TradingStatistics stats, Portfolio portfolio, LogReporter reportLogger)
-        {
-            if (inputOptions.PortfolioFilePath != null)
+            if (InputOptions.PortfolioFilePath != null)
             {
-                portfolio.LoadPortfolio(inputOptions.PortfolioFilePath, reportLogger);
+                portfolio.LoadPortfolio(InputOptions.PortfolioFilePath, ReportLogger);
                 stats.StartingCash = portfolio.TotalValue(AccountType.BankAccount, startTime);
             }
             else
             {
-                portfolio.TryAdd(AccountType.BankAccount, simulationParameters.bankAccData, reportLogger);
-                portfolio.TryAddData(AccountType.BankAccount, simulationParameters.bankAccData, new DayValue_ChangeLogged(inputOptions.StartDate, inputOptions.StartingCash), reportLogger);
-                stats.StartingCash = inputOptions.StartingCash;
+                portfolio.TryAdd(AccountType.BankAccount, simulationParameters.bankAccData, ReportLogger);
+                portfolio.TryAddData(AccountType.BankAccount, simulationParameters.bankAccData, new DayValue_ChangeLogged(InputOptions.StartDate, InputOptions.StartingCash), ReportLogger);
+                stats.StartingCash = InputOptions.StartingCash;
             }
         }
     }

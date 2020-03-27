@@ -6,11 +6,14 @@ using System.Linq;
 
 namespace TradingConsole.InputParser
 {
-    public static class UIOGenerator
+    public class UserInputParser
     {
+        public UserInputParser()
+        { }
+
         public static string parameterArg = "--";
 
-        private static TextTokenType TokenTypeSelector(string arg)
+        private TextTokenType TokenTypeSelector(string arg)
         {
             foreach (TextTokenType type in Enum.GetValues(typeof(TextTokenType)))
             {
@@ -24,7 +27,33 @@ namespace TradingConsole.InputParser
             return TextTokenType.Error;
         }
 
-        public static UserInputOptions ParseUserInput(string[] args, LogReporter reportLogger)
+        public bool EnsureInputsSuitable(UserInputOptions inputOptions, LogReporter reportLogger)
+        {
+            switch (inputOptions.funtionType)
+            {
+                case ProgramType.Configure:
+                    {
+                        if (string.IsNullOrEmpty(inputOptions.StockFilePath))
+                        {
+                            return false;
+                        }
+                        return true;
+                    }
+                case ProgramType.DownloadAll:
+                case ProgramType.DownloadLatest:
+                    {
+                        if (string.IsNullOrEmpty(inputOptions.StockFilePath) || inputOptions.StartDate == null || inputOptions.EndDate == null)
+                        {
+                            return false;
+                        }
+                        return true;
+                    }
+                default:
+                    return false;
+            }
+        }
+
+        public UserInputOptions ParseUserInput(string[] args, LogReporter reportLogger)
         {
             if (args.Length == 0)
             {
@@ -43,7 +72,7 @@ namespace TradingConsole.InputParser
         /// <summary>
         /// From command line inputs, converts into types of input and the value specified.
         /// </summary>
-        private static List<TextToken> ParseInput(string[] args, LogReporter reportLogger)
+        private List<TextToken> ParseInput(string[] args, LogReporter reportLogger)
         {
             var outputTokens = new List<TextToken>();
 
@@ -68,7 +97,7 @@ namespace TradingConsole.InputParser
             return outputTokens;
         }
 
-        private static TextToken DetermineProgramType(string argument)
+        private TextToken DetermineProgramType(string argument)
         {
             foreach (ProgramType type in Enum.GetValues(typeof(ProgramType)))
             {
@@ -81,7 +110,7 @@ namespace TradingConsole.InputParser
             return new TextToken(TextTokenType.Error, argument);
         }
 
-        private static UserInputOptions GenerateOptionsFromInputs(List<TextToken> inputTokens, LogReporter reportLogger)
+        private UserInputOptions GenerateOptionsFromInputs(List<TextToken> inputTokens, LogReporter reportLogger)
         {
             var inputs = new UserInputOptions();
             foreach (var token in inputTokens)

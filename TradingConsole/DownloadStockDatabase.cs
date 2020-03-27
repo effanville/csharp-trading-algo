@@ -5,20 +5,28 @@ using TradingConsole.InputParser;
 
 namespace TradingConsole
 {
-    public static class DownloadStocks
+    public class StockDownloader
     {
-        public static void Download(UserInputOptions inputOptions, LogReporter reportLogger)
+        private UserInputOptions InputOptions;
+        private LogReporter ReportLogger;
+        public StockDownloader(UserInputOptions inputOptions, LogReporter reportLogger)
         {
-            switch (inputOptions.funtionType)
+            InputOptions = inputOptions;
+            ReportLogger = reportLogger;
+        }
+
+        public void Download()
+        {
+            switch (InputOptions.funtionType)
             {
                 case ProgramType.DownloadAll:
-                    Download(DownloadType.All, inputOptions, reportLogger);
+                    Download(DownloadType.All);
                     break;
                 case ProgramType.DownloadLatest:
-                    Download(DownloadType.Latest, inputOptions, reportLogger);
+                    Download(DownloadType.Latest);
                     break;
                 case ProgramType.Configure:
-                    Configure(inputOptions, reportLogger);
+                    Configure();
                     break;
                 default:
                     break;
@@ -27,20 +35,20 @@ namespace TradingConsole
             return;
         }
 
-        private static void Configure(UserInputOptions inputOptions, LogReporter reportLogger)
+        private void Configure()
         {
             var exchange = new ExchangeStocks();
-            exchange.Configure(inputOptions.StockFilePath);
-            string filePath = Path.ChangeExtension(inputOptions.StockFilePath, "xml");
-            exchange.SaveExchangeStocks(filePath, reportLogger);
+            exchange.Configure(InputOptions.StockFilePath);
+            string filePath = Path.ChangeExtension(InputOptions.StockFilePath, "xml");
+            exchange.SaveExchangeStocks(filePath, ReportLogger);
         }
 
-        private static void Download(DownloadType downloadType, UserInputOptions inputOptions, LogReporter reportLogger)
+        private void Download(DownloadType downloadType)
         {
             var exchange = new ExchangeStocks();
-            exchange.LoadExchangeStocks(inputOptions.StockFilePath, reportLogger);
-            exchange.Download(downloadType, inputOptions.StartDate, inputOptions.EndDate, reportLogger);
-            exchange.SaveExchangeStocks(inputOptions.StockFilePath, reportLogger);
+            exchange.LoadExchangeStocks(InputOptions.StockFilePath, ReportLogger);
+            exchange.Download(downloadType, InputOptions.StartDate, InputOptions.EndDate, ReportLogger);
+            exchange.SaveExchangeStocks(InputOptions.StockFilePath, ReportLogger);
         }
     }
 }
