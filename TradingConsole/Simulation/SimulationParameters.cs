@@ -7,22 +7,22 @@ using TradingConsole.InputParser;
 
 namespace TradingConsole.Simulation
 {
-    public static class ParameterGenerators
+    public class SimulationParameters
     {
-        public static void GenerateSimulationParameters(SimulationParameters parameters, UserInputOptions inputOptions, ExchangeStocks exchange)
+        public SimulationParameters(UserInputOptions inputOptions, ExchangeStocks exchange)
         {
-            parameters.StartTime = inputOptions.StartDate != null ? inputOptions.StartDate > exchange.EarliestDate() ? inputOptions.StartDate : exchange.EarliestDate() : exchange.EarliestDate();
-            parameters.EndTime = inputOptions.EndDate != null ? inputOptions.EndDate > exchange.LastDate() ? exchange.LastDate() : inputOptions.EndDate : exchange.LastDate();
-            parameters.EvolutionIncrement = inputOptions.TradingGap.Seconds != 0 ? inputOptions.TradingGap : new TimeSpan(1, 0, 0, 0);
-            CalculateEstimatorParameters(parameters, inputOptions, exchange);
+            StartTime = inputOptions.StartDate != null ? inputOptions.StartDate > exchange.EarliestDate() ? inputOptions.StartDate : exchange.EarliestDate() : exchange.EarliestDate();
+            EndTime = inputOptions.EndDate != null ? inputOptions.EndDate > exchange.LastDate() ? exchange.LastDate() : inputOptions.EndDate : exchange.LastDate();
+            EvolutionIncrement = inputOptions.TradingGap.Seconds != 0 ? inputOptions.TradingGap : new TimeSpan(1, 0, 0, 0);
+            CalculateEstimatorParameters(inputOptions, exchange);
         }
 
-        public static void CalculateEstimatorParameters(SimulationParameters parameters, UserInputOptions inputOptions, ExchangeStocks exchange)
+        public void CalculateEstimatorParameters(UserInputOptions inputOptions, ExchangeStocks exchange)
         {
-            TimeSpan simulationLength = parameters.EndTime - parameters.StartTime;
-            var burnInLength = parameters.StartTime + simulationLength / 2;
+            TimeSpan simulationLength = EndTime - StartTime;
+            var burnInLength = StartTime + simulationLength / 2;
 
-            int numberEntries = ((burnInLength - parameters.StartTime).Days - 5) * 5 / 7;
+            int numberEntries = ((burnInLength - StartTime).Days - 5) * 5 / 7;
 
             double[,] X = new double[exchange.Stocks.Count * numberEntries, 5];
             double[] Y = new double[exchange.Stocks.Count * numberEntries];
@@ -41,14 +41,11 @@ namespace TradingConsole.Simulation
             }
 
 
-            parameters.Estimator = new LSEstimator(X, Y);
+            Estimator = new LSEstimator(X, Y);
 
-            parameters.StartTime = burnInLength;
+            StartTime = burnInLength;
         }
-    }
 
-    public class SimulationParameters
-    {
         public IEstimator Estimator;
 
         public Random randomNumbers = new Random();

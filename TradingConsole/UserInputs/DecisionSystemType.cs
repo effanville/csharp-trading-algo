@@ -2,6 +2,7 @@
 {
     public enum DecisionSystemType
     {
-        LSEstimator
+        LSEstimator,
+        BuyAll
     }
 }

@@ -8,8 +8,11 @@ namespace TradingConsole.InputParser
 {
     public class UserInputParser
     {
-        public UserInputParser()
-        { }
+        private LogReporter ReportLogger;
+        public UserInputParser(LogReporter reportLogger)
+        {
+            ReportLogger = reportLogger;
+        }
 
         public static string parameterArg = "--";
 
@@ -27,7 +30,7 @@ namespace TradingConsole.InputParser
             return TextTokenType.Error;
         }
 
-        public bool EnsureInputsSuitable(UserInputOptions inputOptions, LogReporter reportLogger)
+        public bool EnsureInputsSuitable(UserInputOptions inputOptions)
         {
             switch (inputOptions.funtionType)
             {
@@ -39,6 +42,12 @@ namespace TradingConsole.InputParser
                         }
                         return true;
                     }
+                case ProgramType.Simulate:
+                case ProgramType.Trade:
+                case ProgramType.Help:
+                    {
+                        return true;
+                    }
                 case ProgramType.DownloadAll:
                 case ProgramType.DownloadLatest:
                     {
@@ -48,31 +57,32 @@ namespace TradingConsole.InputParser
                         }
                         return true;
                     }
+
                 default:
                     return false;
             }
         }
 
-        public UserInputOptions ParseUserInput(string[] args, LogReporter reportLogger)
+        public UserInputOptions ParseUserInput(string[] args)
         {
             if (args.Length == 0)
             {
                 return new UserInputOptions();
             }
 
-            List<TextToken> tokens = ParseInput(args, reportLogger);
+            List<TextToken> tokens = ParseInput(args);
             if (tokens.Any(tokens => tokens.TokenType == TextTokenType.Error))
             {
                 return new UserInputOptions();
             }
 
-            return GenerateOptionsFromInputs(tokens, reportLogger);
+            return GenerateOptionsFromInputs(tokens);
         }
 
         /// <summary>
         /// From command line inputs, converts into types of input and the value specified.
         /// </summary>
-        private List<TextToken> ParseInput(string[] args, LogReporter reportLogger)
+        private List<TextToken> ParseInput(string[] args)
         {
             var outputTokens = new List<TextToken>();
 
@@ -89,7 +99,7 @@ namespace TradingConsole.InputParser
                     else
                     {
                         outputTokens.Add(new TextToken(TextTokenType.Error, TokenTypeSelector(args[i]).ToString() + " - NoValueSelected"));
-                        reportLogger.LogError("Parsing", "Token does not have proper value");
+                        ReportLogger.LogError("Parsing", "Token does not have proper value");
                     }
                 }
             }
@@ -110,7 +120,7 @@ namespace TradingConsole.InputParser
             return new TextToken(TextTokenType.Error, argument);
         }
 
-        private UserInputOptions GenerateOptionsFromInputs(List<TextToken> inputTokens, LogReporter reportLogger)
+        private UserInputOptions GenerateOptionsFromInputs(List<TextToken> inputTokens)
         {
             var inputs = new UserInputOptions();
             foreach (var token in inputTokens)

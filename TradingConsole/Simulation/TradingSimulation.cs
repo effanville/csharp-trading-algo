@@ -16,7 +16,9 @@ namespace TradingConsole.Simulation
         private IDecisionSystem decisionSystem;
         private IBuySellSystem buySellSystem;
         private BuySellParams tradingParameters = new BuySellParams();
-        private SimulationParameters simulationParameters = new SimulationParameters();
+        private SimulationParameters simulationParameters;
+
+        private ExchangeStocks Exchange = new ExchangeStocks();
 
         private UserInputOptions InputOptions;
         private LogReporter ReportLogger;
@@ -29,26 +31,42 @@ namespace TradingConsole.Simulation
 
         public void SetupSystemsAndRun(TradingStatistics stats)
         {
+            switch (InputOptions.DecisionType)
+            {
+                case DecisionSystemType.BuyAll:
+                    decisionSystem = new BuyAllDecisionSystem(ReportLogger);
+                    break;
+                case DecisionSystemType.LSEstimator:
+                default:
+                    decisionSystem = new BasicDecisionSystem(ReportLogger);
+                    break;
+            }
+            switch (InputOptions.BuyingSellingType)
+            {
+                case BuySellType.IB:
+                    buySellSystem = new IBClientTradingSystem(ReportLogger);
+                    break;
+                case BuySellType.Simulate:
+                default:
+                    buySellSystem = new SimulationBuySellSystem(ReportLogger);
+                    break;
+            }
+
+            Exchange.LoadExchangeStocks(InputOptions.StockFilePath, ReportLogger);
+            simulationParameters = new SimulationParameters(InputOptions, Exchange);
+
             if (InputOptions.funtionType == ProgramType.Simulate)
             {
-                decisionSystem = new BuyAllDecisionSystem(ReportLogger);
-                buySellSystem = new SimulationBuySellSystem(ReportLogger);
                 SimulateRun(stats);
             }
             if (InputOptions.funtionType == ProgramType.Trade)
             {
-                decisionSystem = new BasicDecisionSystem(ReportLogger);
-                buySellSystem = new IBClientTradingSystem(ReportLogger);
                 Run(stats);
             }
         }
 
         private void SimulateRun(TradingStatistics stats)
         {
-            var exchange = new ExchangeStocks();
-            exchange.LoadExchangeStocks(InputOptions.StockFilePath, ReportLogger);
-            ParameterGenerators.GenerateSimulationParameters(simulationParameters, InputOptions, exchange);
-
             var portfolio = new Portfolio();
             LoadStartPortfolio(simulationParameters.StartTime, stats, portfolio);
 
@@ -62,7 +80,7 @@ namespace TradingConsole.Simulation
                     continue;
                 }
 
-                PerformDailyTrades(time, exchange, portfolio, stats, ReportLogger);
+                PerformDailyTrades(time, Exchange, portfolio, stats, ReportLogger);
 
                 stats.GenerateDayStats();
                 time += simulationParameters.EvolutionIncrement;
@@ -74,13 +92,9 @@ namespace TradingConsole.Simulation
 
         private void Run(TradingStatistics stats)
         {
-            var exchange = new ExchangeStocks();
-            exchange.LoadExchangeStocks(InputOptions.StockFilePath, ReportLogger);
-            ParameterGenerators.GenerateSimulationParameters(simulationParameters, InputOptions, exchange);
-
             var portfolio = new Portfolio();
             LoadStartPortfolio(simulationParameters.StartTime, stats, portfolio);
-            PerformDailyTrades(DateTime.Today, exchange, portfolio, stats, ReportLogger);
+            PerformDailyTrades(DateTime.Today, Exchange, portfolio, stats, ReportLogger);
 
             stats.GenerateDayStats();
             stats.GenerateSimulationStats();

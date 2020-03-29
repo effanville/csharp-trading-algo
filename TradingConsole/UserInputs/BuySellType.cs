@@ -2,7 +2,7 @@
 {
     public enum BuySellType
     {
-        BuyAll,
-        Basic
+        Simulate,
+        IB
     }
 }

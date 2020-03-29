@@ -8,14 +8,23 @@ namespace TradingConsole
 {
     class Program
     {
+        static void WriteReport(string critical, string type, string location, string message)
+        {
+            if (critical != "Critical")
+            {
+                return;
+            }
+
+            Console.WriteLine($"{type} - {location} - {message}");
+        }
         static void Main(string[] args)
         {
-            LogReporter reportLogger = new LogReporter((critical, type, location, message) => Console.WriteLine($"{type} - {location} - {message}"));
+            LogReporter reportLogger = new LogReporter((critical, type, location, message) => WriteReport(critical, type, location, message));
             Console.WriteLine("Trading Console");
 
-            var userInputParser = new UserInputParser();
-            UserInputOptions inputOptions = userInputParser.ParseUserInput(args, reportLogger);
-            bool optionsOK = userInputParser.EnsureInputsSuitable(inputOptions, reportLogger);
+            var userInputParser = new UserInputParser(reportLogger);
+            UserInputOptions inputOptions = userInputParser.ParseUserInput(args);
+            bool optionsOK = userInputParser.EnsureInputsSuitable(inputOptions);
             if (!optionsOK)
             {
                 Console.WriteLine("User Inputs not suitable");
