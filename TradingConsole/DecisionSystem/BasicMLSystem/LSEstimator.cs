@@ -1,4 +1,6 @@
-﻿namespace TradingConsole.DecisionSystem.BasicMLSystem
+﻿using FinancialStructures.Mathematics;
+
+namespace TradingConsole.DecisionSystem.BasicMLSystem
 {
     /// <summary>
     /// Holds data on least squares estimator for a matrix of data inputs and corresponding y values.

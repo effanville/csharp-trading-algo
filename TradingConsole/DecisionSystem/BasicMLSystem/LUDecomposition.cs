@@ -1,65 +1,83 @@
-﻿namespace TradingConsole.DecisionSystem.BasicMLSystem
+﻿using System;
+
+namespace FinancialStructures.Mathematics
 {
     public class LUDecomposition
     {
-        double[,] UpperDecomp;
+        private int Size;
+        internal double[,] UpperDecomp;
 
-        double[,] LowerDecomp;
+        internal double[,] LowerDecomp;
 
-        double[] PivotValues;
+        int[] PivotValues;
 
         public bool Invertible = true;
+        public bool Square = true;
 
         public LUDecomposition(double[,] matrix)
         {
             GenerateLUDecomp(matrix);
         }
+
+        // here solving the equation Ax = b.
+        // solve first Ly = b,
+        // then solve Ux = y
+        // x is then the output.
+        public double[] LinearSolve(double[] b)
+        {
+            double[] y = new double[Size];
+            double[] x = new double[Size];
+            int vectorRowIndex, firstNonZeroIndex = 0, pivotIndex, matrixColumnIndex;
+            double sum;
+            for (vectorRowIndex = 0; vectorRowIndex < Size; vectorRowIndex++)
+            {
+                pivotIndex = PivotValues[vectorRowIndex];
+                sum = b[pivotIndex];
+                if (firstNonZeroIndex > -1)
+                {
+                    for (matrixColumnIndex = firstNonZeroIndex; matrixColumnIndex < vectorRowIndex; matrixColumnIndex++)
+                    {
+                        sum -= LowerDecomp[vectorRowIndex, matrixColumnIndex] * y[matrixColumnIndex];
+                    }
+                }
+                else if (sum > 0)
+                {
+                    firstNonZeroIndex = vectorRowIndex;
+                }
+
+                y[vectorRowIndex] = sum;
+            }
+
+            for (vectorRowIndex = Size - 1; vectorRowIndex > -1; vectorRowIndex--)
+            {
+                sum = y[vectorRowIndex];
+                for (matrixColumnIndex = vectorRowIndex + 1; matrixColumnIndex < Size; matrixColumnIndex++)
+                {
+                    sum -= UpperDecomp[vectorRowIndex, matrixColumnIndex] * x[matrixColumnIndex];
+                }
+
+                x[vectorRowIndex] = sum / UpperDecomp[vectorRowIndex, vectorRowIndex];
+            }
+
+            return x;
+        }
+
         public double[,] Inverse()
         {
-            int size = UpperDecomp.GetLength(0);
-            var inverse = new double[size, size];
-            var X = new double[size];
-            var Y = new double[size];
-            var identity = MatrixFunctions.Identity(size);
-            double t = 0.0;
-
-            //Solving Ly = Pb.
-            for (int i = 0; i < size; i++)
+            var inverse = new double[Size, Size];
+            var col = new double[Size];
+            for (int j = 0; j < Size; j++)
             {
-                for (int n = 0; n < size; n++)
+                for (int i = 0; i < Size; i++)
                 {
-                    t = 0;
-                    for (int m = 0; m < n; m++)
-                    {
-                        t += LowerDecomp[n, m] * Y[m];
-                    }
-
-                    Y[n] = identity[i, i] - t;
+                    col[i] = 0;
                 }
-                //Solving Ux = y.
-                for (int n = size - 1; n >= 0; n--)
-                {
-                    t = 0;
-                    for (int m = n + 1; m < size; m++)
-                    {
-                        t += UpperDecomp[n, m] * X[m];
-                    }
 
-                    X[n] = (Y[n] - t) / UpperDecomp[n, n];
-
-                }//Now, X contains the solution.
-
-                for (int j = 0; j < size; j++)
+                col[j] = 1;
+                col = LinearSolve(col);
+                for (int i = 0; i < Size; i++)
                 {
-                    identity[j, i] = X[j]; //Copying 'X' into the same row of 'B'.
-                } //Now, 'B' the transpose of the inverse of 'A'.
-            }
-            /* Copying transpose of 'B' into 'LU', which would the inverse of 'A'. */
-            for (int i = 0; i < size; i++)
-            {
-                for (int j = 0; j < size; j++)
-                {
-                    inverse[i, j] = identity[i, j];
+                    inverse[i, j] = col[i];
                 }
             }
 
@@ -71,57 +89,52 @@
             if (!matrix.GetLength(0).Equals(matrix.GetLength(1)))
             {
                 Invertible = false;
+                Square = false;
                 return;
             }
 
-            int size = matrix.GetLength(0);
-            PivotValues = new double[size];
-            UpperDecomp = new double[size, size];
-            LowerDecomp = new double[size, size];
-            double p, t;
+            Size = matrix.GetLength(0);
+            PivotValues = new int[Size];
+            UpperDecomp = new double[Size, Size];
+            LowerDecomp = new double[Size, Size];
 
-            /* Finding the pivot of the LUP decomposition. */
-            for (int i = 0; i < size; i++)
+            // Initialising the pivot values to the identity permutation
+            for (int n = 0; n < Size; n++)
             {
-                PivotValues[i] = i;
-            } //Initializing.
+                LowerDecomp[n, n] = 1;
+                PivotValues[n] = n;
+            }
 
-            for (int i = 0; i < size; i++)
+            double sum = 0.0;
+
+            for (int columnIndex = 0; columnIndex < Size; columnIndex++)
             {
-                p = 0;
-                t = matrix[i, i];
-
-                if (t != 0)
+                for (int upperRowIndex = 0; upperRowIndex < columnIndex + 1; upperRowIndex++)
                 {
-                    p = t;
+                    sum = matrix[upperRowIndex, columnIndex];
+                    for (int k = 0; k < upperRowIndex; k++)
+                    {
+                        sum -= LowerDecomp[upperRowIndex, k] * UpperDecomp[k, columnIndex];
+                    }
+
+                    UpperDecomp[upperRowIndex, columnIndex] = sum;
                 }
 
-                if (p == 0)
+                if (UpperDecomp[columnIndex, columnIndex].Equals(0.0))
                 {
                     Invertible = false;
                     return;
                 }
 
-                for (int k = i; k < size; k++) //Performing subtraction to decompose A as LU.
+                for (int lowerRowIndex = columnIndex + 1; lowerRowIndex < Size; lowerRowIndex++)
                 {
-                    double sum = 0.0;
-                    for (int j = 0; j < i; j++)
+                    sum = matrix[lowerRowIndex, columnIndex];
+                    for (int k = 0; k < columnIndex; k++)
                     {
-                        sum += LowerDecomp[i, j] * UpperDecomp[j, k];
+                        sum -= LowerDecomp[lowerRowIndex, k] * UpperDecomp[k, columnIndex];
                     }
 
-                    UpperDecomp[i, k] = matrix[i, k] - sum;
-                }
-
-                for (int k = i; k < size; k++) //Performing subtraction to decompose A as LU.
-                {
-                    double sum = 0.0;
-                    for (int j = 0; j < i; j++)
-                    {
-                        sum += LowerDecomp[k, j] * UpperDecomp[j, i];
-                    }
-
-                    LowerDecomp[k, i] = (matrix[k, i] - sum) / UpperDecomp[i, i];
+                    LowerDecomp[lowerRowIndex, columnIndex] = sum / UpperDecomp[columnIndex, columnIndex];
                 }
             }
         }
