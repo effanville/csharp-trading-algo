@@ -26,7 +26,7 @@ namespace TradingConsole.DecisionSystem
             foreach (var stock in exchange.Stocks)
             {
                 StockTradeDecision decision;
-                var values = stock.Values(date, 0, 5, DataStream.Open).ToArray();
+                var values = stock.Values(date, 5, 0, DataStream.Open).ToArray();
                 double value = simulationParameters.Estimator.Evaluate(values);
 
                 if (value > 1.05)
