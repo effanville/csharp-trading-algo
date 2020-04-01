@@ -1,8 +1,8 @@
-﻿using FinancialStructures.NamingStructures;
+﻿using FinancialStructures.Mathematics;
+using FinancialStructures.NamingStructures;
 using FinancialStructures.StockStructures;
 using System;
 using System.Linq;
-using TradingConsole.DecisionSystem.BasicMLSystem;
 using TradingConsole.InputParser;
 
 namespace TradingConsole.Simulation

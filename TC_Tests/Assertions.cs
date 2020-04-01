@@ -26,5 +26,21 @@ namespace TC_Tests
                 }
             }
         }
+
+        /// <summary>
+        /// Asserts that two matrices are equal up to the given tolerance.
+        /// </summary>
+        public static void AreEqual(double[] expected, double[] actual, double tol = 1e-8, string message = null)
+        {
+            if (!expected.GetLength(0).Equals(actual.GetLength(0)))
+            {
+                throw new AssertionException($"Number of rows not the same. Expected {expected.GetLength(0)} but actually {actual.GetLength(0)}");
+            }
+
+            for (int rowIndex = 0; rowIndex < expected.GetLength(0); rowIndex++)
+            {
+                Assert.AreEqual(expected[rowIndex], actual[rowIndex], tol, message);
+            }
+        }
     }
 }

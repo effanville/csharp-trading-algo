@@ -1,6 +1,4 @@
-﻿using FinancialStructures.Mathematics;
-
-namespace TradingConsole.DecisionSystem.BasicMLSystem
+﻿namespace FinancialStructures.Mathematics
 {
     /// <summary>
     /// Holds data on least squares estimator for a matrix of data inputs and corresponding y values.
@@ -13,6 +11,7 @@ namespace TradingConsole.DecisionSystem.BasicMLSystem
         {
             get { return Estimator; }
         }
+
         public LSEstimator(double[,] data, double[] values)
         {
             GenerateEstimator(data, values);

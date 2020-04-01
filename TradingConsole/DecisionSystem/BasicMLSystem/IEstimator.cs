@@ -1,4 +1,4 @@
-﻿namespace TradingConsole.DecisionSystem.BasicMLSystem
+﻿namespace FinancialStructures.Mathematics
 {
     public interface IEstimator
     {
