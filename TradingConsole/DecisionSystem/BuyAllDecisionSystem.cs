@@ -2,6 +2,7 @@
 using FinancialStructures.StockStructures;
 using System;
 using System.Collections.Generic;
+using TradingConsole.InputParser;
 using TradingConsole.Simulation;
 using TradingConsole.Statistics;
 
@@ -14,6 +15,10 @@ namespace TradingConsole.DecisionSystem
         public BuyAllDecisionSystem(LogReporter reportLogger)
         {
             ReportLogger = reportLogger;
+        }
+
+        public void Calibrate(UserInputOptions inputOptions, ExchangeStocks exchange, SimulationParameters simulationParameters)
+        {
         }
 
         public void AddDailyDecisionStats(TradingStatistics stats, DateTime day, List<string> buys, List<string> sells)

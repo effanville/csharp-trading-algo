@@ -13,10 +13,10 @@ namespace TradingConsole.Simulation
 {
     internal class TradingSimulation
     {
-        private IDecisionSystem decisionSystem;
-        private IBuySellSystem buySellSystem;
-        private BuySellParams tradingParameters = new BuySellParams();
-        private SimulationParameters simulationParameters;
+        private IDecisionSystem DecisionSystem;
+        private IBuySellSystem BuySellSystem;
+        private BuySellParams TradingParameters = new BuySellParams();
+        private SimulationParameters SimulationParameters;
 
         private ExchangeStocks Exchange = new ExchangeStocks();
 
@@ -34,26 +34,28 @@ namespace TradingConsole.Simulation
             switch (InputOptions.DecisionType)
             {
                 case DecisionSystemType.BuyAll:
-                    decisionSystem = new BuyAllDecisionSystem(ReportLogger);
+                    DecisionSystem = new BuyAllDecisionSystem(ReportLogger);
                     break;
                 case DecisionSystemType.LSEstimator:
                 default:
-                    decisionSystem = new BasicDecisionSystem(ReportLogger);
+                    DecisionSystem = new BasicDecisionSystem(ReportLogger);
                     break;
             }
             switch (InputOptions.BuyingSellingType)
             {
                 case BuySellType.IB:
-                    buySellSystem = new IBClientTradingSystem(ReportLogger);
+                    BuySellSystem = new IBClientTradingSystem(ReportLogger);
                     break;
                 case BuySellType.Simulate:
                 default:
-                    buySellSystem = new SimulationBuySellSystem(ReportLogger);
+                    BuySellSystem = new SimulationBuySellSystem(ReportLogger);
                     break;
             }
 
             Exchange.LoadExchangeStocks(InputOptions.StockFilePath, ReportLogger);
-            simulationParameters = new SimulationParameters(InputOptions, Exchange);
+            SimulationParameters = new SimulationParameters(InputOptions, Exchange);
+
+            DecisionSystem.Calibrate(InputOptions, Exchange, SimulationParameters);
 
             if (InputOptions.funtionType == ProgramType.Simulate)
             {
@@ -68,22 +70,22 @@ namespace TradingConsole.Simulation
         private void SimulateRun(TradingStatistics stats)
         {
             var portfolio = new Portfolio();
-            LoadStartPortfolio(simulationParameters.StartTime, stats, portfolio);
+            LoadStartPortfolio(SimulationParameters.StartTime, stats, portfolio);
 
-            DateTime time = simulationParameters.StartTime;
+            DateTime time = SimulationParameters.StartTime;
 
-            while (time < simulationParameters.EndTime)
+            while (time < SimulationParameters.EndTime)
             {
                 if ((time.DayOfWeek == DayOfWeek.Saturday) || (time.DayOfWeek == DayOfWeek.Sunday))
                 {
-                    time += simulationParameters.EvolutionIncrement;
+                    time += SimulationParameters.EvolutionIncrement;
                     continue;
                 }
 
                 PerformDailyTrades(time, Exchange, portfolio, stats, ReportLogger);
 
                 stats.GenerateDayStats();
-                time += simulationParameters.EvolutionIncrement;
+                time += SimulationParameters.EvolutionIncrement;
                 Console.WriteLine(time + " - " + portfolio.Value(time));
             }
 
@@ -93,7 +95,7 @@ namespace TradingConsole.Simulation
         private void Run(TradingStatistics stats)
         {
             var portfolio = new Portfolio();
-            LoadStartPortfolio(simulationParameters.StartTime, stats, portfolio);
+            LoadStartPortfolio(SimulationParameters.StartTime, stats, portfolio);
             PerformDailyTrades(DateTime.Today, Exchange, portfolio, stats, ReportLogger);
 
             stats.GenerateDayStats();
@@ -105,11 +107,11 @@ namespace TradingConsole.Simulation
         {
             // Decide which stocks to buy, sell or do nothing with.
             var status = new DecisionStatus();
-            decisionSystem.Decide(day, status, exchange, stats, simulationParameters);
-            decisionSystem.AddDailyDecisionStats(stats, day, status.GetBuyDecisionsStockNames(), status.GetSellDecisionsStockNames());
+            DecisionSystem.Decide(day, status, exchange, stats, SimulationParameters);
+            DecisionSystem.AddDailyDecisionStats(stats, day, status.GetBuyDecisionsStockNames(), status.GetSellDecisionsStockNames());
 
             // Exact the buy/Sell decisions.
-            buySellSystem.BuySell(day, status, exchange, portfolio, stats, tradingParameters, simulationParameters);
+            BuySellSystem.BuySell(day, status, exchange, portfolio, stats, TradingParameters, SimulationParameters);
             stats.AddSnapshot(day, portfolio);
         }
 
@@ -122,8 +124,8 @@ namespace TradingConsole.Simulation
             }
             else
             {
-                portfolio.TryAdd(AccountType.BankAccount, simulationParameters.bankAccData, ReportLogger);
-                portfolio.TryAddData(AccountType.BankAccount, simulationParameters.bankAccData, new DayValue_ChangeLogged(InputOptions.StartDate, InputOptions.StartingCash), ReportLogger);
+                portfolio.TryAdd(AccountType.BankAccount, SimulationParameters.bankAccData, ReportLogger);
+                portfolio.TryAddData(AccountType.BankAccount, SimulationParameters.bankAccData, new DayValue_ChangeLogged(InputOptions.StartDate, InputOptions.StartingCash), ReportLogger);
                 stats.StartingCash = InputOptions.StartingCash;
             }
         }
