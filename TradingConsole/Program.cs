@@ -17,7 +17,7 @@ namespace TradingConsole
 
             Console.WriteLine($"{type} - {location} - {message}");
         }
-        static void Main(string[] args)
+        internal static void Main(string[] args)
         {
             LogReporter reportLogger = new LogReporter((critical, type, location, message) => WriteReport(critical, type, location, message));
             Console.WriteLine("Trading Console");

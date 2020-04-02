@@ -10,14 +10,14 @@ using TradingConsole.Statistics;
 
 namespace TradingConsole.DecisionSystem
 {
-    public class BasicDecisionSystem : IDecisionSystem
+    public class FiveDayStatsLSDecisionSystem : IDecisionSystem
     {
         public LogReporter ReportLogger { get; }
 
         public IEstimator Estimator;
 
 
-        public BasicDecisionSystem(LogReporter reportLogger)
+        public FiveDayStatsLSDecisionSystem(LogReporter reportLogger)
         {
             ReportLogger = reportLogger;
         }
@@ -35,7 +35,7 @@ namespace TradingConsole.DecisionSystem
             {
                 for (int stockIndex = 0; stockIndex < exchange.Stocks.Count; stockIndex++)
                 {
-                    var values = exchange.Stocks[stockIndex].Values(burnInLength.AddDays(i), 0, 6, DataStream.Open);
+                    var values = exchange.Stocks[stockIndex].Values(simulationParameters.StartTime.AddDays(i), 0, 6, DataStream.Open);
                     for (int j = 0; j < 5; j++)
                     {
                         X[i + stockIndex, j] = values[j] / 100;

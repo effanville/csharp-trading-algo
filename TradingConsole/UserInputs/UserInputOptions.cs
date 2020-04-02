@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using TradingConsole.Statistics;
 
 namespace TradingConsole.InputParser
 {
@@ -16,6 +18,7 @@ namespace TradingConsole.InputParser
         public DateTime EndDate;
         public TimeSpan TradingGap;
         public DecisionSystemType DecisionType;
+        public List<StatisticType> decisionSystemStats;
         public BuySellType BuyingSellingType;
     }
 }

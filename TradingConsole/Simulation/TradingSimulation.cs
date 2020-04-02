@@ -36,9 +36,12 @@ namespace TradingConsole.Simulation
                 case DecisionSystemType.BuyAll:
                     DecisionSystem = new BuyAllDecisionSystem(ReportLogger);
                     break;
-                case DecisionSystemType.LSEstimator:
+                case DecisionSystemType.ArbitraryStatsLeastSquares:
+                    DecisionSystem = new ArbitraryStatsLSDecisionSystem(ReportLogger);
+                    break;
+                case DecisionSystemType.FiveDayStatsLeastSquares:
                 default:
-                    DecisionSystem = new BasicDecisionSystem(ReportLogger);
+                    DecisionSystem = new FiveDayStatsLSDecisionSystem(ReportLogger);
                     break;
             }
             switch (InputOptions.BuyingSellingType)

@@ -2,7 +2,8 @@
 {
     public enum DecisionSystemType
     {
-        LSEstimator,
+        FiveDayStatsLeastSquares,
+        ArbitraryStatsLeastSquares,
         BuyAll
     }
 }
