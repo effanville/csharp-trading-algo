@@ -5,12 +5,7 @@
     /// </summary>
     public class LSEstimator : IEstimator
     {
-        private double[] Estimator;
-
-        public double[] GetEstimator
-        {
-            get { return Estimator; }
-        }
+        public double[] Estimator { get; private set; }
 
         public LSEstimator(double[,] data, double[] values)
         {
@@ -32,7 +27,7 @@
             return value;
         }
 
-        private void GenerateEstimator(double[,] data, double[] values)
+        public void GenerateEstimator(double[,] data, double[] values)
         {
             var XTY = MatrixFunctions.VectorMultiply(MatrixFunctions.Transpose(data), values);
             Estimator = MatrixFunctions.VectorMultiply(MatrixFunctions.Inverse(MatrixFunctions.XTX(data)), XTY);

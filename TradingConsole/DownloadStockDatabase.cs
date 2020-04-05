@@ -7,8 +7,8 @@ namespace TradingConsole
 {
     public class StockDownloader
     {
-        private UserInputOptions InputOptions;
-        private LogReporter ReportLogger;
+        private readonly UserInputOptions InputOptions;
+        private readonly LogReporter ReportLogger;
         public StockDownloader(UserInputOptions inputOptions, LogReporter reportLogger)
         {
             InputOptions = inputOptions;

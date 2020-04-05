@@ -105,6 +105,7 @@ namespace TC_Tests
             }
         }
     }
+
     public class LSEstimatorTests
     {
         [Test]
@@ -112,7 +113,7 @@ namespace TC_Tests
         {
             var estimatorValues = EstimatorValues.GetValues(valuesIndex);
             var estimator = new LSEstimator(estimatorValues.data, estimatorValues.rhs);
-            Assertions.AreEqual(estimatorValues.expectedEstimator, estimator.GetEstimator, 1e-6, "Expected Estimator not correct");
+            Assertions.AreEqual(estimatorValues.expectedEstimator, estimator.Estimator, 1e-6, "Expected Estimator not correct");
         }
     }
 }

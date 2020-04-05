@@ -4,7 +4,7 @@ using System;
 namespace TradingConsole.Statistics
 {
     /// <summary>
-    /// A container to enable generic statistics calculated for each stock.
+    /// A container for generic statistic calculations for each stock.
     /// </summary>
     /// <remarks>
     /// This is more for a user to experiment, as using this
@@ -22,6 +22,11 @@ namespace TradingConsole.Statistics
         /// The statistic type this refers to.
         /// </summary>
         StatisticType TypeOfStatistic { get; }
+
+        /// <summary>
+        /// The data of the stock this will calculate the statistic of.
+        /// </summary>
+        DataStream DataType { get; }
 
         /// <summary>
         /// The procedure to calutate the statistic
