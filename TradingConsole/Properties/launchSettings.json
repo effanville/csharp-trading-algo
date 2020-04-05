@@ -2,7 +2,7 @@
   "profiles": {
     "TradingConsole": {
       "commandName": "Project",
-      "commandLineArgs": "Simulate --StockFilePath \"C:\\Users\\masdoc\\source\\repos\\StockTradingConsole\\bin\\New Text Document.xml\" --StartDate 1/1/2019 --EndDate 28/2/2020 --StartingCash 20000"
+      "commandLineArgs": "Simulate --StockFilePath \"C:\\Users\\masdoc\\source\\repos\\StockTradingConsole\\bin\\NewTextDocument.xml\" --StartDate 1/1/2019 --EndDate 28/2/2020 --StartingCash 20000 --DecisionSystemType ArbitraryStatsLeastSquares --DecSysParams PrevOneOpen,PrevTwoOpen,PrevThreeOpen,PrevFourOpen,PrevFiveOpen"
     }
   }
 }

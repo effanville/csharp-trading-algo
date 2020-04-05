@@ -18,7 +18,7 @@ namespace TradingConsole.InputParser
         public DateTime EndDate;
         public TimeSpan TradingGap;
         public DecisionSystemType DecisionType;
-        public List<StatisticType> decisionSystemStats;
+        public List<StatisticType> decisionSystemStats = new List<StatisticType>();
         public BuySellType BuyingSellingType;
     }
 }

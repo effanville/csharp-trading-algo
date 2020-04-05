@@ -16,7 +16,7 @@ namespace TradingConsole.DecisionSystem
 
         public IEstimator Estimator;
 
-        public List<IStockStatistic> stockStatistics;
+        public List<IStockStatistic> stockStatistics= new List<IStockStatistic>();
 
 
         public ArbitraryStatsLSDecisionSystem(LogReporter reportLogger)
@@ -33,7 +33,7 @@ namespace TradingConsole.DecisionSystem
 
             TimeSpan simulationLength = simulationParameters.EndTime - simulationParameters.StartTime;
             var burnInLength = simulationParameters.StartTime + simulationLength / 2;
-
+            int delayTime = stockStatistics.Max(stock => stock.BurnInTime) + 2;
             int numberEntries = ((burnInLength - simulationParameters.StartTime).Days - 5) * 5 / 7;
             int numberStatistics = stockStatistics.Count;
 
@@ -45,13 +45,12 @@ namespace TradingConsole.DecisionSystem
                 {
                     for (int statisticIndex = 0; statisticIndex < numberStatistics; statisticIndex++)
                     {
-                        X[entryIndex + stockIndex, statisticIndex] = stockStatistics[statisticIndex].Calculate(simulationParameters.StartTime.AddDays(entryIndex), exchange.Stocks[stockIndex]);
+                        X[entryIndex + stockIndex, statisticIndex] = stockStatistics[statisticIndex].Calculate(simulationParameters.StartTime.AddDays(delayTime + entryIndex), exchange.Stocks[stockIndex]);
                     }
 
-                    Y[entryIndex + stockIndex] = exchange.Stocks[entryIndex].Values(burnInLength.AddDays(entryIndex), 0, 1, DataStream.Open).Last() / 100;
+                    Y[entryIndex + stockIndex] = exchange.Stocks[stockIndex].Values(burnInLength.AddDays(delayTime + entryIndex), 0, 1, DataStream.Open).Last() / 100;
                 }
             }
-
 
             Estimator = new LSEstimator(X, Y);
 

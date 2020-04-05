@@ -10,6 +10,10 @@ namespace TradingConsole.Statistics
         private DataStream DataType;
         private StatisticType fTypeOfStatistic;
 
+        public StatisticType TypeOfStatistic => fTypeOfStatistic;
+
+        public int BurnInTime => N;
+
         public PreviousNDayValue(int n, DataStream dataType, StatisticType typeOfStatistic)
         {
             N = n;
@@ -17,7 +21,7 @@ namespace TradingConsole.Statistics
             fTypeOfStatistic = typeOfStatistic;
         }
 
-        public StatisticType TypeOfStatistic => fTypeOfStatistic;
+
 
         public double Calculate(DateTime date, Stock stock)
         {

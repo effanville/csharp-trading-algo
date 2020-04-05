@@ -3,6 +3,7 @@ using StringFunctions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using TradingConsole.Statistics;
 
 namespace TradingConsole.InputParser
 {
@@ -175,6 +176,18 @@ namespace TradingConsole.InputParser
                     case TextTokenType.DecisionSystemType:
                         {
                             inputs.DecisionType = token.Value.ToEnum<DecisionSystemType>();
+                            break;
+                        }
+                    case TextTokenType.DecSysParams:
+                        {
+                            var list = new List<StatisticType>();
+                            var stringValues = token.Value.Split(',');
+                            foreach (var value in stringValues)
+                            {
+                                var val = value.ToEnum<StatisticType>();
+                                list.Add(val);
+                            }
+                            inputs.decisionSystemStats = list;
                             break;
                         }
                     case TextTokenType.BuySellType:

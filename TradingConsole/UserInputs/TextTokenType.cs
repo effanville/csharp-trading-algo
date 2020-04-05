@@ -11,7 +11,9 @@
         EndDate,
         TradingGap,
         DecisionSystemType,
+        DecSysParams,
         BuySellType,
+        BuySellParams,
         Error
     }
 }

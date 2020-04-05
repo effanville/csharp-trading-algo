@@ -17,57 +17,63 @@ namespace TradingConsole
 
             Console.WriteLine($"{type} - {location} - {message}");
         }
+
         internal static void Main(string[] args)
         {
             LogReporter reportLogger = new LogReporter((critical, type, location, message) => WriteReport(critical, type, location, message));
             Console.WriteLine("Trading Console");
-
-            var userInputParser = new UserInputParser(reportLogger);
-            UserInputOptions inputOptions = userInputParser.ParseUserInput(args);
-            bool optionsOK = userInputParser.EnsureInputsSuitable(inputOptions);
-            if (!optionsOK)
+            try
             {
-                Console.WriteLine("User Inputs not suitable");
-            }
-            else
-            {
-                switch (inputOptions.funtionType)
+                var userInputParser = new UserInputParser(reportLogger);
+                UserInputOptions inputOptions = userInputParser.ParseUserInput(args);
+                bool optionsOK = userInputParser.EnsureInputsSuitable(inputOptions);
+                if (!optionsOK)
                 {
-                    case ProgramType.DownloadAll:
-                    case ProgramType.DownloadLatest:
-                    case ProgramType.Configure:
-                        {
-                            Console.WriteLine("Downloading:");
-                            var stockDownloader = new StockDownloader(inputOptions, reportLogger);
-                            stockDownloader.Download();
-                            break;
-                        }
-                    case ProgramType.Simulate:
-                    case ProgramType.Trade:
-                        {
-                            Console.WriteLine("Simulation Starting");
-                            var stats = new TradingStatistics();
-                            var tradingSimulation = new TradingSimulation(inputOptions, reportLogger);
-                            tradingSimulation.SetupSystemsAndRun(stats);
-                            break;
-                        }
-                    case ProgramType.Help:
-                        {
-                            Console.WriteLine("User input options are:");
-                            foreach (var tokenType in Enum.GetValues(typeof(TextTokenType)))
+                    Console.WriteLine("User Inputs not suitable");
+                }
+                else
+                {
+                    switch (inputOptions.funtionType)
+                    {
+                        case ProgramType.DownloadAll:
+                        case ProgramType.DownloadLatest:
+                        case ProgramType.Configure:
                             {
-                                Console.WriteLine(tokenType.ToString());
+                                Console.WriteLine("Downloading:");
+                                var stockDownloader = new StockDownloader(inputOptions, reportLogger);
+                                stockDownloader.Download();
+                                break;
                             }
-                            break;
-                        }
-                    default:
-                        {
-                            Console.WriteLine("No admissible input selected");
-                            break;
-                        }
+                        case ProgramType.Simulate:
+                        case ProgramType.Trade:
+                            {
+                                Console.WriteLine("Simulation Starting");
+                                var stats = new TradingStatistics();
+                                var tradingSimulation = new TradingSimulation(inputOptions, reportLogger);
+                                tradingSimulation.SetupSystemsAndRun(stats);
+                                break;
+                            }
+                        case ProgramType.Help:
+                            {
+                                Console.WriteLine("User input options are:");
+                                foreach (var tokenType in Enum.GetValues(typeof(TextTokenType)))
+                                {
+                                    Console.WriteLine(tokenType.ToString());
+                                }
+                                break;
+                            }
+                        default:
+                            {
+                                Console.WriteLine("No admissible input selected");
+                                break;
+                            }
+                    }
                 }
             }
-
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
             Console.WriteLine("Program stopping.");
         }
     }
