@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace FinancialStructures.Mathematics
+﻿namespace FinancialStructures.Mathematics
 {
     public class LUDecomposition
     {

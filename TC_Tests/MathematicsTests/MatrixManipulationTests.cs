@@ -18,7 +18,7 @@ namespace TC_Tests
         public void TransposeCorrect([Values(1, 2, 3, 4, 5, 6, 7)] int expectedMatrixIndex)
         {
             var matrix = MatrixTestHelper.GetMatrix(expectedMatrixIndex);
-            Assert.AreEqual(matrix.Transpose, MatrixFunctions.Transpose(matrix.Matrix));
+            Assert.AreEqual(matrix.Transpose, matrix.Matrix.Transpose());
         }
 
         [Test]
@@ -26,7 +26,7 @@ namespace TC_Tests
         {
             var matrix = MatrixTestHelper.GetMatrix(expectedMatrixIndex);
             var lUDecomposition = new LUDecomposition(matrix.Matrix);
-            var product = MatrixFunctions.Multiply(lUDecomposition.LowerDecomp, lUDecomposition.UpperDecomp);
+            var product = lUDecomposition.LowerDecomp.Multiply(lUDecomposition.UpperDecomp);
             Assertions.AreEqual(matrix.Matrix, product, 1e-3, "products wrong");
             Assert.AreEqual(lUDecomposition.Invertible, true);
             Assertions.AreEqual(matrix.Upper, lUDecomposition.UpperDecomp, 1e-3, "Upper wrong");
@@ -37,7 +37,7 @@ namespace TC_Tests
         public void InverseCorrect([Values(1, 2, 3, 4, 5, 6, 7, 8)] int expectedMatrixIndex)
         {
             var matrix = MatrixTestHelper.GetMatrix(expectedMatrixIndex);
-            Assertions.AreEqual(matrix.Inverse, MatrixFunctions.Inverse(matrix.Matrix), 1e-6);
+            Assertions.AreEqual(matrix.Inverse, matrix.Matrix.Inverse(), 1e-6);
         }
 
         [TestCase(1, 1)]
@@ -64,7 +64,7 @@ namespace TC_Tests
             var matrix = MatrixTestHelper.GetMatrix(matrixIndex);
             var vector = MatrixTestHelper.GetMatrix(matrix2Index);
             var expected = MatrixTestHelper.GetExpectedMatrixProduct(matrixIndex, matrix2Index);
-            Assert.AreEqual(expected, MatrixFunctions.Multiply(matrix.Matrix, vector.Matrix));
+            Assert.AreEqual(expected, matrix.Matrix.Multiply(vector.Matrix));
         }
 
         [TestCase(1, 1)]
@@ -91,14 +91,14 @@ namespace TC_Tests
             var matrix = MatrixTestHelper.GetMatrix(matrixIndex);
             var vector = MatrixTestHelper.GetVector(vectorIndex);
             var expected = MatrixTestHelper.GetExpectedProduct(matrixIndex, vectorIndex);
-            Assert.AreEqual(expected, MatrixFunctions.VectorMultiply(matrix.Matrix, vector));
+            Assert.AreEqual(expected, matrix.Matrix.PostMultiplyVector(vector));
         }
 
         [Test]
         public void ComputeXTXOK([Values(1, 2, 3, 4, 5, 6, 7)] int expectedMatrixIndex)
         {
             var matrix = MatrixTestHelper.GetMatrix(expectedMatrixIndex);
-            Assert.AreEqual(matrix.XTX, MatrixFunctions.XTX(matrix.Matrix));
+            Assert.AreEqual(matrix.XTX, matrix.Matrix.XTX());
         }
     }
 }

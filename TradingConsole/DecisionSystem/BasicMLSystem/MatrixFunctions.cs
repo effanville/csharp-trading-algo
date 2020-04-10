@@ -12,7 +12,7 @@
             return Id;
         }
 
-        public static double[,] Transpose(double[,] matrix)
+        public static double[,] Transpose(this double[,] matrix)
         {
             if (matrix.GetLength(1).Equals(0) || matrix.GetLength(0).Equals(0))
             {
@@ -30,7 +30,7 @@
             return transpose;
         }
 
-        public static double[,] Multiply(double[,] firstMatrix, double[,] secondMatrix)
+        public static double[,] Multiply(this double[,] firstMatrix, double[,] secondMatrix)
         {
             if (!firstMatrix.GetLength(1).Equals(secondMatrix.GetLength(0)))
             {
@@ -55,7 +55,7 @@
             return multiply;
         }
 
-        public static double[] VectorMultiply(double[,] firstMatrix, double[] secondMatrix)
+        public static double[] PostMultiplyVector(this double[,] firstMatrix, double[] secondMatrix)
         {
             if (!firstMatrix.GetLength(1).Equals(secondMatrix.GetLength(0)))
             {
@@ -77,7 +77,7 @@
             return multiply;
         }
 
-        public static double[,] XTX(double[,] matrix)
+        public static double[,] XTX(this double[,] matrix)
         {
 
             double[,] multiply = new double[matrix.GetLength(1), matrix.GetLength(1)];
@@ -98,7 +98,7 @@
             return multiply;
         }
 
-        public static double[,] Inverse(double[,] matrix)
+        public static double[,] Inverse(this double[,] matrix)
         {
             var decomp = new LUDecomposition(matrix);
             return decomp.Inverse();

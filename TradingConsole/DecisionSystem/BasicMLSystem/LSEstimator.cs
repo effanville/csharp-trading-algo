@@ -29,8 +29,8 @@
 
         public void GenerateEstimator(double[,] data, double[] values)
         {
-            var XTY = MatrixFunctions.VectorMultiply(MatrixFunctions.Transpose(data), values);
-            Estimator = MatrixFunctions.VectorMultiply(MatrixFunctions.Inverse(MatrixFunctions.XTX(data)), XTY);
+            var XTY = data.Transpose().PostMultiplyVector(values);
+            Estimator = data.XTX().Inverse().PostMultiplyVector(XTY);
         }
     }
 }
