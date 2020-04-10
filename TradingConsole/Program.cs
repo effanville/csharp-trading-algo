@@ -1,4 +1,4 @@
-﻿using FinancialStructures.ReportLogging;
+﻿using FinancialStructures.Reporting;
 using System;
 using TradingConsole.InputParser;
 using TradingConsole.Simulation;
@@ -8,18 +8,18 @@ namespace TradingConsole
 {
     class Program
     {
-        static void WriteReport(string critical, string type, string location, string message)
-        {
-            if (critical != "Critical")
-            {
-                return;
-            }
-
-            Console.WriteLine($"{type} - {location} - {message}");
-        }
-
         internal static void Main(string[] args)
         {
+            void WriteReport(ReportSeverity critical, ReportType type, ReportLocation location, string message)
+            {
+                if (critical != ReportSeverity.Critical)
+                {
+                    return;
+                }
+
+                Console.WriteLine($"{type} - {location} - {message}");
+            }
+
             LogReporter reportLogger = new LogReporter((critical, type, location, message) => WriteReport(critical, type, location, message));
             Console.WriteLine("Trading Console");
             try

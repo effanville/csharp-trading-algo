@@ -1,4 +1,4 @@
-﻿using FinancialStructures.ReportLogging;
+﻿using FinancialStructures.Reporting;
 using FinancialStructures.StockStructures;
 using System.IO;
 using TradingConsole.InputParser;

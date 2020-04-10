@@ -1,7 +1,7 @@
 ﻿using FinancialStructures.Database;
 using FinancialStructures.DataStructures;
 using FinancialStructures.PortfolioAPI;
-using FinancialStructures.ReportLogging;
+using FinancialStructures.Reporting;
 using FinancialStructures.StockStructures;
 using System;
 using TradingConsole.BuySellSystem;
@@ -56,6 +56,12 @@ namespace TradingConsole.Simulation
             }
 
             Exchange.LoadExchangeStocks(InputOptions.StockFilePath, ReportLogger);
+            if (!Exchange.CheckValidity())
+            {
+                ReportLogger.LogTypes(ReportSeverity.Critical, ReportType.Error, ReportLocation.Loading, "Stock input data not suitable.");
+                return;
+            }
+
             SimulationParameters = new SimulationParameters(InputOptions, Exchange);
 
             DecisionSystem.Calibrate(InputOptions, Exchange, SimulationParameters);

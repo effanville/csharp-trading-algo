@@ -1,4 +1,4 @@
-﻿using FinancialStructures.ReportLogging;
+﻿using FinancialStructures.Reporting;
 using StringFunctions;
 using System;
 using System.Collections.Generic;
@@ -15,7 +15,7 @@ namespace TradingConsole.InputParser
             ReportLogger = reportLogger;
         }
 
-        public static string parameterArg = "--";
+        public string parameterArg = "--";
 
         private TextTokenType TokenTypeSelector(string arg)
         {
@@ -100,7 +100,7 @@ namespace TradingConsole.InputParser
                     else
                     {
                         outputTokens.Add(new TextToken(TextTokenType.Error, TokenTypeSelector(args[i]).ToString() + " - NoValueSelected"));
-                        ReportLogger.LogError("Parsing", "Token does not have proper value");
+                        ReportLogger.LogTypes(ReportSeverity.Critical, ReportType.Error, ReportLocation.Parsing, "Token does not have proper value");
                     }
                 }
             }

@@ -2,7 +2,7 @@
 using FinancialStructures.DataStructures;
 using FinancialStructures.NamingStructures;
 using FinancialStructures.PortfolioAPI;
-using FinancialStructures.ReportLogging;
+using FinancialStructures.Reporting;
 using FinancialStructures.StockData;
 using FinancialStructures.StockStructures;
 using System;

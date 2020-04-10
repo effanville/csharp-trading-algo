@@ -1,7 +1,7 @@
 ﻿using FinancialStructures.Database;
 using FinancialStructures.FinanceInterfaces;
 using FinancialStructures.NamingStructures;
-using FinancialStructures.ReportLogging;
+using FinancialStructures.Reporting;
 using FinancialStructures.StockStructures;
 using System;
 using TradingConsole.DecisionSystem;
