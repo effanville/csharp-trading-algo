@@ -10,15 +10,17 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="DecisionSystem\TechnicalAnalysisStats\**" />
+    <EmbeddedResource Remove="DecisionSystem\TechnicalAnalysisStats\**" />
+    <None Remove="DecisionSystem\TechnicalAnalysisStats\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\..\Portfolio Analysis Database\FinancialStructures\FinancialStructures.csproj" />
   </ItemGroup>
 
   <ItemGroup>
     <None Include="..\.editorconfig" Link=".editorconfig" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="DecisionSystem\TechnicalAnalysisStats\" />
   </ItemGroup>
 
 </Project>
