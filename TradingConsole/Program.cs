@@ -6,7 +6,7 @@ using TradingConsole.Statistics;
 
 namespace TradingConsole
 {
-    class Program
+    internal class Program
     {
         internal static void Main(string[] args)
         {
@@ -38,35 +38,35 @@ namespace TradingConsole
                         case ProgramType.DownloadAll:
                         case ProgramType.DownloadLatest:
                         case ProgramType.Configure:
-                            {
-                                Console.WriteLine("Downloading:");
-                                var stockDownloader = new StockDownloader(inputOptions, reportLogger);
-                                stockDownloader.Download();
-                                break;
-                            }
+                        {
+                            Console.WriteLine("Downloading:");
+                            var stockDownloader = new StockDownloader(inputOptions, reportLogger);
+                            stockDownloader.Download();
+                            break;
+                        }
                         case ProgramType.Simulate:
                         case ProgramType.Trade:
-                            {
-                                Console.WriteLine("Simulation Starting");
-                                var stats = new TradingStatistics();
-                                var tradingSimulation = new TradingSimulation(inputOptions, reportLogger);
-                                tradingSimulation.SetupSystemsAndRun(stats);
-                                break;
-                            }
+                        {
+                            Console.WriteLine("Simulation Starting");
+                            var stats = new TradingStatistics();
+                            var tradingSimulation = new TradingSimulation(inputOptions, reportLogger);
+                            tradingSimulation.SetupSystemsAndRun(stats);
+                            break;
+                        }
                         case ProgramType.Help:
+                        {
+                            Console.WriteLine("User input options are:");
+                            foreach (var tokenType in Enum.GetValues(typeof(TextTokenType)))
                             {
-                                Console.WriteLine("User input options are:");
-                                foreach (var tokenType in Enum.GetValues(typeof(TextTokenType)))
-                                {
-                                    Console.WriteLine(tokenType.ToString());
-                                }
-                                break;
+                                Console.WriteLine(tokenType.ToString());
                             }
+                            break;
+                        }
                         default:
-                            {
-                                Console.WriteLine("No admissible input selected");
-                                break;
-                            }
+                        {
+                            Console.WriteLine("No admissible input selected");
+                            break;
+                        }
                     }
                 }
             }

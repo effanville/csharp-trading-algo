@@ -16,17 +16,26 @@ namespace TradingConsole.Statistics
         /// <summary>
         /// The number of days prior to the date for which one requires data to calculate the statistic.
         /// </summary>
-        int BurnInTime { get; }
+        int BurnInTime
+        {
+            get;
+        }
 
         /// <summary>
         /// The statistic type this refers to.
         /// </summary>
-        StatisticType TypeOfStatistic { get; }
+        StatisticType TypeOfStatistic
+        {
+            get;
+        }
 
         /// <summary>
         /// The data of the stock this will calculate the statistic of.
         /// </summary>
-        DataStream DataType { get; }
+        DataStream DataType
+        {
+            get;
+        }
 
         /// <summary>
         /// The procedure to calutate the statistic

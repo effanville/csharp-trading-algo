@@ -1,5 +1,5 @@
-﻿using StructureCommon.Reporting;
-using FinancialStructures.StockStructures;
+﻿using FinancialStructures.StockStructures;
+using StructureCommon.Reporting;
 using System;
 using System.Collections.Generic;
 using TradingConsole.InputParser;
@@ -14,7 +14,10 @@ namespace TradingConsole.DecisionSystem
     public class BuyAllDecisionSystem : IDecisionSystem
     {
         /// <inheritdoc cref="IDecisionSystem"/>
-        public LogReporter ReportLogger { get; }
+        public LogReporter ReportLogger
+        {
+            get;
+        }
 
         public BuyAllDecisionSystem(LogReporter reportLogger)
         {

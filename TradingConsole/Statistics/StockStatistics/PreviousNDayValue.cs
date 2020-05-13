@@ -6,11 +6,20 @@ namespace TradingConsole.Statistics
 {
     public class PreviousNDayValue : IStockStatistic
     {
-        public DataStream DataType { get; }
+        public DataStream DataType
+        {
+            get;
+        }
 
-        public StatisticType TypeOfStatistic { get; }
+        public StatisticType TypeOfStatistic
+        {
+            get;
+        }
 
-        public int BurnInTime { get; }
+        public int BurnInTime
+        {
+            get;
+        }
 
         public PreviousNDayValue(int n, DataStream dataType, StatisticType typeOfStatistic)
         {

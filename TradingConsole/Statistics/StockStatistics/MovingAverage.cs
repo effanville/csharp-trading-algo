@@ -6,10 +6,19 @@ namespace TradingConsole.Statistics
 {
     public class MovingAverage : IStockStatistic
     {
-        public DataStream DataType { get; }
-        public int BurnInTime { get; }
+        public DataStream DataType
+        {
+            get;
+        }
+        public int BurnInTime
+        {
+            get;
+        }
 
-        public StatisticType TypeOfStatistic { get; }
+        public StatisticType TypeOfStatistic
+        {
+            get;
+        }
 
         public MovingAverage(int numberDays, DataStream dataStream, StatisticType typeOfStatistic)
         {

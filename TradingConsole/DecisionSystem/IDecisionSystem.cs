@@ -1,5 +1,5 @@
-﻿using StructureCommon.Reporting;
-using FinancialStructures.StockStructures;
+﻿using FinancialStructures.StockStructures;
+using StructureCommon.Reporting;
 using System;
 using System.Collections.Generic;
 using TradingConsole.InputParser;
@@ -11,12 +11,15 @@ namespace TradingConsole.DecisionSystem
     /// <summary>
     /// Interface for the system by which one decides at what point to buy and sell stocks.
     /// </summary>
-    interface IDecisionSystem
+    internal interface IDecisionSystem
     {
         /// <summary>
         /// Reports back to the user on errors (and progress)
         /// </summary>
-        LogReporter ReportLogger { get; }
+        LogReporter ReportLogger
+        {
+            get;
+        }
 
         /// <summary>
         /// Sets up various parameters required in the decision system.

@@ -5,11 +5,23 @@ namespace TradingConsole.Statistics
 {
     public class StochasticStat : IStockStatistic
     {
-        public int BurnInTime { get; }
+        public int BurnInTime
+        {
+            get;
+        }
 
-        public StatisticType TypeOfStatistic { get; }
+        public StatisticType TypeOfStatistic
+        {
+            get;
+        }
 
-        public DataStream DataType => DataStream.None;
+        public DataStream DataType
+        {
+            get
+            {
+                return DataStream.None;
+            }
+        }
 
         public StochasticStat(int numberDays, StatisticType statisticType)
         {

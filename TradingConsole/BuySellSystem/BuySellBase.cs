@@ -1,8 +1,8 @@
 ﻿using FinancialStructures.Database;
 using FinancialStructures.FinanceInterfaces;
 using FinancialStructures.NamingStructures;
-using StructureCommon.Reporting;
 using FinancialStructures.StockStructures;
+using StructureCommon.Reporting;
 using System;
 using TradingConsole.DecisionSystem;
 using TradingConsole.Simulation;
@@ -12,7 +12,10 @@ namespace TradingConsole.BuySellSystem
 {
     public class BuySellBase : IBuySellSystem
     {
-        public LogReporter ReportLogger { get; }
+        public LogReporter ReportLogger
+        {
+            get;
+        }
 
         public BuySellBase(LogReporter reportLogger)
         {

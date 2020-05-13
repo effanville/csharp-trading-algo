@@ -1,22 +1,25 @@
-﻿using StructureCommon.Reporting;
-using FinancialStructures.StockStructures;
+﻿using FinancialStructures.StockStructures;
+using StructureCommon.MathLibrary.ParameterEstimation;
+using StructureCommon.Reporting;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using TradingConsole.InputParser;
 using TradingConsole.Simulation;
 using TradingConsole.Statistics;
-using StructureCommon.MathLibrary.ParameterEstimation;
 
 namespace TradingConsole.DecisionSystem
 {
     public class ArbitraryStatsLSDecisionSystem : IDecisionSystem
     {
-        public LogReporter ReportLogger { get; }
+        public LogReporter ReportLogger
+        {
+            get;
+        }
 
         public IEstimator Estimator;
 
-        public List<IStockStatistic> stockStatistics= new List<IStockStatistic>();
+        public List<IStockStatistic> stockStatistics = new List<IStockStatistic>();
 
 
         public ArbitraryStatsLSDecisionSystem(LogReporter reportLogger)

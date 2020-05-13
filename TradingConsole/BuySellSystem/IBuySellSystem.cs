@@ -1,6 +1,6 @@
 ﻿using FinancialStructures.Database;
-using StructureCommon.Reporting;
 using FinancialStructures.StockStructures;
+using StructureCommon.Reporting;
 using System;
 using TradingConsole.DecisionSystem;
 using TradingConsole.Simulation;
@@ -17,7 +17,10 @@ namespace TradingConsole.BuySellSystem
         /// <summary>
         /// Reports back to the user on errors (and progress)
         /// </summary>
-        LogReporter ReportLogger { get; }
+        LogReporter ReportLogger
+        {
+            get;
+        }
 
         /// <summary>
         /// Routine to enact all buy and sell decisions.

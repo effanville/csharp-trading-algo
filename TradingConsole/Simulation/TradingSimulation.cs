@@ -1,13 +1,13 @@
 ﻿using FinancialStructures.Database;
 using FinancialStructures.PortfolioAPI;
-using StructureCommon.Reporting;
 using FinancialStructures.StockStructures;
+using StructureCommon.DataStructures;
+using StructureCommon.Reporting;
 using System;
 using TradingConsole.BuySellSystem;
 using TradingConsole.DecisionSystem;
 using TradingConsole.InputParser;
 using TradingConsole.Statistics;
-using StructureCommon.DataStructures;
 
 namespace TradingConsole.Simulation
 {

@@ -20,10 +20,12 @@ namespace TradingConsole.Statistics
         /// Still to be implemented.
         /// </summary>
         public void GenerateDayStats()
-        { }
+        {
+        }
 
         public void GenerateSimulationStats()
-        { }
+        {
+        }
 
         public void AddDailyTrades(List<TradeDetails> tradeDetails)
         {

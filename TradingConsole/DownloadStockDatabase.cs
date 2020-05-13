@@ -1,5 +1,5 @@
-﻿using StructureCommon.Reporting;
-using FinancialStructures.StockStructures;
+﻿using FinancialStructures.StockStructures;
+using StructureCommon.Reporting;
 using System.IO;
 using TradingConsole.InputParser;
 

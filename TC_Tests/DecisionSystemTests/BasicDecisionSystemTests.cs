@@ -8,6 +8,7 @@ namespace TC_Tests
     {
         [Test]
         public void DecisionsCorrect()
-        { }
+        {
+        }
     }
 }

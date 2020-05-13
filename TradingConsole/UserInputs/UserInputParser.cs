@@ -1,5 +1,5 @@
-﻿using StructureCommon.Reporting;
-using StructureCommon.Extensions;
+﻿using StructureCommon.Extensions;
+using StructureCommon.Reporting;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -36,28 +36,28 @@ namespace TradingConsole.InputParser
             switch (inputOptions.funtionType)
             {
                 case ProgramType.Configure:
+                {
+                    if (string.IsNullOrEmpty(inputOptions.StockFilePath))
                     {
-                        if (string.IsNullOrEmpty(inputOptions.StockFilePath))
-                        {
-                            return false;
-                        }
-                        return true;
+                        return false;
                     }
+                    return true;
+                }
                 case ProgramType.Simulate:
                 case ProgramType.Trade:
                 case ProgramType.Help:
-                    {
-                        return true;
-                    }
+                {
+                    return true;
+                }
                 case ProgramType.DownloadAll:
                 case ProgramType.DownloadLatest:
+                {
+                    if (string.IsNullOrEmpty(inputOptions.StockFilePath) || inputOptions.StartDate == null || inputOptions.EndDate == null)
                     {
-                        if (string.IsNullOrEmpty(inputOptions.StockFilePath) || inputOptions.StartDate == null || inputOptions.EndDate == null)
-                        {
-                            return false;
-                        }
-                        return true;
+                        return false;
                     }
+                    return true;
+                }
 
                 default:
                     return false;
@@ -85,9 +85,10 @@ namespace TradingConsole.InputParser
         /// </summary>
         private List<TextToken> ParseInput(string[] args)
         {
-            var outputTokens = new List<TextToken>();
-
-            outputTokens.Add(DetermineProgramType(args[0]));
+            var outputTokens = new List<TextToken>
+            {
+                DetermineProgramType(args[0])
+            };
 
             for (int i = 1; i < args.Length; i++)
             {
@@ -129,76 +130,76 @@ namespace TradingConsole.InputParser
                 switch (token.TokenType)
                 {
                     case (TextTokenType.ProgramType):
+                    {
+                        foreach (ProgramType type in Enum.GetValues(typeof(ProgramType)))
                         {
-                            foreach (ProgramType type in Enum.GetValues(typeof(ProgramType)))
+                            if (token.Value == type.ToString())
                             {
-                                if (token.Value == type.ToString())
-                                {
-                                    inputs.funtionType = type;
-                                }
+                                inputs.funtionType = type;
                             }
-                            break;
                         }
+                        break;
+                    }
                     case TextTokenType.ParameterFilePath:
-                        {
-                            break;
-                        }
+                    {
+                        break;
+                    }
                     case (TextTokenType.StockFilePath):
-                        {
-                            inputs.StockFilePath = token.Value;
-                            break;
-                        }
+                    {
+                        inputs.StockFilePath = token.Value;
+                        break;
+                    }
                     case (TextTokenType.PortfolioFilePath):
-                        {
-                            inputs.PortfolioFilePath = token.Value;
-                            break;
-                        }
+                    {
+                        inputs.PortfolioFilePath = token.Value;
+                        break;
+                    }
                     case TextTokenType.StartingCash:
-                        {
-                            inputs.StartingCash = double.Parse(token.Value);
-                            break;
-                        }
+                    {
+                        inputs.StartingCash = double.Parse(token.Value);
+                        break;
+                    }
                     case TextTokenType.StartDate:
-                        {
-                            inputs.StartDate = DateTime.Parse(token.Value);
-                            break;
-                        }
+                    {
+                        inputs.StartDate = DateTime.Parse(token.Value);
+                        break;
+                    }
                     case TextTokenType.EndDate:
-                        {
-                            inputs.EndDate = DateTime.Parse(token.Value);
-                            break;
-                        }
+                    {
+                        inputs.EndDate = DateTime.Parse(token.Value);
+                        break;
+                    }
                     case TextTokenType.TradingGap:
-                        {
-                            inputs.TradingGap = TimeSpan.Parse(token.Value);
-                            break;
-                        }
+                    {
+                        inputs.TradingGap = TimeSpan.Parse(token.Value);
+                        break;
+                    }
                     case TextTokenType.DecisionSystemType:
-                        {
-                            inputs.DecisionType = token.Value.ToEnum<DecisionSystemType>();
-                            break;
-                        }
+                    {
+                        inputs.DecisionType = token.Value.ToEnum<DecisionSystemType>();
+                        break;
+                    }
                     case TextTokenType.DecSysParams:
+                    {
+                        var list = new List<StatisticType>();
+                        var stringValues = token.Value.Split(',');
+                        foreach (var value in stringValues)
                         {
-                            var list = new List<StatisticType>();
-                            var stringValues = token.Value.Split(',');
-                            foreach (var value in stringValues)
-                            {
-                                var val = value.ToEnum<StatisticType>();
-                                list.Add(val);
-                            }
-                            inputs.decisionSystemStats = list;
-                            break;
+                            var val = value.ToEnum<StatisticType>();
+                            list.Add(val);
                         }
+                        inputs.decisionSystemStats = list;
+                        break;
+                    }
                     case TextTokenType.BuySellType:
-                        {
-                            inputs.BuyingSellingType = token.Value.ToEnum<BuySellType>();
-                            break;
-                        }
+                    {
+                        inputs.BuyingSellingType = token.Value.ToEnum<BuySellType>();
+                        break;
+                    }
                     default:
-                        {
-                            break;
-                        }
+                    {
+                        break;
+                    }
                 }
             }
 

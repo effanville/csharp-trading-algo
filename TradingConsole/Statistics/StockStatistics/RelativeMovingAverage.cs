@@ -8,11 +8,20 @@ namespace TradingConsole.Statistics
     {
         private int fFirstLength;
         private int fSecondLength;
-        public int BurnInTime { get; }
+        public int BurnInTime
+        {
+            get;
+        }
 
-        public StatisticType TypeOfStatistic { get; }
+        public StatisticType TypeOfStatistic
+        {
+            get;
+        }
 
-        public DataStream DataType { get; }
+        public DataStream DataType
+        {
+            get;
+        }
 
         public RelativeMovingAverage(int numberDaysOne, int numberDaysTwo, DataStream dataStream, StatisticType statisticType)
         {

@@ -5,11 +5,23 @@ namespace TradingConsole.Statistics
 {
     public class ADXStat : IStockStatistic
     {
-        public int BurnInTime { get; }
+        public int BurnInTime
+        {
+            get;
+        }
 
-        public StatisticType TypeOfStatistic { get; }
+        public StatisticType TypeOfStatistic
+        {
+            get;
+        }
 
-        public DataStream DataType => DataStream.None;
+        public DataStream DataType
+        {
+            get
+            {
+                return DataStream.None;
+            }
+        }
 
         public ADXStat(int numberDays, StatisticType statisticType)
         {

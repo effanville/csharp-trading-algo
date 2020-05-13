@@ -1,15 +1,15 @@
 ﻿using FinancialStructures.Database;
 using FinancialStructures.NamingStructures;
 using FinancialStructures.PortfolioAPI;
-using StructureCommon.Reporting;
 using FinancialStructures.StockData;
 using FinancialStructures.StockStructures;
+using StructureCommon.DataStructures;
+using StructureCommon.Reporting;
 using System;
 using System.Collections.Generic;
 using TradingConsole.DecisionSystem;
 using TradingConsole.Simulation;
 using TradingConsole.Statistics;
-using StructureCommon.DataStructures;
 
 namespace TradingConsole.BuySellSystem
 {
