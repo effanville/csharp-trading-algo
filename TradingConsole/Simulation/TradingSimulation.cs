@@ -1,13 +1,13 @@
 ﻿using FinancialStructures.Database;
-using FinancialStructures.DataStructures;
 using FinancialStructures.PortfolioAPI;
-using FinancialStructures.Reporting;
+using StructureCommon.Reporting;
 using FinancialStructures.StockStructures;
 using System;
 using TradingConsole.BuySellSystem;
 using TradingConsole.DecisionSystem;
 using TradingConsole.InputParser;
 using TradingConsole.Statistics;
+using StructureCommon.DataStructures;
 
 namespace TradingConsole.Simulation
 {
@@ -58,7 +58,7 @@ namespace TradingConsole.Simulation
             Exchange.LoadExchangeStocks(InputOptions.StockFilePath, ReportLogger);
             if (!Exchange.CheckValidity())
             {
-                ReportLogger.LogTypes(ReportSeverity.Critical, ReportType.Error, ReportLocation.Loading, "Stock input data not suitable.");
+                ReportLogger.Log(ReportSeverity.Critical, ReportType.Error, ReportLocation.Loading, "Stock input data not suitable.");
                 return;
             }
 

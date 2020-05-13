@@ -1,8 +1,7 @@
 ﻿using FinancialStructures.Database;
-using FinancialStructures.DataStructures;
 using FinancialStructures.NamingStructures;
 using FinancialStructures.PortfolioAPI;
-using FinancialStructures.Reporting;
+using StructureCommon.Reporting;
 using FinancialStructures.StockData;
 using FinancialStructures.StockStructures;
 using System;
@@ -10,6 +9,7 @@ using System.Collections.Generic;
 using TradingConsole.DecisionSystem;
 using TradingConsole.Simulation;
 using TradingConsole.Statistics;
+using StructureCommon.DataStructures;
 
 namespace TradingConsole.BuySellSystem
 {
@@ -33,10 +33,10 @@ namespace TradingConsole.BuySellSystem
 
             // Now perform selling. This consists of removing the security at the specific value in our portfolio.
             // Note that the security in the portfolio does not take into account the cost of the trade
-            portfolio.TryAddDataToSecurity(ReportLogger, sell.StockName, day, 0.0, price);
+            portfolio.TryAddDataToSecurity(sell.StockName, day, 0.0, price, 1, ReportLogger);
 
             // Now increase the amount in the bank account, i.e. free cash, held in the portfolio, to free it up to be used on other securities.
-            double numShares = portfolio.SecurityShares(sell.StockName.Company, sell.StockName.Name, day);
+            double numShares = portfolio.SecurityPrices(sell.StockName, day, SecurityDataStream.NumberOfShares);
             portfolio.TryAddData(AccountType.BankAccount, simulationParameters.bankAccData, new DayValue_ChangeLogged(day, numShares * price - simulationParameters.tradeCost), ReportLogger);
 
             // record the trade in the statistics of the run.
@@ -73,8 +73,8 @@ namespace TradingConsole.BuySellSystem
                         }
 
                         // "Buy" the shares by adding the number of shares in the security desired. First must ensure we know the number of shares held.
-                        double existingShares = portfolio.SecurityShares(buy.StockName.Company, buy.StockName.Name, day);
-                        portfolio.TryAddDataToSecurity(ReportLogger, buy.StockName, day, numShares + existingShares, priceToBuy);
+                        double existingShares = portfolio.SecurityPrices(buy.StockName, day, SecurityDataStream.NumberOfShares);
+                        portfolio.TryAddDataToSecurity(buy.StockName, day, numShares + existingShares, priceToBuy, 1, ReportLogger);
 
                         // Remove the cash used to buy the shares from the portfolio.
                         portfolio.TryAddData(AccountType.BankAccount, new NameData("Cash", "Portfolio"), new DayValue_ChangeLogged(day, cashAvailable - costOfPurchase), ReportLogger);

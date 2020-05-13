@@ -1,14 +1,14 @@
 ﻿using FinancialStructures.Database;
-using FinancialStructures.DataStructures;
 using FinancialStructures.NamingStructures;
 using FinancialStructures.PortfolioAPI;
-using FinancialStructures.Reporting;
+using StructureCommon.Reporting;
 using FinancialStructures.StockData;
 using FinancialStructures.StockStructures;
 using System;
 using TradingConsole.DecisionSystem;
 using TradingConsole.Simulation;
 using TradingConsole.Statistics;
+using StructureCommon.DataStructures;
 
 namespace TradingConsole.BuySellSystem
 {
@@ -22,8 +22,8 @@ namespace TradingConsole.BuySellSystem
         public override void SellHolding(DateTime day, Decision sell, ExchangeStocks stocks, Portfolio portfolio, TradingStatistics stats, BuySellParams parameters, SimulationParameters simulationParameters)
         {
             double price = stocks.GetValue(sell.StockName, day);
-            portfolio.TryAddDataToSecurity(ReportLogger, sell.StockName, day, 0.0, price);
-            double numShares = portfolio.SecurityShares(sell.StockName.Company, sell.StockName.Name, day);
+            portfolio.TryAddDataToSecurity(sell.StockName, day, 0.0, price, 1.0, ReportLogger);
+            double numShares = portfolio.SecurityPrices(sell.StockName, day, SecurityDataStream.NumberOfShares);
             portfolio.TryAddData(AccountType.BankAccount, simulationParameters.bankAccData, new DayValue_ChangeLogged(day, numShares * price - simulationParameters.tradeCost), ReportLogger);
             stats.AddTrade(new TradeDetails(TradeType.Sell, "", sell.StockName.Company, sell.StockName.Name, day, numShares * price, numShares, price, simulationParameters.tradeCost));
         }
@@ -44,7 +44,7 @@ namespace TradingConsole.BuySellSystem
                 double costOfPurchase = numShares * price + simulationParameters.tradeCost;
                 if (cashAvailable > costOfPurchase)
                 {
-                    portfolio.TryAddDataToSecurity(ReportLogger, buy.StockName, day, numShares, price);
+                    portfolio.TryAddDataToSecurity(buy.StockName, day, numShares, price, 1, ReportLogger);
                     portfolio.TryAddData(AccountType.BankAccount, new NameData("Cash", "Portfolio"), new DayValue_ChangeLogged(day, cashAvailable - numShares * costOfPurchase), ReportLogger);
                     stats.AddTrade(new TradeDetails(TradeType.Buy, "", buy.StockName.Company, buy.StockName.Name, day, numShares * price, numShares, price, simulationParameters.tradeCost));
                 }

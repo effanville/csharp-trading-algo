@@ -1,4 +1,4 @@
-﻿using FinancialStructures.Reporting;
+﻿using StructureCommon.Reporting;
 
 namespace TC_Tests
 {

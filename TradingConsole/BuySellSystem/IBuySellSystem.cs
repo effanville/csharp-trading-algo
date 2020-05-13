@@ -1,5 +1,5 @@
 ﻿using FinancialStructures.Database;
-using FinancialStructures.Reporting;
+using StructureCommon.Reporting;
 using FinancialStructures.StockStructures;
 using System;
 using TradingConsole.DecisionSystem;

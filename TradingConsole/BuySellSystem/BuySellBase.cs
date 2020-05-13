@@ -1,7 +1,7 @@
 ﻿using FinancialStructures.Database;
 using FinancialStructures.FinanceInterfaces;
 using FinancialStructures.NamingStructures;
-using FinancialStructures.Reporting;
+using StructureCommon.Reporting;
 using FinancialStructures.StockStructures;
 using System;
 using TradingConsole.DecisionSystem;
@@ -39,7 +39,7 @@ namespace TradingConsole.BuySellSystem
             {
                 if (security.Value(day).Value > 0)
                 {
-                    security.UpdateSecurityData(stocks.GetValue(new NameData(security.Company, security.Name), day), ReportLogger, day);
+                    security.UpdateSecurityData(day, stocks.GetValue(new NameData(security.Company, security.Name), day), ReportLogger);
                 }
             }
         }

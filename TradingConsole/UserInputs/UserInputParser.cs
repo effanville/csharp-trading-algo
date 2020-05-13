@@ -1,5 +1,5 @@
-﻿using FinancialStructures.Reporting;
-using StringFunctions;
+﻿using StructureCommon.Reporting;
+using StructureCommon.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -100,7 +100,7 @@ namespace TradingConsole.InputParser
                     else
                     {
                         outputTokens.Add(new TextToken(TextTokenType.Error, TokenTypeSelector(args[i]).ToString() + " - NoValueSelected"));
-                        ReportLogger.LogTypes(ReportSeverity.Critical, ReportType.Error, ReportLocation.Parsing, "Token does not have proper value");
+                        ReportLogger.Log(ReportSeverity.Critical, ReportType.Error, ReportLocation.Parsing, "Token does not have proper value");
                     }
                 }
             }

@@ -1,5 +1,4 @@
-﻿using FinancialStructures.Mathematics;
-using FinancialStructures.Reporting;
+﻿using StructureCommon.Reporting;
 using FinancialStructures.StockStructures;
 using System;
 using System.Collections.Generic;
@@ -7,6 +6,7 @@ using System.Linq;
 using TradingConsole.InputParser;
 using TradingConsole.Simulation;
 using TradingConsole.Statistics;
+using StructureCommon.MathLibrary.ParameterEstimation;
 
 namespace TradingConsole.DecisionSystem
 {
