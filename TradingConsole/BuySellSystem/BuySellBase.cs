@@ -1,9 +1,9 @@
-﻿using FinancialStructures.Database;
+﻿using System;
+using FinancialStructures.Database;
 using FinancialStructures.FinanceInterfaces;
 using FinancialStructures.NamingStructures;
 using FinancialStructures.StockStructures;
 using StructureCommon.Reporting;
-using System;
 using TradingConsole.DecisionSystem;
 using TradingConsole.Simulation;
 using TradingConsole.Statistics;
@@ -24,16 +24,16 @@ namespace TradingConsole.BuySellSystem
 
         public virtual void BuySell(DateTime day, DecisionStatus status, ExchangeStocks stocks, Portfolio portfolio, TradingStatistics stats, BuySellParams parameters, SimulationParameters simulationParameters)
         {
-            var sellDecisions = status.GetSellDecisions();
+            System.Collections.Generic.List<Decision> sellDecisions = status.GetSellDecisions();
 
-            foreach (var sell in sellDecisions)
+            foreach (Decision sell in sellDecisions)
             {
                 SellHolding(day, sell, stocks, portfolio, stats, parameters, simulationParameters);
             }
 
-            var buyDecisions = status.GetBuyDecisions();
+            System.Collections.Generic.List<Decision> buyDecisions = status.GetBuyDecisions();
 
-            foreach (var buy in buyDecisions)
+            foreach (Decision buy in buyDecisions)
             {
                 BuyHolding(day, buy, stocks, portfolio, stats, parameters, simulationParameters);
             }

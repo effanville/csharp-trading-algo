@@ -1,11 +1,11 @@
-﻿using FinancialStructures.Database;
+﻿using System;
+using FinancialStructures.Database;
 using FinancialStructures.NamingStructures;
 using FinancialStructures.PortfolioAPI;
 using FinancialStructures.StockData;
 using FinancialStructures.StockStructures;
 using StructureCommon.DataStructures;
 using StructureCommon.Reporting;
-using System;
 using TradingConsole.DecisionSystem;
 using TradingConsole.Simulation;
 using TradingConsole.Statistics;
@@ -24,7 +24,7 @@ namespace TradingConsole.BuySellSystem
             double price = stocks.GetValue(sell.StockName, day);
             portfolio.TryAddDataToSecurity(sell.StockName, day, 0.0, price, 1.0, ReportLogger);
             double numShares = portfolio.SecurityPrices(sell.StockName, day, SecurityDataStream.NumberOfShares);
-            portfolio.TryAddData(AccountType.BankAccount, simulationParameters.bankAccData, new DayValue_ChangeLogged(day, numShares * price - simulationParameters.tradeCost), ReportLogger);
+            portfolio.TryAddData(AccountType.BankAccount, simulationParameters.bankAccData, new DailyValuation(day, numShares * price - simulationParameters.tradeCost), ReportLogger);
             stats.AddTrade(new TradeDetails(TradeType.Sell, "", sell.StockName.Company, sell.StockName.Name, day, numShares * price, numShares, price, simulationParameters.tradeCost));
         }
 
@@ -45,7 +45,7 @@ namespace TradingConsole.BuySellSystem
                 if (cashAvailable > costOfPurchase)
                 {
                     portfolio.TryAddDataToSecurity(buy.StockName, day, numShares, price, 1, ReportLogger);
-                    portfolio.TryAddData(AccountType.BankAccount, new NameData("Cash", "Portfolio"), new DayValue_ChangeLogged(day, cashAvailable - numShares * costOfPurchase), ReportLogger);
+                    portfolio.TryAddData(AccountType.BankAccount, new NameData("Cash", "Portfolio"), new DailyValuation(day, cashAvailable - numShares * costOfPurchase), ReportLogger);
                     stats.AddTrade(new TradeDetails(TradeType.Buy, "", buy.StockName.Company, buy.StockName.Name, day, numShares * price, numShares, price, simulationParameters.tradeCost));
                 }
             }

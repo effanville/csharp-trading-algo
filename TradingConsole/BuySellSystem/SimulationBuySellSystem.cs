@@ -1,12 +1,12 @@
-﻿using FinancialStructures.Database;
+﻿using System;
+using System.Collections.Generic;
+using FinancialStructures.Database;
 using FinancialStructures.NamingStructures;
 using FinancialStructures.PortfolioAPI;
 using FinancialStructures.StockData;
 using FinancialStructures.StockStructures;
 using StructureCommon.DataStructures;
 using StructureCommon.Reporting;
-using System;
-using System.Collections.Generic;
 using TradingConsole.DecisionSystem;
 using TradingConsole.Simulation;
 using TradingConsole.Statistics;
@@ -37,7 +37,7 @@ namespace TradingConsole.BuySellSystem
 
             // Now increase the amount in the bank account, i.e. free cash, held in the portfolio, to free it up to be used on other securities.
             double numShares = portfolio.SecurityPrices(sell.StockName, day, SecurityDataStream.NumberOfShares);
-            portfolio.TryAddData(AccountType.BankAccount, simulationParameters.bankAccData, new DayValue_ChangeLogged(day, numShares * price - simulationParameters.tradeCost), ReportLogger);
+            portfolio.TryAddData(AccountType.BankAccount, simulationParameters.bankAccData, new DailyValuation(day, numShares * price - simulationParameters.tradeCost), ReportLogger);
 
             // record the trade in the statistics of the run.
             stats.AddTrade(new TradeDetails(TradeType.Sell, "", sell.StockName.Company, sell.StockName.Name, day, numShares * price, numShares, price, simulationParameters.tradeCost));
@@ -77,7 +77,7 @@ namespace TradingConsole.BuySellSystem
                         portfolio.TryAddDataToSecurity(buy.StockName, day, numShares + existingShares, priceToBuy, 1, ReportLogger);
 
                         // Remove the cash used to buy the shares from the portfolio.
-                        portfolio.TryAddData(AccountType.BankAccount, new NameData("Cash", "Portfolio"), new DayValue_ChangeLogged(day, cashAvailable - costOfPurchase), ReportLogger);
+                        portfolio.TryAddData(AccountType.BankAccount, new NameData("Cash", "Portfolio"), new DailyValuation(day, cashAvailable - costOfPurchase), ReportLogger);
 
                         // Add a log of the trade in the statistics.
                         stats.AddTrade(new TradeDetails(TradeType.Buy, "", buy.StockName.Company, buy.StockName.Name, day, numShares * priceToBuy, numShares, priceToBuy, simulationParameters.tradeCost));

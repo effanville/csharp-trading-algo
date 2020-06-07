@@ -1,9 +1,9 @@
-﻿using FinancialStructures.StockStructures;
-using StructureCommon.MathLibrary.ParameterEstimation;
-using StructureCommon.Reporting;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using FinancialStructures.StockStructures;
+using StructureCommon.MathLibrary.ParameterEstimation;
+using StructureCommon.Reporting;
 using TradingConsole.InputParser;
 using TradingConsole.Simulation;
 using TradingConsole.Statistics;
@@ -28,7 +28,7 @@ namespace TradingConsole.DecisionSystem
         public void Calibrate(UserInputOptions inputOptions, ExchangeStocks exchange, SimulationParameters simulationParameters)
         {
             TimeSpan simulationLength = simulationParameters.EndTime - simulationParameters.StartTime;
-            var burnInLength = simulationParameters.StartTime + simulationLength / 2;
+            DateTime burnInLength = simulationParameters.StartTime + simulationLength / 2;
 
             int numberEntries = ((burnInLength - simulationParameters.StartTime).Days - 5) * 5 / 7;
 
@@ -38,7 +38,7 @@ namespace TradingConsole.DecisionSystem
             {
                 for (int stockIndex = 0; stockIndex < exchange.Stocks.Count; stockIndex++)
                 {
-                    var values = exchange.Stocks[stockIndex].Values(simulationParameters.StartTime.AddDays(i), 0, 6, DataStream.Open);
+                    List<double> values = exchange.Stocks[stockIndex].Values(simulationParameters.StartTime.AddDays(i), 0, 6, DataStream.Open);
                     for (int j = 0; j < 5; j++)
                     {
                         X[i + stockIndex, j] = values[j] / 100;
@@ -61,10 +61,10 @@ namespace TradingConsole.DecisionSystem
 
         public void Decide(DateTime date, DecisionStatus status, ExchangeStocks exchange, TradingStatistics stats, SimulationParameters simulationParameters)
         {
-            foreach (var stock in exchange.Stocks)
+            foreach (Stock stock in exchange.Stocks)
             {
                 StockTradeDecision decision;
-                var values = stock.Values(date, 5, 0, DataStream.Open).ToArray();
+                double[] values = stock.Values(date, 5, 0, DataStream.Open).ToArray();
                 double value = Estimator.Evaluate(values);
 
                 if (value > 1.05)

@@ -1,13 +1,13 @@
-﻿using FinancialStructures.StockStructures;
+﻿using System;
+using FinancialStructures.StockStructures;
 using StructureCommon.Mathematics;
-using System;
 
 namespace TradingConsole.Statistics
 {
     public class RelativeMovingAverage : IStockStatistic
     {
-        private int fFirstLength;
-        private int fSecondLength;
+        private readonly int fFirstLength;
+        private readonly int fSecondLength;
         public int BurnInTime
         {
             get;
@@ -34,7 +34,7 @@ namespace TradingConsole.Statistics
 
         public double Calculate(DateTime date, Stock stock)
         {
-            var values = stock.Values(date, BurnInTime, 0, DataType);
+            System.Collections.Generic.List<double> values = stock.Values(date, BurnInTime, 0, DataType);
             return VectorStats.Mean(values, fFirstLength) - VectorStats.Mean(values, fSecondLength);
         }
     }

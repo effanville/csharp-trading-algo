@@ -1,7 +1,7 @@
-﻿using FinancialStructures.DataStructures;
-using FinancialStructures.NamingStructures;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using FinancialStructures.DataStructures;
+using FinancialStructures.NamingStructures;
 
 namespace TradingConsole.Statistics
 {

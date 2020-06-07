@@ -1,7 +1,7 @@
-﻿using FinancialStructures.StockStructures;
-using NUnit.Framework;
-using System;
+﻿using System;
 using System.Linq;
+using FinancialStructures.StockStructures;
+using NUnit.Framework;
 using TradingConsole.DecisionSystem;
 
 namespace TC_Tests
@@ -11,12 +11,12 @@ namespace TC_Tests
         [Test]
         public void DecisionAsExpected()
         {
-            var exchange = new ExchangeStocks();
+            ExchangeStocks exchange = new ExchangeStocks();
             exchange.Stocks.Add(new Stock("MyCompany", "MyName", ""));
             exchange.Stocks[0].AddValue(DateTime.Today, 43, 47, 40, 41, 1);
 
-            var decisionSystem = new BuyAllDecisionSystem(TestHelper.ReportLogger);
-            var status = new DecisionStatus();
+            BuyAllDecisionSystem decisionSystem = new BuyAllDecisionSystem(TestHelper.ReportLogger);
+            DecisionStatus status = new DecisionStatus();
             decisionSystem.Decide(DateTime.Today, status, exchange, null, null);
 
             Assert.AreEqual(1, status.GetBuyDecisions().Count);

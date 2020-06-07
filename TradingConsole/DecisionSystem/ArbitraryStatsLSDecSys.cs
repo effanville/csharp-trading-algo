@@ -1,9 +1,9 @@
-﻿using FinancialStructures.StockStructures;
-using StructureCommon.MathLibrary.ParameterEstimation;
-using StructureCommon.Reporting;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using FinancialStructures.StockStructures;
+using StructureCommon.MathLibrary.ParameterEstimation;
+using StructureCommon.Reporting;
 using TradingConsole.InputParser;
 using TradingConsole.Simulation;
 using TradingConsole.Statistics;
@@ -29,13 +29,13 @@ namespace TradingConsole.DecisionSystem
 
         public void Calibrate(UserInputOptions inputOptions, ExchangeStocks exchange, SimulationParameters simulationParameters)
         {
-            foreach (var statistic in inputOptions.decisionSystemStats)
+            foreach (StatisticType statistic in inputOptions.decisionSystemStats)
             {
                 stockStatistics.Add(StockStatisticGenerator.Generate(statistic));
             }
 
             TimeSpan simulationLength = simulationParameters.EndTime - simulationParameters.StartTime;
-            var burnInLength = simulationParameters.StartTime + simulationLength / 2;
+            DateTime burnInLength = simulationParameters.StartTime + simulationLength / 2;
             int delayTime = stockStatistics.Max(stock => stock.BurnInTime) + 2;
             int numberEntries = ((burnInLength - simulationParameters.StartTime).Days - 5) * 5 / 7;
             int numberStatistics = stockStatistics.Count;
@@ -67,10 +67,10 @@ namespace TradingConsole.DecisionSystem
 
         public void Decide(DateTime date, DecisionStatus status, ExchangeStocks exchange, TradingStatistics stats, SimulationParameters simulationParameters)
         {
-            foreach (var stock in exchange.Stocks)
+            foreach (Stock stock in exchange.Stocks)
             {
                 StockTradeDecision decision;
-                var values = stock.Values(date, 5, 0, DataStream.Open).ToArray();
+                double[] values = stock.Values(date, 5, 0, DataStream.Open).ToArray();
                 double value = Estimator.Evaluate(values);
 
                 if (value > 1.05)

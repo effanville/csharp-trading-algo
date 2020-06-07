@@ -1,15 +1,15 @@
-﻿using StructureCommon.Extensions;
-using StructureCommon.Reporting;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using StructureCommon.Extensions;
+using StructureCommon.Reporting;
 using TradingConsole.Statistics;
 
 namespace TradingConsole.InputParser
 {
     public class UserInputParser
     {
-        private LogReporter ReportLogger;
+        private readonly LogReporter ReportLogger;
         public UserInputParser(LogReporter reportLogger)
         {
             ReportLogger = reportLogger;
@@ -85,7 +85,7 @@ namespace TradingConsole.InputParser
         /// </summary>
         private List<TextToken> ParseInput(string[] args)
         {
-            var outputTokens = new List<TextToken>
+            List<TextToken> outputTokens = new List<TextToken>
             {
                 DetermineProgramType(args[0])
             };
@@ -124,8 +124,8 @@ namespace TradingConsole.InputParser
 
         private UserInputOptions GenerateOptionsFromInputs(List<TextToken> inputTokens)
         {
-            var inputs = new UserInputOptions();
-            foreach (var token in inputTokens)
+            UserInputOptions inputs = new UserInputOptions();
+            foreach (TextToken token in inputTokens)
             {
                 switch (token.TokenType)
                 {
@@ -181,11 +181,11 @@ namespace TradingConsole.InputParser
                     }
                     case TextTokenType.DecSysParams:
                     {
-                        var list = new List<StatisticType>();
-                        var stringValues = token.Value.Split(',');
-                        foreach (var value in stringValues)
+                        List<StatisticType> list = new List<StatisticType>();
+                        string[] stringValues = token.Value.Split(',');
+                        foreach (string value in stringValues)
                         {
-                            var val = value.ToEnum<StatisticType>();
+                            StatisticType val = value.ToEnum<StatisticType>();
                             list.Add(val);
                         }
                         inputs.decisionSystemStats = list;

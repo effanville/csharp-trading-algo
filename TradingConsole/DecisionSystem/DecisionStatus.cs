@@ -1,6 +1,6 @@
-﻿using FinancialStructures.NamingStructures;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
+using FinancialStructures.NamingStructures;
 
 namespace TradingConsole.DecisionSystem
 {
@@ -17,7 +17,7 @@ namespace TradingConsole.DecisionSystem
 
     public class DecisionStatus
     {
-        private List<Decision> decisions = new List<Decision>();
+        private readonly List<Decision> decisions = new List<Decision>();
         public void AddDecision(NameData stock, StockTradeDecision buySell)
         {
             decisions.Add(new Decision(stock, buySell));
@@ -45,8 +45,8 @@ namespace TradingConsole.DecisionSystem
 
         private List<Decision> GetDecisions(StockTradeDecision buySell)
         {
-            var output = new List<Decision>();
-            foreach (var dec in decisions)
+            List<Decision> output = new List<Decision>();
+            foreach (Decision dec in decisions)
             {
                 if (dec.BuySell == buySell)
                 {

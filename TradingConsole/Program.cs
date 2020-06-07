@@ -1,5 +1,5 @@
-﻿using StructureCommon.Reporting;
-using System;
+﻿using System;
+using StructureCommon.Reporting;
 using TradingConsole.InputParser;
 using TradingConsole.Simulation;
 using TradingConsole.Statistics;
@@ -24,7 +24,7 @@ namespace TradingConsole
             Console.WriteLine("Trading Console");
             try
             {
-                var userInputParser = new UserInputParser(reportLogger);
+                UserInputParser userInputParser = new UserInputParser(reportLogger);
                 UserInputOptions inputOptions = userInputParser.ParseUserInput(args);
                 bool optionsOK = userInputParser.EnsureInputsSuitable(inputOptions);
                 if (!optionsOK)
@@ -40,7 +40,7 @@ namespace TradingConsole
                         case ProgramType.Configure:
                         {
                             Console.WriteLine("Downloading:");
-                            var stockDownloader = new StockDownloader(inputOptions, reportLogger);
+                            StockDownloader stockDownloader = new StockDownloader(inputOptions, reportLogger);
                             stockDownloader.Download();
                             break;
                         }
@@ -48,15 +48,15 @@ namespace TradingConsole
                         case ProgramType.Trade:
                         {
                             Console.WriteLine("Simulation Starting");
-                            var stats = new TradingStatistics();
-                            var tradingSimulation = new TradingSimulation(inputOptions, reportLogger);
+                            TradingStatistics stats = new TradingStatistics();
+                            TradingSimulation tradingSimulation = new TradingSimulation(inputOptions, reportLogger);
                             tradingSimulation.SetupSystemsAndRun(stats);
                             break;
                         }
                         case ProgramType.Help:
                         {
                             Console.WriteLine("User input options are:");
-                            foreach (var tokenType in Enum.GetValues(typeof(TextTokenType)))
+                            foreach (object tokenType in Enum.GetValues(typeof(TextTokenType)))
                             {
                                 Console.WriteLine(tokenType.ToString());
                             }

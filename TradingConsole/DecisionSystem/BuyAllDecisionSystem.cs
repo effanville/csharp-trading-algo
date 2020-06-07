@@ -1,7 +1,7 @@
-﻿using FinancialStructures.StockStructures;
-using StructureCommon.Reporting;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using FinancialStructures.StockStructures;
+using StructureCommon.Reporting;
 using TradingConsole.InputParser;
 using TradingConsole.Simulation;
 using TradingConsole.Statistics;
@@ -40,7 +40,7 @@ namespace TradingConsole.DecisionSystem
         /// <inheritdoc cref="IDecisionSystem"/>
         public void Decide(DateTime date, DecisionStatus status, ExchangeStocks exchange, TradingStatistics stats, SimulationParameters simulationParameters)
         {
-            foreach (var stock in exchange.Stocks)
+            foreach (Stock stock in exchange.Stocks)
             {
                 status.AddDecision(stock.Name, StockTradeDecision.Buy);
             }

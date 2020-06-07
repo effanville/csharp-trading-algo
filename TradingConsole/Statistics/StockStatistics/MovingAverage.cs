@@ -1,6 +1,6 @@
-﻿using FinancialStructures.StockStructures;
+﻿using System;
+using FinancialStructures.StockStructures;
 using StructureCommon.Mathematics;
-using System;
 
 namespace TradingConsole.Statistics
 {
@@ -29,7 +29,7 @@ namespace TradingConsole.Statistics
 
         public double Calculate(DateTime date, Stock stock)
         {
-            var values = stock.Values(date, BurnInTime, 0, DataType);
+            System.Collections.Generic.List<double> values = stock.Values(date, BurnInTime, 0, DataType);
             return VectorStats.Mean(values, BurnInTime);
         }
     }

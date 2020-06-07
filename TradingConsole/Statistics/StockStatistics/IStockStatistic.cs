@@ -1,5 +1,5 @@
-﻿using FinancialStructures.StockStructures;
-using System;
+﻿using System;
+using FinancialStructures.StockStructures;
 
 namespace TradingConsole.Statistics
 {

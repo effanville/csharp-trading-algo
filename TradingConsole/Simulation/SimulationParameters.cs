@@ -1,6 +1,6 @@
-﻿using FinancialStructures.NamingStructures;
+﻿using System;
+using FinancialStructures.NamingStructures;
 using FinancialStructures.StockStructures;
-using System;
 using TradingConsole.InputParser;
 
 namespace TradingConsole.Simulation

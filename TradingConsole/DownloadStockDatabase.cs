@@ -1,6 +1,6 @@
-﻿using FinancialStructures.StockStructures;
+﻿using System.IO;
+using FinancialStructures.StockStructures;
 using StructureCommon.Reporting;
-using System.IO;
 using TradingConsole.InputParser;
 
 namespace TradingConsole
@@ -37,7 +37,7 @@ namespace TradingConsole
 
         private void Configure()
         {
-            var exchange = new ExchangeStocks();
+            ExchangeStocks exchange = new ExchangeStocks();
             exchange.Configure(InputOptions.StockFilePath);
             string filePath = Path.ChangeExtension(InputOptions.StockFilePath, "xml");
             exchange.SaveExchangeStocks(filePath, ReportLogger);
@@ -45,7 +45,7 @@ namespace TradingConsole
 
         private void Download(DownloadType downloadType)
         {
-            var exchange = new ExchangeStocks();
+            ExchangeStocks exchange = new ExchangeStocks();
             exchange.LoadExchangeStocks(InputOptions.StockFilePath, ReportLogger);
             exchange.Download(downloadType, InputOptions.StartDate, InputOptions.EndDate, ReportLogger);
             exchange.SaveExchangeStocks(InputOptions.StockFilePath, ReportLogger);
