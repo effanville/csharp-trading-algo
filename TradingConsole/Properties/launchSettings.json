@@ -2,7 +2,9 @@
   "profiles": {
     "TradingConsole": {
       "commandName": "Project",
-      "commandLineArgs": "Simulate --StockFilePath \"C:\\Users\\masdoc\\source\\repos\\StockTradingConsole\\bin\\NewTextDocument.xml\" --StartDate 1/1/2019 --EndDate 28/2/2020 --StartingCash 20000 --DecisionSystemType ArbitraryStatsLeastSquares --DecSysParams PrevDayOpen,PrevTwoOpen,PrevThreeOpen,PrevFourOpen,PrevFiveOpen"
+      "commandLineArgs": "Simulate --DecisionSystemType BuyAll --DecisionStatsChoice FiveDayStats --StartingCash 20000 --StartDate 4/1/2010 --EndDate 1/1/2020 --StockFilePath \"C:\\Users\\masdoc\\source\\repos\\StockTradingConsole\\bin\\dummyDatabase.xml\""
+        //"DownloadAll --StartDate 1/1/2010 --EndDate 1/1/2020 --StockFilePath \"C:\\Users\\masdoc\\source\\repos\\StockTradingConsole\\bin\\dummyDatabase.xml\""
+      //"Simulate --StockFilePath \"C:\\Users\\masdoc\\source\\repos\\StockTradingConsole\\bin\\NewTextDocument.xml\" --StartDate 1/1/2019 --EndDate 28/2/2020 --StartingCash 20000 --DecisionSystemType LeastSquares --DecisionStatsChoice ArbitraryStats --DecSysParams PrevDayOpen,PrevTwoOpen,PrevThreeOpen,PrevFourOpen,PrevFiveOpen"
     }
   }
 }

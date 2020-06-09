@@ -42,7 +42,11 @@ namespace TradingConsole.BuySellSystem
             {
                 if (security.Value(day).Value > 0)
                 {
-                    security.UpdateSecurityData(day, stocks.GetValue(new NameData(security.Company, security.Name), day), ReportLogger);
+                    var value = stocks.GetValue(new NameData(security.Company, security.Name), day);
+                    if (!value.Equals(double.NaN))
+                    {
+                        security.UpdateSecurityData(day, value, ReportLogger);
+                    }
                 }
             }
         }
