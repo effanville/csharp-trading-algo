@@ -98,6 +98,7 @@ namespace TradingConsole
                             TradingStatistics stats = new TradingStatistics();
                             TradingSimulation tradingSimulation = new TradingSimulation(inputOptions, reportLogger, ConsoleWriter);
                             tradingSimulation.SetupSystemsAndRun(stats);
+                            stats.ExportToFile(Path.GetDirectoryName(filepath) + "\\" + DateTime.Now.FileSuitableDateTimeValue() + "-" + Path.GetFileNameWithoutExtension(filepath) + "-RunStats.log");
                             break;
                         }
                         case ProgramType.Help:

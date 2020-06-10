@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using FinancialStructures.Database;
 using FinancialStructures.NamingStructures;
 using FinancialStructures.PortfolioAPI;
@@ -51,11 +52,32 @@ namespace TradingConsole.Statistics
             }
 
             snapshot.freeCash = portfolio.TotalValue(AccountType.BankAccount, day);
+            snapshot.TotalHoldingValue = portfolio.TotalValue(AccountType.Security, day);
             DayData.Add(snapshot);
         }
 
-        public void ExportToFile()
+        public void ExportToFile(string filePath)
         {
+            try
+            {
+                StreamWriter writer = new StreamWriter(filePath);
+                writer.WriteLine("Trades:");
+                foreach (var trade in Transactions)
+                {
+                    writer.WriteLine(trade.ToString());
+                }
+
+                writer.WriteLine("History of Portfolio:");
+                foreach (var day in DayData)
+                {
+                    writer.WriteLine(day.ToString());
+                }
+
+                writer.Close();
+            }
+            catch (IOException exception)
+            {
+            }
         }
     }
 }
