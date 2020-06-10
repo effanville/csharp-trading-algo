@@ -9,8 +9,8 @@ namespace TradingConsole.InputParser
 {
     public class UserInputParser
     {
-        private readonly LogReporter ReportLogger;
-        public UserInputParser(LogReporter reportLogger)
+        private readonly IReportLogger ReportLogger;
+        public UserInputParser(IReportLogger reportLogger)
         {
             ReportLogger = reportLogger;
         }

@@ -18,7 +18,7 @@ namespace TradingConsole.BuySellSystem
     /// </summary>
     public class SimulationBuySellSystem : BuySellBase
     {
-        public SimulationBuySellSystem(LogReporter reportLogger)
+        public SimulationBuySellSystem(IReportLogger reportLogger)
             : base(reportLogger)
         {
         }
@@ -73,18 +73,19 @@ namespace TradingConsole.BuySellSystem
                     {
                         if (!portfolio.Exists(AccountType.Security, buy.StockName))
                         {
-                            portfolio.TryAdd(AccountType.Security, new NameData(buy.StockName.Company, buy.StockName.Name, "GBP", buy.StockName.Url, new HashSet<string>()), ReportLogger);
+                            _ = portfolio.TryAdd(AccountType.Security, new NameData(buy.StockName.Company, buy.StockName.Name, "GBP", buy.StockName.Url, new HashSet<string>()), ReportLogger);
                         }
 
                         // "Buy" the shares by adding the number of shares in the security desired. First must ensure we know the number of shares held.
                         double existingShares = portfolio.SecurityPrices(buy.StockName, day, SecurityDataStream.NumberOfShares);
-                        portfolio.TryAddDataToSecurity(buy.StockName, day, numShares + existingShares, priceToBuy, 1, ReportLogger);
+                        _ = portfolio.TryAddDataToSecurity(buy.StockName, day, numShares + existingShares, priceToBuy, 1, ReportLogger);
 
                         // Remove the cash used to buy the shares from the portfolio.
-                        portfolio.TryAddData(AccountType.BankAccount, new NameData("Cash", "Portfolio"), new DailyValuation(day, cashAvailable - costOfPurchase), ReportLogger);
+                        _ = portfolio.TryAddData(AccountType.BankAccount, new NameData("Cash", "Portfolio"), new DailyValuation(day, cashAvailable - costOfPurchase), ReportLogger);
 
                         // Add a log of the trade in the statistics.
-                        stats.AddTrade(new TradeDetails(TradeType.Buy, "", buy.StockName.Company, buy.StockName.Name, day, numShares * priceToBuy, numShares, priceToBuy, simulationParameters.tradeCost));
+                        var tradeDetails = new TradeDetails(TradeType.Buy, "", buy.StockName.Company, buy.StockName.Name, day, numShares * priceToBuy, numShares, priceToBuy, simulationParameters.tradeCost);
+                        stats.AddTrade(tradeDetails);
                     }
                 }
             }

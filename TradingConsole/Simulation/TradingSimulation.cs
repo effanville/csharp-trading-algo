@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using FinancialStructures.Database;
 using FinancialStructures.PortfolioAPI;
 using FinancialStructures.StockStructures;
@@ -23,10 +22,10 @@ namespace TradingConsole.Simulation
         private readonly ExchangeStocks Exchange = new ExchangeStocks();
 
         private readonly UserInputOptions InputOptions;
-        private readonly LogReporter ReportLogger;
+        private readonly IReportLogger ReportLogger;
         private readonly ConsoleStreamWriter ConsoleWriter;
 
-        public TradingSimulation(UserInputOptions inputOptions, LogReporter reportLogger, ConsoleStreamWriter consoleWriter)
+        public TradingSimulation(UserInputOptions inputOptions, IReportLogger reportLogger, ConsoleStreamWriter consoleWriter)
         {
             InputOptions = inputOptions;
             ReportLogger = reportLogger;
@@ -122,22 +121,21 @@ namespace TradingConsole.Simulation
             portfolio.SavePortfolio(InputOptions.PortfolioFilePath, ReportLogger);
         }
 
-        private void PerformDailyTrades(DateTime day, ExchangeStocks exchange, Portfolio portfolio, TradingStatistics stats, LogReporter reportLogger)
+        private void PerformDailyTrades(DateTime day, ExchangeStocks exchange, Portfolio portfolio, TradingStatistics stats, IReportLogger reportLogger)
         {
             // Decide which stocks to buy, sell or do nothing with.
             DecisionStatus status = new DecisionStatus();
             DecisionSystem.Decide(day, status, exchange, stats, SimulationParameters);
-            var buys = status.GetBuyDecisions().Select(dec => dec.StockName);
+            /*var buys = status.GetBuyDecisions().Select(dec => dec.StockName);
             if (buys.Any())
             {
                 ConsoleWriter.Write($"{day} - Buys: {string.Join(',', buys)}");
             }
-
             var sells = status.GetSellDecisions().Select(dec => dec.StockName);
             if (sells.Any())
             {
                 //ConsoleWriter.Write($"{day} - Sells: {string.Join(',', sells)}");
-            }
+            }*/
             DecisionSystem.AddDailyDecisionStats(stats, day, status.GetBuyDecisionsStockNames(), status.GetSellDecisionsStockNames());
 
             // Exact the buy/Sell decisions.

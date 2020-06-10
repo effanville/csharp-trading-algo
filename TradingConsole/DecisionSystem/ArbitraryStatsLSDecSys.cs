@@ -12,7 +12,7 @@ namespace TradingConsole.DecisionSystem
 {
     public class ArbitraryStatsLSDecisionSystem : IDecisionSystem
     {
-        public LogReporter ReportLogger
+        public IReportLogger ReportLogger
         {
             get;
         }
@@ -22,7 +22,7 @@ namespace TradingConsole.DecisionSystem
         public List<IStockStatistic> stockStatistics = new List<IStockStatistic>();
 
 
-        public ArbitraryStatsLSDecisionSystem(LogReporter reportLogger)
+        public ArbitraryStatsLSDecisionSystem(IReportLogger reportLogger)
         {
             ReportLogger = reportLogger;
         }

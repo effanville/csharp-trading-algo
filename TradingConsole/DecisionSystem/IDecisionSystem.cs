@@ -16,7 +16,7 @@ namespace TradingConsole.DecisionSystem
         /// <summary>
         /// Reports back to the user on errors (and progress)
         /// </summary>
-        LogReporter ReportLogger
+        IReportLogger ReportLogger
         {
             get;
         }

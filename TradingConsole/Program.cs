@@ -11,7 +11,11 @@ namespace TradingConsole
 {
     internal class Program
     {
+        /// <summary>
+        /// Enables writing to console and to a log file.
+        /// </summary>
         public static ConsoleStreamWriter ConsoleWriter;
+
         internal static void WriteHelp()
         {
             ConsoleWriter.Write("");
@@ -60,7 +64,7 @@ namespace TradingConsole
                     ConsoleWriter.Write($"{type} - {location} - {message}");
                 }
 
-                LogReporter reportLogger = new LogReporter((critical, type, location, message) => WriteReport(critical, type, location, message));
+                IReportLogger reportLogger = new LogReporter((critical, type, location, message) => WriteReport(critical, type, location, message));
                 ConsoleWriter.Write("Trading Console");
 
                 if (args.Length == 0)
@@ -113,8 +117,8 @@ namespace TradingConsole
                         }
                     }
                 }
-                stopWatch.Stop();
 
+                stopWatch.Stop();
                 ConsoleWriter.filePath = Path.GetDirectoryName(filepath) + "\\" + DateTime.Now.FileSuitableDateTimeValue() + "-" + Path.GetFileNameWithoutExtension(filepath) + "-output.log";
 
             }

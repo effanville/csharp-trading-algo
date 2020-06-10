@@ -12,12 +12,12 @@ namespace TradingConsole.BuySellSystem
 {
     public class BuySellBase : IBuySellSystem
     {
-        public LogReporter ReportLogger
+        public IReportLogger ReportLogger
         {
             get;
         }
 
-        public BuySellBase(LogReporter reportLogger)
+        public BuySellBase(IReportLogger reportLogger)
         {
             ReportLogger = reportLogger;
         }

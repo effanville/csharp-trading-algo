@@ -12,15 +12,14 @@ namespace TradingConsole.DecisionSystem
 {
     public class FiveDayStatsLSDecisionSystem : IDecisionSystem
     {
-        public LogReporter ReportLogger
+        public IReportLogger ReportLogger
         {
             get;
         }
 
         public IEstimator Estimator;
 
-
-        public FiveDayStatsLSDecisionSystem(LogReporter reportLogger)
+        public FiveDayStatsDecisionSystem(IReportLogger reportLogger)
         {
             ReportLogger = reportLogger;
         }

@@ -14,12 +14,12 @@ namespace TradingConsole.DecisionSystem
     public class BuyAllDecisionSystem : IDecisionSystem
     {
         /// <inheritdoc cref="IDecisionSystem"/>
-        public LogReporter ReportLogger
+        public IReportLogger ReportLogger
         {
             get;
         }
 
-        public BuyAllDecisionSystem(LogReporter reportLogger)
+        public BuyAllDecisionSystem(IReportLogger reportLogger)
         {
             ReportLogger = reportLogger;
         }
