@@ -41,7 +41,16 @@ namespace TradingConsole.DecisionSystem
                     List<double> values = exchange.Stocks[stockIndex].Values(simulationParameters.StartTime.AddDays(i), 0, 6, DataStream.Open);
                     for (int j = 0; j < 5; j++)
                     {
+                        if (values[j].Equals(double.NaN))
+                        {
+                            values[j] = values[j + 1];
+                        }
                         X[i + stockIndex, j] = values[j] / 100;
+                    }
+
+                    if (values.Last().Equals(double.NaN))
+                    {
+                        values[values.Count - 1] = values[values.Count - 2];
                     }
 
                     Y[i + stockIndex] = values.Last() / 100;
@@ -51,6 +60,7 @@ namespace TradingConsole.DecisionSystem
 
             Estimator = new LSEstimator(X, Y);
 
+            _ = ReportLogger.Log(ReportSeverity.Critical, ReportType.Report, ReportLocation.Unknown, $"Estimator Weights are {string.Join(',', Estimator.Estimator)}");
             simulationParameters.StartTime = burnInLength;
         }
 
