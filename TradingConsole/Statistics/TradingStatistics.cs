@@ -50,7 +50,7 @@ namespace TradingConsole.Statistics
             {
                 snapshot.AddHolding(new NameData(security.Company, security.Name), security.DayData(day));
             }
-
+            snapshot.Time = day;
             snapshot.freeCash = portfolio.TotalValue(AccountType.BankAccount, day);
             snapshot.TotalHoldingValue = portfolio.TotalValue(AccountType.Security, day);
             DayData.Add(snapshot);
