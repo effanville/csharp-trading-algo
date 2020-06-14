@@ -9,7 +9,8 @@ namespace TradingConsole.Simulation
     {
         public SimulationParameters(UserInputOptions inputOptions, ExchangeStocks exchange)
         {
-            StartTime = inputOptions.StartDate != null ? inputOptions.StartDate > exchange.EarliestDate() ? inputOptions.StartDate : exchange.EarliestDate() : exchange.EarliestDate();
+            var earliest = exchange.LatestEarliestDate();
+            StartTime = inputOptions.StartDate != null ? inputOptions.StartDate > earliest ? inputOptions.StartDate : earliest : earliest;
             EndTime = inputOptions.EndDate != null ? inputOptions.EndDate > exchange.LastDate() ? exchange.LastDate() : inputOptions.EndDate : exchange.LastDate();
             EvolutionIncrement = inputOptions.TradingGap.Seconds != 0 ? inputOptions.TradingGap : new TimeSpan(1, 0, 0, 0);
         }

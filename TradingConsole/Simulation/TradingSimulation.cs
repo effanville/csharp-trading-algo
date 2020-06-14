@@ -104,7 +104,10 @@ namespace TradingConsole.Simulation
 
                 stats.GenerateDayStats();
                 time += SimulationParameters.EvolutionIncrement;
-                ConsoleWriter.Write(time + " - " + portfolio.Value(time));
+                if (time.Day == 1)
+                {
+                    ConsoleWriter.Write(time + " - " + portfolio.Value(time));
+                }
             }
 
             stats.GenerateSimulationStats();

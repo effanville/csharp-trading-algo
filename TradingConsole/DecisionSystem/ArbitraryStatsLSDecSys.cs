@@ -48,15 +48,15 @@ namespace TradingConsole.DecisionSystem
                 {
                     for (int statisticIndex = 0; statisticIndex < numberStatistics; statisticIndex++)
                     {
-                        X[entryIndex + stockIndex, statisticIndex] = stockStatistics[statisticIndex].Calculate(simulationParameters.StartTime.AddDays(delayTime + entryIndex), exchange.Stocks[stockIndex]);
+                        X[entryIndex * exchange.Stocks.Count + stockIndex, statisticIndex] = stockStatistics[statisticIndex].Calculate(simulationParameters.StartTime.AddDays(delayTime + entryIndex), exchange.Stocks[stockIndex]);
                     }
 
-                    Y[entryIndex + stockIndex] = exchange.Stocks[stockIndex].Values(burnInLength.AddDays(delayTime + entryIndex), 0, 1, DataStream.Open).Last() / 100;
+                    Y[entryIndex * exchange.Stocks.Count + stockIndex] = exchange.Stocks[stockIndex].Values(burnInLength.AddDays(delayTime + entryIndex), 0, 1, DataStream.Open).Last() / 100;
                 }
             }
+<<<<<<< HEAD:TradingConsole/DecisionSystem/ArbitraryStatsLSDecSys.cs
 
             Estimator = new LSEstimator(X, Y);
-
             simulationParameters.StartTime = burnInLength;
         }
 
