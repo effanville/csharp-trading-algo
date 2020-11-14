@@ -18,7 +18,7 @@
 
   <ItemGroup>
     <PackageReference Include="StructureCommon" Version="1.0.3" />
-    <ProjectReference Include="..\..\Portfolio Analysis Database\FinancialStructures\FinancialStructures.csproj" />
+    <ProjectReference Include="..\..\PortfolioDatabase\FinancialStructures\FinancialStructures.csproj" />
   </ItemGroup>
 
   <ItemGroup>

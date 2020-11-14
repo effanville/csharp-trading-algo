@@ -1,7 +1,7 @@
 ﻿using System;
 using FinancialStructures.Database;
+using FinancialStructures.FinanceInterfaces;
 using FinancialStructures.NamingStructures;
-using FinancialStructures.PortfolioAPI;
 using FinancialStructures.StockData;
 using FinancialStructures.StockStructures;
 using StructureCommon.DataStructures;
@@ -22,16 +22,17 @@ namespace TradingConsole.BuySellSystem
         public override void SellHolding(DateTime day, Decision sell, ExchangeStocks stocks, Portfolio portfolio, TradingStatistics stats, BuySellParams parameters, SimulationParameters simulationParameters)
         {
             double price = stocks.GetValue(sell.StockName, day);
-            _ = portfolio.TryAddDataToSecurity(sell.StockName, day, 0.0, price, 1.0, ReportLogger);
+            _ = portfolio.TryAddOrEditDataToSecurity(sell.StockName, day, day, 0.0, price, 1.0, ReportLogger);
             double numShares = portfolio.SecurityPrices(sell.StockName, day, SecurityDataStream.NumberOfShares);
-            _ = portfolio.TryAddData(AccountType.BankAccount, simulationParameters.bankAccData, new DailyValuation(day, numShares * price - simulationParameters.tradeCost), ReportLogger);
+            var data = new DailyValuation(day, numShares * price - simulationParameters.tradeCost);
+            _ = portfolio.TryAddOrEditData(Account.BankAccount, simulationParameters.bankAccData, data, data, ReportLogger);
             stats.AddTrade(new TradeDetails(TradeType.Sell, "", sell.StockName.Company, sell.StockName.Name, day, numShares * price, numShares, price, simulationParameters.tradeCost));
         }
 
         public override void BuyHolding(DateTime day, Decision buy, ExchangeStocks stocks, Portfolio portfolio, TradingStatistics stats, BuySellParams parameters, SimulationParameters simulationParameters)
         {
             double price = stocks.GetValue(buy.StockName, day);
-            double cashAvailable = portfolio.TotalValue(AccountType.BankAccount, day);
+            double cashAvailable = portfolio.TotalValue(Totals.BankAccount, day);
             if (price != 0)
             {
                 int numShares = 0;
@@ -44,8 +45,9 @@ namespace TradingConsole.BuySellSystem
                 double costOfPurchase = numShares * price + simulationParameters.tradeCost;
                 if (cashAvailable > costOfPurchase)
                 {
-                    _ = portfolio.TryAddDataToSecurity(buy.StockName, day, numShares, price, 1, ReportLogger);
-                    _ = portfolio.TryAddData(AccountType.BankAccount, new NameData("Cash", "Portfolio"), new DailyValuation(day, cashAvailable - numShares * costOfPurchase), ReportLogger);
+                    _ = portfolio.TryAddOrEditDataToSecurity(buy.StockName, day, day, numShares, price, 1, ReportLogger);
+                    var data = new DailyValuation(day, cashAvailable - numShares * costOfPurchase);
+                    _ = portfolio.TryAddOrEditData(Account.BankAccount, new NameData("Cash", "Portfolio"), data, data, ReportLogger);
                     stats.AddTrade(new TradeDetails(TradeType.Buy, "", buy.StockName.Company, buy.StockName.Name, day, numShares * price, numShares, price, simulationParameters.tradeCost));
                 }
             }

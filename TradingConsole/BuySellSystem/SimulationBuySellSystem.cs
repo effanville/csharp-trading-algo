@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using FinancialStructures.Database;
+using FinancialStructures.FinanceInterfaces;
 using FinancialStructures.NamingStructures;
-using FinancialStructures.PortfolioAPI;
 using FinancialStructures.StockData;
 using FinancialStructures.StockStructures;
 using StructureCommon.DataStructures;
@@ -25,10 +25,10 @@ namespace TradingConsole.BuySellSystem
 
         public override void SellHolding(DateTime day, Decision sell, ExchangeStocks stocks, Portfolio portfolio, TradingStatistics stats, BuySellParams parameters, SimulationParameters simulationParameters)
         {
-            // One can only sell if one already owns some of the security.  
-            if (portfolio.Exists(AccountType.Security, sell.StockName) && portfolio.SecurityPrices(sell.StockName, day, SecurityDataStream.NumberOfShares) > 0)
+            // One can only sell if one already owns some of the security.
+            if (portfolio.Exists(Account.Security, sell.StockName) && portfolio.SecurityPrices(sell.StockName, day, SecurityDataStream.NumberOfShares) > 0)
             {
-                // First calculate price that one sells at. 
+                // First calculate price that one sells at.
                 // This is the open price of the stock, with a combat multiplier.
                 double upDown = simulationParameters.randomNumbers.Next(0, 100) > 100 * simulationParameters.UpTickProbability ? 1 : -1;
                 double valueModifier = 1 + simulationParameters.UpTickSize * upDown;
@@ -36,11 +36,12 @@ namespace TradingConsole.BuySellSystem
 
                 // Now perform selling. This consists of removing the security at the specific value in our portfolio.
                 // Note that the security in the portfolio does not take into account the cost of the trade
-                _ = portfolio.TryAddDataToSecurity(sell.StockName, day, 0.0, price, 1, ReportLogger);
+                _ = portfolio.TryAddOrEditDataToSecurity(sell.StockName, day, day, 0.0, price, 1, ReportLogger);
 
                 // Now increase the amount in the bank account, i.e. free cash, held in the portfolio, to free it up to be used on other securities.
                 double numShares = portfolio.SecurityPrices(sell.StockName, day, SecurityDataStream.NumberOfShares);
-                _ = portfolio.TryAddData(AccountType.BankAccount, simulationParameters.bankAccData, new DailyValuation(day, numShares * price - simulationParameters.tradeCost), ReportLogger);
+                var value = new DailyValuation(day, numShares * price - simulationParameters.tradeCost);
+                _ = portfolio.TryAddOrEditData(Account.BankAccount, simulationParameters.bankAccData, value, value, ReportLogger);
 
                 // record the trade in the statistics of the run.
                 stats.AddTrade(new TradeDetails(TradeType.Sell, "", sell.StockName.Company, sell.StockName.Name, day, numShares * price, numShares, price, simulationParameters.tradeCost));
@@ -56,7 +57,7 @@ namespace TradingConsole.BuySellSystem
             double valueModifier = 1 + simulationParameters.UpTickSize * upDown;
             double priceToBuy = openPrice * valueModifier;
 
-            double cashAvailable = portfolio.TotalValue(AccountType.BankAccount, day);
+            double cashAvailable = portfolio.TotalValue(Totals.BankAccount, day);
             if (openPrice != 0)
             {
                 int numShares = 0;
@@ -71,17 +72,18 @@ namespace TradingConsole.BuySellSystem
                     double costOfPurchase = numShares * priceToBuy + simulationParameters.tradeCost;
                     if (cashAvailable > costOfPurchase)
                     {
-                        if (!portfolio.Exists(AccountType.Security, buy.StockName))
+                        if (!portfolio.Exists(Account.Security, buy.StockName))
                         {
-                            _ = portfolio.TryAdd(AccountType.Security, new NameData(buy.StockName.Company, buy.StockName.Name, "GBP", buy.StockName.Url, new HashSet<string>()), ReportLogger);
+                            _ = portfolio.TryAdd(Account.Security, new NameData(buy.StockName.Company, buy.StockName.Name, "GBP", buy.StockName.Url, new HashSet<string>()), ReportLogger);
                         }
 
                         // "Buy" the shares by adding the number of shares in the security desired. First must ensure we know the number of shares held.
                         double existingShares = portfolio.SecurityPrices(buy.StockName, day, SecurityDataStream.NumberOfShares);
-                        _ = portfolio.TryAddDataToSecurity(buy.StockName, day, numShares + existingShares, priceToBuy, 1, ReportLogger);
+                        _ = portfolio.TryAddOrEditDataToSecurity(buy.StockName, day, day, numShares + existingShares, priceToBuy, 1, ReportLogger);
 
                         // Remove the cash used to buy the shares from the portfolio.
-                        _ = portfolio.TryAddData(AccountType.BankAccount, new NameData("Cash", "Portfolio"), new DailyValuation(day, cashAvailable - costOfPurchase), ReportLogger);
+                        var value = new DailyValuation(day, cashAvailable - costOfPurchase);
+                        _ = portfolio.TryAddOrEditData(Account.BankAccount, new NameData("Cash", "Portfolio"), value, value, ReportLogger);
 
                         // Add a log of the trade in the statistics.
                         var tradeDetails = new TradeDetails(TradeType.Buy, "", buy.StockName.Company, buy.StockName.Name, day, numShares * priceToBuy, numShares, priceToBuy, simulationParameters.tradeCost);

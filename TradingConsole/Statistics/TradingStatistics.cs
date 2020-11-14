@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.IO;
 using FinancialStructures.Database;
+using FinancialStructures.FinanceInterfaces;
 using FinancialStructures.NamingStructures;
-using FinancialStructures.PortfolioAPI;
 using FinancialStructures.StockData;
 
 namespace TradingConsole.Statistics
@@ -51,8 +51,8 @@ namespace TradingConsole.Statistics
                 snapshot.AddHolding(new NameData(security.Company, security.Name), security.DayData(day));
             }
             snapshot.Time = day;
-            snapshot.freeCash = portfolio.TotalValue(AccountType.BankAccount, day);
-            snapshot.TotalHoldingValue = portfolio.TotalValue(AccountType.Security, day);
+            snapshot.freeCash = portfolio.TotalValue(Totals.BankAccount, day);
+            snapshot.TotalHoldingValue = portfolio.TotalValue(Totals.Security, day);
             DayData.Add(snapshot);
         }
 

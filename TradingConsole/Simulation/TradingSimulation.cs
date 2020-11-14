@@ -1,6 +1,6 @@
 ﻿using System;
 using FinancialStructures.Database;
-using FinancialStructures.PortfolioAPI;
+using FinancialStructures.FinanceInterfaces;
 using FinancialStructures.StockStructures;
 using StructureCommon.DataStructures;
 using StructureCommon.Reporting;
@@ -106,7 +106,8 @@ namespace TradingConsole.Simulation
                 time += SimulationParameters.EvolutionIncrement;
                 if (time.Day == 1)
                 {
-                    ConsoleWriter.Write(time + " - " + portfolio.Value(time));
+                    ConsoleWriter.Write(time + " - " + portfolio.TotalValue(Totals.All, time));
+                    ;
                 }
             }
 
@@ -151,12 +152,13 @@ namespace TradingConsole.Simulation
             if (InputOptions.PortfolioFilePath != null)
             {
                 portfolio.LoadPortfolio(InputOptions.PortfolioFilePath, ReportLogger);
-                stats.StartingCash = portfolio.TotalValue(AccountType.BankAccount, startTime);
+                stats.StartingCash = portfolio.TotalValue(Totals.BankAccount, startTime);
             }
             else
             {
-                _ = portfolio.TryAdd(AccountType.BankAccount, SimulationParameters.bankAccData, ReportLogger);
-                _ = portfolio.TryAddData(AccountType.BankAccount, SimulationParameters.bankAccData, new DailyValuation(InputOptions.StartDate, InputOptions.StartingCash), ReportLogger);
+                _ = portfolio.TryAdd(Account.BankAccount, SimulationParameters.bankAccData, ReportLogger);
+                var data = new DailyValuation(InputOptions.StartDate, InputOptions.StartingCash);
+                _ = portfolio.TryAddOrEditData(Account.BankAccount, SimulationParameters.bankAccData, data, data, ReportLogger);
                 stats.StartingCash = InputOptions.StartingCash;
             }
         }
