@@ -6,7 +6,7 @@ namespace TradingConsole.Statistics
 {
     public class PreviousNDayValue : IStockStatistic
     {
-        public DataStream DataType
+        public StockDataStream DataType
         {
             get;
         }
@@ -21,7 +21,7 @@ namespace TradingConsole.Statistics
             get;
         }
 
-        public PreviousNDayValue(int n, DataStream dataType, StatisticType typeOfStatistic)
+        public PreviousNDayValue(int n, StockDataStream dataType, StatisticType typeOfStatistic)
         {
             BurnInTime = n;
             DataType = dataType;

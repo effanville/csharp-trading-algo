@@ -18,12 +18,12 @@ namespace TradingConsole.Statistics
             get;
         }
 
-        public DataStream DataType
+        public StockDataStream DataType
         {
             get;
         }
 
-        public RelativeMovingAverage(int numberDaysOne, int numberDaysTwo, DataStream dataStream, StatisticType statisticType)
+        public RelativeMovingAverage(int numberDaysOne, int numberDaysTwo, StockDataStream dataStream, StatisticType statisticType)
         {
             BurnInTime = Math.Max(numberDaysOne, numberDaysTwo);
             fFirstLength = numberDaysOne;

@@ -26,12 +26,12 @@ namespace TradingConsole.DecisionSystem
         /// e.g. any parameters from an estimation are set at this point.
         /// This may alter the simulation parameters (e.g. the start time of the simulation).
         /// </summary>
-        void Calibrate(UserInputOptions inputOptions, ExchangeStocks exchange, SimulationParameters simulationParameters);
+        void Calibrate(UserInputOptions inputOptions, IStockExchange exchange, SimulationParameters simulationParameters);
 
         /// <summary>
         /// The process by which a decision on each stock in the exchange is made.
         /// </summary>
-        void Decide(DateTime day, DecisionStatus status, ExchangeStocks exchange, TradingStatistics stats, SimulationParameters simulationParameters);
+        void Decide(DateTime day, DecisionStatus status, IStockExchange exchange, TradingStatistics stats, SimulationParameters simulationParameters);
 
         /// <summary>
         /// Method to add to statistics information about what decisions have been made.

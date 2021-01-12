@@ -32,7 +32,7 @@ namespace TradingConsole.Statistics
         /// <summary>
         /// The data of the stock this will calculate the statistic of.
         /// </summary>
-        DataStream DataType
+        StockDataStream DataType
         {
             get;
         }

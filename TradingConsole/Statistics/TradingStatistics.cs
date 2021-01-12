@@ -2,9 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using FinancialStructures.Database;
-using FinancialStructures.FinanceInterfaces;
-using FinancialStructures.NamingStructures;
-using FinancialStructures.StockData;
+using FinancialStructures.StockStructures.StockData;
 
 namespace TradingConsole.Statistics
 {
@@ -13,7 +11,7 @@ namespace TradingConsole.Statistics
         private readonly List<TradingDaySnapshot> DayData = new List<TradingDaySnapshot>();
         private readonly List<DecisionStatistic> DecisionStats = new List<DecisionStatistic>();
 
-        private readonly List<TradeDetails> Transactions = new List<TradeDetails>();
+        private readonly List<Trade> Transactions = new List<Trade>();
 
         public double StartingCash;
 
@@ -28,12 +26,12 @@ namespace TradingConsole.Statistics
         {
         }
 
-        public void AddDailyTrades(List<TradeDetails> tradeDetails)
+        public void AddDailyTrades(List<Trade> tradeDetails)
         {
             Transactions.AddRange(tradeDetails);
         }
 
-        public void AddTrade(TradeDetails tradeDetails)
+        public void AddTrade(Trade tradeDetails)
         {
             Transactions.Add(tradeDetails);
         }
@@ -43,12 +41,12 @@ namespace TradingConsole.Statistics
             DecisionStats.Add(new DecisionStatistic(day, buys, sells));
         }
 
-        public void AddSnapshot(DateTime day, Portfolio portfolio)
+        public void AddSnapshot(DateTime day, IPortfolio portfolio)
         {
             TradingDaySnapshot snapshot = new TradingDaySnapshot();
-            foreach (FinancialStructures.FinanceStructures.Security security in portfolio.Funds)
+            foreach (var security in portfolio.Funds)
             {
-                snapshot.AddHolding(new NameData(security.Company, security.Name), security.DayData(day));
+                snapshot.AddHolding(security.Names, security.DayData(day));
             }
             snapshot.Time = day;
             snapshot.freeCash = portfolio.TotalValue(Totals.BankAccount, day);

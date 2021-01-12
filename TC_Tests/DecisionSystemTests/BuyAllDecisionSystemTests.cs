@@ -11,8 +11,8 @@ namespace TC_Tests
         [Test]
         public void DecisionAsExpected()
         {
-            ExchangeStocks exchange = new ExchangeStocks();
-            exchange.Stocks.Add(new Stock("MyCompany", "MyName", ""));
+            var exchange = new StockExchange();
+            exchange.Stocks.Add(new Stock("MyTicker", "MyCompany", "MyName", ""));
             exchange.Stocks[0].AddValue(DateTime.Today, 43, 47, 40, 41, 1);
 
             BuyAllDecisionSystem decisionSystem = new BuyAllDecisionSystem(TestHelper.ReportLogger);

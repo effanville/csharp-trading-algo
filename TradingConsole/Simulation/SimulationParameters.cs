@@ -7,7 +7,7 @@ namespace TradingConsole.Simulation
 {
     public class SimulationParameters
     {
-        public SimulationParameters(UserInputOptions inputOptions, ExchangeStocks exchange)
+        public SimulationParameters(UserInputOptions inputOptions, IStockExchange exchange)
         {
             var earliest = exchange.LatestEarliestDate();
             StartTime = inputOptions.StartDate != null ? inputOptions.StartDate > earliest ? inputOptions.StartDate : earliest : earliest;

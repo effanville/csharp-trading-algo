@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using FinancialStructures.Database;
-using FinancialStructures.FinanceInterfaces;
 using FinancialStructures.NamingStructures;
-using FinancialStructures.StockData;
 using FinancialStructures.StockStructures;
+using FinancialStructures.StockStructures.StockData;
 using StructureCommon.DataStructures;
 using StructureCommon.Reporting;
 using TradingConsole.DecisionSystem;
@@ -23,7 +22,7 @@ namespace TradingConsole.BuySellSystem
         {
         }
 
-        public override void SellHolding(DateTime day, Decision sell, ExchangeStocks stocks, Portfolio portfolio, TradingStatistics stats, BuySellParams parameters, SimulationParameters simulationParameters)
+        public override void SellHolding(DateTime day, Decision sell, IStockExchange stocks, IPortfolio portfolio, TradingStatistics stats, BuySellParams parameters, SimulationParameters simulationParameters)
         {
             // One can only sell if one already owns some of the security.
             if (portfolio.Exists(Account.Security, sell.StockName) && portfolio.SecurityPrices(sell.StockName, day, SecurityDataStream.NumberOfShares) > 0)
@@ -32,7 +31,7 @@ namespace TradingConsole.BuySellSystem
                 // This is the open price of the stock, with a combat multiplier.
                 double upDown = simulationParameters.randomNumbers.Next(0, 100) > 100 * simulationParameters.UpTickProbability ? 1 : -1;
                 double valueModifier = 1 + simulationParameters.UpTickSize * upDown;
-                double price = stocks.GetValue(sell.StockName, day, DataStream.Open) * valueModifier;
+                double price = stocks.GetValue(sell.StockName, day, StockDataStream.Open) * valueModifier;
 
                 // Now perform selling. This consists of removing the security at the specific value in our portfolio.
                 // Note that the security in the portfolio does not take into account the cost of the trade
@@ -44,13 +43,13 @@ namespace TradingConsole.BuySellSystem
                 _ = portfolio.TryAddOrEditData(Account.BankAccount, simulationParameters.bankAccData, value, value, ReportLogger);
 
                 // record the trade in the statistics of the run.
-                stats.AddTrade(new TradeDetails(TradeType.Sell, "", sell.StockName.Company, sell.StockName.Name, day, numShares * price, numShares, price, simulationParameters.tradeCost));
+                stats.AddTrade(new Trade(TradeType.Sell, "", sell.StockName.Company, sell.StockName.Name, day, numShares * price, numShares, price, simulationParameters.tradeCost));
             }
         }
 
-        public override void BuyHolding(DateTime day, Decision buy, ExchangeStocks stocks, Portfolio portfolio, TradingStatistics stats, BuySellParams parameters, SimulationParameters simulationParameters)
+        public override void BuyHolding(DateTime day, Decision buy, IStockExchange stocks, IPortfolio portfolio, TradingStatistics stats, BuySellParams parameters, SimulationParameters simulationParameters)
         {
-            double openPrice = stocks.GetValue(buy.StockName, day, DataStream.Open);
+            double openPrice = stocks.GetValue(buy.StockName, day, StockDataStream.Open);
 
             // we modify the price we buy at from the opening price, to simulate market movement.
             double upDown = simulationParameters.randomNumbers.Next(0, 100) > 100 * simulationParameters.UpTickProbability ? 1 : -1;
@@ -86,7 +85,7 @@ namespace TradingConsole.BuySellSystem
                         _ = portfolio.TryAddOrEditData(Account.BankAccount, new NameData("Cash", "Portfolio"), value, value, ReportLogger);
 
                         // Add a log of the trade in the statistics.
-                        var tradeDetails = new TradeDetails(TradeType.Buy, "", buy.StockName.Company, buy.StockName.Name, day, numShares * priceToBuy, numShares, priceToBuy, simulationParameters.tradeCost);
+                        var tradeDetails = new Trade(TradeType.Buy, "", buy.StockName.Company, buy.StockName.Name, day, numShares * priceToBuy, numShares, priceToBuy, simulationParameters.tradeCost);
                         stats.AddTrade(tradeDetails);
                     }
                 }

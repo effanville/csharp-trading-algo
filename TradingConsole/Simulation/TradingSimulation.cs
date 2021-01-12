@@ -1,6 +1,6 @@
 ﻿using System;
 using FinancialStructures.Database;
-using FinancialStructures.FinanceInterfaces;
+using FinancialStructures.Database.Implementation;
 using FinancialStructures.StockStructures;
 using StructureCommon.DataStructures;
 using StructureCommon.Reporting;
@@ -19,7 +19,7 @@ namespace TradingConsole.Simulation
         private readonly BuySellParams TradingParameters = new BuySellParams();
         private SimulationParameters SimulationParameters;
 
-        private readonly ExchangeStocks Exchange = new ExchangeStocks();
+        private readonly IStockExchange Exchange = new StockExchange();
 
         private readonly UserInputOptions InputOptions;
         private readonly IReportLogger ReportLogger;
@@ -64,7 +64,7 @@ namespace TradingConsole.Simulation
                     break;
             }
 
-            Exchange.LoadExchangeStocks(InputOptions.StockFilePath, ReportLogger);
+            Exchange.LoadStockExchange(InputOptions.StockFilePath, ReportLogger);
             if (!Exchange.CheckValidity())
             {
                 _ = ReportLogger.Log(ReportSeverity.Critical, ReportType.Error, ReportLocation.Loading, "Stock input data not suitable.");
@@ -116,7 +116,7 @@ namespace TradingConsole.Simulation
 
         private void Run(TradingStatistics stats)
         {
-            Portfolio portfolio = new Portfolio();
+            IPortfolio portfolio = new Portfolio();
             LoadStartPortfolio(SimulationParameters.StartTime, stats, portfolio);
             PerformDailyTrades(DateTime.Today, Exchange, portfolio, stats, ReportLogger);
 
@@ -125,7 +125,7 @@ namespace TradingConsole.Simulation
             portfolio.SavePortfolio(InputOptions.PortfolioFilePath, ReportLogger);
         }
 
-        private void PerformDailyTrades(DateTime day, ExchangeStocks exchange, Portfolio portfolio, TradingStatistics stats, IReportLogger reportLogger)
+        private void PerformDailyTrades(DateTime day, IStockExchange exchange, IPortfolio portfolio, TradingStatistics stats, IReportLogger reportLogger)
         {
             // Decide which stocks to buy, sell or do nothing with.
             DecisionStatus status = new DecisionStatus();
@@ -147,7 +147,7 @@ namespace TradingConsole.Simulation
             stats.AddSnapshot(day, portfolio);
         }
 
-        private void LoadStartPortfolio(DateTime startTime, TradingStatistics stats, Portfolio portfolio)
+        private void LoadStartPortfolio(DateTime startTime, TradingStatistics stats, IPortfolio portfolio)
         {
             if (InputOptions.PortfolioFilePath != null)
             {

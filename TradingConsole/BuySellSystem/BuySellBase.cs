@@ -1,6 +1,5 @@
 ﻿using System;
 using FinancialStructures.Database;
-using FinancialStructures.FinanceInterfaces;
 using FinancialStructures.NamingStructures;
 using FinancialStructures.StockStructures;
 using StructureCommon.Reporting;
@@ -22,7 +21,7 @@ namespace TradingConsole.BuySellSystem
             ReportLogger = reportLogger;
         }
 
-        public virtual void BuySell(DateTime day, DecisionStatus status, ExchangeStocks stocks, Portfolio portfolio, TradingStatistics stats, BuySellParams parameters, SimulationParameters simulationParameters)
+        public virtual void BuySell(DateTime day, DecisionStatus status, IStockExchange stocks, IPortfolio portfolio, TradingStatistics stats, BuySellParams parameters, SimulationParameters simulationParameters)
         {
             System.Collections.Generic.List<Decision> sellDecisions = status.GetSellDecisions();
 
@@ -38,24 +37,24 @@ namespace TradingConsole.BuySellSystem
                 BuyHolding(day, buy, stocks, portfolio, stats, parameters, simulationParameters);
             }
 
-            foreach (ISecurity security in portfolio.Funds)
+            foreach (var security in portfolio.Funds)
             {
                 if (security.Value(day).Value > 0)
                 {
                     var value = stocks.GetValue(new NameData(security.Company, security.Name), day);
                     if (!value.Equals(double.NaN))
                     {
-                        security.UpdateSecurityData(day, value, ReportLogger);
+                        security.TryAddOrEditData(day, day, value, ReportLogger);
                     }
                 }
             }
         }
 
-        public virtual void SellHolding(DateTime day, Decision sell, ExchangeStocks stocks, Portfolio portfolio, TradingStatistics stats, BuySellParams parameters, SimulationParameters simulationParameters)
+        public virtual void SellHolding(DateTime day, Decision sell, IStockExchange stocks, IPortfolio portfolio, TradingStatistics stats, BuySellParams parameters, SimulationParameters simulationParameters)
         {
         }
 
-        public virtual void BuyHolding(DateTime day, Decision buy, ExchangeStocks stocks, Portfolio portfolio, TradingStatistics stats, BuySellParams parameters, SimulationParameters simulationParameters)
+        public virtual void BuyHolding(DateTime day, Decision buy, IStockExchange stocks, IPortfolio portfolio, TradingStatistics stats, BuySellParams parameters, SimulationParameters simulationParameters)
         {
         }
     }

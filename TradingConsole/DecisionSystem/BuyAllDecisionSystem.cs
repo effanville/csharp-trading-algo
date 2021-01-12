@@ -27,7 +27,7 @@ namespace TradingConsole.DecisionSystem
         /// <summary>
         /// No parameters to calibrate in this system.
         /// </summary>
-        public void Calibrate(UserInputOptions inputOptions, ExchangeStocks exchange, SimulationParameters simulationParameters)
+        public void Calibrate(UserInputOptions inputOptions, IStockExchange exchange, SimulationParameters simulationParameters)
         {
         }
 
@@ -38,7 +38,7 @@ namespace TradingConsole.DecisionSystem
         }
 
         /// <inheritdoc cref="IDecisionSystem"/>
-        public void Decide(DateTime date, DecisionStatus status, ExchangeStocks exchange, TradingStatistics stats, SimulationParameters simulationParameters)
+        public void Decide(DateTime date, DecisionStatus status, IStockExchange exchange, TradingStatistics stats, SimulationParameters simulationParameters)
         {
             foreach (Stock stock in exchange.Stocks)
             {

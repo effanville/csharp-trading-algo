@@ -22,11 +22,11 @@ namespace TradingConsole.Statistics
             }
         }
 
-        public DataStream DataType
+        public StockDataStream DataType
         {
             get
             {
-                return DataStream.Open;
+                return StockDataStream.Open;
             }
         }
 

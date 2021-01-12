@@ -15,11 +15,11 @@ namespace TradingConsole.Statistics
             get;
         }
 
-        public DataStream DataType
+        public StockDataStream DataType
         {
             get
             {
-                return DataStream.None;
+                return StockDataStream.None;
             }
         }
 

@@ -20,10 +20,10 @@ namespace TradingConsole
             switch (InputOptions.funtionType)
             {
                 case ProgramType.DownloadAll:
-                    Download(DownloadType.All);
+                    Download(StockExchangeDownloadMethod.All);
                     break;
                 case ProgramType.DownloadLatest:
-                    Download(DownloadType.Latest);
+                    Download(StockExchangeDownloadMethod.Latest);
                     break;
                 case ProgramType.Configure:
                     Configure();
@@ -37,18 +37,18 @@ namespace TradingConsole
 
         private void Configure()
         {
-            ExchangeStocks exchange = new ExchangeStocks();
+            IStockExchange exchange = new StockExchange();
             exchange.Configure(InputOptions.StockFilePath);
             string filePath = Path.ChangeExtension(InputOptions.StockFilePath, "xml");
-            exchange.SaveExchangeStocks(filePath, ReportLogger);
+            exchange.SaveStockExchange(filePath, ReportLogger);
         }
 
-        private void Download(DownloadType downloadType)
+        private void Download(StockExchangeDownloadMethod downloadType)
         {
-            ExchangeStocks exchange = new ExchangeStocks();
-            exchange.LoadExchangeStocks(InputOptions.StockFilePath, ReportLogger);
+            IStockExchange exchange = new StockExchange();
+            exchange.LoadStockExchange(InputOptions.StockFilePath, ReportLogger);
             exchange.Download(downloadType, InputOptions.StartDate, InputOptions.EndDate, ReportLogger);
-            exchange.SaveExchangeStocks(InputOptions.StockFilePath, ReportLogger);
+            exchange.SaveStockExchange(InputOptions.StockFilePath, ReportLogger);
         }
     }
 }
