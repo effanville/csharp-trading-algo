@@ -18,7 +18,7 @@ namespace TC_Tests
             string[] args = inputArgs.Split(' ');
             UserInputParser parser = new UserInputParser(TestHelper.ReportLogger);
             UserInputOptions tokens = parser.ParseUserInput(args);
-            Assert.AreEqual(ProgramType.Simulate, tokens.funtionType);
+            Assert.AreEqual(ProgramType.Simulate, tokens.FuntionType);
             Assert.AreEqual("\"C:\\Users\\masdoc\\source\\repos\\StockTradingConsole\\bin\\NewTextDocument.xml\"", tokens.StockFilePath);
             Assert.AreEqual(new DateTime(2019, 1, 1), tokens.StartDate);
             Assert.AreEqual(new DateTime(2020, 2, 28), tokens.EndDate);

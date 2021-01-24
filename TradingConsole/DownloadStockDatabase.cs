@@ -17,7 +17,7 @@ namespace TradingConsole
 
         public void Download()
         {
-            switch (InputOptions.funtionType)
+            switch (InputOptions.FuntionType)
             {
                 case ProgramType.DownloadAll:
                     Download(StockExchangeDownloadMethod.All);

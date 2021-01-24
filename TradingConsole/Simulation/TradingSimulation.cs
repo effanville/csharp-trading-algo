@@ -75,11 +75,11 @@ namespace TradingConsole.Simulation
 
             DecisionSystem.Calibrate(InputOptions, Exchange, SimulationParameters);
 
-            if (InputOptions.funtionType == ProgramType.Simulate)
+            if (InputOptions.FuntionType == ProgramType.Simulate)
             {
                 SimulateRun(stats);
             }
-            if (InputOptions.funtionType == ProgramType.Trade)
+            if (InputOptions.FuntionType == ProgramType.Trade)
             {
                 Run(stats);
             }

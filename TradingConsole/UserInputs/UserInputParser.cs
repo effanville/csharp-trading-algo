@@ -7,33 +7,33 @@ using TradingConsole.Statistics;
 
 namespace TradingConsole.InputParser
 {
+    /// <summary>
+    /// Contains logic for interpreting user inputs.
+    /// </summary>
     public class UserInputParser
     {
         private readonly IReportLogger ReportLogger;
+
+        /// <summary>
+        /// Default parameter argument extension.
+        /// </summary>
+        public const string parameterArg = "--";
+
+        /// <summary>
+        /// Create an instance.
+        /// </summary>
+        /// <param name="reportLogger"></param>
         public UserInputParser(IReportLogger reportLogger)
         {
             ReportLogger = reportLogger;
         }
 
-        public string parameterArg = "--";
-
-        private TextTokenType TokenTypeSelector(string arg)
-        {
-            foreach (TextTokenType type in Enum.GetValues(typeof(TextTokenType)))
-            {
-                string parameter = arg.Remove(0, 2);
-                if (parameter == type.ToString())
-                {
-                    return type;
-                }
-            }
-
-            return TextTokenType.Error;
-        }
-
+        /// <summary>
+        /// Determines if the inputs specified are suitable.
+        /// </summary>
         public bool EnsureInputsSuitable(UserInputOptions inputOptions)
         {
-            switch (inputOptions.funtionType)
+            switch (inputOptions.FuntionType)
             {
                 case ProgramType.Configure:
                 {
@@ -64,6 +64,9 @@ namespace TradingConsole.InputParser
             }
         }
 
+        /// <summary>
+        /// Analyses the inputs specified and returns the outputs from this.
+        /// </summary>
         public UserInputOptions ParseUserInput(string[] args)
         {
             if (args.Length == 0)
@@ -101,12 +104,26 @@ namespace TradingConsole.InputParser
                     else
                     {
                         outputTokens.Add(new TextToken(TextTokenType.Error, TokenTypeSelector(args[i]).ToString() + " - NoValueSelected"));
-                        ReportLogger.Log(ReportSeverity.Critical, ReportType.Error, ReportLocation.Parsing, "Token does not have proper value");
+                        _ = ReportLogger.Log(ReportSeverity.Critical, ReportType.Error, ReportLocation.Parsing, "Token does not have proper value");
                     }
                 }
             }
 
             return outputTokens;
+        }
+
+        private TextTokenType TokenTypeSelector(string arg)
+        {
+            foreach (TextTokenType type in Enum.GetValues(typeof(TextTokenType)))
+            {
+                string parameter = arg.Remove(0, 2);
+                if (parameter == type.ToString())
+                {
+                    return type;
+                }
+            }
+
+            return TextTokenType.Error;
         }
 
         private TextToken DetermineProgramType(string argument)
@@ -135,7 +152,8 @@ namespace TradingConsole.InputParser
                         {
                             if (token.Value == type.ToString())
                             {
-                                inputs.funtionType = type;
+                                inputs.FuntionType = type;
+                                break;
                             }
                         }
                         break;

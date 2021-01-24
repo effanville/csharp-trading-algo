@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using TradingConsole.Commands;
 using TradingConsole.Statistics;
 
 namespace TradingConsole.InputParser
@@ -9,7 +10,20 @@ namespace TradingConsole.InputParser
     /// </summary>
     public class UserInputOptions
     {
-        public ProgramType funtionType;
+        public ProgramType FuntionType
+        {
+            get;
+            set;
+        }
+
+        /// <summary>
+        /// The command for the program.
+        /// </summary>
+        public ICommand Command
+        {
+            get;
+        }
+
         public string StockFilePath;
         public string PortfolioFilePath;
         public double StartingCash;
