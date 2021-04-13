@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using System.IO.Abstractions;
 using FinancialStructures.StockStructures;
 using FinancialStructures.StockStructures.Implementation;
 using StructureCommon.Reporting;
@@ -10,9 +11,12 @@ namespace TradingConsole
     {
         private readonly UserInputOptions InputOptions;
         private readonly IReportLogger ReportLogger;
-        public StockDownloader(UserInputOptions inputOptions, IReportLogger reportLogger)
+        private readonly IFileSystem fFileSystem;
+
+        public StockDownloader(UserInputOptions inputOptions, IFileSystem fileSystem, IReportLogger reportLogger)
         {
             InputOptions = inputOptions;
+            fFileSystem = fileSystem;
             ReportLogger = reportLogger;
         }
 
@@ -40,7 +44,7 @@ namespace TradingConsole
         {
             IStockExchange exchange = new StockExchange();
             exchange.Configure(InputOptions.StockFilePath);
-            string filePath = Path.ChangeExtension(InputOptions.StockFilePath, "xml");
+            string filePath = fFileSystem.Path.ChangeExtension(InputOptions.StockFilePath, "xml");
             exchange.SaveStockExchange(filePath, ReportLogger);
         }
 

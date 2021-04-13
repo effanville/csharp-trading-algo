@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using TradingConsole.BuySellSystem;
 using TradingConsole.Commands;
+using TradingConsole.DecisionSystem;
 using TradingConsole.Statistics;
 
 namespace TradingConsole.InputParser

@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using StructureCommon.Extensions;
 using StructureCommon.Reporting;
+using TradingConsole.BuySellSystem;
+using TradingConsole.DecisionSystem;
 using TradingConsole.Statistics;
 
 namespace TradingConsole.InputParser

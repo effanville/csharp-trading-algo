@@ -56,7 +56,7 @@ namespace TradingConsole
                         case ProgramType.Configure:
                         {
                             consoleWriter.Write("Downloading:");
-                            StockDownloader stockDownloader = new StockDownloader(inputOptions, reportLogger);
+                            StockDownloader stockDownloader = new StockDownloader(inputOptions, fileSystem, reportLogger);
                             stockDownloader.Download();
                             break;
                         }

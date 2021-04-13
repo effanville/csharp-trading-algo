@@ -37,29 +37,6 @@ namespace TradingConsole.Simulation
 
         public void SetupSystemsAndRun(TradingStatistics stats)
         {
-            switch (InputOptions.DecisionType)
-            {
-                case DecisionSystemType.BuyAll:
-                    DecisionSystem = new BuyAllDecisionSystem(ReportLogger);
-                    break;
-                case DecisionSystemType.ArbitraryStatsLeastSquares:
-                    DecisionSystem = new ArbitraryStatsLSDecisionSystem(ReportLogger);
-                    break;
-                case DecisionSystemType.FiveDayStatsLeastSquares:
-                default:
-                    DecisionSystem = new FiveDayStatsLSDecisionSystem(ReportLogger);
-                    break;
-            }
-            switch (InputOptions.BuyingSellingType)
-            {
-                case BuySellType.IB:
-                    BuySellSystem = new IBClientTradingSystem(ReportLogger);
-                    break;
-                case BuySellType.Simulate:
-                default:
-                    BuySellSystem = new SimulationBuySellSystem(ReportLogger);
-                    break;
-            }
 
             Exchange.LoadStockExchange(InputOptions.StockFilePath, ReportLogger);
             if (!Exchange.CheckValidity())
@@ -70,6 +47,8 @@ namespace TradingConsole.Simulation
 
             SimulationParameters = new SimulationParameters(InputOptions, Exchange);
 
+            DecisionSystem = DecisionSystemGenerator.Generate(InputOptions.DecisionType, ReportLogger);
+            BuySellSystem = BuySellSystemGenerator.Generate(InputOptions.BuyingSellingType, ReportLogger);
             DecisionSystem.Calibrate(InputOptions, Exchange, SimulationParameters);
 
             if (InputOptions.FuntionType == ProgramType.Simulate)

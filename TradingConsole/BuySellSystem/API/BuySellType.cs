@@ -1,4 +1,4 @@
-﻿namespace TradingConsole.InputParser
+﻿namespace TradingConsole.BuySellSystem
 {
     public enum BuySellType
     {

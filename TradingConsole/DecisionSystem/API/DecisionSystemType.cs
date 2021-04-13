@@ -1,4 +1,4 @@
-﻿namespace TradingConsole.InputParser
+﻿namespace TradingConsole.DecisionSystem
 {
     public enum DecisionSystemType
     {
