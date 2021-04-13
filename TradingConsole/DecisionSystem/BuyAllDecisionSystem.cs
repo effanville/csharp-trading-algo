@@ -40,7 +40,7 @@ namespace TradingConsole.DecisionSystem
         /// <inheritdoc cref="IDecisionSystem"/>
         public void Decide(DateTime date, DecisionStatus status, IStockExchange exchange, TradingStatistics stats, SimulationParameters simulationParameters)
         {
-            foreach (Stock stock in exchange.Stocks)
+            foreach (IStock stock in exchange.Stocks)
             {
                 status.AddDecision(stock.Name, StockTradeDecision.Buy);
             }

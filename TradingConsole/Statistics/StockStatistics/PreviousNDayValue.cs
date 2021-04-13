@@ -28,7 +28,7 @@ namespace TradingConsole.Statistics
             TypeOfStatistic = typeOfStatistic;
         }
 
-        public double Calculate(DateTime date, Stock stock)
+        public double Calculate(DateTime date, IStock stock)
         {
             return stock.Values(date, BurnInTime, 0, DataType).First();
         }

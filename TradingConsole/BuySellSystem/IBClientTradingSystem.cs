@@ -2,7 +2,7 @@
 using FinancialStructures.Database;
 using FinancialStructures.NamingStructures;
 using FinancialStructures.StockStructures;
-using FinancialStructures.StockStructures.StockData;
+using FinancialStructures.StockStructures.Implementation;
 using StructureCommon.DataStructures;
 using StructureCommon.Reporting;
 using TradingConsole.DecisionSystem;

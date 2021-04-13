@@ -19,7 +19,7 @@ namespace TradingConsole.DecisionSystem
 
         public IEstimator Estimator;
 
-        public FiveDayStatsDecisionSystem(IReportLogger reportLogger)
+        public FiveDayStatsLSDecisionSystem(IReportLogger reportLogger)
         {
             ReportLogger = reportLogger;
         }
@@ -70,7 +70,7 @@ namespace TradingConsole.DecisionSystem
 
         public void Decide(DateTime date, DecisionStatus status, IStockExchange exchange, TradingStatistics stats, SimulationParameters simulationParameters)
         {
-            foreach (Stock stock in exchange.Stocks)
+            foreach (IStock stock in exchange.Stocks)
             {
                 StockTradeDecision decision;
                 double[] values = stock.Values(date, 5, 0, StockDataStream.Open).ToArray();

@@ -1,14 +1,15 @@
 ﻿using System;
+using System.IO.Abstractions;
 using FinancialStructures.Database;
 using FinancialStructures.Database.Implementation;
 using FinancialStructures.StockStructures;
+using FinancialStructures.StockStructures.Implementation;
 using StructureCommon.DataStructures;
 using StructureCommon.Reporting;
 using TradingConsole.BuySellSystem;
 using TradingConsole.DecisionSystem;
 using TradingConsole.InputParser;
 using TradingConsole.Statistics;
-using TradingConsole.UserInputs;
 
 namespace TradingConsole.Simulation
 {
@@ -23,12 +24,14 @@ namespace TradingConsole.Simulation
 
         private readonly UserInputOptions InputOptions;
         private readonly IReportLogger ReportLogger;
+        private readonly IFileSystem fFileSystem;
         private readonly ConsoleStreamWriter ConsoleWriter;
 
-        public TradingSimulation(UserInputOptions inputOptions, IReportLogger reportLogger, ConsoleStreamWriter consoleWriter)
+        public TradingSimulation(UserInputOptions inputOptions, IFileSystem fileSystem, IReportLogger reportLogger, ConsoleStreamWriter consoleWriter)
         {
             InputOptions = inputOptions;
             ReportLogger = reportLogger;
+            fFileSystem = fileSystem;
             ConsoleWriter = consoleWriter;
         }
 
@@ -39,18 +42,12 @@ namespace TradingConsole.Simulation
                 case DecisionSystemType.BuyAll:
                     DecisionSystem = new BuyAllDecisionSystem(ReportLogger);
                     break;
-                case DecisionSystemType.LeastSquares:
-                case DecisionSystemType.Lasso:
-                case DecisionSystemType.Ridge:
+                case DecisionSystemType.ArbitraryStatsLeastSquares:
+                    DecisionSystem = new ArbitraryStatsLSDecisionSystem(ReportLogger);
+                    break;
+                case DecisionSystemType.FiveDayStatsLeastSquares:
                 default:
-                    if (InputOptions.StatsChoice == DecisionStatsChoice.FiveDayStats)
-                    {
-                        DecisionSystem = new FiveDayStatsDecisionSystem(ReportLogger);
-                    }
-                    else
-                    {
-                        DecisionSystem = new ArbitraryStatsLSDecisionSystem(ReportLogger);
-                    }
+                    DecisionSystem = new FiveDayStatsLSDecisionSystem(ReportLogger);
                     break;
             }
             switch (InputOptions.BuyingSellingType)
@@ -122,7 +119,7 @@ namespace TradingConsole.Simulation
 
             stats.GenerateDayStats();
             stats.GenerateSimulationStats();
-            portfolio.SavePortfolio(InputOptions.PortfolioFilePath, ReportLogger);
+            portfolio.SavePortfolio(InputOptions.PortfolioFilePath, fFileSystem, ReportLogger);
         }
 
         private void PerformDailyTrades(DateTime day, IStockExchange exchange, IPortfolio portfolio, TradingStatistics stats, IReportLogger reportLogger)
@@ -151,7 +148,7 @@ namespace TradingConsole.Simulation
         {
             if (InputOptions.PortfolioFilePath != null)
             {
-                portfolio.LoadPortfolio(InputOptions.PortfolioFilePath, ReportLogger);
+                portfolio.LoadPortfolio(InputOptions.PortfolioFilePath, fFileSystem, ReportLogger);
                 stats.StartingCash = portfolio.TotalValue(Totals.BankAccount, startTime);
             }
             else

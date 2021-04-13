@@ -54,7 +54,6 @@ namespace TradingConsole.DecisionSystem
                     Y[entryIndex * exchange.Stocks.Count + stockIndex] = exchange.Stocks[stockIndex].Values(burnInLength.AddDays(delayTime + entryIndex), 0, 1, StockDataStream.Open).Last() / 100;
                 }
             }
-<<<<<<< HEAD:TradingConsole/DecisionSystem/ArbitraryStatsLSDecSys.cs
 
             Estimator = new LSEstimator(X, Y);
             simulationParameters.StartTime = burnInLength;
@@ -67,7 +66,7 @@ namespace TradingConsole.DecisionSystem
 
         public void Decide(DateTime date, DecisionStatus status, IStockExchange exchange, TradingStatistics stats, SimulationParameters simulationParameters)
         {
-            foreach (Stock stock in exchange.Stocks)
+            foreach (IStock stock in exchange.Stocks)
             {
                 StockTradeDecision decision;
                 double[] values = stock.Values(date, 5, 0, StockDataStream.Open).ToArray();

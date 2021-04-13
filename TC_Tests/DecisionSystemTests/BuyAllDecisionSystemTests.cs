@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Linq;
-using FinancialStructures.StockStructures;
+using FinancialStructures.StockStructures.Implementation;
 using NUnit.Framework;
 using TradingConsole.DecisionSystem;
 

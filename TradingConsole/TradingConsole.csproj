@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
@@ -15,10 +15,14 @@
     <EmbeddedResource Remove="DecisionSystem\TechnicalAnalysisStats\**" />
     <None Remove="DecisionSystem\TechnicalAnalysisStats\**" />
   </ItemGroup>
+  
+    <ItemGroup>
+    <PackageReference Include="System.IO.Abstractions" Version="13.2.23" />
+  </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="StructureCommon" Version="1.0.4" />
-    <ProjectReference Include="..\..\PortfolioDatabase\FinancialStructures\FinancialStructures.csproj" />
+    <PackageReference Include="StructureCommon" Version="1.0.8" />
+    <ProjectReference Include="..\..\Portfolio Analysis Database\FinancialStructures\FinancialStructures.csproj" />
   </ItemGroup>
 
   <ItemGroup>

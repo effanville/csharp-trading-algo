@@ -1,5 +1,6 @@
 ﻿using System.IO;
 using FinancialStructures.StockStructures;
+using FinancialStructures.StockStructures.Implementation;
 using StructureCommon.Reporting;
 using TradingConsole.InputParser;
 
@@ -20,10 +21,10 @@ namespace TradingConsole
             switch (InputOptions.FuntionType)
             {
                 case ProgramType.DownloadAll:
-                    Download(StockExchangeDownloadMethod.All);
+                    Download(StockDownload.All);
                     break;
                 case ProgramType.DownloadLatest:
-                    Download(StockExchangeDownloadMethod.Latest);
+                    Download(StockDownload.Latest);
                     break;
                 case ProgramType.Configure:
                     Configure();
@@ -43,7 +44,7 @@ namespace TradingConsole
             exchange.SaveStockExchange(filePath, ReportLogger);
         }
 
-        private void Download(StockExchangeDownloadMethod downloadType)
+        private void Download(StockDownload downloadType)
         {
             IStockExchange exchange = new StockExchange();
             exchange.LoadStockExchange(InputOptions.StockFilePath, ReportLogger);

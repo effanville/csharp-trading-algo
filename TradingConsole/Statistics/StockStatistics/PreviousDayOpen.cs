@@ -30,7 +30,7 @@ namespace TradingConsole.Statistics
             }
         }
 
-        public double Calculate(DateTime date, Stock stock)
+        public double Calculate(DateTime date, IStock stock)
         {
             return stock.Values(date, 1, 0, DataType).First();
         }

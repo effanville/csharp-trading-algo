@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using FinancialStructures.Database;
-using FinancialStructures.StockStructures.StockData;
+using FinancialStructures.StockStructures.Implementation;
 
 namespace TradingConsole.Statistics
 {

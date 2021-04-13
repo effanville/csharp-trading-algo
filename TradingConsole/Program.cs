@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
+using System.IO.Abstractions;
 using StructureCommon.Extensions;
 using StructureCommon.Reporting;
 using TradingConsole.InputParser;
@@ -15,6 +16,7 @@ namespace TradingConsole
         {
             Stopwatch stopWatch = new Stopwatch();
             var consoleWriter = new ConsoleStreamWriter(new MemoryStream());
+            var fileSystem = new FileSystem();
 
             try
             {
@@ -63,7 +65,7 @@ namespace TradingConsole
                         {
                             consoleWriter.Write("Simulation Starting");
                             TradingStatistics stats = new TradingStatistics();
-                            TradingSimulation tradingSimulation = new TradingSimulation(inputOptions, reportLogger, consoleWriter);
+                            TradingSimulation tradingSimulation = new TradingSimulation(inputOptions, fileSystem, reportLogger, consoleWriter);
                             tradingSimulation.SetupSystemsAndRun(stats);
                             stats.ExportToFile(Path.GetDirectoryName(filepath) + "\\" + DateTime.Now.FileSuitableDateTimeValue() + "-" + Path.GetFileNameWithoutExtension(filepath) + "-RunStats.log");
                             break;
@@ -71,7 +73,6 @@ namespace TradingConsole
                         case ProgramType.Help:
                         default:
                         {
-                            consoleWriter.WriteHelp();
                             break;
                         }
                     }

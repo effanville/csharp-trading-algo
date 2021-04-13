@@ -29,7 +29,7 @@ namespace TradingConsole.Statistics
             TypeOfStatistic = statisticType;
         }
 
-        public double Calculate(DateTime date, Stock stock)
+        public double Calculate(DateTime date, IStock stock)
         {
             return stock.ADX(date, BurnInTime);
         }

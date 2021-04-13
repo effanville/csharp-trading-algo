@@ -43,6 +43,6 @@ namespace TradingConsole.Statistics
         /// <param name="date">The date on which to calculate the statistic.</param>
         /// <param name="stock">The stock to calculate for.</param>
         /// <returns></returns>
-        double Calculate(DateTime date, Stock stock);
+        double Calculate(DateTime date, IStock stock);
     }
 }

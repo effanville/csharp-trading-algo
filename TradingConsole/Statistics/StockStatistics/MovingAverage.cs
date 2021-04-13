@@ -28,7 +28,7 @@ namespace TradingConsole.Statistics
             DataType = dataStream;
         }
 
-        public double Calculate(DateTime date, Stock stock)
+        public double Calculate(DateTime date, IStock stock)
         {
             System.Collections.Generic.List<double> values = stock.Values(date, BurnInTime, 0, DataType);
             return VectorStats.Mean(values, BurnInTime);
