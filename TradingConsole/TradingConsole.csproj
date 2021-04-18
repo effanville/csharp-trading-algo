@@ -17,6 +17,7 @@
   </ItemGroup>
   
     <ItemGroup>
+    <PackageReference Include="ConsoleCommon" Version="1.0.0" />
     <PackageReference Include="System.IO.Abstractions" Version="13.2.23" />
   </ItemGroup>
 
@@ -27,6 +28,10 @@
 
   <ItemGroup>
     <None Include="..\.editorconfig" Link=".editorconfig" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Commands\" />
   </ItemGroup>
 
 </Project>

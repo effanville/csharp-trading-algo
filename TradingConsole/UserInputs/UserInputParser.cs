@@ -37,27 +37,9 @@ namespace TradingConsole.InputParser
         {
             switch (inputOptions.FuntionType)
             {
-                case ProgramType.Configure:
-                {
-                    if (string.IsNullOrEmpty(inputOptions.StockFilePath))
-                    {
-                        return false;
-                    }
-                    return true;
-                }
                 case ProgramType.Simulate:
                 case ProgramType.Trade:
-                case ProgramType.Help:
                 {
-                    return true;
-                }
-                case ProgramType.DownloadAll:
-                case ProgramType.DownloadLatest:
-                {
-                    if (string.IsNullOrEmpty(inputOptions.StockFilePath) || inputOptions.StartDate == null || inputOptions.EndDate == null)
-                    {
-                        return false;
-                    }
                     return true;
                 }
 

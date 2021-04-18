@@ -7,16 +7,77 @@ using StructureCommon.Reporting;
 using TradingConsole.InputParser;
 using TradingConsole.Simulation;
 using TradingConsole.Statistics;
+using ConsoleCommon;
+using System.Collections.Generic;
+using ConsoleCommon.Commands;
+using TradingConsole.ExchangeCreation;
 
 namespace TradingConsole
 {
     internal class Program
     {
+        internal static void NewMain(string[] args)
+        {
+            var fileSystem = new FileSystem();
+
+            // Create the logger.
+            var reports = new ErrorReports();
+            void reportAction(ReportSeverity severity, ReportType reportType, ReportLocation location, string text)
+            {
+                reports.AddErrorReport(severity, reportType, location, text);
+                Console.WriteLine(DateTime.Now + "(" + reportType.ToString() + ")" + text);
+            }
+            IReportLogger logger = new LogReporter(reportAction);
+
+
+            // Create the Console to write output.
+            void writeLine(string text) => Console.WriteLine(text);
+            void writeError(string text)
+            {
+                var color = Console.ForegroundColor;
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine(text);
+                Console.ForegroundColor = color;
+            }
+            IConsole console = new ConsoleInstance(writeError, writeLine);
+
+            // Define the acceptable commands for this program.
+            var validCommands = new List<ICommand>()
+            {
+                new ConfigureCommand(console, logger, fileSystem),
+                new DownloadCommand(console, logger, fileSystem),
+            };
+
+            // Generate the context, validate the arguments and execute. 
+            ConsoleContext.SetAndExecute(args, console, logger, validCommands);
+            return;
+        }
+
         internal static void Main(string[] args)
         {
             Stopwatch stopWatch = new Stopwatch();
             var consoleWriter = new ConsoleStreamWriter(new MemoryStream());
             var fileSystem = new FileSystem();
+
+            // Create the logger.
+            var reports = new ErrorReports();
+            void reportAction(ReportSeverity severity, ReportType reportType, ReportLocation location, string text)
+            {
+                reports.AddErrorReport(severity, reportType, location, text);
+                Console.WriteLine(DateTime.Now + "(" + reportType.ToString() + ")" + text);
+            }
+            IReportLogger reportLogger = new LogReporter(reportAction);
+
+            // Create the Console to write output.
+            void writeLine(string text) => Console.WriteLine(text);
+            void writeError(string text)
+            {
+                var color = Console.ForegroundColor;
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine(text);
+                Console.ForegroundColor = color;
+            }
+            IConsole console = new ConsoleInstance(writeError, writeLine);
 
             try
             {
@@ -24,17 +85,6 @@ namespace TradingConsole
 
                 consoleWriter.Write("Input arguments:");
                 consoleWriter.Write(string.Join(' ', args));
-                void WriteReport(ReportSeverity critical, ReportType type, ReportLocation location, string message)
-                {
-                    if (critical != ReportSeverity.Critical)
-                    {
-                        return;
-                    }
-
-                    consoleWriter.Write($"{type} - {location} - {message}");
-                }
-
-                IReportLogger reportLogger = new LogReporter((critical, type, location, message) => WriteReport(critical, type, location, message));
                 consoleWriter.Write("Trading Console");
 
                 stopWatch.Start();
@@ -51,15 +101,6 @@ namespace TradingConsole
                 {
                     switch (inputOptions.FuntionType)
                     {
-                        case ProgramType.DownloadAll:
-                        case ProgramType.DownloadLatest:
-                        case ProgramType.Configure:
-                        {
-                            consoleWriter.Write("Downloading:");
-                            StockDownloader stockDownloader = new StockDownloader(inputOptions, fileSystem, reportLogger);
-                            stockDownloader.Download();
-                            break;
-                        }
                         case ProgramType.Simulate:
                         case ProgramType.Trade:
                         {
@@ -70,7 +111,6 @@ namespace TradingConsole
                             stats.ExportToFile(Path.GetDirectoryName(filepath) + "\\" + DateTime.Now.FileSuitableDateTimeValue() + "-" + Path.GetFileNameWithoutExtension(filepath) + "-RunStats.log");
                             break;
                         }
-                        case ProgramType.Help:
                         default:
                         {
                             break;
