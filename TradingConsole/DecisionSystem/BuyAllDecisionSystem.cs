@@ -27,7 +27,7 @@ namespace TradingConsole.DecisionSystem
         /// <summary>
         /// No parameters to calibrate in this system.
         /// </summary>
-        public void Calibrate(UserInputOptions inputOptions, IStockExchange exchange, SimulationParameters simulationParameters)
+        public void Calibrate(DecisionSystemParameters decisionParameters, IStockExchange exchange, SimulationParameters simulationParameters)
         {
         }
 

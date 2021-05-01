@@ -4,15 +4,15 @@ namespace TradingConsole.DecisionSystem
 {
     internal static class DecisionSystemGenerator
     {
-        internal static IDecisionSystem Generate(DecisionSystemType decisionSystemType, IReportLogger reportLogger)
+        internal static IDecisionSystem Generate(DecisionSystem decisionSystemType, IReportLogger reportLogger)
         {
             switch (decisionSystemType)
             {
-                case DecisionSystemType.BuyAll:
+                case DecisionSystem.BuyAll:
                     return new BuyAllDecisionSystem(reportLogger);
-                case DecisionSystemType.ArbitraryStatsLeastSquares:
+                case DecisionSystem.ArbitraryStatsLeastSquares:
                     return new ArbitraryStatsLSDecisionSystem(reportLogger);
-                case DecisionSystemType.FiveDayStatsLeastSquares:
+                case DecisionSystem.FiveDayStatsLeastSquares:
                 default:
                     return new FiveDayStatsLSDecisionSystem(reportLogger);
             }

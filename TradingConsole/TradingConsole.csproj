@@ -9,12 +9,6 @@
     <OutputPath>..\bin</OutputPath>
     <DocumentationFile>..\bin\TradingConsole.xml</DocumentationFile>
   </PropertyGroup>
-
-  <ItemGroup>
-    <Compile Remove="DecisionSystem\TechnicalAnalysisStats\**" />
-    <EmbeddedResource Remove="DecisionSystem\TechnicalAnalysisStats\**" />
-    <None Remove="DecisionSystem\TechnicalAnalysisStats\**" />
-  </ItemGroup>
   
     <ItemGroup>
     <PackageReference Include="ConsoleCommon" Version="1.0.0" />
@@ -28,10 +22,6 @@
 
   <ItemGroup>
     <None Include="..\.editorconfig" Link=".editorconfig" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Commands\" />
   </ItemGroup>
 
 </Project>

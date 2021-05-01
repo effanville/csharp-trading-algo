@@ -27,9 +27,9 @@ namespace TradingConsole.DecisionSystem
             ReportLogger = reportLogger;
         }
 
-        public void Calibrate(UserInputOptions inputOptions, IStockExchange exchange, SimulationParameters simulationParameters)
+        public void Calibrate(DecisionSystemParameters decisionParameters, IStockExchange exchange, SimulationParameters simulationParameters)
         {
-            foreach (StatisticType statistic in inputOptions.decisionSystemStats)
+            foreach (StatisticType statistic in decisionParameters.Statistics)
             {
                 stockStatistics.Add(StockStatisticGenerator.Generate(statistic));
             }

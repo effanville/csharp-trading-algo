@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using FinancialStructures.Database;
-using FinancialStructures.StockStructures.Implementation;
 
 namespace TradingConsole.Statistics
 {
@@ -10,8 +9,6 @@ namespace TradingConsole.Statistics
     {
         private readonly List<TradingDaySnapshot> DayData = new List<TradingDaySnapshot>();
         private readonly List<DecisionStatistic> DecisionStats = new List<DecisionStatistic>();
-
-        private readonly List<Trade> Transactions = new List<Trade>();
 
         public double StartingCash;
 
@@ -24,16 +21,6 @@ namespace TradingConsole.Statistics
 
         public void GenerateSimulationStats()
         {
-        }
-
-        public void AddDailyTrades(List<Trade> tradeDetails)
-        {
-            Transactions.AddRange(tradeDetails);
-        }
-
-        public void AddTrade(Trade tradeDetails)
-        {
-            Transactions.Add(tradeDetails);
         }
 
         public void AddDailyDecisionStats(DateTime day, List<string> buys, List<string> sells)
@@ -59,11 +46,6 @@ namespace TradingConsole.Statistics
             try
             {
                 StreamWriter writer = new StreamWriter(filePath);
-                writer.WriteLine("Trades:");
-                foreach (var trade in Transactions)
-                {
-                    writer.WriteLine(trade.ToString());
-                }
 
                 writer.WriteLine("History of Portfolio:");
                 foreach (var day in DayData)

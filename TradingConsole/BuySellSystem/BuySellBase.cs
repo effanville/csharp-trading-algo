@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using FinancialStructures.Database;
 using FinancialStructures.NamingStructures;
 using FinancialStructures.StockStructures;
@@ -9,7 +10,7 @@ using TradingConsole.Statistics;
 
 namespace TradingConsole.BuySellSystem
 {
-    public class BuySellBase : IBuySellSystem
+    public abstract class BuySellBase : IBuySellSystem
     {
         public IReportLogger ReportLogger
         {
@@ -23,14 +24,14 @@ namespace TradingConsole.BuySellSystem
 
         public virtual void BuySell(DateTime day, DecisionStatus status, IStockExchange stocks, IPortfolio portfolio, TradingStatistics stats, BuySellParams parameters, SimulationParameters simulationParameters)
         {
-            System.Collections.Generic.List<Decision> sellDecisions = status.GetSellDecisions();
+            List<Decision> sellDecisions = status.GetSellDecisions();
 
             foreach (Decision sell in sellDecisions)
             {
                 SellHolding(day, sell, stocks, portfolio, stats, parameters, simulationParameters);
             }
 
-            System.Collections.Generic.List<Decision> buyDecisions = status.GetBuyDecisions();
+            List<Decision> buyDecisions = status.GetBuyDecisions();
 
             foreach (Decision buy in buyDecisions)
             {

@@ -4,7 +4,6 @@ using System.Linq;
 using FinancialStructures.StockStructures;
 using StructureCommon.MathLibrary.ParameterEstimation;
 using StructureCommon.Reporting;
-using TradingConsole.InputParser;
 using TradingConsole.Simulation;
 using TradingConsole.Statistics;
 
@@ -24,7 +23,7 @@ namespace TradingConsole.DecisionSystem
             ReportLogger = reportLogger;
         }
 
-        public void Calibrate(UserInputOptions inputOptions, IStockExchange exchange, SimulationParameters simulationParameters)
+        public void Calibrate(DecisionSystemParameters decisionParameters, IStockExchange exchange, SimulationParameters simulationParameters)
         {
             TimeSpan simulationLength = simulationParameters.EndTime - simulationParameters.StartTime;
             DateTime burnInLength = simulationParameters.StartTime + simulationLength / 2;
