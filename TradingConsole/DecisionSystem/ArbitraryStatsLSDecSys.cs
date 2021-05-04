@@ -35,7 +35,7 @@ namespace TradingConsole.DecisionSystem
             }
 
             TimeSpan simulationLength = simulationParameters.EndTime - simulationParameters.StartTime;
-            DateTime burnInLength = simulationParameters.StartTime + simulationLength / 2;
+            DateTime burnInLength = simulationParameters.StartTime + new TimeSpan((long)(simulationLength.Ticks / 2));
             int delayTime = stockStatistics.Max(stock => stock.BurnInTime) + 2;
             int numberEntries = ((burnInLength - simulationParameters.StartTime).Days - 5) * 5 / 7;
             int numberStatistics = stockStatistics.Count;

@@ -32,7 +32,7 @@ namespace TradingConsole.ExchangeCreation
             : base(console, logger)
         {
             fFileSystem = fileSystem;
-            fStockFilePathOption = new CommandOption<string>("stockFilePath", "FilePath to the stock database to add data to.");
+            fStockFilePathOption = new CommandOption<string>("stockFilePath", "FilePath to the stock database to add data to.", inputString => !string.IsNullOrWhiteSpace(inputString));
             Options.Add(fStockFilePathOption);
         }
 

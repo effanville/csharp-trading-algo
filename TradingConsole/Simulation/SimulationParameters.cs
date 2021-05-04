@@ -92,7 +92,7 @@ namespace TradingConsole.Simulation
         public SimulationParameters(DateTime startDate, DateTime endDate, TimeSpan tradingGap, double startingCash)
         {
             StartTime = startDate;
-            EndTime = endDate;
+            EndTime = endDate == default(DateTime) ? DateTime.Today : endDate;
             EvolutionIncrement = tradingGap.Seconds != 0 ? tradingGap : new TimeSpan(1, 0, 0, 0);
             StartingCash = startingCash;
         }

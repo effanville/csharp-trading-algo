@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <TargetFrameworks>net48;netcoreapp3.1</TargetFrameworks>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -11,13 +11,14 @@
   </PropertyGroup>
   
     <ItemGroup>
-    <PackageReference Include="ConsoleCommon" Version="1.0.0" />
     <PackageReference Include="System.IO.Abstractions" Version="13.2.23" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="StructureCommon" Version="1.0.8" />
     <ProjectReference Include="..\..\Portfolio Analysis Database\FinancialStructures\FinancialStructures.csproj" />
+    <ProjectReference Include="..\..\Common\StructureCommon\StructureCommon.csproj" />
+
+    <ProjectReference Include="..\..\Common\ConsoleCommon\ConsoleCommon.csproj" />
   </ItemGroup>
 
   <ItemGroup>

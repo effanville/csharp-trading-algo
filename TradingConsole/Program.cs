@@ -1,9 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.IO.Abstractions;
-using StructureCommon.Extensions;
 using StructureCommon.Reporting;
-using TradingConsole.InputParser;
 using TradingConsole.Simulation;
 using ConsoleCommon;
 using System.Collections.Generic;
@@ -35,8 +33,7 @@ namespace TradingConsole
             void reportAction(ReportSeverity severity, ReportType reportType, ReportLocation location, string text)
             {
                 reports.AddErrorReport(severity, reportType, location, text);
-                string line = DateTime.Now + "(" + reportType.ToString() + ")" + text;
-                console.WriteLine(line);
+                console.WriteLine($"{DateTime.Now}({reportType}) {text}\n");
             }
             IReportLogger logger = new LogReporter(reportAction);
 

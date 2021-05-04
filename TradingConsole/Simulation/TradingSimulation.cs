@@ -27,6 +27,15 @@ namespace TradingConsole.Simulation
         private readonly IFileSystem fFileSystem;
         private readonly IConsole fConsole;
 
+        /// <summary>
+        /// Does the setup of the simulation error. 
+        /// </summary>
+        public bool SetupError
+        {
+            get;
+            set;
+        }
+
         public TradingSimulation(string stockFilePath, string portfolioFilePath, SimulationParameters simulationParameters, DecisionSystemParameters decisionParameters, BuySellType buySellType, IFileSystem fileSystem, IReportLogger reportLogger, IConsole console)
         {
             ReportLogger = reportLogger;
@@ -37,6 +46,7 @@ namespace TradingConsole.Simulation
             if (!Exchange.CheckValidity())
             {
                 _ = ReportLogger.Log(ReportSeverity.Critical, ReportType.Error, ReportLocation.Loading, "Stock input data not suitable.");
+                SetupError = true;
                 return;
             }
 

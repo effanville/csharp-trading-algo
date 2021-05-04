@@ -45,8 +45,11 @@ namespace TradingConsole.Simulation
         {
             fFileSystem = fileSystem;
             fStockFilePath = new CommandOption<string>("stockFilePath", "The path at which to locate the Stock Exchange data.");
+            Options.Add(fStockFilePath);
             fPortfolioFilePath = new CommandOption<string>("portfolioFilePath", "The path at which to locate the starting portfolio");
-            fStartingCash = new CommandOption<double>("", "");
+            Options.Add(fPortfolioFilePath);
+            fStartingCash = new CommandOption<double>("startingCash", "The starting amount of cash to create the simulation with.");
+            Options.Add(fStartingCash);
             fStartDate = new CommandOption<DateTime>("", "");
             fEndDate = new CommandOption<DateTime>("", "");
             fTradingGap = new CommandOption<TimeSpan>("", "");
@@ -60,6 +63,11 @@ namespace TradingConsole.Simulation
             var simulationParameters = new SimulationParameters(fStartDate.Value, fEndDate.Value, fTradingGap.Value, fStartingCash.Value);
             var decisionParameters = new DecisionSystemParameters(fDecisionType.Value, fDecisionSystemStats.Value);
             var system = new TradingSimulation(fStockFilePath.Value, fPortfolioFilePath.Value, simulationParameters, decisionParameters, BuySellType.Simulate, fFileSystem, fLogger, fConsole);
+
+            if (system.SetupError)
+            {
+                return 1;
+            }
 
             var stats = new TradingStatistics();
             system.SimulateRun(stats);
