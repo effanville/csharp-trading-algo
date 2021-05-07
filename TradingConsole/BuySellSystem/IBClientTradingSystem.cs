@@ -11,9 +11,9 @@ using TradingConsole.Statistics;
 
 namespace TradingConsole.BuySellSystem
 {
-    public class IBClientTradingSystem : BuySellBase
+    internal class IBClientTradingSystem : BuySellBase
     {
-        public IBClientTradingSystem(IReportLogger reportLogger)
+        internal IBClientTradingSystem(IReportLogger reportLogger)
             : base(reportLogger)
         {
         }
@@ -28,6 +28,7 @@ namespace TradingConsole.BuySellSystem
             _ = portfolio.TryAddOrEditDataToSecurity(sell.StockName, day, day, 0.0, price, 1.0, trade, ReportLogger);
             var data = new DailyValuation(day, cashAvailable + trade.TotalCost);
             _ = portfolio.TryAddOrEditData(Account.BankAccount, simulationParameters.BankAccData, data, data, ReportLogger);
+            base.SellHolding(day, sell, stocks, portfolio, stats, parameters, simulationParameters);
         }
 
         /// <inheritdoc/>
@@ -52,6 +53,8 @@ namespace TradingConsole.BuySellSystem
                     _ = portfolio.TryAddOrEditData(Account.BankAccount, new NameData("Cash", "Portfolio"), data, data, ReportLogger);
                 }
             }
+
+            base.BuyHolding(day, buy, stocks, portfolio, stats, parameters, simulationParameters);
         }
     }
 }

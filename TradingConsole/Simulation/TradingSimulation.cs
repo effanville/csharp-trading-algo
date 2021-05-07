@@ -13,7 +13,7 @@ using TradingConsole.Statistics;
 
 namespace TradingConsole.Simulation
 {
-    internal class TradingSimulation
+    internal partial class TradingSimulation
     {
         private readonly IDecisionSystem DecisionSystem;
         private readonly IBuySellSystem BuySellSystem;
@@ -25,7 +25,6 @@ namespace TradingConsole.Simulation
 
         private readonly IReportLogger ReportLogger;
         private readonly IFileSystem fFileSystem;
-        private readonly IConsole fConsole;
 
         /// <summary>
         /// Does the setup of the simulation error. 
@@ -36,50 +35,62 @@ namespace TradingConsole.Simulation
             set;
         }
 
-        public TradingSimulation(string stockFilePath, string portfolioFilePath, SimulationParameters simulationParameters, DecisionSystemParameters decisionParameters, BuySellType buySellType, IFileSystem fileSystem, IReportLogger reportLogger, IConsole console)
+        public TradingSimulation(string stockFilePath, string portfolioFilePath, SimulationParameters simulationParameters, DecisionSystemParameters decisionParameters, BuySellType buySellType, IFileSystem fileSystem, IReportLogger reportLogger)
         {
             ReportLogger = reportLogger;
             fFileSystem = fileSystem;
-            fConsole = console;
-
-            Exchange.LoadStockExchange(stockFilePath, ReportLogger);
-            if (!Exchange.CheckValidity())
+            using (new Timer(ReportLogger, "Setup"))
             {
-                _ = ReportLogger.Log(ReportSeverity.Critical, ReportType.Error, ReportLocation.Loading, "Stock input data not suitable.");
-                SetupError = true;
-                return;
+                using (new Timer(ReportLogger, "Loading Exchange"))
+                {
+                    Exchange.LoadStockExchange(stockFilePath, ReportLogger);
+                    if (!Exchange.CheckValidity())
+                    {
+                        _ = ReportLogger.Log(ReportSeverity.Critical, ReportType.Error, ReportLocation.Loading, "Stock input data not suitable.");
+                        SetupError = true;
+                        return;
+                    }
+                }
+
+                SimulationParameters = simulationParameters;
+                SimulationParameters.EnsureStartEndConsistent(Exchange);
+
+                using (new Timer(reportLogger, "Calibrating"))
+                {
+                    DecisionSystem = DecisionSystemGenerator.Generate(decisionParameters.DecisionSystemType, ReportLogger);
+                    BuySellSystem = BuySellSystemGenerator.Generate(buySellType, ReportLogger);
+                    DecisionSystem.Calibrate(decisionParameters, Exchange, SimulationParameters);
+                }
+                using (new Timer(reportLogger, "Loading Portfolio"))
+                {
+                    fPortfolio = LoadStartPortfolio(portfolioFilePath, SimulationParameters.StartingCash);
+                }
             }
-
-            SimulationParameters = simulationParameters;
-            SimulationParameters.EnsureStartEndConsistent(Exchange);
-
-            DecisionSystem = DecisionSystemGenerator.Generate(decisionParameters.DecisionSystemType, ReportLogger);
-            BuySellSystem = BuySellSystemGenerator.Generate(buySellType, ReportLogger);
-            DecisionSystem.Calibrate(decisionParameters, Exchange, SimulationParameters);
-
-            fPortfolio = LoadStartPortfolio(portfolioFilePath, SimulationParameters.StartingCash);
         }
 
         public void SimulateRun(TradingStatistics stats)
         {
-
-            DateTime time = SimulationParameters.StartTime;
-
-            while (time < SimulationParameters.EndTime)
+            using (new Timer(ReportLogger, "Simulation"))
             {
-                if ((time.DayOfWeek == DayOfWeek.Saturday) || (time.DayOfWeek == DayOfWeek.Sunday))
+
+                DateTime time = SimulationParameters.StartTime;
+
+                while (time < SimulationParameters.EndTime)
                 {
+                    if ((time.DayOfWeek == DayOfWeek.Saturday) || (time.DayOfWeek == DayOfWeek.Sunday))
+                    {
+                        time += SimulationParameters.EvolutionIncrement;
+                        continue;
+                    }
+
+                    PerformDailyTrades(time, Exchange, fPortfolio, stats);
+
+                    stats.GenerateDayStats();
                     time += SimulationParameters.EvolutionIncrement;
-                    continue;
-                }
-
-                PerformDailyTrades(time, Exchange, fPortfolio, stats, ReportLogger);
-
-                stats.GenerateDayStats();
-                time += SimulationParameters.EvolutionIncrement;
-                if (time.Day == 1)
-                {
-                    fConsole.WriteLine(time + " - " + fPortfolio.TotalValue(Totals.All, time));
+                    if (time.Day == 1)
+                    {
+                        _ = ReportLogger.Log(ReportSeverity.Critical, ReportType.Report, ReportLocation.DatabaseAccess, $"Date {time} total value {fPortfolio.TotalValue(Totals.All, time)}");
+                    }
                 }
             }
 
@@ -88,14 +99,14 @@ namespace TradingConsole.Simulation
 
         public void Run(string portfolioFilePath, TradingStatistics stats)
         {
-            PerformDailyTrades(DateTime.Today, Exchange, fPortfolio, stats, ReportLogger);
+            PerformDailyTrades(DateTime.Today, Exchange, fPortfolio, stats);
 
             stats.GenerateDayStats();
             stats.GenerateSimulationStats();
             fPortfolio.SavePortfolio(portfolioFilePath, fFileSystem, ReportLogger);
         }
 
-        private void PerformDailyTrades(DateTime day, IStockExchange exchange, IPortfolio portfolio, TradingStatistics stats, IReportLogger reportLogger)
+        private void PerformDailyTrades(DateTime day, IStockExchange exchange, IPortfolio portfolio, TradingStatistics stats)
         {
             // Decide which stocks to buy, sell or do nothing with.
             DecisionStatus status = new DecisionStatus();

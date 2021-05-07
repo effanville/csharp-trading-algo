@@ -46,7 +46,7 @@ namespace TradingConsole.Simulation
         {
             var simulationParameters = new SimulationParameters(default, default, default, 0.0);
             var decisionParameters = new DecisionSystemParameters(fDecisionType.Value, fDecisionSystemStats.Value);
-            var system = new TradingSimulation(fStockFilePath.Value, fPortfolioFilePath.Value, simulationParameters, decisionParameters, BuySellType.IB, fFileSystem, fLogger, fConsole);
+            var system = new TradingSimulation(fStockFilePath.Value, fPortfolioFilePath.Value, simulationParameters, decisionParameters, BuySellType.IB, fFileSystem, fLogger);
             var stats = new TradingStatistics();
             system.Run(fPortfolioFilePath.Value, stats);
             return 0;

@@ -19,10 +19,6 @@ namespace TradingConsole.Statistics
         {
         }
 
-        public void GenerateSimulationStats()
-        {
-        }
-
         public void AddDailyDecisionStats(DateTime day, List<string> buys, List<string> sells)
         {
             DecisionStats.Add(new DecisionStatistic(day, buys, sells));

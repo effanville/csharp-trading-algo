@@ -10,14 +10,15 @@ using TradingConsole.Statistics;
 
 namespace TradingConsole.BuySellSystem
 {
-    public abstract class BuySellBase : IBuySellSystem
+    internal abstract class BuySellBase : IBuySellSystem
     {
+        /// <inheritdoc/>
         public IReportLogger ReportLogger
         {
             get;
         }
 
-        public BuySellBase(IReportLogger reportLogger)
+        internal BuySellBase(IReportLogger reportLogger)
         {
             ReportLogger = reportLogger;
         }
@@ -42,21 +43,25 @@ namespace TradingConsole.BuySellSystem
             {
                 if (security.Value(day).Value > 0)
                 {
-                    var value = stocks.GetValue(new NameData(security.Company, security.Name), day);
+                    double value = stocks.GetValue(new NameData(security.Company, security.Name), day);
                     if (!value.Equals(double.NaN))
                     {
-                        security.TryAddOrEditData(day, day, value, ReportLogger);
+                        _ = security.TryAddOrEditData(day, day, value, ReportLogger);
                     }
                 }
             }
         }
 
+        /// <inheritdoc/>
         public virtual void SellHolding(DateTime day, Decision sell, IStockExchange stocks, IPortfolio portfolio, TradingStatistics stats, BuySellParams parameters, SimulationParameters simulationParameters)
         {
+            _ = ReportLogger.Log(ReportSeverity.Critical, ReportType.Report, ReportLocation.Execution, $"Date {day} sold {sell.StockName}");
         }
 
+        /// <inheritdoc/>
         public virtual void BuyHolding(DateTime day, Decision buy, IStockExchange stocks, IPortfolio portfolio, TradingStatistics stats, BuySellParams parameters, SimulationParameters simulationParameters)
         {
+            _ = ReportLogger.Log(ReportSeverity.Critical, ReportType.Report, ReportLocation.Execution, $"Date {day} bought {buy.StockName}");
         }
     }
 }

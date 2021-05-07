@@ -50,11 +50,16 @@ namespace TradingConsole.Simulation
             Options.Add(fPortfolioFilePath);
             fStartingCash = new CommandOption<double>("startingCash", "The starting amount of cash to create the simulation with.");
             Options.Add(fStartingCash);
-            fStartDate = new CommandOption<DateTime>("", "");
-            fEndDate = new CommandOption<DateTime>("", "");
-            fTradingGap = new CommandOption<TimeSpan>("", "");
-            fDecisionType = new CommandOption<DecisionSystem.DecisionSystem>("", "");
+            fStartDate = new CommandOption<DateTime>("start", "The date to start on.");
+            Options.Add(fStartDate);
+            fEndDate = new CommandOption<DateTime>("end", "The date to end on.");
+            Options.Add(fEndDate);
+            fTradingGap = new CommandOption<TimeSpan>("gap", "The interval between evaluations.");
+            Options.Add(fTradingGap);
+            fDecisionType = new CommandOption<DecisionSystem.DecisionSystem>("decision", "The type of decision system to use.");
+            Options.Add(fDecisionType);
             fDecisionSystemStats = new CommandOption<List<StatisticType>>("", "");
+            Options.Add(fDecisionSystemStats);
         }
 
         /// <inheritdoc/>
@@ -62,7 +67,7 @@ namespace TradingConsole.Simulation
         {
             var simulationParameters = new SimulationParameters(fStartDate.Value, fEndDate.Value, fTradingGap.Value, fStartingCash.Value);
             var decisionParameters = new DecisionSystemParameters(fDecisionType.Value, fDecisionSystemStats.Value);
-            var system = new TradingSimulation(fStockFilePath.Value, fPortfolioFilePath.Value, simulationParameters, decisionParameters, BuySellType.Simulate, fFileSystem, fLogger, fConsole);
+            var system = new TradingSimulation(fStockFilePath.Value, fPortfolioFilePath.Value, simulationParameters, decisionParameters, BuySellType.Simulate, fFileSystem, fLogger);
 
             if (system.SetupError)
             {

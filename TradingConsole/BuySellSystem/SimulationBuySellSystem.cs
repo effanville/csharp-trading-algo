@@ -15,12 +15,12 @@ namespace TradingConsole.BuySellSystem
     /// <summary>
     /// Trading system for use in simulation systems.
     /// </summary>
-    public class SimulationBuySellSystem : BuySellBase
+    internal class SimulationBuySellSystem : BuySellBase
     {
         /// <summary>
         /// Create an instance.
         /// </summary>
-        public SimulationBuySellSystem(IReportLogger reportLogger)
+        internal SimulationBuySellSystem(IReportLogger reportLogger)
             : base(reportLogger)
         {
         }
@@ -49,6 +49,8 @@ namespace TradingConsole.BuySellSystem
                 var value = new DailyValuation(day, cashAvailable + tradeDetails.TotalCost);
                 _ = portfolio.TryAddOrEditData(Account.BankAccount, simulationParameters.BankAccData, value, value, ReportLogger);
             }
+
+            base.SellHolding(day, sell, stocks, portfolio, stats, parameters, simulationParameters);
         }
 
         /// <inheritdoc/>
@@ -92,6 +94,8 @@ namespace TradingConsole.BuySellSystem
                     }
                 }
             }
+
+            base.BuyHolding(day, buy, stocks, portfolio, stats, parameters, simulationParameters);
         }
     }
 }

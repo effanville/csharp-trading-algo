@@ -11,14 +11,13 @@
   </PropertyGroup>
   
     <ItemGroup>
+    <PackageReference Include="ConsoleCommon" Version="1.0.0" />
+    <PackageReference Include="StructureCommon" Version="1.0.8" />
     <PackageReference Include="System.IO.Abstractions" Version="13.2.23" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\Portfolio Analysis Database\FinancialStructures\FinancialStructures.csproj" />
-    <ProjectReference Include="..\..\Common\StructureCommon\StructureCommon.csproj" />
-
-    <ProjectReference Include="..\..\Common\ConsoleCommon\ConsoleCommon.csproj" />
   </ItemGroup>
 
   <ItemGroup>
