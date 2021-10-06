@@ -27,7 +27,7 @@ namespace TradingConsole.Statistics
         public void AddSnapshot(DateTime day, IPortfolio portfolio)
         {
             TradingDaySnapshot snapshot = new TradingDaySnapshot();
-            foreach (var security in portfolio.Funds)
+            foreach (var security in portfolio.FundsThreadSafe)
             {
                 snapshot.AddHolding(security.Names, security.DayData(day));
             }

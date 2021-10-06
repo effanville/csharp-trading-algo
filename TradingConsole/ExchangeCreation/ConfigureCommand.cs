@@ -1,50 +1,69 @@
 ﻿using System.IO.Abstractions;
-using ConsoleCommon;
-using ConsoleCommon.Commands;
-using ConsoleCommon.Options;
+using Common.Console;
+using Common.Console.Commands;
+using Common.Console.Options;
 using FinancialStructures.StockStructures;
 using FinancialStructures.StockStructures.Implementation;
-using StructureCommon.Reporting;
+using System.Collections.Generic;
+using Common.Structure.Reporting;
 
 namespace TradingConsole.ExchangeCreation
 {
     /// <summary>
-    /// Contains logic for the download of stock data.
+    /// Configures a stock exchange from a list of Stocks to include.
     /// </summary>
-    public sealed class ConfigureCommand : BaseCommand, ICommand
+    internal sealed class ConfigureCommand : ICommand
     {
         private readonly IFileSystem fFileSystem;
+        private readonly IReportLogger fLogger;
         private readonly CommandOption<string> fStockFilePathOption;
 
         /// <inheritdoc/>
-        public override string Name
+        public IList<CommandOption> Options
         {
-            get
-            {
-                return "configure";
-            }
-        }
+            get;
+        } = new List<CommandOption>();
+        /// <inheritdoc/>
+        public IList<ICommand> SubCommands
+        {
+            get;
+        } = new List<ICommand>();
+
+        /// <inheritdoc/>
+        public string Name => "configure";
 
         /// <summary>
         /// Default constructor.
         /// </summary>
-        public ConfigureCommand(IConsole console, IReportLogger logger, IFileSystem fileSystem)
-            : base(console, logger)
+        public ConfigureCommand(IReportLogger reportLogger, IFileSystem fileSystem)
         {
+            fLogger = reportLogger;
             fFileSystem = fileSystem;
             fStockFilePathOption = new CommandOption<string>("stockFilePath", "FilePath to the stock database to add data to.", inputString => !string.IsNullOrWhiteSpace(inputString));
             Options.Add(fStockFilePathOption);
         }
 
         /// <inheritdoc/>
-        public override int Execute(string[] args)
+        public void WriteHelp(IConsole console)
+        {
+            CommandExtensions.WriteHelp(this, console);
+        }
+
+        /// <inheritdoc/>
+        public int Execute(IConsole console, string[] args)
         {
             IStockExchange exchange = new StockExchange();
             string inputPath = fStockFilePathOption.Value;
             exchange.Configure(inputPath);
             string filePath = fFileSystem.Path.ChangeExtension(inputPath, "xml");
             exchange.SaveStockExchange(filePath, fLogger);
-            return base.Execute(args);
+            return CommandExtensions.Execute(this, console, args);
+        }
+
+        /// <inheritdoc/>
+        public bool Validate(IConsole console, string[] args)
+        {
+            return CommandExtensions.Validate(this, args, console);
         }
     }
 }

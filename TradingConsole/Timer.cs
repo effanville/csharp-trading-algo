@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
-using StructureCommon.Reporting;
+using Common.Structure.Reporting;
 
 namespace TradingConsole
 {
@@ -20,7 +20,7 @@ namespace TradingConsole
         public void Dispose()
         {
             fWatch.Stop();
-            _ = fLogger.Log(ReportSeverity.Critical, ReportType.Report, ReportLocation.Execution, $"{fOperation} took {fWatch.Elapsed}");
+            _ = fLogger.Log(ReportSeverity.Critical, ReportType.Warning, ReportLocation.Execution, $"{fOperation} took {fWatch.Elapsed}");
         }
     }
 }

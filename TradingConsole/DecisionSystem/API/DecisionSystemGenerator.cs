@@ -1,4 +1,4 @@
-﻿using StructureCommon.Reporting;
+﻿using Common.Structure.Reporting;
 
 namespace TradingConsole.DecisionSystem
 {

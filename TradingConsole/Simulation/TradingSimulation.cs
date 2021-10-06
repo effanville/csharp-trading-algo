@@ -1,12 +1,10 @@
 ﻿using System;
 using System.IO.Abstractions;
-using ConsoleCommon;
 using FinancialStructures.Database;
-using FinancialStructures.Database.Implementation;
 using FinancialStructures.StockStructures;
 using FinancialStructures.StockStructures.Implementation;
-using StructureCommon.DataStructures;
-using StructureCommon.Reporting;
+using Common.Structure.DataStructures;
+using Common.Structure.Reporting;
 using TradingConsole.BuySellSystem;
 using TradingConsole.DecisionSystem;
 using TradingConsole.Statistics;
@@ -27,7 +25,7 @@ namespace TradingConsole.Simulation
         private readonly IFileSystem fFileSystem;
 
         /// <summary>
-        /// Does the setup of the simulation error. 
+        /// Does the setup of the simulation error.
         /// </summary>
         public bool SetupError
         {
@@ -89,12 +87,10 @@ namespace TradingConsole.Simulation
                     time += SimulationParameters.EvolutionIncrement;
                     if (time.Day == 1)
                     {
-                        _ = ReportLogger.Log(ReportSeverity.Critical, ReportType.Report, ReportLocation.DatabaseAccess, $"Date {time} total value {fPortfolio.TotalValue(Totals.All, time)}");
+                        _ = ReportLogger.Log(ReportSeverity.Critical, ReportType.Warning, ReportLocation.DatabaseAccess, $"Date {time} total value {fPortfolio.TotalValue(Totals.All, time)}");
                     }
                 }
             }
-
-            stats.GenerateSimulationStats();
         }
 
         public void Run(string portfolioFilePath, TradingStatistics stats)
@@ -102,7 +98,6 @@ namespace TradingConsole.Simulation
             PerformDailyTrades(DateTime.Today, Exchange, fPortfolio, stats);
 
             stats.GenerateDayStats();
-            stats.GenerateSimulationStats();
             fPortfolio.SavePortfolio(portfolioFilePath, fFileSystem, ReportLogger);
         }
 
@@ -120,7 +115,7 @@ namespace TradingConsole.Simulation
 
         private IPortfolio LoadStartPortfolio(string portfolioFilePath, double startingCash)
         {
-            IPortfolio portfolio = new Portfolio();
+            IPortfolio portfolio = PortfolioFactory.GenerateEmpty();
             if (portfolioFilePath != null)
             {
                 portfolio.LoadPortfolio(portfolioFilePath, fFileSystem, ReportLogger);

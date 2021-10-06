@@ -3,11 +3,12 @@ using FinancialStructures.Database;
 using FinancialStructures.DataStructures;
 using FinancialStructures.NamingStructures;
 using FinancialStructures.StockStructures;
-using StructureCommon.DataStructures;
-using StructureCommon.Reporting;
+using Common.Structure.DataStructures;
+using Common.Structure.Reporting;
 using TradingConsole.DecisionSystem;
 using TradingConsole.Simulation;
 using TradingConsole.Statistics;
+using FinancialStructures.FinanceStructures;
 
 namespace TradingConsole.BuySellSystem
 {
@@ -23,7 +24,10 @@ namespace TradingConsole.BuySellSystem
         {
             double cashAvailable = portfolio.TotalValue(Totals.BankAccount, day);
             double price = stocks.GetValue(sell.StockName, day);
-            double numShares = portfolio.SecurityPrices(sell.StockName, day, SecurityDataStream.NumberOfShares);
+            _ = portfolio.TryGetAccount(Account.Security, sell.StockName, out var desired);
+            ISecurity security = desired as ISecurity;
+
+            double numShares = security.UnitPrice.ValueOnOrBefore(day).Value;
             var trade = new SecurityTrade(TradeType.Sell, sell.StockName, day, numShares, price, simulationParameters.TradeCost);
             _ = portfolio.TryAddOrEditDataToSecurity(sell.StockName, day, day, 0.0, price, 1.0, trade, ReportLogger);
             var data = new DailyValuation(day, cashAvailable + trade.TotalCost);

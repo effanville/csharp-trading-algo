@@ -2,22 +2,24 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFrameworks>net48;netcoreapp3.1</TargetFrameworks>
+    <TargetFramework>net5.0-windows</TargetFramework>
+    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <OutputPath>..\bin</OutputPath>
     <DocumentationFile>..\bin\TradingConsole.xml</DocumentationFile>
   </PropertyGroup>
-  
-    <ItemGroup>
-    <PackageReference Include="ConsoleCommon" Version="1.0.0" />
-    <PackageReference Include="StructureCommon" Version="1.0.8" />
-    <PackageReference Include="System.IO.Abstractions" Version="13.2.23" />
+
+  <ItemGroup>
+    <PackageReference Include="Common.Structure" Version="1.0.12" />
+    <PackageReference Include="Common.Console" Version="1.0.3" />
+    <PackageReference Include="System.IO.Abstractions" Version="13.2.47" />
+    <PackageReference Include="System.Net.Http" Version="4.3.4" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Portfolio Analysis Database\FinancialStructures\FinancialStructures.csproj" />
+    <ProjectReference Include="..\..\PortfolioDatabase\FinancialStructures\FinancialStructures.csproj" />
   </ItemGroup>
 
   <ItemGroup>

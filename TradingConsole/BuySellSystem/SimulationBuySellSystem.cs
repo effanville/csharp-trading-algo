@@ -4,11 +4,12 @@ using FinancialStructures.Database;
 using FinancialStructures.DataStructures;
 using FinancialStructures.NamingStructures;
 using FinancialStructures.StockStructures;
-using StructureCommon.DataStructures;
-using StructureCommon.Reporting;
+using Common.Structure.DataStructures;
+using Common.Structure.Reporting;
 using TradingConsole.DecisionSystem;
 using TradingConsole.Simulation;
 using TradingConsole.Statistics;
+using FinancialStructures.FinanceStructures;
 
 namespace TradingConsole.BuySellSystem
 {
@@ -28,8 +29,13 @@ namespace TradingConsole.BuySellSystem
         /// <inheritdoc/>
         public override void SellHolding(DateTime day, Decision sell, IStockExchange stocks, IPortfolio portfolio, TradingStatistics stats, BuySellParams parameters, SimulationParameters simulationParameters)
         {
+            _ = portfolio.TryGetAccount(Account.Security, sell.StockName, out var desired);
+            ISecurity security = desired as ISecurity;
+
+            double numShares = security.UnitPrice.ValueOnOrBefore(day).Value;
+
             // One can only sell if one already owns some of the security.
-            if (portfolio.Exists(Account.Security, sell.StockName) && portfolio.SecurityPrices(sell.StockName, day, SecurityDataStream.NumberOfShares) > 0)
+            if (portfolio.Exists(Account.Security, sell.StockName) && numShares > 0)
             {
                 // First calculate price that one sells at.
                 // This is the open price of the stock, with a combat multiplier.
@@ -37,7 +43,7 @@ namespace TradingConsole.BuySellSystem
                 double valueModifier = 1 + simulationParameters.UpTickSize * upDown;
                 double price = stocks.GetValue(sell.StockName, day, StockDataStream.Open) * valueModifier;
 
-                double numShares = portfolio.SecurityPrices(sell.StockName, day, SecurityDataStream.NumberOfShares);
+
                 var tradeDetails = new SecurityTrade(TradeType.Sell, sell.StockName, day, numShares, price, simulationParameters.TradeCost);
 
                 // Now perform selling. This consists of removing the security at the specific value in our portfolio.
@@ -84,7 +90,10 @@ namespace TradingConsole.BuySellSystem
                         }
 
                         // "Buy" the shares by adding the number of shares in the security desired. First must ensure we know the number of shares held.
-                        double existingShares = portfolio.SecurityPrices(buy.StockName, day, SecurityDataStream.NumberOfShares);
+                        _ = portfolio.TryGetAccount(Account.Security, buy.StockName, out var desired);
+                        ISecurity security = desired as ISecurity;
+
+                        double existingShares = security.UnitPrice.ValueOnOrBefore(day).Value;
 
                         _ = portfolio.TryAddOrEditDataToSecurity(buy.StockName, day, day, numShares + existingShares, priceToBuy, 1, tradeDetails, ReportLogger);
 

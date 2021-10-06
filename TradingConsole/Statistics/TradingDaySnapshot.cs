@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using FinancialStructures.DataStructures;
 using FinancialStructures.NamingStructures;
-using StructureCommon.Extensions;
+using Common.Structure.Extensions;
 
 namespace TradingConsole.Statistics
 {

@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using FinancialStructures.StockStructures;
-using StructureCommon.MathLibrary.ParameterEstimation;
-using StructureCommon.Reporting;
+using Common.Structure.MathLibrary.ParameterEstimation;
+using Common.Structure.Reporting;
 using TradingConsole.Simulation;
 using TradingConsole.Statistics;
 
@@ -58,7 +58,7 @@ namespace TradingConsole.DecisionSystem
 
             Estimator = new LSEstimator(X, Y);
 
-            _ = ReportLogger.Log(ReportSeverity.Critical, ReportType.Report, ReportLocation.Unknown, $"Estimator Weights are {string.Join(",", Estimator.Estimator)}");
+            _ = ReportLogger.Log(ReportSeverity.Critical, ReportType.Warning, ReportLocation.Unknown, $"Estimator Weights are {string.Join(",", Estimator.Estimator)}");
             simulationParameters.StartTime = burnInLength;
         }
 

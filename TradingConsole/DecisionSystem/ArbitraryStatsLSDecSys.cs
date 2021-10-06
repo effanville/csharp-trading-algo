@@ -2,9 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using FinancialStructures.StockStructures;
-using StructureCommon.MathLibrary.ParameterEstimation;
-using StructureCommon.Reporting;
-using TradingConsole.InputParser;
+using Common.Structure.MathLibrary.ParameterEstimation;
+using Common.Structure.Reporting;
 using TradingConsole.Simulation;
 using TradingConsole.Statistics;
 

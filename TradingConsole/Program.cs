@@ -1,11 +1,11 @@
 ﻿using System;
 using System.IO;
 using System.IO.Abstractions;
-using StructureCommon.Reporting;
+using Common.Structure.Reporting;
 using TradingConsole.Simulation;
-using ConsoleCommon;
+using Common.Console;
 using System.Collections.Generic;
-using ConsoleCommon.Commands;
+using Common.Console.Commands;
 using TradingConsole.ExchangeCreation;
 
 namespace TradingConsole
@@ -40,12 +40,13 @@ namespace TradingConsole
             // Define the acceptable commands for this program.
             var validCommands = new List<ICommand>()
             {
-                new ConfigureCommand(console, logger, fileSystem),
-                new DownloadCommand(console, logger, fileSystem),
-                new SimulationCommand(console, logger, fileSystem)
+                new ConfigureCommand(logger, fileSystem),
+                new DownloadCommand(logger, fileSystem),
+                new SimulationCommand(logger, fileSystem),
+                new TradingCommand(logger, fileSystem)
             };
 
-            // Generate the context, validate the arguments and execute. 
+            // Generate the context, validate the arguments and execute.
             ConsoleContext.SetAndExecute(args, console, logger, validCommands);
             return;
         }

@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO.Abstractions;
-using ConsoleCommon;
-using ConsoleCommon.Commands;
-using ConsoleCommon.Options;
-using StructureCommon.Reporting;
+using Common.Console;
+using Common.Console.Commands;
+using Common.Console.Options;
+using Common.Structure.Reporting;
 using TradingConsole.BuySellSystem;
 using TradingConsole.DecisionSystem;
 using TradingConsole.Statistics;
@@ -15,8 +15,9 @@ namespace TradingConsole.Simulation
     /// Command pertaining to running a simulation of the stock market for
     /// a specific decision system.
     /// </summary>
-    public sealed class SimulationCommand : BaseCommand, ICommand
+    internal sealed class SimulationCommand : ICommand
     {
+        private readonly IReportLogger fLogger;
         private readonly IFileSystem fFileSystem;
         private readonly CommandOption<string> fStockFilePath;
         private readonly CommandOption<string> fPortfolioFilePath;
@@ -29,20 +30,25 @@ namespace TradingConsole.Simulation
         private readonly CommandOption<List<StatisticType>> fDecisionSystemStats;
 
         /// <inheritdoc/>
-        public override string Name
+        public string Name => "simulate";
+
+        /// <inheritdoc/>
+        public IList<CommandOption> Options
         {
-            get
-            {
-                return "simulate";
-            }
-        }
+            get;
+        } = new List<CommandOption>();
+        /// <inheritdoc/>
+        public IList<ICommand> SubCommands
+        {
+            get;
+        } = new List<ICommand>();
 
         /// <summary>
         /// Construct an instance.
         /// </summary>
-        public SimulationCommand(IConsole console, IReportLogger logger, IFileSystem fileSystem)
-            : base(console, logger)
+        public SimulationCommand(IReportLogger logger, IFileSystem fileSystem)
         {
+            fLogger = logger;
             fFileSystem = fileSystem;
             fStockFilePath = new CommandOption<string>("stockFilePath", "The path at which to locate the Stock Exchange data.");
             Options.Add(fStockFilePath);
@@ -63,7 +69,19 @@ namespace TradingConsole.Simulation
         }
 
         /// <inheritdoc/>
-        public override int Execute(string[] args)
+        public void WriteHelp(IConsole console)
+        {
+            CommandExtensions.WriteHelp(this, console);
+        }
+
+        /// <inheritdoc/>
+        public bool Validate(IConsole console, string[] args)
+        {
+            return CommandExtensions.Validate(this, args, console);
+        }
+
+        /// <inheritdoc/>
+        public int Execute(IConsole console, string[] args = null)
         {
             var simulationParameters = new SimulationParameters(fStartDate.Value, fEndDate.Value, fTradingGap.Value, fStartingCash.Value);
             var decisionParameters = new DecisionSystemParameters(fDecisionType.Value, fDecisionSystemStats.Value);
