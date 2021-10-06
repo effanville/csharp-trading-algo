@@ -1,6 +1,6 @@
 ﻿using System;
 using FinancialStructures.StockStructures;
-using StructureCommon.Mathematics;
+using Common.Structure.Mathematics;
 
 namespace TradingConsole.Statistics
 {

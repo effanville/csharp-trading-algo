@@ -1,12 +1,12 @@
 ﻿using System;
-using System.Diagnostics;
 using System.IO;
 using System.IO.Abstractions;
-using StructureCommon.Extensions;
-using StructureCommon.Reporting;
-using TradingConsole.InputParser;
+using Common.Structure.Reporting;
 using TradingConsole.Simulation;
-using TradingConsole.Statistics;
+using Common.Console;
+using System.Collections.Generic;
+using Common.Console.Commands;
+using TradingConsole.ExchangeCreation;
 
 namespace TradingConsole
 {
@@ -14,85 +14,41 @@ namespace TradingConsole
     {
         internal static void Main(string[] args)
         {
-            Stopwatch stopWatch = new Stopwatch();
-            var consoleWriter = new ConsoleStreamWriter(new MemoryStream());
             var fileSystem = new FileSystem();
 
-            try
+            // Create the Console to write output.
+            void writeLine(string text) => Console.WriteLine(text);
+            void writeError(string text)
             {
-                string filepath;
-
-                consoleWriter.Write("Input arguments:");
-                consoleWriter.Write(string.Join(' ', args));
-                void WriteReport(ReportSeverity critical, ReportType type, ReportLocation location, string message)
-                {
-                    if (critical != ReportSeverity.Critical)
-                    {
-                        return;
-                    }
-
-                    consoleWriter.Write($"{type} - {location} - {message}");
-                }
-
-                IReportLogger reportLogger = new LogReporter((critical, type, location, message) => WriteReport(critical, type, location, message));
-                consoleWriter.Write("Trading Console");
-
-                stopWatch.Start();
-
-                UserInputParser userInputParser = new UserInputParser(reportLogger);
-                UserInputOptions inputOptions = userInputParser.ParseUserInput(args);
-                bool optionsOK = userInputParser.EnsureInputsSuitable(inputOptions);
-                filepath = inputOptions.StockFilePath;
-                if (!optionsOK)
-                {
-                    consoleWriter.Write("User Inputs not suitable");
-                }
-                else
-                {
-                    switch (inputOptions.FuntionType)
-                    {
-                        case ProgramType.DownloadAll:
-                        case ProgramType.DownloadLatest:
-                        case ProgramType.Configure:
-                        {
-                            consoleWriter.Write("Downloading:");
-                            StockDownloader stockDownloader = new StockDownloader(inputOptions, fileSystem, reportLogger);
-                            stockDownloader.Download();
-                            break;
-                        }
-                        case ProgramType.Simulate:
-                        case ProgramType.Trade:
-                        {
-                            consoleWriter.Write("Simulation Starting");
-                            TradingStatistics stats = new TradingStatistics();
-                            TradingSimulation tradingSimulation = new TradingSimulation(inputOptions, fileSystem, reportLogger, consoleWriter);
-                            tradingSimulation.SetupSystemsAndRun(stats);
-                            stats.ExportToFile(Path.GetDirectoryName(filepath) + "\\" + DateTime.Now.FileSuitableDateTimeValue() + "-" + Path.GetFileNameWithoutExtension(filepath) + "-RunStats.log");
-                            break;
-                        }
-                        case ProgramType.Help:
-                        default:
-                        {
-                            break;
-                        }
-                    }
-                }
-
-                stopWatch.Stop();
-                consoleWriter.filePath = Path.GetDirectoryName(filepath) + "\\" + DateTime.Now.FileSuitableDateTimeValue() + "-" + Path.GetFileNameWithoutExtension(filepath) + "-output.log";
-
+                var color = Console.ForegroundColor;
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine(text);
+                Console.ForegroundColor = color;
             }
-            catch (Exception exept)
+            IConsole console = new ConsoleInstance(writeError, writeLine);
+
+            // Create the logger.
+            var reports = new ErrorReports();
+            var memoryStream = new MemoryStream();
+            void reportAction(ReportSeverity severity, ReportType reportType, ReportLocation location, string text)
             {
-                consoleWriter.Write(exept.Message);
+                reports.AddErrorReport(severity, reportType, location, text);
+                console.WriteLine($"{DateTime.Now}({reportType}) {text}\n");
             }
-            finally
+            IReportLogger logger = new LogReporter(reportAction);
+
+            // Define the acceptable commands for this program.
+            var validCommands = new List<ICommand>()
             {
-                TimeSpan lengthOfTime = stopWatch.Elapsed;
-                consoleWriter.Write("Program finished");
-                consoleWriter.Write($"{lengthOfTime.TotalSeconds}s");
-                consoleWriter.SaveToFile();
-            }
+                new ConfigureCommand(logger, fileSystem),
+                new DownloadCommand(logger, fileSystem),
+                new SimulationCommand(logger, fileSystem),
+                new TradingCommand(logger, fileSystem)
+            };
+
+            // Generate the context, validate the arguments and execute.
+            ConsoleContext.SetAndExecute(args, console, logger, validCommands);
+            return;
         }
     }
 }

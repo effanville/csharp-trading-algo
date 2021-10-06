@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using FinancialStructures.StockStructures;
-using StructureCommon.Reporting;
-using TradingConsole.InputParser;
+using Common.Structure.Reporting;
 using TradingConsole.Simulation;
 using TradingConsole.Statistics;
 
@@ -26,7 +25,7 @@ namespace TradingConsole.DecisionSystem
         /// e.g. any parameters from an estimation are set at this point.
         /// This may alter the simulation parameters (e.g. the start time of the simulation).
         /// </summary>
-        void Calibrate(UserInputOptions inputOptions, IStockExchange exchange, SimulationParameters simulationParameters);
+        void Calibrate(DecisionSystemParameters decisionParameters, IStockExchange exchange, SimulationParameters simulationParameters);
 
         /// <summary>
         /// The process by which a decision on each stock in the exchange is made.

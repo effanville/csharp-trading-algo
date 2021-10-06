@@ -1,61 +1,67 @@
 ﻿using System;
+using System.Collections.Generic;
 using FinancialStructures.Database;
 using FinancialStructures.NamingStructures;
 using FinancialStructures.StockStructures;
-using StructureCommon.Reporting;
+using Common.Structure.Reporting;
 using TradingConsole.DecisionSystem;
 using TradingConsole.Simulation;
 using TradingConsole.Statistics;
 
 namespace TradingConsole.BuySellSystem
 {
-    public class BuySellBase : IBuySellSystem
+    internal abstract class BuySellBase : IBuySellSystem
     {
+        /// <inheritdoc/>
         public IReportLogger ReportLogger
         {
             get;
         }
 
-        public BuySellBase(IReportLogger reportLogger)
+        internal BuySellBase(IReportLogger reportLogger)
         {
             ReportLogger = reportLogger;
         }
 
         public virtual void BuySell(DateTime day, DecisionStatus status, IStockExchange stocks, IPortfolio portfolio, TradingStatistics stats, BuySellParams parameters, SimulationParameters simulationParameters)
         {
-            System.Collections.Generic.List<Decision> sellDecisions = status.GetSellDecisions();
+            List<Decision> sellDecisions = status.GetSellDecisions();
 
             foreach (Decision sell in sellDecisions)
             {
                 SellHolding(day, sell, stocks, portfolio, stats, parameters, simulationParameters);
             }
 
-            System.Collections.Generic.List<Decision> buyDecisions = status.GetBuyDecisions();
+            List<Decision> buyDecisions = status.GetBuyDecisions();
 
             foreach (Decision buy in buyDecisions)
             {
                 BuyHolding(day, buy, stocks, portfolio, stats, parameters, simulationParameters);
             }
 
-            foreach (var security in portfolio.Funds)
+            foreach (var security in portfolio.FundsThreadSafe)
             {
                 if (security.Value(day).Value > 0)
                 {
-                    var value = stocks.GetValue(new NameData(security.Company, security.Name), day);
+                    double value = stocks.GetValue(new NameData(security.Names.Company, security.Names.Name), day);
                     if (!value.Equals(double.NaN))
                     {
-                        security.TryAddOrEditData(day, day, value, ReportLogger);
+                        security.SetData(day, value, ReportLogger);
                     }
                 }
             }
         }
 
+        /// <inheritdoc/>
         public virtual void SellHolding(DateTime day, Decision sell, IStockExchange stocks, IPortfolio portfolio, TradingStatistics stats, BuySellParams parameters, SimulationParameters simulationParameters)
         {
+            _ = ReportLogger.Log(ReportSeverity.Critical, ReportType.Warning, ReportLocation.Execution, $"Date {day} sold {sell.StockName}");
         }
 
+        /// <inheritdoc/>
         public virtual void BuyHolding(DateTime day, Decision buy, IStockExchange stocks, IPortfolio portfolio, TradingStatistics stats, BuySellParams parameters, SimulationParameters simulationParameters)
         {
+            _ = ReportLogger.Log(ReportSeverity.Critical, ReportType.Warning, ReportLocation.Execution, $"Date {day} bought {buy.StockName}");
         }
     }
 }

@@ -2,9 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using FinancialStructures.StockStructures;
-using StructureCommon.MathLibrary.ParameterEstimation;
-using StructureCommon.Reporting;
-using TradingConsole.InputParser;
+using Common.Structure.MathLibrary.ParameterEstimation;
+using Common.Structure.Reporting;
 using TradingConsole.Simulation;
 using TradingConsole.Statistics;
 
@@ -27,15 +26,15 @@ namespace TradingConsole.DecisionSystem
             ReportLogger = reportLogger;
         }
 
-        public void Calibrate(UserInputOptions inputOptions, IStockExchange exchange, SimulationParameters simulationParameters)
+        public void Calibrate(DecisionSystemParameters decisionParameters, IStockExchange exchange, SimulationParameters simulationParameters)
         {
-            foreach (StatisticType statistic in inputOptions.decisionSystemStats)
+            foreach (StatisticType statistic in decisionParameters.Statistics)
             {
                 stockStatistics.Add(StockStatisticGenerator.Generate(statistic));
             }
 
             TimeSpan simulationLength = simulationParameters.EndTime - simulationParameters.StartTime;
-            DateTime burnInLength = simulationParameters.StartTime + simulationLength / 2;
+            DateTime burnInLength = simulationParameters.StartTime + new TimeSpan((long)(simulationLength.Ticks / 2));
             int delayTime = stockStatistics.Max(stock => stock.BurnInTime) + 2;
             int numberEntries = ((burnInLength - simulationParameters.StartTime).Days - 5) * 5 / 7;
             int numberStatistics = stockStatistics.Count;

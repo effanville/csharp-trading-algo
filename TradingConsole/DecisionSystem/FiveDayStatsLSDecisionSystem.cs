@@ -2,9 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using FinancialStructures.StockStructures;
-using StructureCommon.MathLibrary.ParameterEstimation;
-using StructureCommon.Reporting;
-using TradingConsole.InputParser;
+using Common.Structure.MathLibrary.ParameterEstimation;
+using Common.Structure.Reporting;
 using TradingConsole.Simulation;
 using TradingConsole.Statistics;
 
@@ -24,10 +23,10 @@ namespace TradingConsole.DecisionSystem
             ReportLogger = reportLogger;
         }
 
-        public void Calibrate(UserInputOptions inputOptions, IStockExchange exchange, SimulationParameters simulationParameters)
+        public void Calibrate(DecisionSystemParameters decisionParameters, IStockExchange exchange, SimulationParameters simulationParameters)
         {
             TimeSpan simulationLength = simulationParameters.EndTime - simulationParameters.StartTime;
-            DateTime burnInLength = simulationParameters.StartTime + simulationLength / 2;
+            DateTime burnInLength = simulationParameters.StartTime + new TimeSpan((long)(simulationLength.Ticks / 2));
 
             int numberEntries = ((burnInLength - simulationParameters.StartTime).Days - 5) * 5 / 7;
 
@@ -59,7 +58,7 @@ namespace TradingConsole.DecisionSystem
 
             Estimator = new LSEstimator(X, Y);
 
-            _ = ReportLogger.Log(ReportSeverity.Critical, ReportType.Report, ReportLocation.Unknown, $"Estimator Weights are {string.Join(',', Estimator.Estimator)}");
+            _ = ReportLogger.Log(ReportSeverity.Critical, ReportType.Warning, ReportLocation.Unknown, $"Estimator Weights are {string.Join(",", Estimator.Estimator)}");
             simulationParameters.StartTime = burnInLength;
         }
 

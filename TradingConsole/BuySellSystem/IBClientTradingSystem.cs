@@ -1,33 +1,41 @@
 ﻿using System;
 using FinancialStructures.Database;
+using FinancialStructures.DataStructures;
 using FinancialStructures.NamingStructures;
 using FinancialStructures.StockStructures;
-using FinancialStructures.StockStructures.Implementation;
-using StructureCommon.DataStructures;
-using StructureCommon.Reporting;
+using Common.Structure.DataStructures;
+using Common.Structure.Reporting;
 using TradingConsole.DecisionSystem;
 using TradingConsole.Simulation;
 using TradingConsole.Statistics;
+using FinancialStructures.FinanceStructures;
 
 namespace TradingConsole.BuySellSystem
 {
-    public class IBClientTradingSystem : BuySellBase
+    internal class IBClientTradingSystem : BuySellBase
     {
-        public IBClientTradingSystem(IReportLogger reportLogger)
+        internal IBClientTradingSystem(IReportLogger reportLogger)
             : base(reportLogger)
         {
         }
 
+        /// <inheritdoc/>
         public override void SellHolding(DateTime day, Decision sell, IStockExchange stocks, IPortfolio portfolio, TradingStatistics stats, BuySellParams parameters, SimulationParameters simulationParameters)
         {
+            double cashAvailable = portfolio.TotalValue(Totals.BankAccount, day);
             double price = stocks.GetValue(sell.StockName, day);
-            _ = portfolio.TryAddOrEditDataToSecurity(sell.StockName, day, day, 0.0, price, 1.0, ReportLogger);
-            double numShares = portfolio.SecurityPrices(sell.StockName, day, SecurityDataStream.NumberOfShares);
-            var data = new DailyValuation(day, numShares * price - simulationParameters.tradeCost);
-            _ = portfolio.TryAddOrEditData(Account.BankAccount, simulationParameters.bankAccData, data, data, ReportLogger);
-            stats.AddTrade(new Trade(TradeType.Sell, "", sell.StockName.Company, sell.StockName.Name, day, numShares * price, numShares, price, simulationParameters.tradeCost));
+            _ = portfolio.TryGetAccount(Account.Security, sell.StockName, out var desired);
+            ISecurity security = desired as ISecurity;
+
+            double numShares = security.UnitPrice.ValueOnOrBefore(day).Value;
+            var trade = new SecurityTrade(TradeType.Sell, sell.StockName, day, numShares, price, simulationParameters.TradeCost);
+            _ = portfolio.TryAddOrEditDataToSecurity(sell.StockName, day, day, 0.0, price, 1.0, trade, ReportLogger);
+            var data = new DailyValuation(day, cashAvailable + trade.TotalCost);
+            _ = portfolio.TryAddOrEditData(Account.BankAccount, simulationParameters.BankAccData, data, data, ReportLogger);
+            base.SellHolding(day, sell, stocks, portfolio, stats, parameters, simulationParameters);
         }
 
+        /// <inheritdoc/>
         public override void BuyHolding(DateTime day, Decision buy, IStockExchange stocks, IPortfolio portfolio, TradingStatistics stats, BuySellParams parameters, SimulationParameters simulationParameters)
         {
             double price = stocks.GetValue(buy.StockName, day);
@@ -41,15 +49,16 @@ namespace TradingConsole.BuySellSystem
                 }
                 numShares--;
 
-                double costOfPurchase = numShares * price + simulationParameters.tradeCost;
-                if (cashAvailable > costOfPurchase)
+                var trade = new SecurityTrade(TradeType.Buy, buy.StockName, day, numShares, price, simulationParameters.TradeCost);
+                if (cashAvailable > trade.TotalCost)
                 {
-                    _ = portfolio.TryAddOrEditDataToSecurity(buy.StockName, day, day, numShares, price, 1, ReportLogger);
-                    var data = new DailyValuation(day, cashAvailable - numShares * costOfPurchase);
+                    _ = portfolio.TryAddOrEditDataToSecurity(buy.StockName, day, day, numShares, price, 1, trade, ReportLogger);
+                    var data = new DailyValuation(day, cashAvailable - trade.TotalCost);
                     _ = portfolio.TryAddOrEditData(Account.BankAccount, new NameData("Cash", "Portfolio"), data, data, ReportLogger);
-                    stats.AddTrade(new Trade(TradeType.Buy, "", buy.StockName.Company, buy.StockName.Name, day, numShares * price, numShares, price, simulationParameters.tradeCost));
                 }
             }
+
+            base.BuyHolding(day, buy, stocks, portfolio, stats, parameters, simulationParameters);
         }
     }
 }

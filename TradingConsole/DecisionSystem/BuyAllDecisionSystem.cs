@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using FinancialStructures.StockStructures;
-using StructureCommon.Reporting;
+using Common.Structure.Reporting;
 using TradingConsole.InputParser;
 using TradingConsole.Simulation;
 using TradingConsole.Statistics;
@@ -27,7 +27,7 @@ namespace TradingConsole.DecisionSystem
         /// <summary>
         /// No parameters to calibrate in this system.
         /// </summary>
-        public void Calibrate(UserInputOptions inputOptions, IStockExchange exchange, SimulationParameters simulationParameters)
+        public void Calibrate(DecisionSystemParameters decisionParameters, IStockExchange exchange, SimulationParameters simulationParameters)
         {
         }
 
