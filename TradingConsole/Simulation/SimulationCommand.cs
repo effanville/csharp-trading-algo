@@ -50,18 +50,24 @@ namespace TradingConsole.Simulation
         {
             fLogger = logger;
             fFileSystem = fileSystem;
-            fStockFilePath = new CommandOption<string>("stockFilePath", "The path at which to locate the Stock Exchange data.");
-            Options.Add(fStockFilePath);
+
+            // Portfolio Setup options
             fPortfolioFilePath = new CommandOption<string>("portfolioFilePath", "The path at which to locate the starting portfolio");
             Options.Add(fPortfolioFilePath);
             fStartingCash = new CommandOption<double>("startingCash", "The starting amount of cash to create the simulation with.");
             Options.Add(fStartingCash);
             fStartDate = new CommandOption<DateTime>("start", "The date to start on.");
+
+            // Simulation run options.
+            fStockFilePath = new CommandOption<string>("stockFilePath", "The path at which to locate the Stock Exchange data.");
+            Options.Add(fStockFilePath);
             Options.Add(fStartDate);
             fEndDate = new CommandOption<DateTime>("end", "The date to end on.");
             Options.Add(fEndDate);
             fTradingGap = new CommandOption<TimeSpan>("gap", "The interval between evaluations.");
             Options.Add(fTradingGap);
+
+            // Decision system options.
             fDecisionType = new CommandOption<DecisionSystem.DecisionSystem>("decision", "The type of decision system to use.");
             Options.Add(fDecisionType);
             fDecisionSystemStats = new CommandOption<List<StatisticType>>("", "");

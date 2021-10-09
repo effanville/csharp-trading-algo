@@ -56,7 +56,7 @@ namespace TradingConsole.ExchangeCreation
         /// <inheritdoc/>
         public void WriteHelp(IConsole console)
         {
-            throw new NotImplementedException();
+            CommandExtensions.WriteHelp(this, console);
         }
 
         /// <inheritdoc/>

@@ -70,7 +70,6 @@ namespace TradingConsole.Simulation
         {
             using (new Timer(ReportLogger, "Simulation"))
             {
-
                 DateTime time = SimulationParameters.StartTime;
 
                 while (time < SimulationParameters.EndTime)
