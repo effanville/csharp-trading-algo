@@ -2,11 +2,11 @@
 using System.IO;
 using System.IO.Abstractions;
 using Common.Structure.Reporting;
-using TradingConsole.Simulation;
+using TradingConsole.ExecutionCommands;
 using Common.Console;
 using System.Collections.Generic;
 using Common.Console.Commands;
-using TradingConsole.ExchangeCreation;
+using TradingConsole.ExchangeCreationCommands;
 
 namespace TradingConsole
 {
