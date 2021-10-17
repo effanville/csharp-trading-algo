@@ -55,7 +55,7 @@ namespace TradingConsole.Simulator
             {
                 using (new Timer(ReportLogger, "Loading Exchange"))
                 {
-                    exchange.LoadStockExchange(stockFilePath, ReportLogger);
+                    exchange.LoadStockExchange(stockFilePath, fFileSystem, ReportLogger);
                     if (!exchange.CheckValidity())
                     {
                         _ = ReportLogger.Log(ReportSeverity.Critical, ReportType.Error, ReportLocation.Loading, "Stock input data not suitable.");
@@ -95,7 +95,7 @@ namespace TradingConsole.Simulator
             {
                 if (time.Day == 1)
                 {
-                    _ = ReportLogger.Log(ReportSeverity.Critical, ReportType.Information, ReportLocation.DatabaseAccess, message);
+                    _ = ReportLogger.Log(ReportSeverity.Critical, ReportType.Warning, ReportLocation.DatabaseAccess, message);
                 }
             }
 
@@ -135,14 +135,14 @@ namespace TradingConsole.Simulator
             else
             {
                 _ = portfolio.TryAdd(Account.BankAccount, new NameData(settings.DefaultBankAccName.Company, settings.DefaultBankAccName.Name), logger);
-                var data = new DailyValuation(settings.StartTime, settings.StartingCash);
+                var data = new DailyValuation(settings.StartTime.AddDays(-1), settings.StartingCash);
                 _ = portfolio.TryAddOrEditData(Account.BankAccount, settings.DefaultBankAccName, data, data, logger);
             }
 
             return portfolio;
         }
 
-        private void UpdatePortfolioData(DateTime day, IStockExchange stocks, IPortfolio portfolio)
+        private static void UpdatePortfolioData(DateTime day, IStockExchange stocks, IPortfolio portfolio)
         {
             foreach (var security in portfolio.FundsThreadSafe)
             {
@@ -151,7 +151,7 @@ namespace TradingConsole.Simulator
                     double value = stocks.GetValue(new TwoName(security.Names.Company, security.Names.Name), day);
                     if (!value.Equals(double.NaN))
                     {
-                        security.SetData(day, value, ReportLogger);
+                        security.SetData(day, value);
                     }
                 }
             }

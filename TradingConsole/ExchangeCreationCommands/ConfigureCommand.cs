@@ -54,10 +54,10 @@ namespace TradingConsole.ExchangeCreationCommands
         {
             IStockExchange exchange = new StockExchange();
             string inputPath = fStockFilePathOption.Value;
-            exchange.Configure(inputPath);
+            exchange.Configure(inputPath, fFileSystem, fLogger);
             string filePath = fFileSystem.Path.ChangeExtension(inputPath, "xml");
-            exchange.SaveStockExchange(filePath, fLogger);
-            return CommandExtensions.Execute(this, console, args);
+            exchange.SaveStockExchange(filePath, fFileSystem, fLogger);
+            return 0;
         }
 
         /// <inheritdoc/>

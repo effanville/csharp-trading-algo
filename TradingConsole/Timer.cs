@@ -20,7 +20,27 @@ namespace TradingConsole
         public void Dispose()
         {
             fWatch.Stop();
-            _ = fLogger.Log(ReportSeverity.Critical, ReportType.Warning, ReportLocation.Execution, $"{fOperation} took {fWatch.Elapsed}");
+            _ = fLogger.Log(ReportSeverity.Critical, ReportType.Warning, ReportLocation.Execution, $"{fOperation} took {TimeSpanFriendlyString(fWatch.Elapsed)}");
+        }
+
+        private static string TimeSpanFriendlyString(TimeSpan timeSpan)
+        {
+            if (timeSpan.TotalMilliseconds < 1000)
+            {
+                return $"{timeSpan.TotalMilliseconds}ms";
+            }
+
+            if (timeSpan.TotalSeconds < 60)
+            {
+                return $"{timeSpan.TotalSeconds}s";
+            }
+
+            if (timeSpan.TotalMinutes < 60)
+            {
+                return $"{timeSpan.TotalMinutes}:{timeSpan.TotalSeconds}";
+            }
+
+            return $"{timeSpan.TotalHours}:{timeSpan.TotalMinutes}:{timeSpan.TotalSeconds}";
         }
     }
 }

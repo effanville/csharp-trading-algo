@@ -15,7 +15,7 @@ namespace TradingConsole.BuySellSystem
         public Random RandomNumbers
         {
             get;
-        } = new Random();
+        } = new Random(12345);
 
         /// <summary>
         /// The probability that a stock will have gone up from the opening price.
@@ -41,19 +41,19 @@ namespace TradingConsole.BuySellSystem
         public TwoName BankAccData
         {
             get;
-        } = new TwoName("Cash", "Portfolio");
+        }
 
         /// <summary>
         /// Construct an instance.
         /// </summary>
         public TradeMechanismSettings(
             double upTickProbability = 0.5,
-            double upTickSize = 0.05,
+            double upTickSize = 0.01,
             TwoName bankAccData = null)
         {
             UpTickProbability = upTickProbability;
             UpTickSize = upTickSize;
-            BankAccData = bankAccData;
+            BankAccData = bankAccData ?? new TwoName("Cash", "Portfolio");
         }
     }
 }

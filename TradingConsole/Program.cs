@@ -1,5 +1,4 @@
 ﻿using System;
-using System.IO;
 using System.IO.Abstractions;
 using Common.Structure.Reporting;
 using TradingConsole.ExecutionCommands;
@@ -29,14 +28,17 @@ namespace TradingConsole
 
             // Create the logger.
             var reports = new ErrorReports();
-            var memoryStream = new MemoryStream();
             void reportAction(ReportSeverity severity, ReportType reportType, ReportLocation location, string text)
             {
                 reports.AddErrorReport(severity, reportType, location, text);
-                console.WriteLine($"{DateTime.Now}({reportType}) {text}\n");
+                console.WriteLine($"{DateTime.Now}({reportType}) {text}");
             }
             IReportLogger logger = new LogReporter(reportAction);
+            Main(args, fileSystem, console, logger);
+        }
 
+        internal static void Main(string[] args, IFileSystem fileSystem, IConsole console, IReportLogger logger)
+        {
             // Define the acceptable commands for this program.
             var validCommands = new List<ICommand>()
             {

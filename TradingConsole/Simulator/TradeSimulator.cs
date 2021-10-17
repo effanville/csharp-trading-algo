@@ -57,7 +57,7 @@ namespace TradingConsole.Simulator
                     // update the portfolio values for the new data.
                     portfolioUpdate(time, settings.Exchange, portfolio);
 
-                    reportCallback(time, $"Date {time} total value {0.0}");
+                    reportCallback(time, $"Date {time} total value {portfolio.TotalValue(Totals.All)}");
 
                     time += settings.EvolutionIncrement;
                 }

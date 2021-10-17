@@ -71,7 +71,7 @@ namespace TradingConsole.ExchangeCreationCommands
             exchange.LoadStockExchange(fStockFilePathOption.Value, fFileSystem, fLogger);
             exchange.Download(fStartDateOption.Value, fEndDateOption.Value, fLogger);
             exchange.SaveStockExchange(fStockFilePathOption.Value, fFileSystem, fLogger);
-            return CommandExtensions.Execute(this, console, args);
+            return 0;
         }
     }
 }

@@ -49,7 +49,7 @@ namespace TradingConsole.BuySellSystem.Implementation
             double priceToBuy = openPrice * valueModifier;
 
             double cashAvailable = portfolio.TotalValue(Totals.BankAccount, time);
-            if (openPrice != 0)
+            if (openPrice != 0 && cashAvailable > priceToBuy)
             {
                 int numShares = 0;
                 while (numShares * priceToBuy < traderOptions.FractionInvest * cashAvailable)
@@ -72,19 +72,21 @@ namespace TradingConsole.BuySellSystem.Implementation
                         _ = portfolio.TryGetAccount(Account.Security, buy.StockName, out var desired);
                         ISecurity security = desired as ISecurity;
 
-                        double existingShares = security.UnitPrice.ValueOnOrBefore(time).Value;
+                        double existingShares = security.Shares.ValueOnOrBefore(time)?.Value ?? 0.0;
 
                         _ = portfolio.TryAddOrEditDataToSecurity(buy.StockName, time, time, numShares + existingShares, priceToBuy, 1, tradeDetails, ReportLogger);
 
                         // Remove the cash used to buy the shares from the portfolio.
                         var value = new DailyValuation(time, cashAvailable - tradeDetails.TotalCost);
                         _ = portfolio.TryAddOrEditData(Account.BankAccount, settings.BankAccData, value, value, ReportLogger);
+
+                        _ = ReportLogger.Log(ReportSeverity.Critical, ReportType.Warning, ReportLocation.Execution, $"Date {time} bought {buy.StockName} Cost {tradeDetails.TotalCost} price");
+                        return true;
                     }
                 }
             }
 
-            _ = ReportLogger.Log(ReportSeverity.Critical, ReportType.Warning, ReportLocation.Execution, $"Date {time} bought {buy.StockName}");
-            return true;
+            return false;
         }
 
 
@@ -105,7 +107,7 @@ namespace TradingConsole.BuySellSystem.Implementation
             _ = portfolio.TryGetAccount(Account.Security, sell.StockName, out var desired);
             ISecurity security = desired as ISecurity;
 
-            double numShares = security.UnitPrice.ValueOnOrBefore(time).Value;
+            double numShares = security.UnitPrice.ValueOnOrBefore(time)?.Value ?? 0.0;
 
             // One can only sell if one already owns some of the security.
             if (portfolio.Exists(Account.Security, sell.StockName) && numShares > 0)
@@ -120,17 +122,18 @@ namespace TradingConsole.BuySellSystem.Implementation
                 var tradeDetails = new SecurityTrade(TradeType.Sell, sell.StockName, time, numShares, price, traderOptions.TradeCost);
 
                 // Now perform selling. This consists of removing the security at the specific value in our portfolio.
-                // Note that the security in the portfolio does not take into account the cost of the trade
                 _ = portfolio.TryAddOrEditDataToSecurity(sell.StockName, time, time, 0.0, price, 1, tradeDetails, ReportLogger);
 
                 // Now increase the amount in the bank account, i.e. free cash, held in the portfolio, to free it up to be used on other securities.
                 double cashAvailable = portfolio.TotalValue(Totals.BankAccount, time);
                 var value = new DailyValuation(time, cashAvailable + tradeDetails.TotalCost);
                 _ = portfolio.TryAddOrEditData(Account.BankAccount, settings.BankAccData, value, value, ReportLogger);
+
+                _ = ReportLogger.Log(ReportSeverity.Critical, ReportType.Warning, ReportLocation.Execution, $"Date {time} sold {sell.StockName}");
+                return true;
             }
 
-            _ = ReportLogger.Log(ReportSeverity.Critical, ReportType.Warning, ReportLocation.Execution, $"Date {time} sold {sell.StockName}");
-            return true;
+            return false;
         }
     }
 }
