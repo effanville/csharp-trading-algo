@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<StockExchange xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <Stocks>
+    <Stock>
+      <Ticker>BARC</Ticker>
+      <Name>
+        <Company />
+        <Name>Barclays</Name>
+        <Url>https://uk.finance.yahoo.com/quote/BARC.L</Url>
+        <Currency />
+        <Sectors />
+      </Name>
+      <Valuations />
+    </Stock>
+    <Stock>
+      <Ticker>DNLM</Ticker>
+      <Name>
+        <Company>stuff</Company>
+        <Name>Dunelm</Name>
+        <Url>https://uk.finance.yahoo.com/quote/DNLM.L</Url>
+        <Currency />
+        <Sectors />
+      </Name>
+      <Valuations />
+    </Stock>
+  </Stocks>
+</StockExchange>
