@@ -12,7 +12,9 @@ namespace TradingConsole.Simulator
             DateTime endTime,
             TimeSpan evolutionIncrement,
             Func<DateTime, bool> isCalcTimeValid,
+            Action<string> startReportCallback,
             Action<DateTime, string> reportCallback,
+            Action<string> endReportCallback,
             IStockExchange exchange,
             IPortfolio portfolio,
             Action<DateTime, IStockExchange, IPortfolio> enactTrades,
@@ -22,7 +24,9 @@ namespace TradingConsole.Simulator
             Simulate(
                 new SimulatorSettings(startTime, endTime, evolutionIncrement, exchange),
                 isCalcTimeValid,
+                startReportCallback,
                 reportCallback,
+                endReportCallback,
                 portfolio,
                 enactTrades,
                 portfolioUpdate,
@@ -32,7 +36,9 @@ namespace TradingConsole.Simulator
         public static void Simulate(
             SimulatorSettings settings,
             Func<DateTime, bool> isCalcTimeValid,
+            Action<string> startReportCallback,
             Action<DateTime, string> reportCallback,
+            Action<string> endReportCallback,
             IPortfolio portfolio,
             Action<DateTime, IStockExchange, IPortfolio> enactTrades,
             Action<DateTime, IStockExchange, IPortfolio> portfolioUpdate,
@@ -42,6 +48,7 @@ namespace TradingConsole.Simulator
             using (new Timer(logger, "Simulation"))
             {
                 DateTime time = settings.StartTime;
+                startReportCallback($"StartDate {time} total value {portfolio.TotalValue(Totals.All):C2}");
                 while (time < settings.EndTime)
                 {
                     // ensure that time of evaluation is valid.
@@ -57,10 +64,12 @@ namespace TradingConsole.Simulator
                     // update the portfolio values for the new data.
                     portfolioUpdate(time, settings.Exchange, portfolio);
 
-                    reportCallback(time, $"Date {time} total value {portfolio.TotalValue(Totals.All)}");
+                    reportCallback(time, $"Date {time} total value {portfolio.TotalValue(Totals.All):C2}");
 
                     time += settings.EvolutionIncrement;
                 }
+
+                endReportCallback($"EndDate {time} total value {portfolio.TotalValue(Totals.All):C2}");
             }
         }
     }

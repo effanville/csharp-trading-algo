@@ -50,12 +50,12 @@ namespace TradingConsole.Simulator
             fTradeMechanismSettings = new TradeMechanismSettings();
             fTraderOptions = new TradeMechanismTraderOptions();
 
-            var exchange = new StockExchange();
+            IStockExchange exchange;
             using (new Timer(ReportLogger, "Setup"))
             {
                 using (new Timer(ReportLogger, "Loading Exchange"))
                 {
-                    exchange.LoadStockExchange(stockFilePath, fFileSystem, ReportLogger);
+                    exchange = StockExchangeFactory.Create(stockFilePath, fFileSystem, ReportLogger);
                     if (!exchange.CheckValidity())
                     {
                         _ = ReportLogger.Log(ReportSeverity.Critical, ReportType.Error, ReportLocation.Loading, "Stock input data not suitable.");
@@ -99,9 +99,17 @@ namespace TradingConsole.Simulator
                 }
             }
 
+            void startEndReportCallback(string message)
+            {
+                _ = ReportLogger.Log(ReportSeverity.Critical, ReportType.Warning, ReportLocation.DatabaseAccess, message);
+
+            }
+
             TradeSimulator.Simulate(fSimulatorSettings,
                 isCalcTimeValid,
+                startEndReportCallback,
                 reportCallback,
+                startEndReportCallback,
                 portfolio,
                 (time, exc, port) => PerformDailyTrades(time, exc, port, record),
                 (time, exc, port) => UpdatePortfolioData(time, exc, port),

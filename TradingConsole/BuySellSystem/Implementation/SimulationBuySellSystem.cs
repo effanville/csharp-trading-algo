@@ -80,7 +80,7 @@ namespace TradingConsole.BuySellSystem.Implementation
                         var value = new DailyValuation(time, cashAvailable - tradeDetails.TotalCost);
                         _ = portfolio.TryAddOrEditData(Account.BankAccount, settings.BankAccData, value, value, ReportLogger);
 
-                        _ = ReportLogger.Log(ReportSeverity.Critical, ReportType.Warning, ReportLocation.Execution, $"Date {time} bought {buy.StockName} Cost {tradeDetails.TotalCost} price");
+                        _ = ReportLogger.Log(ReportSeverity.Critical, ReportType.Warning, ReportLocation.Execution, $"Date {time} bought {buy.StockName} Cost {tradeDetails.TotalCost:C2} price");
                         return true;
                     }
                 }
@@ -129,7 +129,7 @@ namespace TradingConsole.BuySellSystem.Implementation
                 var value = new DailyValuation(time, cashAvailable + tradeDetails.TotalCost);
                 _ = portfolio.TryAddOrEditData(Account.BankAccount, settings.BankAccData, value, value, ReportLogger);
 
-                _ = ReportLogger.Log(ReportSeverity.Critical, ReportType.Warning, ReportLocation.Execution, $"Date {time} sold {sell.StockName}");
+                _ = ReportLogger.Log(ReportSeverity.Critical, ReportType.Warning, ReportLocation.Execution, $"Date {time} sold {sell.StockName} for {value:C2}");
                 return true;
             }
 

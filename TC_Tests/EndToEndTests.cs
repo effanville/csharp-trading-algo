@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
+﻿using System.IO;
 using System.IO.Abstractions.TestingHelpers;
 using System.Text;
 using Common.Console;
@@ -83,7 +81,20 @@ namespace TC_Tests
 
             string[] args = new[] { "simulate", "--stockFilePath", testFilePath, "--start", "5/1/2015", "--end", "12/12/2019", "--startingCash", "20000", "--decision", "BuyAll" };
             Program.Main(args, fFileSystem, fConsole, fLogger);
-            Assert.AreEqual(74, fLogger.Reports.Count());
+            Assert.AreEqual(76, fLogger.Reports.Count());
+            string expectedOutput = fConsoleOutput.ToString();
+        }
+
+        [Test]
+        public void FiveDayStatsRun()
+        {
+            var configureFile = File.ReadAllText($"{TestConstants.ExampleFilesLocation}\\example-database.xml");
+            string testFilePath = "c:/temp/exampleFile.xml";
+            fFileSystem.AddFile(testFilePath, configureFile);
+
+            string[] args = new[] { "simulate", "--stockFilePath", testFilePath, "--start", "5/1/2015", "--end", "12/12/2019", "--startingCash", "20000" };
+            Program.Main(args, fFileSystem, fConsole, fLogger);
+            Assert.AreEqual(76, fLogger.Reports.Count());
             string expectedOutput = fConsoleOutput.ToString();
         }
     }
