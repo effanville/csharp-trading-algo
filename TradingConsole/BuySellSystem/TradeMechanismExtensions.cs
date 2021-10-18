@@ -1,8 +1,8 @@
 ﻿using System;
 using FinancialStructures.Database;
-using FinancialStructures.StockStructures;
 using TradingConsole.DecisionSystem.Models;
 using System.Collections.Generic;
+using FinancialStructures.NamingStructures;
 
 namespace TradingConsole.BuySellSystem
 {
@@ -12,23 +12,21 @@ namespace TradingConsole.BuySellSystem
             this ITradeMechanism tradeMechanism,
             DateTime time,
             DecisionStatus decisions,
-            IStockExchange exchange,
+            Func<DateTime, NameData, double> calculateBuyPrice,
+            Func<DateTime, NameData, double> calculateSellPrice,
             IPortfolio portfolio,
-            TradeMechanismSettings settings,
             TradeMechanismTraderOptions traderOptions)
         {
             List<Decision> sellDecisions = decisions.GetSellDecisions();
-
             foreach (Decision sell in sellDecisions)
             {
-                _ = tradeMechanism.Sell(time, sell, exchange, portfolio, settings, traderOptions);
+                _ = tradeMechanism.Sell(time, sell, calculateSellPrice, portfolio, traderOptions);
             }
 
             List<Decision> buyDecisions = decisions.GetBuyDecisions();
-
             foreach (Decision buy in buyDecisions)
             {
-                _ = tradeMechanism.Buy(time, buy, exchange, portfolio, settings, traderOptions);
+                _ = tradeMechanism.Buy(time, buy, calculateBuyPrice, portfolio, traderOptions);
             }
         }
     }

@@ -25,5 +25,11 @@ namespace TradingConsole.DecisionSystem.Models
             StockName = stock;
             BuySell = buySell;
         }
+
+        /// <inheritdoc/>
+        public override string ToString()
+        {
+            return $"{BuySell}-{StockName}";
+        }
     }
 }

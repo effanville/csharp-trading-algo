@@ -44,5 +44,10 @@ namespace TradingConsole.DecisionSystem.Models
             }
             return output;
         }
+
+        public override string ToString()
+        {
+            return $"{fDecisions.Count} decisions.";
+        }
     }
 }

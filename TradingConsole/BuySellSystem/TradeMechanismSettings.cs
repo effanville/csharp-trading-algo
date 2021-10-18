@@ -1,5 +1,4 @@
 ﻿using System;
-using FinancialStructures.NamingStructures;
 
 namespace TradingConsole.BuySellSystem
 {
@@ -36,24 +35,14 @@ namespace TradingConsole.BuySellSystem
         }
 
         /// <summary>
-        /// The default bank account name to use.
-        /// </summary>
-        public TwoName BankAccData
-        {
-            get;
-        }
-
-        /// <summary>
         /// Construct an instance.
         /// </summary>
         public TradeMechanismSettings(
             double upTickProbability = 0.5,
-            double upTickSize = 0.01,
-            TwoName bankAccData = null)
+            double upTickSize = 0.01)
         {
             UpTickProbability = upTickProbability;
             UpTickSize = upTickSize;
-            BankAccData = bankAccData ?? new TwoName("Cash", "Portfolio");
         }
     }
 }

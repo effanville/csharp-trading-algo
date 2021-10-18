@@ -7,7 +7,6 @@ using FinancialStructures.Database;
 using FinancialStructures.DataStructures;
 using FinancialStructures.FinanceStructures;
 using FinancialStructures.NamingStructures;
-using FinancialStructures.StockStructures;
 
 using TradingConsole.DecisionSystem.Models;
 
@@ -29,12 +28,11 @@ namespace TradingConsole.BuySellSystem.Implementation
         public bool Buy(
             DateTime time,
             Decision buy,
-            IStockExchange exchange,
+            Func<DateTime, NameData, double> calculateBuyPrice,
             IPortfolio portfolio,
-            TradeMechanismSettings settings,
             TradeMechanismTraderOptions traderOptions)
         {
-            double price = exchange.GetValue(buy.StockName, time);
+            double price = calculateBuyPrice(time, buy.StockName);
             double cashAvailable = portfolio.TotalValue(Totals.BankAccount, time);
             if (price != 0)
             {
@@ -61,7 +59,7 @@ namespace TradingConsole.BuySellSystem.Implementation
 
                     _ = portfolio.TryAddOrEditDataToSecurity(buy.StockName, time, time, numShares + existingShares, price, 1, trade, ReportLogger);
                     var data = new DailyValuation(time, cashAvailable - trade.TotalCost);
-                    _ = portfolio.TryAddOrEditData(Account.BankAccount, settings.BankAccData, data, data, ReportLogger);
+                    _ = portfolio.TryAddOrEditData(Account.BankAccount, traderOptions.BankAccData, data, data, ReportLogger);
                 }
             }
 
@@ -73,13 +71,12 @@ namespace TradingConsole.BuySellSystem.Implementation
         public bool Sell(
             DateTime time,
             Decision sell,
-            IStockExchange exchange,
+            Func<DateTime, NameData, double> calculateSellPrice,
             IPortfolio portfolio,
-            TradeMechanismSettings settings,
             TradeMechanismTraderOptions traderOptions)
         {
             double cashAvailable = portfolio.TotalValue(Totals.BankAccount, time);
-            double price = exchange.GetValue(sell.StockName, time);
+            double price = calculateSellPrice(time, sell.StockName);
             _ = portfolio.TryGetAccount(Account.Security, sell.StockName, out var desired);
             ISecurity security = desired as ISecurity;
 
@@ -87,7 +84,7 @@ namespace TradingConsole.BuySellSystem.Implementation
             var trade = new SecurityTrade(TradeType.Sell, sell.StockName, time, numShares, price, traderOptions.TradeCost);
             _ = portfolio.TryAddOrEditDataToSecurity(sell.StockName, time, time, 0.0, price, 1.0, trade, ReportLogger);
             var data = new DailyValuation(time, cashAvailable + trade.TotalCost);
-            _ = portfolio.TryAddOrEditData(Account.BankAccount, settings.BankAccData, data, data, ReportLogger);
+            _ = portfolio.TryAddOrEditData(Account.BankAccount, traderOptions.BankAccData, data, data, ReportLogger);
             _ = ReportLogger.Log(ReportSeverity.Critical, ReportType.Warning, ReportLocation.Execution, $"Date {time} sold {sell.StockName}");
             return true;
         }

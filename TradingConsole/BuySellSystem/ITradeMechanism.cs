@@ -1,6 +1,6 @@
 ﻿using System;
 using FinancialStructures.Database;
-using FinancialStructures.StockStructures;
+using FinancialStructures.NamingStructures;
 using TradingConsole.DecisionSystem.Models;
 
 namespace TradingConsole.BuySellSystem
@@ -17,9 +17,8 @@ namespace TradingConsole.BuySellSystem
         bool Buy(
             DateTime time,
             Decision buy,
-            IStockExchange exchange,
+            Func<DateTime, NameData, double> calculateBuyPrice,
             IPortfolio portfolio,
-            TradeMechanismSettings settings,
             TradeMechanismTraderOptions traderOptions);
 
         /// <summary>
@@ -28,9 +27,8 @@ namespace TradingConsole.BuySellSystem
         bool Sell(
             DateTime time,
             Decision sell,
-            IStockExchange exchange,
+            Func<DateTime, NameData, double> calculateSellPrice,
             IPortfolio portfolio,
-            TradeMechanismSettings settings,
             TradeMechanismTraderOptions traderOptions);
     }
 }

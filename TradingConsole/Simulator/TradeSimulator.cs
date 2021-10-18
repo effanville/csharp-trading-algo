@@ -49,8 +49,12 @@ namespace TradingConsole.Simulator
             {
                 DateTime time = settings.StartTime;
                 startReportCallback($"StartDate {time} total value {portfolio.TotalValue(Totals.All):C2}");
+                IStockExchange exchange = StockExchangeFactory.Create(settings.Exchange, time);
                 while (time < settings.EndTime)
                 {
+                    // update with opening times of the stocks in this time period.
+                    StockExchangeFactory.UpdateFromBase(settings.Exchange, exchange, time, openOnly: true);
+
                     // ensure that time of evaluation is valid.
                     if (!isCalcTimeValid(time))
                     {
@@ -59,10 +63,13 @@ namespace TradingConsole.Simulator
                     }
 
                     // carry out the trades at the desired time.
-                    enactTrades(time, settings.Exchange, portfolio);
+                    enactTrades(time, exchange, portfolio);
+
+                    // Update the Stock exchange for the recent time period.
+                    StockExchangeFactory.UpdateFromBase(settings.Exchange, exchange, time, openOnly: false);
 
                     // update the portfolio values for the new data.
-                    portfolioUpdate(time, settings.Exchange, portfolio);
+                    portfolioUpdate(time, exchange, portfolio);
 
                     reportCallback(time, $"Date {time} total value {portfolio.TotalValue(Totals.All):C2}");
 

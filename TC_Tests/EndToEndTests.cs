@@ -79,7 +79,7 @@ namespace TC_Tests
             string testFilePath = "c:/temp/exampleFile.xml";
             fFileSystem.AddFile(testFilePath, configureFile);
 
-            string[] args = new[] { "simulate", "--stockFilePath", testFilePath, "--start", "5/1/2015", "--end", "12/12/2019", "--startingCash", "20000", "--decision", "BuyAll" };
+            string[] args = new[] { "simulate", "--stockFilePath", testFilePath, "--start", "2015-01-05T08:00:00", "--end", "2019-12-12T08:00:00", "--startingCash", "20000", "--decision", "BuyAll" };
             Program.Main(args, fFileSystem, fConsole, fLogger);
             Assert.AreEqual(76, fLogger.Reports.Count());
             string expectedOutput = fConsoleOutput.ToString();

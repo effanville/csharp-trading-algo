@@ -11,11 +11,10 @@ using TradingConsole.DecisionSystem.Models;
 
 namespace TradingConsole.Simulator
 {
-    internal partial class TradingSimulation
+    internal partial class RealTrader
     {
         private readonly IDecisionSystem DecisionSystem;
         private readonly ITradeMechanism BuySellSystem;
-        private readonly TradeMechanismSettings fTradeMechanismSettings;
         private readonly TradeMechanismTraderOptions fTraderOptions;
         private readonly SimulatorSettings fSimulatorSettings;
         private readonly IPortfolio fPortfolio;
@@ -32,11 +31,8 @@ namespace TradingConsole.Simulator
             set;
         }
 
-        public TradingSimulation(
+        public RealTrader(
             string stockFilePath,
-            DateTime startTime,
-            DateTime endTime,
-            TimeSpan evolutionIncrement,
             PortfolioStartSettings startSettings,
             DecisionSystemSetupSettings decisionParameters,
             TradeMechanismType buySellType,
@@ -46,7 +42,6 @@ namespace TradingConsole.Simulator
             ReportLogger = reportLogger;
             fFileSystem = fileSystem;
 
-            fTradeMechanismSettings = new TradeMechanismSettings();
             fTraderOptions = new TradeMechanismTraderOptions();
 
             IStockExchange exchange;
@@ -61,12 +56,6 @@ namespace TradingConsole.Simulator
                         SetupError = true;
                         return;
                     }
-
-                    fSimulatorSettings = new SimulatorSettings(
-                        startTime,
-                        endTime,
-                        evolutionIncrement,
-                        exchange);
                 }
 
                 using (new Timer(reportLogger, "Calibrating"))
@@ -84,36 +73,11 @@ namespace TradingConsole.Simulator
             }
         }
 
-        public (DecisionRecord, IPortfolio) SimulateRun()
+        public void Run(string portfolioFilePath, DecisionRecord record)
         {
-            var record = new DecisionRecord();
-            var portfolio = fPortfolio.Copy();
+            PerformDailyTrades(DateTime.Today, fSimulatorSettings.Exchange, fPortfolio, record);
 
-            bool isCalcTimeValid(DateTime time) => (time.DayOfWeek != DayOfWeek.Saturday) || (time.DayOfWeek != DayOfWeek.Sunday);
-            void reportCallback(DateTime time, string message)
-            {
-                if (time.Day == 1)
-                {
-                    _ = ReportLogger.Log(ReportSeverity.Critical, ReportType.Warning, ReportLocation.DatabaseAccess, message);
-                }
-            }
-
-            void startEndReportCallback(string message)
-            {
-                _ = ReportLogger.Log(ReportSeverity.Critical, ReportType.Warning, ReportLocation.DatabaseAccess, message);
-
-            }
-
-            TradeSimulator.Simulate(fSimulatorSettings,
-                isCalcTimeValid,
-                startEndReportCallback,
-                reportCallback,
-                startEndReportCallback,
-                portfolio,
-                (time, exc, port) => PerformDailyTrades(time, exc, port, record),
-                (time, exc, port) => UpdatePortfolioData(time, exc, port),
-                ReportLogger);
-            return (record, portfolio);
+            fPortfolio.SavePortfolio(portfolioFilePath, fFileSystem, ReportLogger);
         }
 
         private void PerformDailyTrades(DateTime day, IStockExchange exchange, IPortfolio portfolio, DecisionRecord record)
@@ -123,21 +87,12 @@ namespace TradingConsole.Simulator
 
             double CalculatePurchasePrice(DateTime time, NameData stock)
             {
-                double openPrice = exchange.GetValue(stock, time, StockDataStream.Open);
-
-                // we modify the price we buy at from the opening price, to simulate market movement.
-                double upDown = fTradeMechanismSettings.RandomNumbers.Next(0, 100) > 100 * fTradeMechanismSettings.UpTickProbability ? 1 : -1;
-                double valueModifier = 1 + fTradeMechanismSettings.UpTickSize * upDown;
-                return openPrice * valueModifier;
+                return exchange.GetValue(stock, time);
             }
 
             double CalculateSellPrice(DateTime time, NameData stock)
             {
-                // First calculate price that one sells at.
-                // This is the open price of the stock, with a combat multiplier.
-                double upDown = fTradeMechanismSettings.RandomNumbers.Next(0, 100) > 100 * fTradeMechanismSettings.UpTickProbability ? 1 : -1;
-                double valueModifier = 1 + fTradeMechanismSettings.UpTickSize * upDown;
-                return exchange.GetValue(stock, time, StockDataStream.Open) * valueModifier;
+                return exchange.GetValue(stock, time);
             }
 
             // Exact the buy/Sell decisions.
@@ -165,21 +120,6 @@ namespace TradingConsole.Simulator
             }
 
             return portfolio;
-        }
-
-        private static void UpdatePortfolioData(DateTime day, IStockExchange stocks, IPortfolio portfolio)
-        {
-            foreach (var security in portfolio.FundsThreadSafe)
-            {
-                if (security.Value(day).Value > 0)
-                {
-                    double value = stocks.GetValue(new TwoName(security.Names.Company, security.Names.Name), day);
-                    if (!value.Equals(double.NaN))
-                    {
-                        security.SetData(day, value);
-                    }
-                }
-            }
         }
     }
 }
