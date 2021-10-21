@@ -23,7 +23,7 @@ namespace TradingConsole.DecisionSystem.Implementation
         }
 
         /// <inheritdoc />
-        public DecisionStatus Decide(DateTime day, SimulatorSettings settings, DecisionRecord record)
+        public DecisionStatus Decide(DateTime day, SimulatorSettings settings)
         {
             var decisions = new DecisionStatus();
             foreach (IStock stock in settings.Exchange.Stocks)
@@ -31,7 +31,6 @@ namespace TradingConsole.DecisionSystem.Implementation
                 decisions.AddDecision(stock.Name, TradeDecision.Buy);
             }
 
-            record.AddForTheRecord(day, decisions);
             return decisions;
         }
     }

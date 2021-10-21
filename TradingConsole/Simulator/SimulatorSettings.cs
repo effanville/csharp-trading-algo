@@ -3,6 +3,9 @@ using FinancialStructures.StockStructures;
 
 namespace TradingConsole.Simulator
 {
+    /// <summary>
+    /// Settings required for a simulator to simulate.
+    /// </summary>
     public sealed class SimulatorSettings
     {
         /// <summary>
@@ -35,18 +38,23 @@ namespace TradingConsole.Simulator
             private set;
         }
 
+        /// <summary>
+        /// The stock exchange to use for this simulation.
+        /// </summary>
         public IStockExchange Exchange
         {
             get;
             private set;
         }
 
+        /// <summary>
+        /// Construct an instance.
+        /// </summary>
         public SimulatorSettings(DateTime startTime, DateTime endTime, TimeSpan evolutionIncrement, IStockExchange exchange)
         {
             StartTime = startTime;
             EndTime = endTime;
             EvolutionIncrement = evolutionIncrement.Seconds != 0 ? evolutionIncrement : new TimeSpan(1, 0, 0, 0);
-            ;
             Exchange = exchange;
             EnsureStartDatesConsistent();
         }

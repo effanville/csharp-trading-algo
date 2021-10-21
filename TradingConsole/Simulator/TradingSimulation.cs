@@ -8,31 +8,30 @@ using TradingConsole.BuySellSystem;
 using TradingConsole.DecisionSystem;
 using FinancialStructures.NamingStructures;
 using TradingConsole.DecisionSystem.Models;
+using TradingConsole.BuySellSystem.Models;
 
 namespace TradingConsole.Simulator
 {
-    internal partial class TradingSimulation
+    /// <summary>
+    /// Contains the logic for the creation of user specified options for a simulation of
+    /// a stock market trading algorithm.
+    /// </summary>
+    public static class TradingSimulation
     {
-        private readonly IDecisionSystem DecisionSystem;
-        private readonly ITradeMechanism BuySellSystem;
-        private readonly TradeMechanismSettings fTradeMechanismSettings;
-        private readonly TradeMechanismTraderOptions fTraderOptions;
-        private readonly SimulatorSettings fSimulatorSettings;
-        private readonly IPortfolio fPortfolio;
-
-        private readonly IReportLogger ReportLogger;
-        private readonly IFileSystem fFileSystem;
-
         /// <summary>
-        /// Does the setup of the simulation error.
+        /// Performs the setup of user specified inputs to the simulation.
         /// </summary>
-        public bool SetupError
-        {
-            get;
-            set;
-        }
-
-        public TradingSimulation(
+        /// <param name="stockFilePath">FilePath to the stock database</param>
+        /// <param name="startTime">Start time of the simulation</param>
+        /// <param name="endTime">End time of the simulation</param>
+        /// <param name="evolutionIncrement">The gap between trade times.</param>
+        /// <param name="startSettings">The settings for the starting portfolio.</param>
+        /// <param name="decisionParameters">Parameters to specify the decision system.</param>
+        /// <param name="buySellType">The type of the system used to buy and sell.</param>
+        /// <param name="fileSystem">The file system to use.</param>
+        /// <param name="reportLogger">A logging mechanism</param>
+        /// <returns>The final portfolio, and the records of the decisions and trades.</returns>
+        public static (IPortfolio, DecisionRecord, TradeRecord) SetupAndSimulate(
             string stockFilePath,
             DateTime startTime,
             DateTime endTime,
@@ -43,26 +42,26 @@ namespace TradingConsole.Simulator
             IFileSystem fileSystem,
             IReportLogger reportLogger)
         {
-            ReportLogger = reportLogger;
-            fFileSystem = fileSystem;
-
-            fTradeMechanismSettings = new TradeMechanismSettings();
-            fTraderOptions = new TradeMechanismTraderOptions();
-
+            var tradeMechanismSettings = new TradeMechanismSettings();
+            var traderOptions = new TradeMechanismTraderOptions();
             IStockExchange exchange;
-            using (new Timer(ReportLogger, "Setup"))
+            SimulatorSettings simulatorSettings;
+            IPortfolio portfolio;
+            IDecisionSystem decisionSystem;
+            ITradeMechanism tradeMechanism;
+
+            using (new Timer(reportLogger, "Setup"))
             {
-                using (new Timer(ReportLogger, "Loading Exchange"))
+                using (new Timer(reportLogger, "Loading Exchange"))
                 {
-                    exchange = StockExchangeFactory.Create(stockFilePath, fFileSystem, ReportLogger);
+                    exchange = StockExchangeFactory.Create(stockFilePath, fileSystem, reportLogger);
                     if (!exchange.CheckValidity())
                     {
-                        _ = ReportLogger.Log(ReportSeverity.Critical, ReportType.Error, ReportLocation.Loading, "Stock input data not suitable.");
-                        SetupError = true;
-                        return;
+                        _ = reportLogger.Log(ReportSeverity.Critical, ReportType.Error, ReportLocation.Loading, "Stock input data not suitable.");
+                        return (null, null, null);
                     }
 
-                    fSimulatorSettings = new SimulatorSettings(
+                    simulatorSettings = new SimulatorSettings(
                         startTime,
                         endTime,
                         evolutionIncrement,
@@ -71,91 +70,53 @@ namespace TradingConsole.Simulator
 
                 using (new Timer(reportLogger, "Calibrating"))
                 {
-                    DecisionSystem = DecisionSystemFactory.Create(decisionParameters.DecisionSystemType, ReportLogger);
-                    DecisionSystem.Calibrate(decisionParameters, fSimulatorSettings);
+                    decisionSystem = DecisionSystemFactory.Create(decisionParameters.DecisionSystemType, reportLogger);
+                    decisionSystem.Calibrate(decisionParameters, simulatorSettings);
                 }
 
-                BuySellSystem = TradeMechanismFactory.Create(buySellType, ReportLogger);
+                tradeMechanism = TradeMechanismFactory.Create(buySellType, reportLogger);
 
                 using (new Timer(reportLogger, "Loading Portfolio"))
                 {
-                    fPortfolio = LoadStartPortfolio(startSettings, reportLogger);
+                    portfolio = LoadStartPortfolio(startSettings, fileSystem, reportLogger);
                 }
             }
-        }
-
-        public (DecisionRecord, IPortfolio) SimulateRun()
-        {
-            var record = new DecisionRecord();
-            var portfolio = fPortfolio.Copy();
 
             bool isCalcTimeValid(DateTime time) => (time.DayOfWeek != DayOfWeek.Saturday) || (time.DayOfWeek != DayOfWeek.Sunday);
             void reportCallback(DateTime time, string message)
             {
                 if (time.Day == 1)
                 {
-                    _ = ReportLogger.Log(ReportSeverity.Critical, ReportType.Warning, ReportLocation.DatabaseAccess, message);
+                    _ = reportLogger.Log(ReportSeverity.Critical, ReportType.Warning, ReportLocation.DatabaseAccess, message);
                 }
             }
 
             void startEndReportCallback(string message)
             {
-                _ = ReportLogger.Log(ReportSeverity.Critical, ReportType.Warning, ReportLocation.DatabaseAccess, message);
+                _ = reportLogger.Log(ReportSeverity.Critical, ReportType.Warning, ReportLocation.DatabaseAccess, message);
 
             }
 
-            TradeSimulator.Simulate(fSimulatorSettings,
+            return StockMarketHistorySimulator.Simulate(simulatorSettings,
+                tradeMechanismSettings,
                 isCalcTimeValid,
                 startEndReportCallback,
                 reportCallback,
                 startEndReportCallback,
-                portfolio,
-                (time, exc, port) => PerformDailyTrades(time, exc, port, record),
-                (time, exc, port) => UpdatePortfolioData(time, exc, port),
-                ReportLogger);
-            return (record, portfolio);
+                portfolio.Copy(),
+                (time, port, func1, func2) => PerformDailyTrades(simulatorSettings, time, port, decisionSystem, tradeMechanism, traderOptions, func1, func2),
+                reportLogger);
         }
 
-        private void PerformDailyTrades(DateTime day, IStockExchange exchange, IPortfolio portfolio, DecisionRecord record)
-        {
-            // Decide which stocks to buy, sell or do nothing with.
-            DecisionStatus status = DecisionSystem.Decide(day, fSimulatorSettings, record);
-
-            double CalculatePurchasePrice(DateTime time, NameData stock)
-            {
-                double openPrice = exchange.GetValue(stock, time, StockDataStream.Open);
-
-                // we modify the price we buy at from the opening price, to simulate market movement.
-                double upDown = fTradeMechanismSettings.RandomNumbers.Next(0, 100) > 100 * fTradeMechanismSettings.UpTickProbability ? 1 : -1;
-                double valueModifier = 1 + fTradeMechanismSettings.UpTickSize * upDown;
-                return openPrice * valueModifier;
-            }
-
-            double CalculateSellPrice(DateTime time, NameData stock)
-            {
-                // First calculate price that one sells at.
-                // This is the open price of the stock, with a combat multiplier.
-                double upDown = fTradeMechanismSettings.RandomNumbers.Next(0, 100) > 100 * fTradeMechanismSettings.UpTickProbability ? 1 : -1;
-                double valueModifier = 1 + fTradeMechanismSettings.UpTickSize * upDown;
-                return exchange.GetValue(stock, time, StockDataStream.Open) * valueModifier;
-            }
-
-            // Exact the buy/Sell decisions.
-            BuySellSystem.EnactAllTrades(
-                day,
-                status,
-                (date, name) => CalculatePurchasePrice(date, name),
-                (date, name) => CalculateSellPrice(date, name),
-                portfolio,
-                fTraderOptions);
-        }
-
-        private IPortfolio LoadStartPortfolio(PortfolioStartSettings settings, IReportLogger logger)
+        /// <summary>
+        /// Loads the starting portfolio, either from file or with the cash specified in the settings.
+        /// </summary>
+        private static IPortfolio LoadStartPortfolio(PortfolioStartSettings settings, IFileSystem fileSystem, IReportLogger logger)
         {
             IPortfolio portfolio = PortfolioFactory.GenerateEmpty();
             if (settings.PortfolioFilePath != null)
             {
-                portfolio.LoadPortfolio(settings.PortfolioFilePath, fFileSystem, ReportLogger);
+                portfolio.LoadPortfolio(settings.PortfolioFilePath, fileSystem, logger);
             }
             else
             {
@@ -167,19 +128,36 @@ namespace TradingConsole.Simulator
             return portfolio;
         }
 
-        private static void UpdatePortfolioData(DateTime day, IStockExchange stocks, IPortfolio portfolio)
+        /// <summary>
+        /// Enacts the trades on a given day. This is the simplest form of
+        /// running through all stocks and deciding on what to do, and
+        /// then enacting all the trades.
+        /// </summary>
+        /// <remarks>
+        /// TODO: Enable this to be more sophisticated.
+        /// </remarks>
+        private static (TradeStatus, DecisionStatus) PerformDailyTrades(
+            SimulatorSettings settings,
+            DateTime day,
+            IPortfolio portfolio,
+            IDecisionSystem decisionSystem,
+            ITradeMechanism tradeMechanism,
+            TradeMechanismTraderOptions traderOptions,
+            Func<DateTime, TwoName, double> buyCalc,
+            Func<DateTime, TwoName, double> sellCalc)
         {
-            foreach (var security in portfolio.FundsThreadSafe)
-            {
-                if (security.Value(day).Value > 0)
-                {
-                    double value = stocks.GetValue(new TwoName(security.Names.Company, security.Names.Name), day);
-                    if (!value.Equals(double.NaN))
-                    {
-                        security.SetData(day, value);
-                    }
-                }
-            }
+            // Decide which stocks to buy, sell or do nothing with.
+            DecisionStatus status = decisionSystem.Decide(day, settings);
+
+            // Exact the buy/Sell decisions.
+            TradeStatus trades = tradeMechanism.EnactAllTrades(
+                day,
+                status,
+                (date, name) => buyCalc(date, name),
+                (date, name) => sellCalc(date, name),
+                portfolio,
+                traderOptions);
+            return (trades, status);
         }
     }
 }

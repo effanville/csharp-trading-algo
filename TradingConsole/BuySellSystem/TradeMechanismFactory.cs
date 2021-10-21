@@ -11,7 +11,7 @@ namespace TradingConsole.BuySellSystem
             {
                 case TradeMechanismType.IB:
                     return new IBClientTradingSystem(reportLogger);
-                case TradeMechanismType.Simulate:
+                case TradeMechanismType.SellAllThenBuy:
                 default:
                     return new SimulationBuySellSystem(reportLogger);
             }

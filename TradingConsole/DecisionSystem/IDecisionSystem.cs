@@ -20,6 +20,6 @@ namespace TradingConsole.DecisionSystem
         /// <summary>
         /// The process by which a decision on each stock in the exchange is made.
         /// </summary>
-        DecisionStatus Decide(DateTime day, SimulatorSettings settings, DecisionRecord record);
+        DecisionStatus Decide(DateTime day, SimulatorSettings settings);
     }
 }

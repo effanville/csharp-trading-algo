@@ -90,18 +90,29 @@ namespace TradingConsole.ExecutionCommands
         /// <inheritdoc/>
         public int Execute(IConsole console, string[] args = null)
         {
-            var decisionParameters = new DecisionSystemSetupSettings(fDecisionType.Value, fDecisionSystemStats.Value);
-            var startSettings = new PortfolioStartSettings(fPortfolioFilePath.Value, fStartDate.Value, fStartingCash.Value);
-
-            var system = new TradingSimulation(fStockFilePath.Value, fStartDate.Value, fEndDate.Value, fTradingGap.Value, startSettings, decisionParameters, TradeMechanismType.Simulate, fFileSystem, fLogger);
-
-            if (system.SetupError)
+            using (new Timer(fLogger, "TotalTime"))
             {
-                return 1;
-            }
+                var decisionParameters = new DecisionSystemSetupSettings(fDecisionType.Value, fDecisionSystemStats.Value);
+                var portfolioStartSettings = new PortfolioStartSettings(fPortfolioFilePath.Value, fStartDate.Value, fStartingCash.Value);
 
-            system.SimulateRun();
-            return 0;
+                var output = TradingSimulation.SetupAndSimulate(
+                    fStockFilePath.Value,
+                    fStartDate.Value,
+                    fEndDate.Value,
+                    fTradingGap.Value,
+                    portfolioStartSettings,
+                    decisionParameters,
+                    TradeMechanismType.SellAllThenBuy,
+                    fFileSystem,
+                    fLogger);
+
+                if (output.Item1 == null)
+                {
+                    return 1;
+                }
+
+                return 0;
+            }
         }
     }
 }

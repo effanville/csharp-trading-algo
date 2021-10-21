@@ -52,7 +52,7 @@ namespace TC_Tests
             string testFilePath = "c:/temp/exampleFile.csv";
             fFileSystem.AddFile(testFilePath, configureFile);
             string[] args = new[] { "configure", "--stockFilePath", testFilePath };
-            Program.Main(args, fFileSystem, fConsole, fLogger);
+            Program.InternalMain(args, fFileSystem, fConsole, fLogger);
 
             Assert.IsTrue(fFileSystem.File.Exists("c:/temp/exampleFile.xml"));
             Assert.AreEqual(2, fLogger.Reports.Count());
@@ -67,7 +67,7 @@ namespace TC_Tests
             string testFilePath = "c:/temp/exampleFile.xml";
             fFileSystem.AddFile(testFilePath, configureFile);
             string[] args = new[] { "download", "all", "--stockFilePath", testFilePath, "--start", "1/1/2015", "--end", "1/1/2020" };
-            Program.Main(args, fFileSystem, fConsole, fLogger);
+            Program.InternalMain(args, fFileSystem, fConsole, fLogger);
             Assert.AreEqual(0, fLogger.Reports.Count());
             Assert.AreEqual("", fConsoleOutput.ToString());
         }
@@ -80,7 +80,7 @@ namespace TC_Tests
             fFileSystem.AddFile(testFilePath, configureFile);
 
             string[] args = new[] { "simulate", "--stockFilePath", testFilePath, "--start", "2015-01-05T08:00:00", "--end", "2019-12-12T08:00:00", "--startingCash", "20000", "--decision", "BuyAll" };
-            Program.Main(args, fFileSystem, fConsole, fLogger);
+            Program.InternalMain(args, fFileSystem, fConsole, fLogger);
             Assert.AreEqual(76, fLogger.Reports.Count());
             string expectedOutput = fConsoleOutput.ToString();
         }
@@ -93,7 +93,7 @@ namespace TC_Tests
             fFileSystem.AddFile(testFilePath, configureFile);
 
             string[] args = new[] { "simulate", "--stockFilePath", testFilePath, "--start", "5/1/2015", "--end", "12/12/2019", "--startingCash", "20000" };
-            Program.Main(args, fFileSystem, fConsole, fLogger);
+            Program.InternalMain(args, fFileSystem, fConsole, fLogger);
             Assert.AreEqual(76, fLogger.Reports.Count());
             string expectedOutput = fConsoleOutput.ToString();
         }

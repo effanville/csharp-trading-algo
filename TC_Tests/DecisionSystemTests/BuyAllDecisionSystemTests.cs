@@ -19,7 +19,7 @@ namespace TC_Tests
 
             BuyAllDecisionSystem decisionSystem = new BuyAllDecisionSystem();
             var settings = new SimulatorSettings(default, default, default, exchange);
-            DecisionStatus status = decisionSystem.Decide(DateTime.Today, settings, null);
+            DecisionStatus status = decisionSystem.Decide(DateTime.Today, settings);
 
             Assert.AreEqual(1, status.GetBuyDecisions().Count);
             Assert.AreEqual(0, status.GetSellDecisions().Count);

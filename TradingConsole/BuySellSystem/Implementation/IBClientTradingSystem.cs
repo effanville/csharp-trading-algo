@@ -7,7 +7,7 @@ using FinancialStructures.Database;
 using FinancialStructures.DataStructures;
 using FinancialStructures.FinanceStructures;
 using FinancialStructures.NamingStructures;
-
+using TradingConsole.BuySellSystem.Models;
 using TradingConsole.DecisionSystem.Models;
 
 namespace TradingConsole.BuySellSystem.Implementation
@@ -87,6 +87,38 @@ namespace TradingConsole.BuySellSystem.Implementation
             _ = portfolio.TryAddOrEditData(Account.BankAccount, traderOptions.BankAccData, data, data, ReportLogger);
             _ = ReportLogger.Log(ReportSeverity.Critical, ReportType.Warning, ReportLocation.Execution, $"Date {time} sold {sell.StockName}");
             return true;
+        }
+
+        /// <inheritdoc/>
+        public TradeStatus EnactAllTrades(
+            DateTime time,
+            DecisionStatus decisions,
+            Func<DateTime, NameData, double> calculateBuyPrice,
+            Func<DateTime, NameData, double> calculateSellPrice,
+            IPortfolio portfolio,
+            TradeMechanismTraderOptions traderOptions)
+        {
+            List<Decision> sellDecisions = decisions.GetSellDecisions();
+            int numberSells = 0;
+            foreach (Decision sell in sellDecisions)
+            {
+                if (Sell(time, sell, calculateSellPrice, portfolio, traderOptions))
+                {
+                    numberSells++;
+                }
+            }
+
+            int numberBuys = 0;
+            List<Decision> buyDecisions = decisions.GetBuyDecisions();
+            foreach (Decision buy in buyDecisions)
+            {
+                if (Buy(time, buy, calculateBuyPrice, portfolio, traderOptions))
+                {
+                    numberBuys++;
+                }
+            }
+
+            return new TradeStatus(numberBuys, numberSells);
         }
     }
 }

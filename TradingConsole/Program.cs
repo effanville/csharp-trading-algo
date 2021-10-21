@@ -34,11 +34,12 @@ namespace TradingConsole
                 console.WriteLine($"{DateTime.Now}({reportType}) {text}");
             }
             IReportLogger logger = new LogReporter(reportAction);
-            Main(args, fileSystem, console, logger);
+            InternalMain(args, fileSystem, console, logger);
         }
 
-        internal static void Main(string[] args, IFileSystem fileSystem, IConsole console, IReportLogger logger)
+        internal static void InternalMain(string[] args, IFileSystem fileSystem, IConsole console, IReportLogger logger)
         {
+            var globals = new ConsoleGlobals(fileSystem, console, logger);
             // Define the acceptable commands for this program.
             var validCommands = new List<ICommand>()
             {
@@ -49,7 +50,7 @@ namespace TradingConsole
             };
 
             // Generate the context, validate the arguments and execute.
-            ConsoleContext.SetAndExecute(args, console, logger, validCommands);
+            ConsoleContext.SetAndExecute(args, globals, validCommands);
             return;
         }
     }

@@ -73,17 +73,17 @@ namespace TradingConsole.Simulator
             }
         }
 
-        public void Run(string portfolioFilePath, DecisionRecord record)
+        public void Run(string portfolioFilePath)
         {
-            PerformDailyTrades(DateTime.Today, fSimulatorSettings.Exchange, fPortfolio, record);
+            PerformDailyTrades(DateTime.Today, fSimulatorSettings.Exchange, fPortfolio);
 
             fPortfolio.SavePortfolio(portfolioFilePath, fFileSystem, ReportLogger);
         }
 
-        private void PerformDailyTrades(DateTime day, IStockExchange exchange, IPortfolio portfolio, DecisionRecord record)
+        private void PerformDailyTrades(DateTime day, IStockExchange exchange, IPortfolio portfolio)
         {
             // Decide which stocks to buy, sell or do nothing with.
-            DecisionStatus status = DecisionSystem.Decide(day, fSimulatorSettings, record);
+            DecisionStatus status = DecisionSystem.Decide(day, fSimulatorSettings);
 
             double CalculatePurchasePrice(DateTime time, NameData stock)
             {
@@ -96,7 +96,7 @@ namespace TradingConsole.Simulator
             }
 
             // Exact the buy/Sell decisions.
-            BuySellSystem.EnactAllTrades(
+            _ = BuySellSystem.EnactAllTrades(
                 day,
                 status,
                 (date, name) => CalculatePurchasePrice(date, name),

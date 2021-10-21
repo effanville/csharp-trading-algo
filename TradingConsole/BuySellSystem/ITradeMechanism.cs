@@ -1,6 +1,7 @@
 ﻿using System;
 using FinancialStructures.Database;
 using FinancialStructures.NamingStructures;
+using TradingConsole.BuySellSystem.Models;
 using TradingConsole.DecisionSystem.Models;
 
 namespace TradingConsole.BuySellSystem
@@ -27,6 +28,17 @@ namespace TradingConsole.BuySellSystem
         bool Sell(
             DateTime time,
             Decision sell,
+            Func<DateTime, NameData, double> calculateSellPrice,
+            IPortfolio portfolio,
+            TradeMechanismTraderOptions traderOptions);
+
+        /// <summary>
+        /// Routine to enact all trades.
+        /// </summary>
+        TradeStatus EnactAllTrades(
+            DateTime time,
+            DecisionStatus decisions,
+            Func<DateTime, NameData, double> calculateBuyPrice,
             Func<DateTime, NameData, double> calculateSellPrice,
             IPortfolio portfolio,
             TradeMechanismTraderOptions traderOptions);
