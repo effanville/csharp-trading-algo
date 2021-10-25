@@ -2,8 +2,14 @@
 
 namespace TradingConsole.BuySellSystem
 {
+    /// <summary>
+    /// Contains options for
+    /// </summary>
     public sealed class TradeMechanismTraderOptions
     {
+        /// <summary>
+        /// The fraction of available cash to invest in any one decision.
+        /// </summary>
         public double FractionInvest
         {
             get;
@@ -31,7 +37,7 @@ namespace TradingConsole.BuySellSystem
         /// Construct an instance.
         /// </summary>
         public TradeMechanismTraderOptions(
-            double fractionInvest = 1,
+            double fractionInvest = 0.25,
             double tradeCost = 6,
             TwoName bankAccData = null)
         {

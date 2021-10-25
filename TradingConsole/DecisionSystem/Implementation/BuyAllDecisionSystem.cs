@@ -2,6 +2,7 @@
 using FinancialStructures.StockStructures;
 using TradingConsole.Simulator;
 using TradingConsole.DecisionSystem.Models;
+using Common.Structure.Reporting;
 
 namespace TradingConsole.DecisionSystem.Implementation
 {
@@ -23,7 +24,7 @@ namespace TradingConsole.DecisionSystem.Implementation
         }
 
         /// <inheritdoc />
-        public DecisionStatus Decide(DateTime day, SimulatorSettings settings)
+        public DecisionStatus Decide(DateTime day, SimulatorSettings settings, IReportLogger logger)
         {
             var decisions = new DecisionStatus();
             foreach (IStock stock in settings.Exchange.Stocks)

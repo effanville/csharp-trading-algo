@@ -83,7 +83,7 @@ namespace TradingConsole.Simulator
         private void PerformDailyTrades(DateTime day, IStockExchange exchange, IPortfolio portfolio)
         {
             // Decide which stocks to buy, sell or do nothing with.
-            DecisionStatus status = DecisionSystem.Decide(day, fSimulatorSettings);
+            DecisionStatus status = DecisionSystem.Decide(day, fSimulatorSettings, null);
 
             double CalculatePurchasePrice(DateTime time, NameData stock)
             {

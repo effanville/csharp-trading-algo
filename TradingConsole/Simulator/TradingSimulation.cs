@@ -27,6 +27,7 @@ namespace TradingConsole.Simulator
         /// <param name="evolutionIncrement">The gap between trade times.</param>
         /// <param name="startSettings">The settings for the starting portfolio.</param>
         /// <param name="decisionParameters">Parameters to specify the decision system.</param>
+        /// <param name="traderOptions">The settings for how a trader should trade.</param>
         /// <param name="buySellType">The type of the system used to buy and sell.</param>
         /// <param name="fileSystem">The file system to use.</param>
         /// <param name="reportLogger">A logging mechanism</param>
@@ -38,12 +39,12 @@ namespace TradingConsole.Simulator
             TimeSpan evolutionIncrement,
             PortfolioStartSettings startSettings,
             DecisionSystemSetupSettings decisionParameters,
+            TradeMechanismTraderOptions traderOptions,
             TradeMechanismType buySellType,
             IFileSystem fileSystem,
             IReportLogger reportLogger)
         {
             var tradeMechanismSettings = new TradeMechanismSettings();
-            var traderOptions = new TradeMechanismTraderOptions();
             IStockExchange exchange;
             SimulatorSettings simulatorSettings;
             IPortfolio portfolio;
@@ -104,7 +105,7 @@ namespace TradingConsole.Simulator
                 reportCallback,
                 startEndReportCallback,
                 portfolio.Copy(),
-                (time, port, func1, func2) => PerformDailyTrades(simulatorSettings, time, port, decisionSystem, tradeMechanism, traderOptions, func1, func2),
+                (time, port, func1, func2) => PerformDailyTrades(simulatorSettings, time, port, decisionSystem, tradeMechanism, traderOptions, func1, func2, reportLogger),
                 reportLogger);
         }
 
@@ -144,10 +145,11 @@ namespace TradingConsole.Simulator
             ITradeMechanism tradeMechanism,
             TradeMechanismTraderOptions traderOptions,
             Func<DateTime, TwoName, double> buyCalc,
-            Func<DateTime, TwoName, double> sellCalc)
+            Func<DateTime, TwoName, double> sellCalc,
+            IReportLogger logger)
         {
             // Decide which stocks to buy, sell or do nothing with.
-            DecisionStatus status = decisionSystem.Decide(day, settings);
+            DecisionStatus status = decisionSystem.Decide(day, settings, logger: null);
 
             // Exact the buy/Sell decisions.
             TradeStatus trades = tradeMechanism.EnactAllTrades(

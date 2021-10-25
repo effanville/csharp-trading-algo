@@ -69,6 +69,9 @@ namespace TradingConsole.Simulator
                     // update with opening times of the stocks in this time period.
                     StockExchangeFactory.UpdateFromBase(settings.Exchange, exchange, time, openOnly: true);
 
+                    if (time.Month == 3 && time.Day == 25)
+                    {
+                    }
                     // ensure that time of evaluation is valid.
                     if (!isCalcTimeValid(time))
                     {
@@ -93,7 +96,7 @@ namespace TradingConsole.Simulator
                     // update the portfolio values for the new data.
                     UpdatePortfolioData(time, exchange, portfolio);
 
-                    reportCallback(time, $"Date {time} total value {portfolio.TotalValue(Totals.All):C2}");
+                    reportCallback(time, $"Date: {time}. TotalVal: {portfolio.TotalValue(Totals.All):C2}. TotalCash: {portfolio.TotalValue(Totals.BankAccount):C2}");
 
                     time += settings.EvolutionIncrement;
                 }

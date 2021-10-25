@@ -45,9 +45,10 @@ namespace TradingConsole.DecisionSystem.Models
             return output;
         }
 
+        /// <inheritdoc/>
         public override string ToString()
         {
-            return $"{fDecisions.Count} decisions.";
+            return $"Buys: {string.Join(",", GetBuyDecisions().Select(dec => dec.StockName))}. Sells:  {string.Join(",", GetSellDecisions().Select(dec => dec.StockName))}";
         }
     }
 }

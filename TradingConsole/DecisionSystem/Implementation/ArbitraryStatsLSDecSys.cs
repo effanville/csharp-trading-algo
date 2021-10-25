@@ -6,6 +6,7 @@ using Common.Structure.MathLibrary.ParameterEstimation;
 using TradingConsole.Simulator;
 using TradingConsole.DecisionSystem.Models;
 using FinancialStructures.StockStructures.Statistics;
+using Common.Structure.Reporting;
 
 namespace TradingConsole.DecisionSystem.Implementation
 {
@@ -35,7 +36,8 @@ namespace TradingConsole.DecisionSystem.Implementation
             }
 
             TimeSpan simulationLength = settings.EndTime - settings.StartTime;
-            DateTime burnInLength = settings.StartTime + new TimeSpan((long)(simulationLength.Ticks / 2));
+            DateTime burnInLength = settings.StartTime + settings.EvolutionIncrement * (long)(simulationLength / (2 * settings.EvolutionIncrement));
+
             int delayTime = stockStatistics.Max(stock => stock.BurnInTime) + 2;
             int numberEntries = ((burnInLength - settings.StartTime).Days - 5) * 5 / 7;
             int numberStatistics = stockStatistics.Count;
@@ -60,7 +62,7 @@ namespace TradingConsole.DecisionSystem.Implementation
         }
 
         /// <inheritdoc/>
-        public DecisionStatus Decide(DateTime day, SimulatorSettings settings)
+        public DecisionStatus Decide(DateTime day, SimulatorSettings settings, IReportLogger logger)
         {
             var decisions = new DecisionStatus();
             foreach (IStock stock in settings.Exchange.Stocks)

@@ -2,6 +2,7 @@
 
 using TradingConsole.Simulator;
 using TradingConsole.DecisionSystem.Models;
+using Common.Structure.Reporting;
 
 namespace TradingConsole.DecisionSystem
 {
@@ -20,6 +21,6 @@ namespace TradingConsole.DecisionSystem
         /// <summary>
         /// The process by which a decision on each stock in the exchange is made.
         /// </summary>
-        DecisionStatus Decide(DateTime day, SimulatorSettings settings);
+        DecisionStatus Decide(DateTime day, SimulatorSettings settings, IReportLogger logger);
     }
 }

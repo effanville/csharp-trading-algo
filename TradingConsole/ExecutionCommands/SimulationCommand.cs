@@ -29,6 +29,8 @@ namespace TradingConsole.ExecutionCommands
         private readonly CommandOption<TimeSpan> fTradingGap;
         private readonly CommandOption<DecisionSystem.DecisionSystem> fDecisionType;
         private readonly CommandOption<List<StockStatisticType>> fDecisionSystemStats;
+        private readonly CommandOption<double> fFractionInvest;
+
 
         /// <inheritdoc/>
         public string Name => "simulate";
@@ -55,7 +57,7 @@ namespace TradingConsole.ExecutionCommands
             // Portfolio Setup options
             fPortfolioFilePath = new CommandOption<string>("portfolioFilePath", "The path at which to locate the starting portfolio");
             Options.Add(fPortfolioFilePath);
-            fStartingCash = new CommandOption<double>("startingCash", "The starting amount of cash to create the simulation with.");
+            fStartingCash = new CommandOption<double>("startCash", "The starting amount of cash to create the simulation with.");
             Options.Add(fStartingCash);
             fStartDate = new CommandOption<DateTime>("start", "The date to start on.");
 
@@ -73,6 +75,8 @@ namespace TradingConsole.ExecutionCommands
             Options.Add(fDecisionType);
             fDecisionSystemStats = new CommandOption<List<StockStatisticType>>("", "");
             Options.Add(fDecisionSystemStats);
+            fFractionInvest = new CommandOption<double>("invFrac", "The maximum fraction of available cash to put in any purchase.");
+            Options.Add(fFractionInvest);
         }
 
         /// <inheritdoc/>
@@ -92,8 +96,9 @@ namespace TradingConsole.ExecutionCommands
         {
             using (new Timer(fLogger, "TotalTime"))
             {
-                var decisionParameters = new DecisionSystemSetupSettings(fDecisionType.Value, fDecisionSystemStats.Value);
                 var portfolioStartSettings = new PortfolioStartSettings(fPortfolioFilePath.Value, fStartDate.Value, fStartingCash.Value);
+                var decisionParameters = new DecisionSystemSetupSettings(fDecisionType.Value, fDecisionSystemStats.Value);
+                var traderOptions = new TradeMechanismTraderOptions(fFractionInvest.Value);
 
                 var output = TradingSimulation.SetupAndSimulate(
                     fStockFilePath.Value,
@@ -102,6 +107,7 @@ namespace TradingConsole.ExecutionCommands
                     fTradingGap.Value,
                     portfolioStartSettings,
                     decisionParameters,
+                    traderOptions,
                     TradeMechanismType.SellAllThenBuy,
                     fFileSystem,
                     fLogger);

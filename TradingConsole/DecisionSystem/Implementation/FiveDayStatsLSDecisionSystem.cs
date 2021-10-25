@@ -29,8 +29,7 @@ namespace TradingConsole.DecisionSystem.Implementation
         /// <inheritdoc />
         public void Calibrate(DecisionSystemSetupSettings decisionParameters, SimulatorSettings settings)
         {
-            TimeSpan simulationLength = settings.EndTime - settings.StartTime;
-            DateTime burnInLength = settings.StartTime + new TimeSpan((long)(simulationLength.Ticks / 2));
+            DateTime burnInLength = settings.StartTime + settings.EvolutionIncrement * (long)((settings.EndTime - settings.StartTime) / (2 * settings.EvolutionIncrement));
 
             int numberEntries = ((burnInLength - settings.StartTime).Days - 5) * 5 / 7;
 
@@ -47,7 +46,7 @@ namespace TradingConsole.DecisionSystem.Implementation
                         {
                             values[j] = values[j + 1];
                         }
-                        X[i + stockIndex, j] = values[j] / 100;
+                        X[i + stockIndex, j] = values[j] / values[0];
                     }
 
                     if (values.Last().Equals(double.NaN))
@@ -55,24 +54,30 @@ namespace TradingConsole.DecisionSystem.Implementation
                         values[values.Count - 1] = values[values.Count - 2];
                     }
 
-                    Y[i + stockIndex] = values.Last() / 100;
+                    Y[i + stockIndex] = values.Last() / values[0];
                 }
             }
-
 
             Estimator = new LSEstimator(X, Y);
 
             _ = fLogger.Log(ReportSeverity.Critical, ReportType.Warning, ReportLocation.Unknown, $"Estimator Weights are {string.Join(",", Estimator.Estimator)}");
             settings.UpdateStartTime(burnInLength);
         }
+
         /// <inheritdoc />
-        public DecisionStatus Decide(DateTime day, SimulatorSettings settings)
+        public DecisionStatus Decide(DateTime day, SimulatorSettings settings, IReportLogger logger)
         {
             var decisions = new DecisionStatus();
             foreach (IStock stock in settings.Exchange.Stocks)
             {
                 TradeDecision decision;
                 double[] values = stock.Values(day, 5, 0, StockDataStream.Open).ToArray();
+                double normaliseFactor = values[0];
+                for (int valueIndex = 0; valueIndex < values.Length; valueIndex++)
+                {
+                    values[valueIndex] /= normaliseFactor;
+                }
+
                 double value = Estimator.Evaluate(values);
 
                 if (value > 1.05)
@@ -88,9 +93,12 @@ namespace TradingConsole.DecisionSystem.Implementation
                     decision = TradeDecision.Hold;
                 }
 
+                _ = logger?.Log(ReportSeverity.Detailed, ReportType.Information, ReportLocation.Execution, $"{stock.Name} - value {value} - decision {decision}.");
+
                 decisions.AddDecision(stock.Name, decision);
             }
 
+            _ = logger?.Log(ReportSeverity.Detailed, ReportType.Information, ReportLocation.Execution, $"Decisions: {decisions}");
             return decisions;
         }
     }
