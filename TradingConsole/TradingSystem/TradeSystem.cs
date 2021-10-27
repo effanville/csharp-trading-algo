@@ -8,6 +8,8 @@ using FinancialStructures.Database;
 using FinancialStructures.NamingStructures;
 using FinancialStructures.StockStructures;
 
+using Nager.Date;
+
 using TradingConsole.BuySellSystem;
 using TradingConsole.DecisionSystem;
 
@@ -95,7 +97,7 @@ namespace TradingConsole.TradingSystem
                 }
             }
 
-            bool isCalcTimeValid(DateTime time) => (time.DayOfWeek != DayOfWeek.Saturday) || (time.DayOfWeek != DayOfWeek.Sunday);
+            bool isCalcTimeValid(DateTime time) => (time.DayOfWeek != DayOfWeek.Saturday) || (time.DayOfWeek != DayOfWeek.Sunday) || !DateSystem.IsPublicHoliday(time, CountryCode.GB);
             void reportCallback(DateTime time, string message)
             {
                 if (time.Day == 1)
