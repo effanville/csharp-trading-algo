@@ -5,17 +5,17 @@ using Common.Structure.DataStructures;
 using Common.Structure.Reporting;
 
 using FinancialStructures.Database;
-using FinancialStructures.StockStructures;
 using FinancialStructures.NamingStructures;
+using FinancialStructures.StockStructures;
 
 using TradingConsole.BuySellSystem;
 using TradingConsole.DecisionSystem;
 
-using TradingSystem.Decisions.System;
-using TradingSystem.Trading.System;
-using TradingSystem.Simulator;
 using TradingSystem;
 using TradingSystem.Decisions.Models;
+using TradingSystem.Decisions.System;
+using TradingSystem.Simulator;
+using TradingSystem.Trading.System;
 
 namespace TradingConsole.TradingSystem
 {

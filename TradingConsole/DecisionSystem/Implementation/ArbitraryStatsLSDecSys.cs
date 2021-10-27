@@ -8,9 +8,9 @@ using Common.Structure.Reporting;
 using FinancialStructures.StockStructures;
 using FinancialStructures.StockStructures.Statistics;
 
-using TradingSystem.Simulator;
-using TradingSystem.Decisions.System;
 using TradingSystem.Decisions.Models;
+using TradingSystem.Decisions.System;
+using TradingSystem.Simulator;
 
 namespace TradingConsole.DecisionSystem.Implementation
 {

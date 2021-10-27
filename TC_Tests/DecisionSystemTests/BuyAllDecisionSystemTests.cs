@@ -1,8 +1,12 @@
 ﻿using System;
 using System.Linq;
+
 using FinancialStructures.StockStructures.Implementation;
+
 using NUnit.Framework;
+
 using TradingConsole.DecisionSystem.Implementation;
+
 using TradingSystem.Decisions.Models;
 
 namespace TC_Tests

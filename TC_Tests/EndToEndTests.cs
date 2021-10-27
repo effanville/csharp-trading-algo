@@ -1,9 +1,12 @@
 ﻿using System.IO;
 using System.IO.Abstractions.TestingHelpers;
 using System.Text;
+
 using Common.Console;
 using Common.Structure.Reporting;
+
 using NUnit.Framework;
+
 using TradingConsole;
 
 namespace TC_Tests

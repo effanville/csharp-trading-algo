@@ -4,9 +4,9 @@ using Common.Structure.Reporting;
 
 using FinancialStructures.StockStructures;
 
+using TradingSystem.Decisions.Models;
 using TradingSystem.Decisions.System;
 using TradingSystem.Simulator;
-using TradingSystem.Decisions.Models;
 
 namespace TradingConsole.DecisionSystem.Implementation
 {

@@ -1,4 +1,5 @@
 ﻿using System;
+
 using FinancialStructures.NamingStructures;
 
 namespace TradingConsole.TradingSystem

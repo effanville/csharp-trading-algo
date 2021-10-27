@@ -1,11 +1,13 @@
 ﻿using System;
-using System.IO.Abstractions;
-using Common.Structure.Reporting;
-using Common.Console;
 using System.Collections.Generic;
+using System.IO.Abstractions;
+
+using Common.Console;
 using Common.Console.Commands;
-using TradingConsole.Commands.Execution;
+using Common.Structure.Reporting;
+
 using TradingConsole.Commands.ExchangeCreation;
+using TradingConsole.Commands.Execution;
 
 namespace TradingConsole
 {

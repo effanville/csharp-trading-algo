@@ -1,5 +1,7 @@
 ﻿using System;
+
 using Common.Structure.Reporting;
+
 using FinancialStructures.Database;
 using FinancialStructures.NamingStructures;
 using FinancialStructures.StockStructures;

@@ -1,4 +1,5 @@
 ﻿using System;
+
 using FinancialStructures.StockStructures;
 
 namespace TradingSystem.Simulator

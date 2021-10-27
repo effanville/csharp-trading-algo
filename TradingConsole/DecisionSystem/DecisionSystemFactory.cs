@@ -1,4 +1,5 @@
 ﻿using TradingConsole.DecisionSystem.Implementation;
+
 using TradingSystem.Decisions.System;
 
 namespace TradingConsole.DecisionSystem

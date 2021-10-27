@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+
 using FinancialStructures.StockStructures.Statistics;
 
 namespace TradingConsole.DecisionSystem

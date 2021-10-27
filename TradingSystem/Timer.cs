@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+
 using Common.Structure.Reporting;
 
 namespace TradingSystem

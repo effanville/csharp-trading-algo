@@ -1,19 +1,22 @@
 ﻿using System;
 using System.IO.Abstractions;
-using FinancialStructures.Database;
-using FinancialStructures.StockStructures;
+
 using Common.Structure.DataStructures;
 using Common.Structure.Reporting;
+
+using FinancialStructures.Database;
+using FinancialStructures.NamingStructures;
+using FinancialStructures.StockStructures;
+
 using TradingConsole.BuySellSystem;
 using TradingConsole.DecisionSystem;
-using FinancialStructures.NamingStructures;
 
-using TradingSystem.Simulator;
-using TradingSystem.Trading.System;
-using TradingSystem.Trading.Models;
+using TradingSystem;
 using TradingSystem.Decisions.Models;
 using TradingSystem.Decisions.System;
-using TradingSystem;
+using TradingSystem.Simulator;
+using TradingSystem.Trading.Models;
+using TradingSystem.Trading.System;
 
 namespace TradingConsole.TradingSystem
 {
