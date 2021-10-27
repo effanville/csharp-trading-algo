@@ -14,11 +14,18 @@ namespace TradingConsole.DecisionSystem
                     return new BuyAllDecisionSystem();
 
                 case DecisionSystem.ArbitraryStatsLeastSquares:
-                    return new ArbitraryStatsLSDecisionSystem(settings);
-
+                    return new ArbitraryStatsDecisionSystem(settings);
+                case DecisionSystem.ArbitraryStatsLasso:
+                    return new ArbitraryStatsDecisionSystem(settings);
+                case DecisionSystem.ArbitraryStatsRidge:
+                    return new ArbitraryStatsDecisionSystem(settings);
+                case DecisionSystem.FiveDayStatsLasso:
+                    return new FiveDayStatsDecisionSystem(settings);
+                case DecisionSystem.FiveDayStatsRidge:
+                    return new FiveDayStatsDecisionSystem(settings);
                 case DecisionSystem.FiveDayStatsLeastSquares:
                 default:
-                    return new FiveDayStatsLSDecisionSystem();
+                    return new FiveDayStatsDecisionSystem(settings);
             }
         }
     }

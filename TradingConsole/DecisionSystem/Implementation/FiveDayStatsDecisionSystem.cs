@@ -16,15 +16,17 @@ namespace TradingConsole.DecisionSystem.Implementation
     /// <summary>
     /// Decision system based upon the 5 previous stock days prices.
     /// </summary>
-    public class FiveDayStatsLSDecisionSystem : IDecisionSystem
+    public class FiveDayStatsDecisionSystem : IDecisionSystem
     {
+        private DecisionSystemSetupSettings fSettings;
         private IEstimator Estimator;
 
         /// <summary>
         /// Construct and instance.
         /// </summary>
-        public FiveDayStatsLSDecisionSystem()
+        public FiveDayStatsDecisionSystem(DecisionSystemSetupSettings settings)
         {
+            fSettings = settings;
         }
 
         /// <inheritdoc />
@@ -58,7 +60,21 @@ namespace TradingConsole.DecisionSystem.Implementation
                 }
             }
 
-            Estimator = new LSEstimator(X, Y);
+            switch (fSettings.DecisionSystemType)
+            {
+                case DecisionSystem.FiveDayStatsLeastSquares:
+                    Estimator = new LSEstimator(X, Y);
+                    break;
+                case DecisionSystem.FiveDayStatsLasso:
+                    Estimator = new LassoRegression(X, Y);
+                    break;
+                case DecisionSystem.FiveDayStatsRidge:
+                    Estimator = new RidgeRegression(X, Y);
+                    break;
+                default:
+                    _ = logger.Log(ReportSeverity.Critical, ReportType.Error, ReportLocation.Unknown, $"Created FiveDayStats system without five day stats type.");
+                    break;
+            }
 
             _ = logger.Log(ReportSeverity.Critical, ReportType.Warning, ReportLocation.Unknown, $"Estimator Weights are {string.Join(",", Estimator.Estimator)}");
         }
