@@ -3,8 +3,7 @@ using System.Linq;
 using FinancialStructures.StockStructures.Implementation;
 using NUnit.Framework;
 using TradingConsole.DecisionSystem.Implementation;
-using TradingConsole.DecisionSystem.Models;
-using TradingConsole.Simulator;
+using TradingSystem.Decisions.Models;
 
 namespace TC_Tests
 {
@@ -18,8 +17,7 @@ namespace TC_Tests
             exchange.Stocks[0].AddValue(DateTime.Today, 43, 47, 40, 41, 1);
 
             BuyAllDecisionSystem decisionSystem = new BuyAllDecisionSystem();
-            var settings = new SimulatorSettings(default, default, default, exchange);
-            DecisionStatus status = decisionSystem.Decide(DateTime.Today, settings);
+            DecisionStatus status = decisionSystem.Decide(DateTime.Today, exchange, logger: null);
 
             Assert.AreEqual(1, status.GetBuyDecisions().Count);
             Assert.AreEqual(0, status.GetSellDecisions().Count);

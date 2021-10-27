@@ -1,21 +1,23 @@
-﻿using Common.Structure.Reporting;
-using TradingConsole.DecisionSystem.Implementation;
+﻿using TradingConsole.DecisionSystem.Implementation;
+using TradingSystem.Decisions.System;
 
 namespace TradingConsole.DecisionSystem
 {
     internal static class DecisionSystemFactory
     {
-        internal static IDecisionSystem Create(DecisionSystem decisionSystemType, IReportLogger reportLogger)
+        internal static IDecisionSystem Create(DecisionSystemSetupSettings settings)
         {
-            switch (decisionSystemType)
+            switch (settings.DecisionSystemType)
             {
                 case DecisionSystem.BuyAll:
                     return new BuyAllDecisionSystem();
+
                 case DecisionSystem.ArbitraryStatsLeastSquares:
-                    return new ArbitraryStatsLSDecisionSystem();
+                    return new ArbitraryStatsLSDecisionSystem(settings);
+
                 case DecisionSystem.FiveDayStatsLeastSquares:
                 default:
-                    return new FiveDayStatsLSDecisionSystem(reportLogger);
+                    return new FiveDayStatsLSDecisionSystem();
             }
         }
     }

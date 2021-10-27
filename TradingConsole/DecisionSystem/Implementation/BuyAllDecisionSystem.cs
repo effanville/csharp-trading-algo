@@ -1,8 +1,12 @@
 ﻿using System;
-using FinancialStructures.StockStructures;
-using TradingConsole.Simulator;
-using TradingConsole.DecisionSystem.Models;
+
 using Common.Structure.Reporting;
+
+using FinancialStructures.StockStructures;
+
+using TradingSystem.Decisions.System;
+using TradingSystem.Simulator;
+using TradingSystem.Decisions.Models;
 
 namespace TradingConsole.DecisionSystem.Implementation
 {
@@ -19,15 +23,15 @@ namespace TradingConsole.DecisionSystem.Implementation
         }
 
         /// <inheritdoc />
-        public void Calibrate(DecisionSystemSetupSettings decisionParameters, SimulatorSettings settings)
+        public void Calibrate(SimulatorSettings settings, IReportLogger logger)
         {
         }
 
         /// <inheritdoc />
-        public DecisionStatus Decide(DateTime day, SimulatorSettings settings, IReportLogger logger)
+        public DecisionStatus Decide(DateTime day, IStockExchange stockExchange, IReportLogger logger)
         {
             var decisions = new DecisionStatus();
-            foreach (IStock stock in settings.Exchange.Stocks)
+            foreach (IStock stock in stockExchange.Stocks)
             {
                 decisions.AddDecision(stock.Name, TradeDecision.Buy);
             }

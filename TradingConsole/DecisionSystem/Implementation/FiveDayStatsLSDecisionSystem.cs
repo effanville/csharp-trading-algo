@@ -4,8 +4,9 @@ using System.Linq;
 using FinancialStructures.StockStructures;
 using Common.Structure.MathLibrary.ParameterEstimation;
 using Common.Structure.Reporting;
-using TradingConsole.Simulator;
-using TradingConsole.DecisionSystem.Models;
+using TradingSystem.Decisions.System;
+using TradingSystem.Simulator;
+using TradingSystem.Decisions.Models;
 
 namespace TradingConsole.DecisionSystem.Implementation
 {
@@ -14,20 +15,17 @@ namespace TradingConsole.DecisionSystem.Implementation
     /// </summary>
     public class FiveDayStatsLSDecisionSystem : IDecisionSystem
     {
-        private readonly IReportLogger fLogger;
         private IEstimator Estimator;
 
         /// <summary>
         /// Construct and instance.
         /// </summary>
-        /// <param name="reportLogger"></param>
-        public FiveDayStatsLSDecisionSystem(IReportLogger reportLogger)
+        public FiveDayStatsLSDecisionSystem()
         {
-            fLogger = reportLogger;
         }
 
         /// <inheritdoc />
-        public void Calibrate(DecisionSystemSetupSettings decisionParameters, SimulatorSettings settings)
+        public void Calibrate(SimulatorSettings settings, IReportLogger logger)
         {
             DateTime burnInLength = settings.StartTime + settings.EvolutionIncrement * (long)((settings.EndTime - settings.StartTime) / (2 * settings.EvolutionIncrement));
 
@@ -60,15 +58,15 @@ namespace TradingConsole.DecisionSystem.Implementation
 
             Estimator = new LSEstimator(X, Y);
 
-            _ = fLogger.Log(ReportSeverity.Critical, ReportType.Warning, ReportLocation.Unknown, $"Estimator Weights are {string.Join(",", Estimator.Estimator)}");
+            _ = logger.Log(ReportSeverity.Critical, ReportType.Warning, ReportLocation.Unknown, $"Estimator Weights are {string.Join(",", Estimator.Estimator)}");
             settings.UpdateStartTime(burnInLength);
         }
 
         /// <inheritdoc />
-        public DecisionStatus Decide(DateTime day, SimulatorSettings settings, IReportLogger logger)
+        public DecisionStatus Decide(DateTime day, IStockExchange stockExchange, IReportLogger logger)
         {
             var decisions = new DecisionStatus();
-            foreach (IStock stock in settings.Exchange.Stocks)
+            foreach (IStock stock in stockExchange.Stocks)
             {
                 TradeDecision decision;
                 double[] values = stock.Values(day, 5, 0, StockDataStream.Open).ToArray();

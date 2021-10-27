@@ -1,12 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using FinancialStructures.StockStructures;
+
 using Common.Structure.MathLibrary.ParameterEstimation;
-using TradingConsole.Simulator;
-using TradingConsole.DecisionSystem.Models;
-using FinancialStructures.StockStructures.Statistics;
 using Common.Structure.Reporting;
+
+using FinancialStructures.StockStructures;
+using FinancialStructures.StockStructures.Statistics;
+
+using TradingSystem.Simulator;
+using TradingSystem.Decisions.System;
+using TradingSystem.Decisions.Models;
 
 namespace TradingConsole.DecisionSystem.Implementation
 {
@@ -17,17 +21,13 @@ namespace TradingConsole.DecisionSystem.Implementation
     /// </summary>
     public class ArbitraryStatsLSDecisionSystem : IDecisionSystem
     {
+        private readonly IReadOnlyList<IStockStatistic> fStockStatistics;
         private IEstimator Estimator;
 
         /// <summary>
         /// Construct an instance.
         /// </summary>
-        public ArbitraryStatsLSDecisionSystem()
-        {
-        }
-
-        /// <inheritdoc/>
-        public void Calibrate(DecisionSystemSetupSettings decisionParameters, SimulatorSettings settings)
+        public ArbitraryStatsLSDecisionSystem(DecisionSystemSetupSettings decisionParameters)
         {
             List<IStockStatistic> stockStatistics = new List<IStockStatistic>();
             foreach (StockStatisticType statistic in decisionParameters.Statistics)
@@ -35,12 +35,18 @@ namespace TradingConsole.DecisionSystem.Implementation
                 stockStatistics.Add(StockStatisticFactory.Create(statistic));
             }
 
+            fStockStatistics = stockStatistics;
+        }
+
+        /// <inheritdoc/>
+        public void Calibrate(SimulatorSettings settings, IReportLogger logger)
+        {
             TimeSpan simulationLength = settings.EndTime - settings.StartTime;
             DateTime burnInLength = settings.StartTime + settings.EvolutionIncrement * (long)(simulationLength / (2 * settings.EvolutionIncrement));
 
-            int delayTime = stockStatistics.Max(stock => stock.BurnInTime) + 2;
+            int delayTime = fStockStatistics.Max(stock => stock.BurnInTime) + 2;
             int numberEntries = ((burnInLength - settings.StartTime).Days - 5) * 5 / 7;
-            int numberStatistics = stockStatistics.Count;
+            int numberStatistics = fStockStatistics.Count;
 
             double[,] X = new double[settings.Exchange.Stocks.Count * numberEntries, numberStatistics];
             double[] Y = new double[settings.Exchange.Stocks.Count * numberEntries];
@@ -50,7 +56,7 @@ namespace TradingConsole.DecisionSystem.Implementation
                 {
                     for (int statisticIndex = 0; statisticIndex < numberStatistics; statisticIndex++)
                     {
-                        X[entryIndex * settings.Exchange.Stocks.Count + stockIndex, statisticIndex] = stockStatistics[statisticIndex].Calculate(settings.StartTime.AddDays(delayTime + entryIndex), settings.Exchange.Stocks[stockIndex]);
+                        X[entryIndex * settings.Exchange.Stocks.Count + stockIndex, statisticIndex] = fStockStatistics[statisticIndex].Calculate(settings.StartTime.AddDays(delayTime + entryIndex), settings.Exchange.Stocks[stockIndex]);
                     }
 
                     Y[entryIndex * settings.Exchange.Stocks.Count + stockIndex] = settings.Exchange.Stocks[stockIndex].Values(burnInLength.AddDays(delayTime + entryIndex), 0, 1, StockDataStream.Open).Last() / 100;
@@ -58,14 +64,15 @@ namespace TradingConsole.DecisionSystem.Implementation
             }
 
             Estimator = new LSEstimator(X, Y);
+            _ = logger.Log(ReportSeverity.Critical, ReportType.Warning, ReportLocation.Unknown, $"Estimator Weights are {string.Join(",", Estimator.Estimator)}");
             settings.UpdateStartTime(burnInLength);
         }
 
         /// <inheritdoc/>
-        public DecisionStatus Decide(DateTime day, SimulatorSettings settings, IReportLogger logger)
+        public DecisionStatus Decide(DateTime day, IStockExchange stockExchange, IReportLogger logger)
         {
             var decisions = new DecisionStatus();
-            foreach (IStock stock in settings.Exchange.Stocks)
+            foreach (IStock stock in stockExchange.Stocks)
             {
                 TradeDecision decision;
                 double[] values = stock.Values(day, 5, 0, StockDataStream.Open).ToArray();

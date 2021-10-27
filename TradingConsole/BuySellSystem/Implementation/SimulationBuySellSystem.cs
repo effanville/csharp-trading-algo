@@ -8,8 +8,10 @@ using FinancialStructures.Database;
 using FinancialStructures.DataStructures;
 using FinancialStructures.FinanceStructures;
 using FinancialStructures.NamingStructures;
-using TradingConsole.BuySellSystem.Models;
-using TradingConsole.DecisionSystem.Models;
+
+using TradingSystem.Decisions.Models;
+using TradingSystem.Trading.Models;
+using TradingSystem.Trading.System;
 
 namespace TradingConsole.BuySellSystem.Implementation
 {
@@ -18,17 +20,12 @@ namespace TradingConsole.BuySellSystem.Implementation
     /// </summary>
     internal class SimulationBuySellSystem : ITradeMechanism
     {
-        private IReportLogger ReportLogger
-        {
-            get;
-        }
 
         /// <summary>
         /// Create an instance.
         /// </summary>
-        internal SimulationBuySellSystem(IReportLogger reportLogger)
+        internal SimulationBuySellSystem()
         {
-            ReportLogger = reportLogger;
         }
 
         /// <inheritdoc/>
@@ -37,7 +34,8 @@ namespace TradingConsole.BuySellSystem.Implementation
             Decision buy,
             Func<DateTime, NameData, double> calculateBuyPrice,
             IPortfolio portfolio,
-            TradeMechanismTraderOptions traderOptions)
+            TradeMechanismTraderOptions traderOptions,
+            IReportLogger reportLogger)
         {
             // If not a buy then stop.
             if (buy.BuySell != TradeDecision.Buy)
@@ -77,7 +75,7 @@ namespace TradingConsole.BuySellSystem.Implementation
 
             if (!portfolio.Exists(Account.Security, buy.StockName))
             {
-                _ = portfolio.TryAdd(Account.Security, new NameData(buy.StockName.Company, buy.StockName.Name, "GBP", buy.StockName.Url, new HashSet<string>()), ReportLogger);
+                _ = portfolio.TryAdd(Account.Security, new NameData(buy.StockName.Company, buy.StockName.Name, "GBP", buy.StockName.Url, new HashSet<string>()), reportLogger);
             }
 
             // "Buy" the shares by adding the number of shares in the security desired. First must ensure we know the number of shares held.
@@ -92,7 +90,7 @@ namespace TradingConsole.BuySellSystem.Implementation
             var value = new DailyValuation(time, cashAvailable - tradeDetails.TotalCost);
             _ = portfolio.TryAddOrEditData(Account.BankAccount, traderOptions.BankAccData, value, value, reportLogger: null);
 
-            _ = ReportLogger.Log(ReportSeverity.Critical, ReportType.Warning, ReportLocation.Execution, $"Date {time} bought {buy.StockName} Cost {tradeDetails.TotalCost:C2} price");
+            _ = reportLogger.Log(ReportSeverity.Critical, ReportType.Warning, ReportLocation.Execution, $"Date {time} bought {buy.StockName} Cost {tradeDetails.TotalCost:C2} price");
             return true;
         }
 
@@ -102,7 +100,8 @@ namespace TradingConsole.BuySellSystem.Implementation
             Decision sell,
             Func<DateTime, NameData, double> calculateSellPrice,
             IPortfolio portfolio,
-            TradeMechanismTraderOptions traderOptions)
+            TradeMechanismTraderOptions traderOptions,
+            IReportLogger reportLogger)
 
         {
             if (sell.BuySell != TradeDecision.Sell)
@@ -142,7 +141,7 @@ namespace TradingConsole.BuySellSystem.Implementation
             var value = new DailyValuation(time, cashAvailable + tradeDetails.TotalCost);
             _ = portfolio.TryAddOrEditData(Account.BankAccount, traderOptions.BankAccData, value, value, reportLogger: null);
 
-            _ = ReportLogger.Log(ReportSeverity.Critical, ReportType.Warning, ReportLocation.Execution, $"Date {time} sold {sell.StockName} for {tradeDetails.TotalCost:C2}");
+            _ = reportLogger.Log(ReportSeverity.Critical, ReportType.Warning, ReportLocation.Execution, $"Date {time} sold {sell.StockName} for {tradeDetails.TotalCost:C2}");
             return true;
         }
 
@@ -153,13 +152,14 @@ namespace TradingConsole.BuySellSystem.Implementation
             Func<DateTime, NameData, double> calculateBuyPrice,
             Func<DateTime, NameData, double> calculateSellPrice,
             IPortfolio portfolio,
-            TradeMechanismTraderOptions traderOptions)
+            TradeMechanismTraderOptions traderOptions,
+            IReportLogger reportLogger)
         {
             List<Decision> sellDecisions = decisions.GetSellDecisions();
             int numberSells = 0;
             foreach (Decision sell in sellDecisions)
             {
-                if (Sell(time, sell, calculateSellPrice, portfolio, traderOptions))
+                if (Sell(time, sell, calculateSellPrice, portfolio, traderOptions, reportLogger))
                 {
                     numberSells++;
                 }
@@ -169,7 +169,7 @@ namespace TradingConsole.BuySellSystem.Implementation
             List<Decision> buyDecisions = decisions.GetBuyDecisions();
             foreach (Decision buy in buyDecisions)
             {
-                if (Buy(time, buy, calculateBuyPrice, portfolio, traderOptions))
+                if (Buy(time, buy, calculateBuyPrice, portfolio, traderOptions, reportLogger))
                 {
                     numberBuys++;
                 }

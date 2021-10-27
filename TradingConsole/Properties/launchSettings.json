@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "TradingConsole": {
+      "commandName": "Project",
+      "commandLineArgs": "simulate --stockFilePath \"C:\\Data\\small-exchange.xml\" --start \"2010-01-01\" --end \"2020-12-31\" --startCash 20000 --decision \"FiveDayStatsLeastSquares\" --invFrac 0.25"
+    }
+  }
+}
