@@ -19,15 +19,16 @@ namespace TradingConsole.DecisionSystem.Implementation
     /// squares regression estimator to obtain the best fit to these
     /// statistics.
     /// </summary>
-    public class ArbitraryStatsLSDecisionSystem : IDecisionSystem
+    public class ArbitraryStatsDecisionSystem : IDecisionSystem
     {
+        private readonly DecisionSystem fDecisionType;
         private readonly IReadOnlyList<IStockStatistic> fStockStatistics;
         private IEstimator Estimator;
 
         /// <summary>
         /// Construct an instance.
         /// </summary>
-        public ArbitraryStatsLSDecisionSystem(DecisionSystemSetupSettings decisionParameters)
+        public ArbitraryStatsDecisionSystem(DecisionSystemSetupSettings decisionParameters)
         {
             List<IStockStatistic> stockStatistics = new List<IStockStatistic>();
             foreach (StockStatisticType statistic in decisionParameters.Statistics)
@@ -36,6 +37,7 @@ namespace TradingConsole.DecisionSystem.Implementation
             }
 
             fStockStatistics = stockStatistics;
+            fDecisionType = decisionParameters.DecisionSystemType;
         }
 
         /// <inheritdoc/>
@@ -62,8 +64,21 @@ namespace TradingConsole.DecisionSystem.Implementation
                     Y[entryIndex * settings.Exchange.Stocks.Count + stockIndex] = settings.Exchange.Stocks[stockIndex].Values(burnInLength.AddDays(delayTime + entryIndex), 0, 1, StockDataStream.Open).Last() / 100;
                 }
             }
-
-            Estimator = new LSEstimator(X, Y);
+            switch (fDecisionType)
+            {
+                case DecisionSystem.FiveDayStatsLeastSquares:
+                    Estimator = new LSEstimator(X, Y);
+                    break;
+                case DecisionSystem.FiveDayStatsLasso:
+                    Estimator = new LassoRegression(X, Y);
+                    break;
+                case DecisionSystem.FiveDayStatsRidge:
+                    Estimator = new RidgeRegression(X, Y);
+                    break;
+                default:
+                    _ = logger.Log(ReportSeverity.Critical, ReportType.Error, ReportLocation.Unknown, $"Created FiveDayStats system without five day stats type.");
+                    break;
+            }
             _ = logger.Log(ReportSeverity.Critical, ReportType.Warning, ReportLocation.Unknown, $"Estimator Weights are {string.Join(",", Estimator.Estimator)}");
         }
 
