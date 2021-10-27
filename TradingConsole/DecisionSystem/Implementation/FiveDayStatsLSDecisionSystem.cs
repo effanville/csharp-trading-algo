@@ -30,8 +30,7 @@ namespace TradingConsole.DecisionSystem.Implementation
         /// <inheritdoc />
         public void Calibrate(SimulatorSettings settings, IReportLogger logger)
         {
-            DateTime burnInLength = settings.StartTime + settings.EvolutionIncrement * (long)((settings.EndTime - settings.StartTime) / (2 * settings.EvolutionIncrement));
-
+            DateTime burnInLength = settings.BurnInEnd;
             int numberEntries = ((burnInLength - settings.StartTime).Days - 5) * 5 / 7;
 
             double[,] X = new double[settings.Exchange.Stocks.Count * numberEntries, 5];
@@ -62,7 +61,6 @@ namespace TradingConsole.DecisionSystem.Implementation
             Estimator = new LSEstimator(X, Y);
 
             _ = logger.Log(ReportSeverity.Critical, ReportType.Warning, ReportLocation.Unknown, $"Estimator Weights are {string.Join(",", Estimator.Estimator)}");
-            settings.UpdateStartTime(burnInLength);
         }
 
         /// <inheritdoc />

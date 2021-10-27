@@ -57,7 +57,7 @@ namespace TradingSystem.Simulator
             TradeHistory tradeRecord = new TradeHistory();
             using (new Timer(logger, "Simulation"))
             {
-                DateTime time = settings.StartTime;
+                DateTime time = settings.BurnInEnd;
                 callbacks.StartReportCallback($"StartDate {time} total value {startPortfolio.TotalValue(Totals.All):C2}");
                 IStockExchange exchange = StockExchangeFactory.Create(settings.Exchange, time);
                 while (time < settings.EndTime)

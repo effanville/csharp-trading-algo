@@ -81,6 +81,10 @@ namespace TradingConsole.TradingSystem
                 {
                     decisionSystem = DecisionSystemFactory.Create(decisionParameters);
                     decisionSystem.Calibrate(simulatorSettings, reportLogger);
+                    if (decisionParameters.DecisionSystemType == DecisionSystem.DecisionSystem.BuyAll)
+                    {
+                        simulatorSettings.DoesntRequireBurnIn();
+                    }
                 }
 
                 tradeMechanism = TradeMechanismFactory.Create(buySellType);
@@ -103,7 +107,6 @@ namespace TradingConsole.TradingSystem
             void startEndReportCallback(string message)
             {
                 _ = reportLogger.Log(ReportSeverity.Critical, ReportType.Warning, ReportLocation.DatabaseAccess, message);
-
             }
 
             var callbacks = new SimulationCallbacks(startEndReportCallback, reportCallback, startEndReportCallback);

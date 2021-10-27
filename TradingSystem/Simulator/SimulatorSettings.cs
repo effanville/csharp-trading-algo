@@ -19,6 +19,12 @@ namespace TradingSystem.Simulator
             private set;
         }
 
+        public DateTime BurnInEnd
+        {
+            get;
+            private set;
+        }
+
         /// <summary>
         /// The end time of the simulation. This is the earliest of the
         /// user specified time and the latest time in the
@@ -56,17 +62,15 @@ namespace TradingSystem.Simulator
             StartTime = startTime;
             EndTime = endTime;
             EvolutionIncrement = evolutionIncrement.Seconds != 0 ? evolutionIncrement : new TimeSpan(1, 0, 0, 0);
+
+
             Exchange = exchange;
             EnsureStartDatesConsistent();
         }
 
-        /// <summary>
-        /// TODO ensure that StartTime is still before EndTime after this.
-        /// </summary>
-        /// <param name="newStartTime"></param>
-        public void UpdateStartTime(DateTime newStartTime)
+        public void DoesntRequireBurnIn()
         {
-            StartTime = newStartTime;
+            BurnInEnd = StartTime;
         }
 
         /// <summary>
@@ -84,6 +88,8 @@ namespace TradingSystem.Simulator
             {
                 EndTime = latest;
             }
+
+            BurnInEnd = StartTime + EvolutionIncrement * (long)((EndTime - StartTime) / (2 * EvolutionIncrement));
         }
     }
 }

@@ -42,7 +42,7 @@ namespace TradingConsole.DecisionSystem.Implementation
         public void Calibrate(SimulatorSettings settings, IReportLogger logger)
         {
             TimeSpan simulationLength = settings.EndTime - settings.StartTime;
-            DateTime burnInLength = settings.StartTime + settings.EvolutionIncrement * (long)(simulationLength / (2 * settings.EvolutionIncrement));
+            DateTime burnInLength = settings.BurnInEnd;
 
             int delayTime = fStockStatistics.Max(stock => stock.BurnInTime) + 2;
             int numberEntries = ((burnInLength - settings.StartTime).Days - 5) * 5 / 7;
@@ -65,7 +65,6 @@ namespace TradingConsole.DecisionSystem.Implementation
 
             Estimator = new LSEstimator(X, Y);
             _ = logger.Log(ReportSeverity.Critical, ReportType.Warning, ReportLocation.Unknown, $"Estimator Weights are {string.Join(",", Estimator.Estimator)}");
-            settings.UpdateStartTime(burnInLength);
         }
 
         /// <inheritdoc/>
