@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace TC_Tests
+namespace TradingConsole.Tests
 {
     internal sealed class TestConstants
     {

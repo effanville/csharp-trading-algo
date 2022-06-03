@@ -31,7 +31,7 @@ namespace TradingConsole.TradingSystem
         /// <summary>
         /// The starting cash.
         /// </summary>
-        public double StartingCash
+        public decimal StartingCash
         {
             get;
             private set;
@@ -49,7 +49,7 @@ namespace TradingConsole.TradingSystem
         /// <summary>
         /// Construct an instance.
         /// </summary>
-        public PortfolioStartSettings(string portfolioFilePath, DateTime startDate, double startingCash)
+        public PortfolioStartSettings(string portfolioFilePath, DateTime startDate, decimal startingCash)
         {
             PortfolioFilePath = portfolioFilePath;
             StartTime = startDate;

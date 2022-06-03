@@ -67,7 +67,7 @@ namespace TradingConsole.Commands.Execution
         public int Execute(IConsole console, string[] args = null)
         {
             var decisionParameters = new DecisionSystemSetupSettings(fDecisionType.Value, fDecisionSystemStats.Value);
-            var startSettings = new PortfolioStartSettings(fPortfolioFilePath.Value, default, 0.0);
+            var startSettings = new PortfolioStartSettings(fPortfolioFilePath.Value, default, 0.0m);
 
             var system = new RealTrader(fStockFilePath.Value, startSettings, decisionParameters, TradeMechanismType.IB, fFileSystem, fLogger);
             system.Run(fPortfolioFilePath.Value);

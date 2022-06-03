@@ -5,6 +5,7 @@ using Common.Structure.DataStructures;
 using Common.Structure.Reporting;
 
 using FinancialStructures.Database;
+using FinancialStructures.Database.Extensions;
 using FinancialStructures.NamingStructures;
 using FinancialStructures.StockStructures;
 
@@ -42,7 +43,7 @@ namespace TradingConsole.TradingSystem
         /// <param name="fileSystem">The file system to use.</param>
         /// <param name="reportLogger">A logging mechanism</param>
         /// <returns>The final portfolio, and the records of the decisions and trades.</returns>
-        public static (IPortfolio, DecisionHistory, TradeHistory) SetupAndSimulate(
+        public static SimulatorResult SetupAndSimulate(
             string stockFilePath,
             DateTime startTime,
             DateTime endTime,
@@ -69,7 +70,7 @@ namespace TradingConsole.TradingSystem
                     if (!exchange.CheckValidity())
                     {
                         _ = reportLogger.Log(ReportSeverity.Critical, ReportType.Error, ReportLocation.Loading, "Stock input data not suitable.");
-                        return (null, null, null);
+                        return SimulatorResult.NoResult();
                     }
 
                     simulatorSettings = new SimulatorSettings(

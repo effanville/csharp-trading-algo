@@ -30,8 +30,8 @@ namespace TradingSystem.Simulator
             DateTime time,
             IStockExchange stockExchange,
             IPortfolio portfolio,
-            Func<DateTime, TwoName, double> calcBuyPrice,
-            Func<DateTime, TwoName, double> calcSellPrice,
+            Func<DateTime, TwoName, decimal> calcBuyPrice,
+            Func<DateTime, TwoName, decimal> calcSellPrice,
             IReportLogger reportLogger);
     }
 }

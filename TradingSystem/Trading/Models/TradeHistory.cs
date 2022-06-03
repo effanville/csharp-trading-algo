@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace TradingSystem.Trading.Models
 {
@@ -18,6 +19,21 @@ namespace TradingSystem.Trading.Models
         public void AddForTheRecord(DateTime day, TradeStatus status)
         {
             DailyTrades.Add(day, status);
+        }
+
+        public int TotalTrades()
+        {
+            return DailyTrades.Sum(trade => trade.Value.NumberBuys + trade.Value.NumberSells);
+        }
+
+        public int TotalBuyTrades()
+        {
+            return DailyTrades.Sum(trade => trade.Value.NumberBuys);
+        }
+
+        public int TotalSellTrades()
+        {
+            return DailyTrades.Sum(trade => trade.Value.NumberSells);
         }
     }
 }

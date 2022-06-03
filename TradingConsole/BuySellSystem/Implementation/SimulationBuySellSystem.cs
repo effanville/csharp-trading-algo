@@ -5,6 +5,7 @@ using Common.Structure.DataStructures;
 using Common.Structure.Reporting;
 
 using FinancialStructures.Database;
+using FinancialStructures.Database.Extensions;
 using FinancialStructures.DataStructures;
 using FinancialStructures.FinanceStructures;
 using FinancialStructures.NamingStructures;
@@ -32,7 +33,7 @@ namespace TradingConsole.BuySellSystem.Implementation
         public bool Buy(
             DateTime time,
             Decision buy,
-            Func<DateTime, NameData, double> calculateBuyPrice,
+            Func<DateTime, NameData, decimal> calculateBuyPrice,
             IPortfolio portfolio,
             TradeMechanismTraderOptions traderOptions,
             IReportLogger reportLogger)
@@ -44,12 +45,14 @@ namespace TradingConsole.BuySellSystem.Implementation
             }
 
             // If not enough money to buy then exit.
-            double priceToBuy = calculateBuyPrice(time, buy.StockName);
-            if (priceToBuy.Equals(double.NaN))
+            decimal priceToBuy = calculateBuyPrice(time, buy.StockName);
+            if (priceToBuy.Equals(decimal.MinValue))
             {
+                return false;
             }
-            double cashAvailable = portfolio.TotalValue(Totals.BankAccount, time);
-            if (priceToBuy == 0.0 || cashAvailable <= priceToBuy)
+
+            decimal cashAvailable = portfolio.TotalValue(Totals.BankAccount, time);
+            if (priceToBuy == 0.0m || cashAvailable <= priceToBuy)
             {
                 return false;
             }
@@ -80,11 +83,8 @@ namespace TradingConsole.BuySellSystem.Implementation
 
             // "Buy" the shares by adding the number of shares in the security desired. First must ensure we know the number of shares held.
             _ = portfolio.TryGetAccount(Account.Security, buy.StockName, out var desired);
-            ISecurity security = desired as ISecurity;
 
-            double existingShares = security.Shares.ValueOnOrBefore(time)?.Value ?? 0.0;
-
-            _ = portfolio.TryAddOrEditDataToSecurity(buy.StockName, time, time, numShares + existingShares, priceToBuy, 1, tradeDetails, reportLogger: null);
+            _ = portfolio.TryAddOrEditTradeData(Account.Security, buy.StockName, tradeDetails, tradeDetails, reportLogger);
 
             // Remove the cash used to buy the shares from the portfolio.
             var value = new DailyValuation(time, cashAvailable - tradeDetails.TotalCost);
@@ -98,7 +98,7 @@ namespace TradingConsole.BuySellSystem.Implementation
         public bool Sell(
             DateTime time,
             Decision sell,
-            Func<DateTime, NameData, double> calculateSellPrice,
+            Func<DateTime, NameData, decimal> calculateSellPrice,
             IPortfolio portfolio,
             TradeMechanismTraderOptions traderOptions,
             IReportLogger reportLogger)
@@ -117,16 +117,16 @@ namespace TradingConsole.BuySellSystem.Implementation
 
             _ = portfolio.TryGetAccount(Account.Security, sell.StockName, out var desired);
             ISecurity security = desired as ISecurity;
-            double numShares = security.Shares.ValueOnOrBefore(time)?.Value ?? 0.0;
+            decimal numShares = security.Shares.ValueOnOrBefore(time)?.Value ?? 0.0m;
             if (numShares <= 0)
             {
                 return false;
             }
 
-            double price = calculateSellPrice(time, sell.StockName);
+            decimal price = calculateSellPrice(time, sell.StockName);
 
             // some error with price data (or shouldnt be evaluating on this date) so ignore trade.
-            if (price.Equals(double.NaN))
+            if (price.Equals(decimal.MinValue))
             {
                 return false;
             }
@@ -134,10 +134,10 @@ namespace TradingConsole.BuySellSystem.Implementation
             var tradeDetails = new SecurityTrade(TradeType.Sell, sell.StockName, time, numShares, price, traderOptions.TradeCost);
 
             // Now perform selling. This consists of removing the security at the specific value in our portfolio.
-            _ = portfolio.TryAddOrEditDataToSecurity(sell.StockName, time, time, 0.0, price, 1, tradeDetails, reportLogger: null);
+            _ = portfolio.TryAddOrEditTradeData(Account.Security, sell.StockName, tradeDetails, tradeDetails);
 
             // Now increase the amount in the bank account, i.e. free cash, held in the portfolio, to free it up to be used on other securities.
-            double cashAvailable = portfolio.TotalValue(Totals.BankAccount, time);
+            decimal cashAvailable = portfolio.TotalValue(Totals.BankAccount, time);
             var value = new DailyValuation(time, cashAvailable + tradeDetails.TotalCost);
             _ = portfolio.TryAddOrEditData(Account.BankAccount, traderOptions.BankAccData, value, value, reportLogger: null);
 
@@ -149,8 +149,8 @@ namespace TradingConsole.BuySellSystem.Implementation
         public TradeStatus EnactAllTrades(
             DateTime time,
             DecisionStatus decisions,
-            Func<DateTime, NameData, double> calculateBuyPrice,
-            Func<DateTime, NameData, double> calculateSellPrice,
+            Func<DateTime, NameData, decimal> calculateBuyPrice,
+            Func<DateTime, NameData, decimal> calculateSellPrice,
             IPortfolio portfolio,
             TradeMechanismTraderOptions traderOptions,
             IReportLogger reportLogger)

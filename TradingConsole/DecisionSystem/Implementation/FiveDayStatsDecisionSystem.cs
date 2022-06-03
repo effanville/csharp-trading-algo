@@ -18,7 +18,7 @@ namespace TradingConsole.DecisionSystem.Implementation
     /// </summary>
     public class FiveDayStatsDecisionSystem : IDecisionSystem
     {
-        private DecisionSystemSetupSettings fSettings;
+        private readonly DecisionSystemSetupSettings fSettings;
         private IEstimator Estimator;
 
         /// <summary>
@@ -41,7 +41,7 @@ namespace TradingConsole.DecisionSystem.Implementation
             {
                 for (int stockIndex = 0; stockIndex < settings.Exchange.Stocks.Count; stockIndex++)
                 {
-                    List<double> values = settings.Exchange.Stocks[stockIndex].Values(settings.StartTime.AddDays(i), 0, 6, StockDataStream.Open);
+                    List<double> values = settings.Exchange.Stocks[stockIndex].Values(settings.StartTime.AddDays(i), 0, 6, StockDataStream.Open).Select(value => Convert.ToDouble(value)).ToList();
                     for (int j = 0; j < 5; j++)
                     {
                         if (values[j].Equals(double.NaN))
@@ -86,7 +86,7 @@ namespace TradingConsole.DecisionSystem.Implementation
             foreach (IStock stock in stockExchange.Stocks)
             {
                 TradeDecision decision;
-                double[] values = stock.Values(day, 5, 0, StockDataStream.Open).ToArray();
+                double[] values = stock.Values(day, 5, 0, StockDataStream.Open).Select(value => Convert.ToDouble(value)).ToArray();
                 double normaliseFactor = values[0];
                 for (int valueIndex = 0; valueIndex < values.Length; valueIndex++)
                 {

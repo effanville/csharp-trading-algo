@@ -28,14 +28,14 @@ namespace TradingConsole.Commands.Execution
         private readonly IFileSystem fFileSystem;
         private readonly CommandOption<string> fStockFilePath;
         private readonly CommandOption<string> fPortfolioFilePath;
-        private readonly CommandOption<double> fStartingCash;
+        private readonly CommandOption<decimal> fStartingCash;
 
         private readonly CommandOption<DateTime> fStartDate;
         private readonly CommandOption<DateTime> fEndDate;
         private readonly CommandOption<TimeSpan> fTradingGap;
         private readonly CommandOption<DecisionSystem.DecisionSystem> fDecisionType;
         private readonly CommandOption<List<StockStatisticType>> fDecisionSystemStats;
-        private readonly CommandOption<double> fFractionInvest;
+        private readonly CommandOption<decimal> fFractionInvest;
 
 
         /// <inheritdoc/>
@@ -63,7 +63,7 @@ namespace TradingConsole.Commands.Execution
             // Portfolio Setup options
             fPortfolioFilePath = new CommandOption<string>("portfolioFilePath", "The path at which to locate the starting portfolio");
             Options.Add(fPortfolioFilePath);
-            fStartingCash = new CommandOption<double>("startCash", "The starting amount of cash to create the simulation with.");
+            fStartingCash = new CommandOption<decimal>("startCash", "The starting amount of cash to create the simulation with.");
             Options.Add(fStartingCash);
             fStartDate = new CommandOption<DateTime>("start", "The date to start on.");
 
@@ -81,7 +81,7 @@ namespace TradingConsole.Commands.Execution
             Options.Add(fDecisionType);
             fDecisionSystemStats = new CommandOption<List<StockStatisticType>>("", "");
             Options.Add(fDecisionSystemStats);
-            fFractionInvest = new CommandOption<double>("invFrac", "The maximum fraction of available cash to put in any purchase.");
+            fFractionInvest = new CommandOption<decimal>("invFrac", "The maximum fraction of available cash to put in any purchase.");
             Options.Add(fFractionInvest);
         }
 
@@ -118,7 +118,7 @@ namespace TradingConsole.Commands.Execution
                     fFileSystem,
                     fLogger);
 
-                if (output.Item1 == null)
+                if (output.Portfolio == null)
                 {
                     return 1;
                 }

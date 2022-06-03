@@ -1,6 +1,6 @@
 using NUnit.Framework;
 
-namespace TC_Tests
+namespace TradingConsole.Tests.ExchangeLoadingTests
 {
     public class ExchangeLoadingTests
     {

@@ -10,7 +10,7 @@ namespace TradingSystem.Trading.System
         /// <summary>
         /// The fraction of available cash to invest in any one decision.
         /// </summary>
-        public double FractionInvest
+        public decimal FractionInvest
         {
             get;
             set;
@@ -19,7 +19,7 @@ namespace TradingSystem.Trading.System
         /// <summary>
         /// The fixed cost associated with each trade.
         /// </summary>
-        public double TradeCost
+        public decimal TradeCost
         {
             get;
             set;
@@ -37,8 +37,8 @@ namespace TradingSystem.Trading.System
         /// Construct an instance.
         /// </summary>
         public TradeMechanismTraderOptions(
-            double fractionInvest = 0.25,
-            double tradeCost = 6,
+            decimal fractionInvest = 0.25m,
+            decimal tradeCost = 6,
             TwoName bankAccData = null)
         {
             FractionInvest = fractionInvest;

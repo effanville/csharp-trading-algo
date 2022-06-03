@@ -71,7 +71,7 @@ namespace TradingConsole.Commands.ExchangeCreation
         {
             IStockExchange exchange = new StockExchange();
             exchange.LoadStockExchange(fStockFilePathOption.Value, fFileSystem, fLogger);
-            exchange.Download(fStartDateOption.Value, fEndDateOption.Value, fLogger);
+            exchange.Download(fStartDateOption.Value, fEndDateOption.Value, fLogger).Wait();
             exchange.SaveStockExchange(fStockFilePathOption.Value, fFileSystem, fLogger);
             return 0;
         }

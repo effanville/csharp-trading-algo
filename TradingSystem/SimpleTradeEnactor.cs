@@ -38,7 +38,7 @@ namespace TradingSystem
         }
 
         /// <inheritdoc/>
-        public (TradeStatus, DecisionStatus) EnactTrades(DateTime time, IStockExchange stockExchange, IPortfolio portfolio, Func<DateTime, TwoName, double> calcBuyPrice, Func<DateTime, TwoName, double> calcSellPrice, IReportLogger reportLogger)
+        public (TradeStatus, DecisionStatus) EnactTrades(DateTime time, IStockExchange stockExchange, IPortfolio portfolio, Func<DateTime, TwoName, decimal> calcBuyPrice, Func<DateTime, TwoName, decimal> calcSellPrice, IReportLogger reportLogger)
         {
             // Decide which stocks to buy, sell or do nothing with.
             DecisionStatus status = fDecisionSystem.Decide(time, stockExchange, logger: null);

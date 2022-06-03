@@ -3,7 +3,7 @@
 using Common.Structure.Reporting;
 
 using FinancialStructures.Database;
-using FinancialStructures.Database.Statistics;
+using FinancialStructures.Database.Extensions.Rates;
 using FinancialStructures.NamingStructures;
 using FinancialStructures.StockStructures;
 
@@ -22,7 +22,7 @@ namespace TradingSystem.Simulator
     /// </summary>
     public static partial class StockMarketHistorySimulator
     {
-        public static (IPortfolio, DecisionHistory, TradeHistory) Simulate(
+        public static SimulatorResult Simulate(
             DateTime startTime,
             DateTime endTime,
             TimeSpan evolutionIncrement,
@@ -44,7 +44,7 @@ namespace TradingSystem.Simulator
                 logger);
         }
 
-        public static (IPortfolio, DecisionHistory, TradeHistory) Simulate(
+        public static SimulatorResult Simulate(
             SimulatorSettings settings,
             PriceCalculationSettings purchaseSettings,
             Func<DateTime, bool> isCalcTimeValid,
@@ -101,25 +101,29 @@ namespace TradingSystem.Simulator
                 callbacks.EndReportCallback($"EndDate {time} total CAR {startPortfolio.TotalIRR(Totals.All)}");
             }
 
-            return (startPortfolio, decisionRecord, tradeRecord);
+            return new SimulatorResult(startPortfolio, decisionRecord, tradeRecord);
         }
 
-        private static double CalculatePurchasePrice(DateTime time, PriceCalculationSettings purchaseSettings, IStockExchange exchange, TwoName stock)
+        private static decimal CalculatePurchasePrice(DateTime time, PriceCalculationSettings purchaseSettings, IStockExchange exchange, TwoName stock)
         {
-            double openPrice = exchange.GetValue(stock, time, StockDataStream.Open);
+            decimal openPrice = exchange.GetValue(stock, time, StockDataStream.Open);
 
             // we modify the price we buy at from the opening price, to simulate market movement.
-            double upDown = purchaseSettings.RandomNumbers.Next(0, 100) > 100 * purchaseSettings.UpTickProbability ? 1 : -1;
-            double valueModifier = 1 + purchaseSettings.UpTickSize * upDown;
+            decimal upDown = purchaseSettings.RandomNumbers.Next(0, 100) > 100 * purchaseSettings.UpTickProbability ? 1.0m : -1.0m;
+            decimal valueModifier = 1.0m + Convert.ToDecimal(purchaseSettings.UpTickSize) * upDown;
+            if (openPrice == decimal.MinValue)
+            {
+                return decimal.MinValue;
+            }
             return openPrice * valueModifier;
         }
 
-        private static double CalculateSellPrice(DateTime time, PriceCalculationSettings purchaseSettings, IStockExchange exchange, TwoName stock)
+        private static decimal CalculateSellPrice(DateTime time, PriceCalculationSettings purchaseSettings, IStockExchange exchange, TwoName stock)
         {
             // First calculate price that one sells at.
             // This is the open price of the stock, with a combat multiplier.
-            double upDown = purchaseSettings.RandomNumbers.Next(0, 100) > 100 * purchaseSettings.UpTickProbability ? 1 : -1;
-            double valueModifier = 1 + purchaseSettings.UpTickSize * upDown;
+            decimal upDown = purchaseSettings.RandomNumbers.Next(0, 100) > 100 * purchaseSettings.UpTickProbability ? 1.0m : -1.0m;
+            decimal valueModifier = 1 + Convert.ToDecimal(purchaseSettings.UpTickSize) * upDown;
             return exchange.GetValue(stock, time, StockDataStream.Open) * valueModifier;
         }
 
@@ -127,13 +131,10 @@ namespace TradingSystem.Simulator
         {
             foreach (var security in portfolio.FundsThreadSafe)
             {
-                if (security.Value(day).Value > 0)
+                decimal value = exchange.GetValue(security.Names.ToTwoName(), day);
+                if (!value.Equals(decimal.MinValue))
                 {
-                    double value = exchange.GetValue(security.Names.ToTwoName(), day);
-                    if (!value.Equals(double.NaN))
-                    {
-                        security.SetData(day, value);
-                    }
+                    security.SetData(day, value);
                 }
             }
         }

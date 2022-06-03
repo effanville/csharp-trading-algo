@@ -7,9 +7,7 @@ using Common.Structure.Reporting;
 
 using NUnit.Framework;
 
-using TradingConsole;
-
-namespace TC_Tests
+namespace TradingConsole.Tests
 {
     [TestFixture]
     public class EndToEndTests
@@ -67,24 +65,23 @@ namespace TC_Tests
         public void Download()
         {
             var configureFile = File.ReadAllText($"{TestConstants.ExampleFilesLocation}\\example-database-empty.xml");
-            string testFilePath = "c:/temp/exampleFile.xml";
+            string testFilePath = "c:\\temp\\exampleFile.xml";
             fFileSystem.AddFile(testFilePath, configureFile);
             string[] args = new[] { "download", "all", "--stockFilePath", testFilePath, "--start", "1/1/2015", "--end", "1/1/2020" };
             Program.InternalMain(args, fFileSystem, fConsole, fLogger);
-            Assert.AreEqual(0, fLogger.Reports.Count());
-            Assert.AreEqual("", fConsoleOutput.ToString());
+            Assert.AreEqual(4, fLogger.Reports.Count());
         }
 
         [Test]
         public void BasicRun()
         {
             var configureFile = File.ReadAllText($"{TestConstants.ExampleFilesLocation}\\example-database.xml");
-            string testFilePath = "c:/temp/exampleFile.xml";
+            string testFilePath = "c:\\temp\\exampleFile.xml";
             fFileSystem.AddFile(testFilePath, configureFile);
 
-            string[] args = new[] { "simulate", "--stockFilePath", testFilePath, "--start", "2015-01-05T08:00:00", "--end", "2019-12-12T08:00:00", "--startCash", "20000", "--decision", "BuyAll" };
+            string[] args = new[] { "simulate", "--stockFilePath", testFilePath, "--start", "2015-01-05T08:00:00", "--end", "2019-12-12T08:00:00", "--startCash", "20000", "--decision", "BuyAll", "--invFrac", "0.25" };
             Program.InternalMain(args, fFileSystem, fConsole, fLogger);
-            Assert.AreEqual(76, fLogger.Reports.Count());
+            Assert.AreEqual(105, fLogger.Reports.Count());
             string expectedOutput = fConsoleOutput.ToString();
         }
 
@@ -95,9 +92,9 @@ namespace TC_Tests
             string testFilePath = "c:/temp/exampleFile.xml";
             fFileSystem.AddFile(testFilePath, configureFile);
 
-            string[] args = new[] { "simulate", "--stockFilePath", testFilePath, "--start", "5/1/2015", "--end", "12/12/2019", "--startingCash", "20000" };
+            string[] args = new[] { "simulate", "--stockFilePath", testFilePath, "--start", "5/1/2015", "--end", "12/12/2019", "--startCash", "20000", "--invFrac", "1" };
             Program.InternalMain(args, fFileSystem, fConsole, fLogger);
-            Assert.AreEqual(76, fLogger.Reports.Count());
+            Assert.AreEqual(43, fLogger.Reports.Count());
             string expectedOutput = fConsoleOutput.ToString();
         }
     }

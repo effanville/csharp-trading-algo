@@ -61,7 +61,7 @@ namespace TradingConsole.DecisionSystem.Implementation
                         X[entryIndex * settings.Exchange.Stocks.Count + stockIndex, statisticIndex] = fStockStatistics[statisticIndex].Calculate(settings.StartTime.AddDays(delayTime + entryIndex), settings.Exchange.Stocks[stockIndex]);
                     }
 
-                    Y[entryIndex * settings.Exchange.Stocks.Count + stockIndex] = settings.Exchange.Stocks[stockIndex].Values(burnInLength.AddDays(delayTime + entryIndex), 0, 1, StockDataStream.Open).Last() / 100;
+                    Y[entryIndex * settings.Exchange.Stocks.Count + stockIndex] = Convert.ToDouble(settings.Exchange.Stocks[stockIndex].Values(burnInLength.AddDays(delayTime + entryIndex), 0, 1, StockDataStream.Open).Last() / 100m);
                 }
             }
             switch (fDecisionType)
@@ -89,7 +89,7 @@ namespace TradingConsole.DecisionSystem.Implementation
             foreach (IStock stock in stockExchange.Stocks)
             {
                 TradeDecision decision;
-                double[] values = stock.Values(day, 5, 0, StockDataStream.Open).ToArray();
+                double[] values = stock.Values(day, 5, 0, StockDataStream.Open).Select(value => Convert.ToDouble(value)).ToArray();
                 double value = Estimator.Evaluate(values);
 
                 if (value > 1.05)

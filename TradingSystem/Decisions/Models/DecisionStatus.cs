@@ -20,7 +20,7 @@ namespace TradingSystem.Decisions.Models
 
         public List<string> GetBuyDecisionsStockNames()
         {
-            return GetBuyDecisions().Select(decision => decision.StockName.Name).ToList();
+            return GetBuyDecisions().Select(decision => decision.StockName.ToString()).ToList();
         }
 
         public List<Decision> GetSellDecisions()
@@ -30,7 +30,7 @@ namespace TradingSystem.Decisions.Models
 
         public List<string> GetSellDecisionsStockNames()
         {
-            return GetSellDecisions().Select(decision => decision.StockName.Name).ToList();
+            return GetSellDecisions().Select(decision => decision.StockName.ToString()).ToList();
         }
 
         private List<Decision> GetDecisions(TradeDecision buySell)

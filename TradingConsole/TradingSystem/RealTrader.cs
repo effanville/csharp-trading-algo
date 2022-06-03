@@ -5,6 +5,7 @@ using Common.Structure.DataStructures;
 using Common.Structure.Reporting;
 
 using FinancialStructures.Database;
+using FinancialStructures.Database.Extensions;
 using FinancialStructures.NamingStructures;
 using FinancialStructures.StockStructures;
 
@@ -93,12 +94,12 @@ namespace TradingConsole.TradingSystem
             // Decide which stocks to buy, sell or do nothing with.
             DecisionStatus status = DecisionSystem.Decide(day, exchange, null);
 
-            double CalculatePurchasePrice(DateTime time, NameData stock)
+            decimal CalculatePurchasePrice(DateTime time, NameData stock)
             {
                 return exchange.GetValue(stock, time);
             }
 
-            double CalculateSellPrice(DateTime time, NameData stock)
+            decimal CalculateSellPrice(DateTime time, NameData stock)
             {
                 return exchange.GetValue(stock, time);
             }

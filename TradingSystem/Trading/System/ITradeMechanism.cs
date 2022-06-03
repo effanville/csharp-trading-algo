@@ -22,7 +22,7 @@ namespace TradingSystem.Trading.System
         bool Buy(
             DateTime time,
             Decision buy,
-            Func<DateTime, NameData, double> calculateBuyPrice,
+            Func<DateTime, NameData, decimal> calculateBuyPrice,
             IPortfolio portfolio,
             TradeMechanismTraderOptions traderOptions,
             IReportLogger reportLogger);
@@ -33,7 +33,7 @@ namespace TradingSystem.Trading.System
         bool Sell(
             DateTime time,
             Decision sell,
-            Func<DateTime, NameData, double> calculateSellPrice,
+            Func<DateTime, NameData, decimal> calculateSellPrice,
             IPortfolio portfolio,
             TradeMechanismTraderOptions traderOptions,
             IReportLogger reportLogger);
@@ -44,8 +44,8 @@ namespace TradingSystem.Trading.System
         TradeStatus EnactAllTrades(
             DateTime time,
             DecisionStatus decisions,
-            Func<DateTime, NameData, double> calculateBuyPrice,
-            Func<DateTime, NameData, double> calculateSellPrice,
+            Func<DateTime, NameData, decimal> calculateBuyPrice,
+            Func<DateTime, NameData, decimal> calculateSellPrice,
             IPortfolio portfolio,
             TradeMechanismTraderOptions traderOptions,
             IReportLogger reportLogger);

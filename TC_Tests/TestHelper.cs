@@ -1,6 +1,6 @@
 ﻿using Common.Structure.Reporting;
 
-namespace TC_Tests
+namespace TradingConsole.Tests
 {
     public static class TestHelper
     {

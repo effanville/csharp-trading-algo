@@ -9,7 +9,7 @@ using TradingConsole.DecisionSystem.Implementation;
 
 using TradingSystem.Decisions.Models;
 
-namespace TC_Tests
+namespace TradingConsole.Tests.DecisionSystemTests
 {
     public class BuyAllDecisionSystemTests
     {
@@ -26,7 +26,7 @@ namespace TC_Tests
             Assert.AreEqual(1, status.GetBuyDecisions().Count);
             Assert.AreEqual(0, status.GetSellDecisions().Count);
 
-            Assert.AreEqual("MyCompany", status.GetBuyDecisionsStockNames().Single());
+            Assert.AreEqual("MyCompany-MyName", status.GetBuyDecisionsStockNames().Single());
         }
     }
 }
