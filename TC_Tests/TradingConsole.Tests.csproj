@@ -14,6 +14,7 @@
 
   <ItemGroup>
     <PackageReference Include="Common.Structure" Version="1.0.25" />
+	  <PackageReference Include="FinancialStructures" Version="22.0.0.602-20220602-2144" />
     <PackageReference Include="nunit" Version="3.12.0" />
     <PackageReference Include="NUnit3TestAdapter" Version="3.16.1">
       <PrivateAssets>all</PrivateAssets>
@@ -28,7 +29,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\PortfolioDatabase\FinancialStructures\FinancialStructures.csproj" />
     <ProjectReference Include="..\TradingConsole\TradingConsole.csproj" />
     <ProjectReference Include="..\TradingSystem\TradingSystem.csproj" />
   </ItemGroup>

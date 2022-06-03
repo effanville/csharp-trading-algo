@@ -7,11 +7,8 @@
 
   <ItemGroup> 
 	  <PackageReference Include="Common.Structure" Version="1.0.25" />
+	  <PackageReference Include="FinancialStructures" Version="22.0.0.602-20220602-2144" />
 	  <PackageReference Include="System.IO.Abstractions" Version="16.1.4" />
     <PackageReference Include="System.Net.Http" Version="4.3.4" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\..\PortfolioDatabase\FinancialStructures\FinancialStructures.csproj" />
   </ItemGroup>
 </Project>
