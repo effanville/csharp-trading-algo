@@ -16,10 +16,26 @@ namespace TradingConsole.DecisionSystem
             get;
         }
 
-        public DecisionSystemSetupSettings(DecisionSystem decisionSystemType, IReadOnlyList<StockStatisticType> statistics)
+        public double BuyThreshold
+        {
+            get;
+        }
+
+        public double SellThreshold
+        {
+            get;
+        }
+
+        public DecisionSystemSetupSettings(
+            DecisionSystem decisionSystemType,
+            IReadOnlyList<StockStatisticType> statistics,
+            double buyThreshold,
+            double sellThreshold)
         {
             DecisionSystemType = decisionSystemType;
             Statistics = statistics;
+            BuyThreshold = buyThreshold;
+            SellThreshold = sellThreshold;
         }
     }
 }

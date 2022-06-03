@@ -24,6 +24,8 @@ namespace TradingConsole.DecisionSystem.Implementation
         private readonly DecisionSystem fDecisionType;
         private readonly IReadOnlyList<IStockStatistic> fStockStatistics;
         private IEstimator Estimator;
+        private double fSellThreshold;
+        private double fBuyThreshold;
 
         /// <summary>
         /// Construct an instance.
@@ -38,6 +40,8 @@ namespace TradingConsole.DecisionSystem.Implementation
 
             fStockStatistics = stockStatistics;
             fDecisionType = decisionParameters.DecisionSystemType;
+            fSellThreshold = decisionParameters.SellThreshold;
+            fBuyThreshold = decisionParameters.BuyThreshold;
         }
 
         /// <inheritdoc/>
@@ -92,11 +96,11 @@ namespace TradingConsole.DecisionSystem.Implementation
                 double[] values = stock.Values(day, 5, 0, StockDataStream.Open).Select(value => Convert.ToDouble(value)).ToArray();
                 double value = Estimator.Evaluate(values);
 
-                if (value > 1.05)
+                if (value > fBuyThreshold)
                 {
                     decision = TradeDecision.Buy;
                 }
-                else if (value < 1)
+                else if (value < fSellThreshold)
                 {
                     decision = TradeDecision.Sell;
                 }

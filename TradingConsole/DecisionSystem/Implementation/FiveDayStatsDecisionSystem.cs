@@ -95,11 +95,11 @@ namespace TradingConsole.DecisionSystem.Implementation
 
                 double value = Estimator.Evaluate(values);
 
-                if (value > 1.05)
+                if (value > fSettings.BuyThreshold)
                 {
                     decision = TradeDecision.Buy;
                 }
-                else if (value < 1)
+                else if (value < fSettings.SellThreshold)
                 {
                     decision = TradeDecision.Sell;
                 }
