@@ -13,8 +13,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Common.Structure" Version="1.0.25" />
-	  <PackageReference Include="FinancialStructures" Version="22.0.0.602-20220602-2144" />
+    <PackageReference Include="Common.Structure" Version="1.0.27" />
+	  <PackageReference Include="FinancialStructures" Version="22.0.0.911-20220911-2145" />
     <PackageReference Include="nunit" Version="3.12.0" />
     <PackageReference Include="NUnit3TestAdapter" Version="3.16.1">
       <PrivateAssets>all</PrivateAssets>
@@ -24,8 +24,8 @@
   </ItemGroup>
 
   <ItemGroup>
-	  <PackageReference Include="System.IO.Abstractions" Version="16.1.4" />
-    <PackageReference Include="System.IO.Abstractions.TestingHelpers" Version="16.1.4" />
+	  <PackageReference Include="System.IO.Abstractions" Version="17.0.24" />
+    <PackageReference Include="System.IO.Abstractions.TestingHelpers" Version="17.0.24" />
   </ItemGroup>
 
   <ItemGroup>
@@ -41,6 +41,15 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="ExampleFiles\example-database.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="ExampleFiles\small-exchange-empty.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="ExampleFiles\small-exchange.csv">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="ExampleFiles\small-exchange.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>

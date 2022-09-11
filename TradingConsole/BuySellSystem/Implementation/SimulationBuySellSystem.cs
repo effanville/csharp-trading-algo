@@ -6,6 +6,7 @@ using Common.Structure.Reporting;
 
 using FinancialStructures.Database;
 using FinancialStructures.Database.Extensions;
+using FinancialStructures.Database.Extensions.Values;
 using FinancialStructures.DataStructures;
 using FinancialStructures.FinanceStructures;
 using FinancialStructures.NamingStructures;

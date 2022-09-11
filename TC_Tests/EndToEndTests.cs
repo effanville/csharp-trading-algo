@@ -46,10 +46,11 @@ namespace TradingConsole.Tests
             fLogger = null;
         }
 
-        [Test]
-        public void Configure()
+        [TestCase("example-configure-file.csv")]
+        [TestCase("small-exchange.csv")]
+        public void Configure(string fileName)
         {
-            var configureFile = File.ReadAllText($"{TestConstants.ExampleFilesLocation}\\example-configure-file.csv");
+            var configureFile = File.ReadAllText($"{TestConstants.ExampleFilesLocation}\\{fileName}");
             string testFilePath = "c:/temp/exampleFile.csv";
             fFileSystem.AddFile(testFilePath, configureFile);
             string[] args = new[] { "configure", "--stockFilePath", testFilePath };
@@ -61,10 +62,10 @@ namespace TradingConsole.Tests
             Assert.AreEqual(expectedOutput, fConsoleOutput.ToString());
         }
 
-        [Test]
-        public void Download()
+        [TestCase("example-database-empty.xml")]
+        public void Download(string fileName)
         {
-            var configureFile = File.ReadAllText($"{TestConstants.ExampleFilesLocation}\\example-database-empty.xml");
+            var configureFile = File.ReadAllText($"{TestConstants.ExampleFilesLocation}\\{fileName}");
             string testFilePath = "c:\\temp\\exampleFile.xml";
             fFileSystem.AddFile(testFilePath, configureFile);
             string[] args = new[] { "download", "all", "--stockFilePath", testFilePath, "--start", "1/1/2015", "--end", "1/1/2020" };
