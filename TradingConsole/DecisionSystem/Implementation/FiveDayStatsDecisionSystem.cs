@@ -20,6 +20,7 @@ namespace TradingConsole.DecisionSystem.Implementation
     {
         private readonly DecisionSystemSetupSettings fSettings;
         private IEstimator Estimator;
+        private readonly int fDayAfterPredictor;
 
         /// <summary>
         /// Construct and instance.
@@ -27,6 +28,7 @@ namespace TradingConsole.DecisionSystem.Implementation
         public FiveDayStatsDecisionSystem(DecisionSystemSetupSettings settings)
         {
             fSettings = settings;
+            fDayAfterPredictor = settings.DayAfterPredictor;
         }
 
         /// <inheritdoc />
@@ -41,7 +43,7 @@ namespace TradingConsole.DecisionSystem.Implementation
             {
                 for (int stockIndex = 0; stockIndex < settings.Exchange.Stocks.Count; stockIndex++)
                 {
-                    List<double> values = settings.Exchange.Stocks[stockIndex].Values(settings.StartTime.AddDays(i), 0, 6, StockDataStream.Open).Select(value => Convert.ToDouble(value)).ToList();
+                    List<double> values = settings.Exchange.Stocks[stockIndex].Values(settings.StartTime.AddDays(i), 0, 5 + fDayAfterPredictor, StockDataStream.Open).Select(value => Convert.ToDouble(value)).ToList();
                     for (int j = 0; j < 5; j++)
                     {
                         if (values[j].Equals(double.NaN))

@@ -23,6 +23,7 @@ namespace TradingConsole.DecisionSystem.Implementation
     {
         private readonly DecisionSystem fDecisionType;
         private readonly IReadOnlyList<IStockStatistic> fStockStatistics;
+        private readonly int fDayAfterPredictor;
         private IEstimator Estimator;
         private double fSellThreshold;
         private double fBuyThreshold;
@@ -38,6 +39,7 @@ namespace TradingConsole.DecisionSystem.Implementation
                 stockStatistics.Add(StockStatisticFactory.Create(statistic));
             }
 
+            fDayAfterPredictor = decisionParameters.DayAfterPredictor;
             fStockStatistics = stockStatistics;
             fDecisionType = decisionParameters.DecisionSystemType;
             fSellThreshold = decisionParameters.SellThreshold;
@@ -65,7 +67,7 @@ namespace TradingConsole.DecisionSystem.Implementation
                         X[entryIndex * settings.Exchange.Stocks.Count + stockIndex, statisticIndex] = fStockStatistics[statisticIndex].Calculate(settings.StartTime.AddDays(delayTime + entryIndex), settings.Exchange.Stocks[stockIndex]);
                     }
 
-                    Y[entryIndex * settings.Exchange.Stocks.Count + stockIndex] = Convert.ToDouble(settings.Exchange.Stocks[stockIndex].Values(burnInLength.AddDays(delayTime + entryIndex), 0, 1, StockDataStream.Open).Last() / 100m);
+                    Y[entryIndex * settings.Exchange.Stocks.Count + stockIndex] = Convert.ToDouble(settings.Exchange.Stocks[stockIndex].Values(burnInLength.AddDays(delayTime + entryIndex), 0, fDayAfterPredictor, StockDataStream.Open).Last() / 100m);
                 }
             }
             switch (fDecisionType)

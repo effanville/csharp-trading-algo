@@ -26,7 +26,7 @@ namespace TradingConsole.Tests.TradingSystem
             yield return new TestCaseData(
                 "example-database.xml",
                 DecisionSystem.DecisionSystem.BuyAll,
-                null, 1.05, 1.0,
+                null, 1, 1.05, 1.0,
                 new DateTime(2015, 1, 5, 8, 0, 0),
                 new DateTime(2019, 12, 12, 8, 0, 0),
                 17389.4094462585454082m,
@@ -37,7 +37,7 @@ namespace TradingConsole.Tests.TradingSystem
             yield return new TestCaseData(
                 "example-database.xml",
                 DecisionSystem.DecisionSystem.BuyAll,
-                null, 1.05, 1.0,
+                null, 1, 1.05, 1.0,
                 new DateTime(2017, 1, 5, 8, 0, 0),
                 new DateTime(2018, 12, 12, 8, 0, 0),
                 13734.633120880126325m,
@@ -48,7 +48,7 @@ namespace TradingConsole.Tests.TradingSystem
             yield return new TestCaseData(
                 "example-database.xml",
                 DecisionSystem.DecisionSystem.FiveDayStatsLeastSquares,
-                null, 1.05, 1.0,
+                null, 1, 1.05, 1.0,
                 new DateTime(2015, 1, 5, 8, 0, 0),
                 new DateTime(2019, 12, 12, 8, 0, 0),
                 22981.630923004150446m,
@@ -59,7 +59,7 @@ namespace TradingConsole.Tests.TradingSystem
             yield return new TestCaseData(
                 "example-database.xml",
                 DecisionSystem.DecisionSystem.FiveDayStatsLasso,
-                null, 1.05, 1.0,
+                null, 1, 1.05, 1.0,
                 new DateTime(2015, 1, 5, 8, 0, 0),
                 new DateTime(2019, 12, 12, 8, 0, 0),
                 21384.0343847656261407m,
@@ -70,7 +70,7 @@ namespace TradingConsole.Tests.TradingSystem
             yield return new TestCaseData(
                 "example-database.xml",
                 DecisionSystem.DecisionSystem.FiveDayStatsRidge,
-                null, 1.05, 1.0,
+                null, 1, 1.05, 1.0,
                 new DateTime(2015, 1, 5, 8, 0, 0),
                 new DateTime(2019, 12, 12, 8, 0, 0),
                 22981.630923004150446m,
@@ -81,7 +81,7 @@ namespace TradingConsole.Tests.TradingSystem
             yield return new TestCaseData(
                 "example-database.xml",
                 DecisionSystem.DecisionSystem.FiveDayStatsLeastSquares,
-                null, 1.1, 1.0,
+                null, 1, 1.1, 1.0,
                 new DateTime(2015, 1, 5, 8, 0, 0),
                 new DateTime(2019, 12, 12, 8, 0, 0),
                 20698.6897747802738038m,
@@ -92,7 +92,7 @@ namespace TradingConsole.Tests.TradingSystem
             yield return new TestCaseData(
                 "example-database.xml",
                 DecisionSystem.DecisionSystem.FiveDayStatsLasso,
-                null, 1.1, 1.0,
+                null, 1, 1.1, 1.0,
                 new DateTime(2015, 1, 5, 8, 0, 0),
                 new DateTime(2019, 12, 12, 8, 0, 0),
                 20339.7689443969733093m,
@@ -103,7 +103,7 @@ namespace TradingConsole.Tests.TradingSystem
             yield return new TestCaseData(
                 "example-database.xml",
                 DecisionSystem.DecisionSystem.FiveDayStatsRidge,
-                null, 1.1, 1.0,
+                null, 1, 1.1, 1.0,
                 new DateTime(2015, 1, 5, 8, 0, 0),
                 new DateTime(2019, 12, 12, 8, 0, 0),
                 20698.6897747802738038m,
@@ -115,7 +115,7 @@ namespace TradingConsole.Tests.TradingSystem
             yield return new TestCaseData(
                 "example-database.xml",
                 DecisionSystem.DecisionSystem.FiveDayStatsLeastSquares,
-                null, 1.05, 1.0,
+                null, 1, 1.05, 1.0,
                 new DateTime(2016, 1, 5, 8, 0, 0),
                 new DateTime(2018, 12, 12, 8, 0, 0),
                 19806.4860676574704154m,
@@ -126,7 +126,7 @@ namespace TradingConsole.Tests.TradingSystem
             yield return new TestCaseData(
                 "example-database.xml",
                 DecisionSystem.DecisionSystem.FiveDayStatsLeastSquares,
-                null, 1.1, 1.0,
+                null, 1, 1.1, 1.0,
                 new DateTime(2016, 1, 5, 8, 0, 0),
                 new DateTime(2018, 12, 12, 8, 0, 0),
                 19893.195m,
@@ -137,7 +137,7 @@ namespace TradingConsole.Tests.TradingSystem
             yield return new TestCaseData(
                 "example-database.xml",
                 DecisionSystem.DecisionSystem.FiveDayStatsLasso,
-                null, 1.05, 1.0,
+                null, 1, 1.05, 1.0,
                 new DateTime(2016, 1, 5, 8, 0, 0),
                 new DateTime(2018, 12, 12, 8, 0, 0),
                 19201.2016111755388426m,
@@ -148,7 +148,7 @@ namespace TradingConsole.Tests.TradingSystem
             yield return new TestCaseData(
                 "example-database.xml",
                 DecisionSystem.DecisionSystem.FiveDayStatsLasso,
-                null, 1.1, 1.0,
+                null, 1, 1.1, 1.0,
                 new DateTime(2016, 1, 5, 8, 0, 0),
                 new DateTime(2018, 12, 12, 8, 0, 0),
                 19881.475m,
@@ -159,7 +159,7 @@ namespace TradingConsole.Tests.TradingSystem
             yield return new TestCaseData(
                 "example-database.xml",
                 DecisionSystem.DecisionSystem.FiveDayStatsRidge,
-                null, 1.05, 1.0,
+                null, 1, 1.05, 1.0,
                 new DateTime(2016, 1, 5, 8, 0, 0),
                 new DateTime(2018, 12, 12, 8, 0, 0),
                 19806.4860676574704154m,
@@ -170,7 +170,7 @@ namespace TradingConsole.Tests.TradingSystem
             yield return new TestCaseData(
                 "example-database.xml",
                 DecisionSystem.DecisionSystem.FiveDayStatsRidge,
-                null, 1.1, 1.0,
+                null, 1, 1.1, 1.0,
                 new DateTime(2016, 1, 5, 8, 0, 0),
                 new DateTime(2018, 12, 12, 8, 0, 0),
                 19893.195m,
@@ -181,7 +181,7 @@ namespace TradingConsole.Tests.TradingSystem
             yield return new TestCaseData(
                 "small-exchange.xml",
                 DecisionSystem.DecisionSystem.FiveDayStatsRidge,
-                null, 1.1, 1.0,
+                null, 1, 1.1, 1.0,
                 new DateTime(2016, 1, 5, 8, 0, 0),
                 new DateTime(2018, 12, 12, 8, 0, 0),
                 18935.167845153809962m,
@@ -189,6 +189,28 @@ namespace TradingConsole.Tests.TradingSystem
                 13,
                 9)
                 .SetName("FiveDayStatsRidge-small-db-2016-2018-hardbuy");
+            yield return new TestCaseData(
+                "small-exchange.xml",
+                DecisionSystem.DecisionSystem.FiveDayStatsRidge,
+                null, 5, 1.1, 1.0,
+                new DateTime(2016, 1, 5, 8, 0, 0),
+                new DateTime(2018, 12, 12, 8, 0, 0),
+                19642.836685485839324m,
+                15,
+                9,
+                6)
+                .SetName("FiveDayStatsRidge-small-db-2016-2018-hardbuy-5daylater");
+            yield return new TestCaseData(
+                "small-exchange.xml",
+                DecisionSystem.DecisionSystem.FiveDayStatsRidge,
+                null, 5, 1.05, 1.0,
+                new DateTime(2016, 1, 5, 8, 0, 0),
+                new DateTime(2018, 12, 12, 8, 0, 0),
+                19069.1183523559543545m,
+                218,
+                154,
+                64)
+                .SetName("FiveDayStatsRidge-small-db-2016-2018-5 day later");
         }
 
         [TestCaseSource(nameof(TradeSystemCases))]
@@ -196,6 +218,7 @@ namespace TradingConsole.Tests.TradingSystem
             string databaseName,
             DecisionSystem.DecisionSystem decisions,
             List<StockStatisticType> stockStatistics,
+            int dayAfterPredictor,
             double buyThreshold,
             double sellThreshold,
             DateTime startTime,
@@ -206,7 +229,7 @@ namespace TradingConsole.Tests.TradingSystem
             int expectedSellTrades)
         {
             var portfolioStartSettings = new PortfolioStartSettings(null, startTime, 20000);
-            var decisionParameters = new DecisionSystemSetupSettings(decisions, stockStatistics, buyThreshold, sellThreshold);
+            var decisionParameters = new DecisionSystemSetupSettings(decisions, stockStatistics, buyThreshold, sellThreshold, dayAfterPredictor);
             var traderOptions = new TradeMechanismTraderOptions(0.25m);
             var fileSystem = new MockFileSystem();
             var configureFile = File.ReadAllText($"{TestConstants.ExampleFilesLocation}\\{databaseName}");

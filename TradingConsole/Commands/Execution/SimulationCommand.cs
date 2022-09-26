@@ -103,7 +103,7 @@ namespace TradingConsole.Commands.Execution
             using (new Timer(fLogger, "TotalTime"))
             {
                 var portfolioStartSettings = new PortfolioStartSettings(fPortfolioFilePath.Value, fStartDate.Value, fStartingCash.Value);
-                var decisionParameters = new DecisionSystemSetupSettings(fDecisionType.Value, fDecisionSystemStats.Value, 1.05, 1.0);
+                var decisionParameters = new DecisionSystemSetupSettings(fDecisionType.Value, fDecisionSystemStats.Value, 1.05, 1.0, 1);
                 var traderOptions = new TradeMechanismTraderOptions(fFractionInvest.Value);
 
                 var output = TradeSystem.SetupAndSimulate(
