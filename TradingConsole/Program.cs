@@ -47,8 +47,7 @@ namespace TradingConsole
             {
                 new ConfigureCommand(logger, fileSystem),
                 new DownloadCommand(logger, fileSystem),
-                new SimulationCommand(logger, fileSystem),
-                new TradingCommand(logger, fileSystem)
+                new SimulationCommand(logger, fileSystem)
             };
 
             // Generate the context, validate the arguments and execute.

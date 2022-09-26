@@ -12,10 +12,5 @@
         /// attempts to buy all those listed as buy.
         /// </summary>
         SellAllThenBuy,
-
-        /// <summary>
-        /// The type used to interact with Interactive Brokers.
-        /// </summary>
-        IB
     }
 }

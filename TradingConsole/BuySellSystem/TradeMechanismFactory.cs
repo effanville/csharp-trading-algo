@@ -10,9 +10,6 @@ namespace TradingConsole.BuySellSystem
         {
             switch (buySellType)
             {
-                case TradeMechanismType.IB:
-                    return new IBClientTradingSystem();
-
                 case TradeMechanismType.SellAllThenBuy:
                 default:
                     return new SimulationBuySellSystem();
