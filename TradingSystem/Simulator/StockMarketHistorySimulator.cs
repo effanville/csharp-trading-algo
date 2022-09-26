@@ -4,6 +4,7 @@ using Common.Structure.Reporting;
 
 using FinancialStructures.Database;
 using FinancialStructures.Database.Extensions.Rates;
+using FinancialStructures.Database.Extensions.Values;
 using FinancialStructures.NamingStructures;
 using FinancialStructures.StockStructures;
 

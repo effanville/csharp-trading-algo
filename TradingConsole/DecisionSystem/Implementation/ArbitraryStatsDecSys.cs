@@ -23,7 +23,10 @@ namespace TradingConsole.DecisionSystem.Implementation
     {
         private readonly DecisionSystem fDecisionType;
         private readonly IReadOnlyList<IStockStatistic> fStockStatistics;
+        private readonly int fDayAfterPredictor;
         private IEstimator Estimator;
+        private double fSellThreshold;
+        private double fBuyThreshold;
 
         /// <summary>
         /// Construct an instance.
@@ -36,8 +39,11 @@ namespace TradingConsole.DecisionSystem.Implementation
                 stockStatistics.Add(StockStatisticFactory.Create(statistic));
             }
 
+            fDayAfterPredictor = decisionParameters.DayAfterPredictor;
             fStockStatistics = stockStatistics;
             fDecisionType = decisionParameters.DecisionSystemType;
+            fSellThreshold = decisionParameters.SellThreshold;
+            fBuyThreshold = decisionParameters.BuyThreshold;
         }
 
         /// <inheritdoc/>
@@ -61,7 +67,7 @@ namespace TradingConsole.DecisionSystem.Implementation
                         X[entryIndex * settings.Exchange.Stocks.Count + stockIndex, statisticIndex] = fStockStatistics[statisticIndex].Calculate(settings.StartTime.AddDays(delayTime + entryIndex), settings.Exchange.Stocks[stockIndex]);
                     }
 
-                    Y[entryIndex * settings.Exchange.Stocks.Count + stockIndex] = Convert.ToDouble(settings.Exchange.Stocks[stockIndex].Values(burnInLength.AddDays(delayTime + entryIndex), 0, 1, StockDataStream.Open).Last() / 100m);
+                    Y[entryIndex * settings.Exchange.Stocks.Count + stockIndex] = Convert.ToDouble(settings.Exchange.Stocks[stockIndex].Values(burnInLength.AddDays(delayTime + entryIndex), 0, fDayAfterPredictor, StockDataStream.Open).Last() / 100m);
                 }
             }
             switch (fDecisionType)
@@ -92,11 +98,11 @@ namespace TradingConsole.DecisionSystem.Implementation
                 double[] values = stock.Values(day, 5, 0, StockDataStream.Open).Select(value => Convert.ToDouble(value)).ToArray();
                 double value = Estimator.Evaluate(values);
 
-                if (value > 1.05)
+                if (value > fBuyThreshold)
                 {
                     decision = TradeDecision.Buy;
                 }
-                else if (value < 1)
+                else if (value < fSellThreshold)
                 {
                     decision = TradeDecision.Sell;
                 }

@@ -66,7 +66,7 @@ namespace TradingConsole.Commands.Execution
         /// <inheritdoc/>
         public int Execute(IConsole console, string[] args = null)
         {
-            var decisionParameters = new DecisionSystemSetupSettings(fDecisionType.Value, fDecisionSystemStats.Value);
+            var decisionParameters = new DecisionSystemSetupSettings(fDecisionType.Value, fDecisionSystemStats.Value, 1.05, 1.0, 1);
             var startSettings = new PortfolioStartSettings(fPortfolioFilePath.Value, default, 0.0m);
 
             var system = new RealTrader(fStockFilePath.Value, startSettings, decisionParameters, TradeMechanismType.IB, fFileSystem, fLogger);
