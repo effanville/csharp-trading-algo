@@ -4,16 +4,16 @@ using Common.Structure.Reporting;
 
 using FinancialStructures.StockStructures;
 
-using TradingSystem.Decisions.Models;
-using TradingSystem.Decisions.System;
+using TradingSystem.DecideThenTradeSystem;
 using TradingSystem.Simulator;
+using TradingSystem.Simulator.Trading.Decisions;
 
 namespace TradingConsole.DecisionSystem.Implementation
 {
     /// <summary>
     /// Decision system which at any time reports to buy every stock held in the exchange.
     /// </summary>
-    public class BuyAllDecisionSystem : IDecisionSystem
+    internal sealed class BuyAllDecisionSystem : IDecisionSystem
     {
         /// <summary>
         /// Construct and instance.
@@ -23,7 +23,7 @@ namespace TradingConsole.DecisionSystem.Implementation
         }
 
         /// <inheritdoc />
-        public void Calibrate(SimulatorSettings settings, IReportLogger logger)
+        public void Calibrate(StockMarketEvolver.Settings settings, IReportLogger logger)
         {
         }
 

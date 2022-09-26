@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace TradingSystem.Simulator
+namespace TradingSystem.Simulator.Implementation
 {
     /// <summary>
     /// Settings for the BuySell system.

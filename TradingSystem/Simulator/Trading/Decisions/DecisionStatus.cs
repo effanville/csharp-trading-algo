@@ -3,7 +3,7 @@ using System.Linq;
 
 using FinancialStructures.NamingStructures;
 
-namespace TradingSystem.Decisions.Models
+namespace TradingSystem.Simulator.Trading.Decisions
 {
     public sealed class DecisionStatus
     {

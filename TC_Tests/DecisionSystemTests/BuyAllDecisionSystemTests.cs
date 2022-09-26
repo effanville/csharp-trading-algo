@@ -7,7 +7,7 @@ using NUnit.Framework;
 
 using TradingConsole.DecisionSystem.Implementation;
 
-using TradingSystem.Decisions.Models;
+using TradingSystem.Simulator.Trading.Decisions;
 
 namespace TradingConsole.Tests.DecisionSystemTests
 {

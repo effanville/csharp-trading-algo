@@ -1,6 +1,6 @@
 ﻿using FinancialStructures.NamingStructures;
 
-namespace TradingSystem.Trading.System
+namespace TradingSystem.DecideThenTradeSystem
 {
     /// <summary>
     /// Contains options for

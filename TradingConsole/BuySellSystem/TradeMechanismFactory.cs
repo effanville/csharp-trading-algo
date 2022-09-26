@@ -1,6 +1,6 @@
 ﻿using TradingConsole.BuySellSystem.Implementation;
 
-using TradingSystem.Trading.System;
+using TradingSystem.DecideThenTradeSystem;
 
 namespace TradingConsole.BuySellSystem
 {

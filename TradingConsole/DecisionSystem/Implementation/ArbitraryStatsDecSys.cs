@@ -8,9 +8,9 @@ using Common.Structure.Reporting;
 using FinancialStructures.StockStructures;
 using FinancialStructures.StockStructures.Statistics;
 
-using TradingSystem.Decisions.Models;
-using TradingSystem.Decisions.System;
+using TradingSystem.DecideThenTradeSystem;
 using TradingSystem.Simulator;
+using TradingSystem.Simulator.Trading.Decisions;
 
 namespace TradingConsole.DecisionSystem.Implementation
 {
@@ -19,7 +19,7 @@ namespace TradingConsole.DecisionSystem.Implementation
     /// squares regression estimator to obtain the best fit to these
     /// statistics.
     /// </summary>
-    public class ArbitraryStatsDecisionSystem : IDecisionSystem
+    internal sealed class ArbitraryStatsDecisionSystem : IDecisionSystem
     {
         private readonly DecisionSystem fDecisionType;
         private readonly IReadOnlyList<IStockStatistic> fStockStatistics;
@@ -31,7 +31,7 @@ namespace TradingConsole.DecisionSystem.Implementation
         /// <summary>
         /// Construct an instance.
         /// </summary>
-        public ArbitraryStatsDecisionSystem(DecisionSystemSetupSettings decisionParameters)
+        public ArbitraryStatsDecisionSystem(DecisionSystemFactory.Settings decisionParameters)
         {
             List<IStockStatistic> stockStatistics = new List<IStockStatistic>();
             foreach (StockStatisticType statistic in decisionParameters.Statistics)
@@ -47,7 +47,7 @@ namespace TradingConsole.DecisionSystem.Implementation
         }
 
         /// <inheritdoc/>
-        public void Calibrate(SimulatorSettings settings, IReportLogger logger)
+        public void Calibrate(StockMarketEvolver.Settings settings, IReportLogger logger)
         {
             TimeSpan simulationLength = settings.EndTime - settings.StartTime;
             DateTime burnInLength = settings.BurnInEnd;

@@ -1,18 +1,19 @@
 ﻿using System;
+using System.Collections.Generic;
 
 using Common.Structure.Reporting;
 
 using FinancialStructures.Database;
+using FinancialStructures.Database.Implementation;
 using FinancialStructures.NamingStructures;
 using FinancialStructures.StockStructures;
 
-using TradingSystem.Decisions.Models;
-using TradingSystem.Decisions.System;
-using TradingSystem.Simulator;
-using TradingSystem.Trading.Models;
-using TradingSystem.Trading.System;
+using TradingSystem.DecideThenTradeSystem;
+using TradingSystem.Simulator.PriceCalculation;
+using TradingSystem.Simulator.Trading;
+using TradingSystem.Simulator.Trading.Decisions;
 
-namespace TradingSystem
+namespace TradingSystem.Trading
 {
     /// <summary>
     /// A <see cref="ITradeEnactor"/> that acts simply by first deciding on
@@ -21,7 +22,7 @@ namespace TradingSystem
     /// The buying and selling part is dealt with via an <see cref="IDecisionSystem"/>
     /// and the trading part is dealt with via a <see cref="ITradeMechanism"/>.
     /// </summary>
-    public sealed class SimpleTradeEnactor : ITradeEnactor
+    public sealed class DecideThenTradeEnactor : ITradeEnactor
     {
         private readonly IDecisionSystem fDecisionSystem;
         private readonly ITradeMechanism fTradeMechanism;
@@ -30,7 +31,7 @@ namespace TradingSystem
         /// <summary>
         /// Construct an instance.
         /// </summary>
-        public SimpleTradeEnactor(IDecisionSystem decisionSystem, ITradeMechanism tradeMechanism, TradeMechanismTraderOptions traderOptions)
+        public DecideThenTradeEnactor(IDecisionSystem decisionSystem, ITradeMechanism tradeMechanism, TradeMechanismTraderOptions traderOptions)
         {
             fDecisionSystem = decisionSystem;
             fTradeMechanism = tradeMechanism;
@@ -38,7 +39,12 @@ namespace TradingSystem
         }
 
         /// <inheritdoc/>
-        public (TradeStatus, DecisionStatus) EnactTrades(DateTime time, IStockExchange stockExchange, IPortfolio portfolio, Func<DateTime, TwoName, decimal> calcBuyPrice, Func<DateTime, TwoName, decimal> calcSellPrice, IReportLogger reportLogger)
+        public TradeEnactorResult EnactTrades(
+            DateTime time,
+            IStockExchange stockExchange,
+            IPortfolio portfolio,
+            IPriceCalculator priceCalculator,
+            IReportLogger reportLogger)
         {
             // Decide which stocks to buy, sell or do nothing with.
             DecisionStatus status = fDecisionSystem.Decide(time, stockExchange, logger: null);
@@ -47,12 +53,12 @@ namespace TradingSystem
             TradeStatus trades = fTradeMechanism.EnactAllTrades(
                 time,
                 status,
-                (date, name) => calcBuyPrice(date, name),
-                (date, name) => calcSellPrice(date, name),
+                (date, name) => priceCalculator.CalculateBuyPrice(date, stockExchange, name),
+                (date, name) => priceCalculator.CalculateSellPrice(date, stockExchange, name),
                 portfolio,
                 fTraderOptions,
                 reportLogger);
-            return (trades, status);
+            return new TradeEnactorResult(trades, status);
         }
     }
 }

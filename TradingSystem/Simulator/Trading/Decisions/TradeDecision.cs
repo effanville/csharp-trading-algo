@@ -1,4 +1,4 @@
-﻿namespace TradingSystem.Decisions.Models
+﻿namespace TradingSystem.Simulator.Trading.Decisions
 {
     /// <summary>
     /// A decision type for a Trade.

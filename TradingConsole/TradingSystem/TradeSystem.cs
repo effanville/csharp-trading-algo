@@ -9,15 +9,14 @@ using FinancialStructures.Database.Extensions;
 using FinancialStructures.NamingStructures;
 using FinancialStructures.StockStructures;
 
-using Nager.Date;
-
 using TradingConsole.BuySellSystem;
 using TradingConsole.DecisionSystem;
 
 using TradingSystem;
-using TradingSystem.Decisions.System;
+using TradingSystem.DecideThenTradeSystem;
 using TradingSystem.Simulator;
-using TradingSystem.Trading.System;
+using TradingSystem.Simulator.Implementation;
+using TradingSystem.Trading;
 
 namespace TradingConsole.TradingSystem
 {
@@ -41,21 +40,21 @@ namespace TradingConsole.TradingSystem
         /// <param name="fileSystem">The file system to use.</param>
         /// <param name="reportLogger">A logging mechanism</param>
         /// <returns>The final portfolio, and the records of the decisions and trades.</returns>
-        public static SimulatorResult SetupAndSimulate(
+        public static StockMarketEvolver.Result SetupAndSimulate(
             string stockFilePath,
             DateTime startTime,
             DateTime endTime,
             TimeSpan evolutionIncrement,
             PortfolioStartSettings startSettings,
-            DecisionSystemSetupSettings decisionParameters,
+            DecisionSystemFactory.Settings decisionParameters,
             TradeMechanismTraderOptions traderOptions,
             TradeMechanismType buySellType,
             IFileSystem fileSystem,
             IReportLogger reportLogger)
         {
-            var tradeMechanismSettings = new PriceCalculationSettings();
+            var randomWobblePriceCalculator = new RandomWobblePriceCalculator(new PriceCalculationSettings());
             IStockExchange exchange;
-            SimulatorSettings simulatorSettings;
+            StockMarketEvolver.Settings simulatorSettings;
             IPortfolio portfolio;
             IDecisionSystem decisionSystem;
             ITradeMechanism tradeMechanism;
@@ -65,27 +64,21 @@ namespace TradingConsole.TradingSystem
                 using (new Timer(reportLogger, "Loading Exchange"))
                 {
                     exchange = StockExchangeFactory.Create(stockFilePath, fileSystem, reportLogger);
-                    if (!exchange.CheckValidity())
+                    if (exchange == null)
                     {
-                        _ = reportLogger.Log(ReportSeverity.Critical, ReportType.Error, ReportLocation.Loading, "Stock input data not suitable.");
-                        return SimulatorResult.NoResult();
+                        return StockMarketEvolver.Result.NoResult();
                     }
-
-                    simulatorSettings = new SimulatorSettings(
-                        startTime,
-                        endTime,
-                        evolutionIncrement,
-                        exchange);
                 }
+
+                simulatorSettings = new StockMarketEvolver.Settings(
+                    startTime,
+                    endTime,
+                    evolutionIncrement,
+                    exchange);
 
                 using (new Timer(reportLogger, "Calibrating"))
                 {
-                    decisionSystem = DecisionSystemFactory.Create(decisionParameters);
-                    decisionSystem.Calibrate(simulatorSettings, reportLogger);
-                    if (decisionParameters.DecisionSystemType == DecisionSystem.DecisionSystem.BuyAll)
-                    {
-                        simulatorSettings.DoesntRequireBurnIn();
-                    }
+                    decisionSystem = DecisionSystemFactory.CreateAndCalibrate(decisionParameters, simulatorSettings, reportLogger);
                 }
 
                 tradeMechanism = TradeMechanismFactory.Create(buySellType);
@@ -96,8 +89,7 @@ namespace TradingConsole.TradingSystem
                 }
             }
 
-            bool isCalcTimeValid(DateTime time) => (time.DayOfWeek != DayOfWeek.Saturday) || (time.DayOfWeek != DayOfWeek.Sunday) || !DateSystem.IsPublicHoliday(time, CountryCode.GB);
-            void reportCallback(DateTime time, string message)
+            void FirstOfTheMonthReport(DateTime time, string message)
             {
                 if (time.Day == 1)
                 {
@@ -110,16 +102,14 @@ namespace TradingConsole.TradingSystem
                 _ = reportLogger.Log(ReportSeverity.Critical, ReportType.Warning, ReportLocation.DatabaseAccess, message);
             }
 
-            var callbacks = new SimulationCallbacks(startEndReportCallback, reportCallback, startEndReportCallback);
-            SimpleTradeEnactor tradeEnactor = new SimpleTradeEnactor(decisionSystem, tradeMechanism, traderOptions);
+            var callbacks = new StockMarketEvolver.Reporting(startEndReportCallback, FirstOfTheMonthReport, startEndReportCallback, reportLogger);
+            DecideThenTradeEnactor tradeEnactor = new DecideThenTradeEnactor(decisionSystem, tradeMechanism, traderOptions);
 
-            return StockMarketHistorySimulator.Simulate(simulatorSettings,
-                tradeMechanismSettings,
-                isCalcTimeValid,
-                callbacks,
+            return StockMarketEvolver.Simulate(simulatorSettings,
+                randomWobblePriceCalculator,
                 portfolio.Copy(),
                 tradeEnactor,
-                reportLogger);
+                callbacks);
         }
 
         /// <summary>

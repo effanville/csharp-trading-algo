@@ -5,10 +5,10 @@ using Common.Structure.Reporting;
 using FinancialStructures.Database;
 using FinancialStructures.NamingStructures;
 
-using TradingSystem.Decisions.Models;
-using TradingSystem.Trading.Models;
+using TradingSystem.Simulator.Trading;
+using TradingSystem.Simulator.Trading.Decisions;
 
-namespace TradingSystem.Trading.System
+namespace TradingSystem.DecideThenTradeSystem
 {
     /// <summary>
     /// Mechanism to enact the buying and selling of stocks.
@@ -22,7 +22,7 @@ namespace TradingSystem.Trading.System
         bool Buy(
             DateTime time,
             Decision buy,
-            Func<DateTime, NameData, decimal> calculateBuyPrice,
+            Func<DateTime, TwoName, decimal> calculateBuyPrice,
             IPortfolio portfolio,
             TradeMechanismTraderOptions traderOptions,
             IReportLogger reportLogger);
@@ -33,7 +33,7 @@ namespace TradingSystem.Trading.System
         bool Sell(
             DateTime time,
             Decision sell,
-            Func<DateTime, NameData, decimal> calculateSellPrice,
+            Func<DateTime, TwoName, decimal> calculateSellPrice,
             IPortfolio portfolio,
             TradeMechanismTraderOptions traderOptions,
             IReportLogger reportLogger);
@@ -44,8 +44,8 @@ namespace TradingSystem.Trading.System
         TradeStatus EnactAllTrades(
             DateTime time,
             DecisionStatus decisions,
-            Func<DateTime, NameData, decimal> calculateBuyPrice,
-            Func<DateTime, NameData, decimal> calculateSellPrice,
+            Func<DateTime, TwoName, decimal> calculateBuyPrice,
+            Func<DateTime, TwoName, decimal> calculateSellPrice,
             IPortfolio portfolio,
             TradeMechanismTraderOptions traderOptions,
             IReportLogger reportLogger);

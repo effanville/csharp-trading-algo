@@ -5,10 +5,14 @@ using Common.Structure.Reporting;
 
 namespace TradingSystem
 {
+    /// <summary>
+    /// Enables timing of operations. Timing starts upon creation and
+    /// is recorded and logged upon disposal. Should be used in a using statement.
+    /// </summary>
     public sealed class Timer : IDisposable
     {
-        private Stopwatch fWatch;
-        private IReportLogger fLogger;
+        private readonly Stopwatch fWatch;
+        private readonly IReportLogger fLogger;
         private readonly string fOperation;
         public Timer(IReportLogger logger, string operation)
         {
@@ -18,10 +22,15 @@ namespace TradingSystem
             fWatch.Start();
         }
 
+        /// <summary>
+        /// Logs the time since creation of the timer. 
+        /// <para/>
+        /// <inheritdoc/>
+        /// </summary>
         public void Dispose()
         {
             fWatch.Stop();
-            _ = fLogger.Log(ReportSeverity.Critical, ReportType.Warning, ReportLocation.Execution, $"{fOperation} took {TimeSpanFriendlyString(fWatch.Elapsed)}");
+            _ = fLogger.Log(ReportSeverity.Critical, ReportType.Warning, ReportLocation.Execution, $"{fOperation}: Time took {TimeSpanFriendlyString(fWatch.Elapsed)}");
         }
 
         private static string TimeSpanFriendlyString(TimeSpan timeSpan)

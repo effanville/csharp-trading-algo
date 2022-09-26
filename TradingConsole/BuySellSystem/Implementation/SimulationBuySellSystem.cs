@@ -11,9 +11,9 @@ using FinancialStructures.DataStructures;
 using FinancialStructures.FinanceStructures;
 using FinancialStructures.NamingStructures;
 
-using TradingSystem.Decisions.Models;
-using TradingSystem.Trading.Models;
-using TradingSystem.Trading.System;
+using TradingSystem.DecideThenTradeSystem;
+using TradingSystem.Simulator.Trading;
+using TradingSystem.Simulator.Trading.Decisions;
 
 namespace TradingConsole.BuySellSystem.Implementation
 {
@@ -34,7 +34,7 @@ namespace TradingConsole.BuySellSystem.Implementation
         public bool Buy(
             DateTime time,
             Decision buy,
-            Func<DateTime, NameData, decimal> calculateBuyPrice,
+            Func<DateTime, TwoName, decimal> calculateBuyPrice,
             IPortfolio portfolio,
             TradeMechanismTraderOptions traderOptions,
             IReportLogger reportLogger)
@@ -99,7 +99,7 @@ namespace TradingConsole.BuySellSystem.Implementation
         public bool Sell(
             DateTime time,
             Decision sell,
-            Func<DateTime, NameData, decimal> calculateSellPrice,
+            Func<DateTime, TwoName, decimal> calculateSellPrice,
             IPortfolio portfolio,
             TradeMechanismTraderOptions traderOptions,
             IReportLogger reportLogger)
@@ -150,33 +150,13 @@ namespace TradingConsole.BuySellSystem.Implementation
         public TradeStatus EnactAllTrades(
             DateTime time,
             DecisionStatus decisions,
-            Func<DateTime, NameData, decimal> calculateBuyPrice,
-            Func<DateTime, NameData, decimal> calculateSellPrice,
+            Func<DateTime, TwoName, decimal> calculateBuyPrice,
+            Func<DateTime, TwoName, decimal> calculateSellPrice,
             IPortfolio portfolio,
             TradeMechanismTraderOptions traderOptions,
             IReportLogger reportLogger)
         {
-            List<Decision> sellDecisions = decisions.GetSellDecisions();
-            int numberSells = 0;
-            foreach (Decision sell in sellDecisions)
-            {
-                if (Sell(time, sell, calculateSellPrice, portfolio, traderOptions, reportLogger))
-                {
-                    numberSells++;
-                }
-            }
-
-            int numberBuys = 0;
-            List<Decision> buyDecisions = decisions.GetBuyDecisions();
-            foreach (Decision buy in buyDecisions)
-            {
-                if (Buy(time, buy, calculateBuyPrice, portfolio, traderOptions, reportLogger))
-                {
-                    numberBuys++;
-                }
-            }
-
-            return new TradeStatus(numberBuys, numberSells);
+            return this.SellThenBuy(time, decisions, calculateBuyPrice, calculateSellPrice, portfolio, traderOptions, reportLogger);
         }
     }
 }

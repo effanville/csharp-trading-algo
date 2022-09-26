@@ -13,10 +13,9 @@ using TradingConsole.BuySellSystem;
 using TradingConsole.DecisionSystem;
 
 using TradingSystem;
-using TradingSystem.Decisions.Models;
-using TradingSystem.Decisions.System;
+using TradingSystem.DecideThenTradeSystem;
 using TradingSystem.Simulator;
-using TradingSystem.Trading.System;
+using TradingSystem.Simulator.Trading.Decisions;
 
 namespace TradingConsole.TradingSystem
 {
@@ -25,7 +24,7 @@ namespace TradingConsole.TradingSystem
         private readonly IDecisionSystem DecisionSystem;
         private readonly ITradeMechanism BuySellSystem;
         private readonly TradeMechanismTraderOptions fTraderOptions;
-        private readonly SimulatorSettings fSimulatorSettings;
+        private readonly StockMarketEvolver.Settings fSimulatorSettings;
         private readonly IPortfolio fPortfolio;
 
         private readonly IReportLogger ReportLogger;
@@ -43,7 +42,7 @@ namespace TradingConsole.TradingSystem
         public RealTrader(
             string stockFilePath,
             PortfolioStartSettings startSettings,
-            DecisionSystemSetupSettings decisionParameters,
+            DecisionSystemFactory.Settings decisionParameters,
             TradeMechanismType buySellType,
             IFileSystem fileSystem,
             IReportLogger reportLogger)
@@ -94,12 +93,12 @@ namespace TradingConsole.TradingSystem
             // Decide which stocks to buy, sell or do nothing with.
             DecisionStatus status = DecisionSystem.Decide(day, exchange, null);
 
-            decimal CalculatePurchasePrice(DateTime time, NameData stock)
+            decimal CalculatePurchasePrice(DateTime time, TwoName stock)
             {
                 return exchange.GetValue(stock, time);
             }
 
-            decimal CalculateSellPrice(DateTime time, NameData stock)
+            decimal CalculateSellPrice(DateTime time, TwoName stock)
             {
                 return exchange.GetValue(stock, time);
             }

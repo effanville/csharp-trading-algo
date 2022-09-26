@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace TradingSystem.Decisions.Models
+namespace TradingSystem.Simulator.Trading.Decisions
 {
     /// <summary>
     /// Stores the record of all decisions made.

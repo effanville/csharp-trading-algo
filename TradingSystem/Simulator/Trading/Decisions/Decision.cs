@@ -1,6 +1,6 @@
 ﻿using FinancialStructures.NamingStructures;
 
-namespace TradingSystem.Decisions.Models
+namespace TradingSystem.Simulator.Trading.Decisions
 {
     /// <summary>
     ///

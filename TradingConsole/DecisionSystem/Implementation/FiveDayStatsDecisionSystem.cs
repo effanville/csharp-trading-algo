@@ -7,32 +7,32 @@ using Common.Structure.Reporting;
 
 using FinancialStructures.StockStructures;
 
-using TradingSystem.Decisions.Models;
-using TradingSystem.Decisions.System;
+using TradingSystem.DecideThenTradeSystem;
 using TradingSystem.Simulator;
+using TradingSystem.Simulator.Trading.Decisions;
 
 namespace TradingConsole.DecisionSystem.Implementation
 {
     /// <summary>
     /// Decision system based upon the 5 previous stock days prices.
     /// </summary>
-    public class FiveDayStatsDecisionSystem : IDecisionSystem
+    internal sealed class FiveDayStatsDecisionSystem : IDecisionSystem
     {
-        private readonly DecisionSystemSetupSettings fSettings;
+        private readonly DecisionSystemFactory.Settings fSettings;
         private IEstimator Estimator;
         private readonly int fDayAfterPredictor;
 
         /// <summary>
         /// Construct and instance.
         /// </summary>
-        public FiveDayStatsDecisionSystem(DecisionSystemSetupSettings settings)
+        public FiveDayStatsDecisionSystem(DecisionSystemFactory.Settings settings)
         {
             fSettings = settings;
             fDayAfterPredictor = settings.DayAfterPredictor;
         }
 
         /// <inheritdoc />
-        public void Calibrate(SimulatorSettings settings, IReportLogger logger)
+        public void Calibrate(StockMarketEvolver.Settings settings, IReportLogger logger)
         {
             DateTime burnInLength = settings.BurnInEnd;
             int numberEntries = ((burnInLength - settings.StartTime).Days - 5) * 5 / 7;

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace TradingSystem.Trading.Models
+namespace TradingSystem.Simulator.Trading
 {
     public sealed class TradeHistory
     {

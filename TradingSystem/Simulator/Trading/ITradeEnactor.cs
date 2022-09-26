@@ -3,13 +3,11 @@
 using Common.Structure.Reporting;
 
 using FinancialStructures.Database;
-using FinancialStructures.NamingStructures;
 using FinancialStructures.StockStructures;
 
-using TradingSystem.Decisions.Models;
-using TradingSystem.Trading.Models;
+using TradingSystem.Simulator.PriceCalculation;
 
-namespace TradingSystem.Simulator
+namespace TradingSystem.Simulator.Trading
 {
     /// <summary>
     /// Interface for holding the routine to carry out any trades.
@@ -17,21 +15,19 @@ namespace TradingSystem.Simulator
     public interface ITradeEnactor
     {
         /// <summary>
-        /// Carry out trades.
+        /// The mechanism by which the simulator will carry out trades.
         /// </summary>
         /// <param name="time">The time to enact trades at.</param>
         /// <param name="stockExchange">The stock exchange to use for available stocks.</param>
         /// <param name="portfolio">The portfolio detailing current holdings. This is updated so after the call returns the new portfolio.</param>
-        /// <param name="calcBuyPrice">A function that calculates how a price for a buy trade is carried out.</param>
-        /// <param name="calcSellPrice">A function that calculates how a price for a sell trade is carried out.</param>
+        /// <param name="priceCalculator">A mechanism to determine the price to trade at.</param>
         /// <param name="reportLogger">A logger to report back.</param>
         /// <returns>A record of the trades and decisions in this enaction.</returns>
-        (TradeStatus Trades, DecisionStatus Decisions) EnactTrades(
+        TradeEnactorResult EnactTrades(
             DateTime time,
             IStockExchange stockExchange,
             IPortfolio portfolio,
-            Func<DateTime, TwoName, decimal> calcBuyPrice,
-            Func<DateTime, TwoName, decimal> calcSellPrice,
+            IPriceCalculator priceCalculator,
             IReportLogger reportLogger);
     }
 }

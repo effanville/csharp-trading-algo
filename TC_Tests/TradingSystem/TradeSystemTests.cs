@@ -14,7 +14,7 @@ using TradingConsole.BuySellSystem;
 using TradingConsole.DecisionSystem;
 using TradingConsole.TradingSystem;
 
-using TradingSystem.Trading.System;
+using TradingSystem.DecideThenTradeSystem;
 
 namespace TradingConsole.Tests.TradingSystem
 {
@@ -229,7 +229,7 @@ namespace TradingConsole.Tests.TradingSystem
             int expectedSellTrades)
         {
             var portfolioStartSettings = new PortfolioStartSettings(null, startTime, 20000);
-            var decisionParameters = new DecisionSystemSetupSettings(decisions, stockStatistics, buyThreshold, sellThreshold, dayAfterPredictor);
+            var decisionParameters = new DecisionSystemFactory.Settings(decisions, stockStatistics, buyThreshold, sellThreshold, dayAfterPredictor);
             var traderOptions = new TradeMechanismTraderOptions(0.25m);
             var fileSystem = new MockFileSystem();
             var configureFile = File.ReadAllText($"{TestConstants.ExampleFilesLocation}\\{databaseName}");

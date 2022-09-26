@@ -1,12 +1,18 @@
-﻿using TradingConsole.DecisionSystem.Implementation;
+﻿using Common.Structure.Reporting;
 
-using TradingSystem.Decisions.System;
+using TradingConsole.DecisionSystem.Implementation;
+
+using TradingSystem.DecideThenTradeSystem;
+using TradingSystem.Simulator;
 
 namespace TradingConsole.DecisionSystem
 {
-    internal static class DecisionSystemFactory
+    /// <summary>
+    /// Factory for creating a decision system.
+    /// </summary>
+    public static partial class DecisionSystemFactory
     {
-        internal static IDecisionSystem Create(DecisionSystemSetupSettings settings)
+        internal static IDecisionSystem Create(Settings settings)
         {
             switch (settings.DecisionSystemType)
             {
@@ -27,6 +33,18 @@ namespace TradingConsole.DecisionSystem
                 default:
                     return new FiveDayStatsDecisionSystem(settings);
             }
+        }
+
+        internal static IDecisionSystem CreateAndCalibrate(Settings settings, StockMarketEvolver.Settings simulatorSettings, IReportLogger logger)
+        {
+            var decisionSystem = Create(settings);
+            decisionSystem.Calibrate(simulatorSettings, logger);
+            if (settings.IsBurnInRequired())
+            {
+                simulatorSettings.DoesntRequireBurnIn();
+            }
+
+            return decisionSystem;
         }
     }
 }

@@ -14,7 +14,7 @@ using TradingConsole.DecisionSystem;
 using TradingConsole.TradingSystem;
 
 using TradingSystem;
-using TradingSystem.Trading.System;
+using TradingSystem.DecideThenTradeSystem;
 
 namespace TradingConsole.Commands.Execution
 {
@@ -103,7 +103,7 @@ namespace TradingConsole.Commands.Execution
             using (new Timer(fLogger, "TotalTime"))
             {
                 var portfolioStartSettings = new PortfolioStartSettings(fPortfolioFilePath.Value, fStartDate.Value, fStartingCash.Value);
-                var decisionParameters = new DecisionSystemSetupSettings(fDecisionType.Value, fDecisionSystemStats.Value, 1.05, 1.0, 1);
+                var decisionParameters = new DecisionSystemFactory.Settings(fDecisionType.Value, fDecisionSystemStats.Value, 1.05, 1.0, 1);
                 var traderOptions = new TradeMechanismTraderOptions(fFractionInvest.Value);
 
                 var output = TradeSystem.SetupAndSimulate(
