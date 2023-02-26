@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
+using Common.Structure.MathLibrary;
 using Common.Structure.MathLibrary.ParameterEstimation;
 using Common.Structure.Reporting;
 
@@ -13,13 +14,30 @@ using TradingSystem.Simulator.Trading.Decisions;
 
 namespace TradingConsole.DecisionSystem.Implementation
 {
+    internal static class TypeHelpers
+    {
+        internal static Result<Estimator.Type> ConvertFrom(DecisionSystem system)
+        {            
+            switch (system)
+            {
+                case DecisionSystem.FiveDayStatsLeastSquares:
+                    return Estimator.Type.LeastSquares;
+                case DecisionSystem.FiveDayStatsLasso:
+                    return Estimator.Type.LassoRegression;
+                case DecisionSystem.FiveDayStatsRidge:
+                    return Estimator.Type.RidgeRegression;
+                default:
+                    return Result.ErrorResult<Estimator.Type>("Argument of of supported type.");
+            }
+        }
+    }
     /// <summary>
     /// Decision system based upon the 5 previous stock days prices.
     /// </summary>
     internal sealed class FiveDayStatsDecisionSystem : IDecisionSystem
     {
         private readonly DecisionSystemFactory.Settings fSettings;
-        private IEstimator Estimator;
+        private Estimator.Result EstimatorResult;
         private readonly int fDayAfterPredictor;
 
         /// <summary>
@@ -61,24 +79,18 @@ namespace TradingConsole.DecisionSystem.Implementation
                     Y[i + stockIndex] = values.Last() / values[0];
                 }
             }
-
-            switch (fSettings.DecisionSystemType)
+            
+            var estimatorType = TypeHelpers.ConvertFrom(fSettings.DecisionSystemType);
+            if(!estimatorType.IsError())
             {
-                case DecisionSystem.FiveDayStatsLeastSquares:
-                    Estimator = new LSEstimator(X, Y);
-                    break;
-                case DecisionSystem.FiveDayStatsLasso:
-                    Estimator = new LassoRegression(X, Y);
-                    break;
-                case DecisionSystem.FiveDayStatsRidge:
-                    Estimator = new RidgeRegression(X, Y);
-                    break;
-                default:
-                    _ = logger.Log(ReportSeverity.Critical, ReportType.Error, ReportLocation.Unknown, $"Created FiveDayStats system without five day stats type.");
-                    break;
+                EstimatorResult = Estimator.Fit(estimatorType.Value, X, Y);
+            }
+            else
+            {    
+                _ = logger.Log(ReportSeverity.Critical, ReportType.Error, ReportLocation.Unknown, $"Created FiveDayStats system without five day stats type.");
             }
 
-            _ = logger.Log(ReportSeverity.Critical, ReportType.Warning, ReportLocation.Unknown, $"Estimator Weights are {string.Join(",", Estimator.Estimator)}");
+            _ = logger.Log(ReportSeverity.Critical, ReportType.Warning, ReportLocation.Unknown, $"Estimator Weights are {string.Join(",", EstimatorResult.Estimator)}");
         }
 
         /// <inheritdoc />
@@ -95,7 +107,7 @@ namespace TradingConsole.DecisionSystem.Implementation
                     values[valueIndex] /= normaliseFactor;
                 }
 
-                double value = Estimator.Evaluate(values);
+                double value = EstimatorResult.Evaluate(values);
 
                 if (value > fSettings.BuyThreshold)
                 {

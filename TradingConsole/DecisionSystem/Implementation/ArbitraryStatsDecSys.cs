@@ -24,7 +24,7 @@ namespace TradingConsole.DecisionSystem.Implementation
         private readonly DecisionSystem fDecisionType;
         private readonly IReadOnlyList<IStockStatistic> fStockStatistics;
         private readonly int fDayAfterPredictor;
-        private IEstimator Estimator;
+        private Estimator.Result EstimatorResult;
         private double fSellThreshold;
         private double fBuyThreshold;
 
@@ -70,22 +70,18 @@ namespace TradingConsole.DecisionSystem.Implementation
                     Y[entryIndex * settings.Exchange.Stocks.Count + stockIndex] = Convert.ToDouble(settings.Exchange.Stocks[stockIndex].Values(burnInLength.AddDays(delayTime + entryIndex), 0, fDayAfterPredictor, StockDataStream.Open).Last() / 100m);
                 }
             }
-            switch (fDecisionType)
+                        
+            var estimatorType = TypeHelpers.ConvertFrom(fDecisionType);
+            if(!estimatorType.IsError())
             {
-                case DecisionSystem.FiveDayStatsLeastSquares:
-                    Estimator = new LSEstimator(X, Y);
-                    break;
-                case DecisionSystem.FiveDayStatsLasso:
-                    Estimator = new LassoRegression(X, Y);
-                    break;
-                case DecisionSystem.FiveDayStatsRidge:
-                    Estimator = new RidgeRegression(X, Y);
-                    break;
-                default:
-                    _ = logger.Log(ReportSeverity.Critical, ReportType.Error, ReportLocation.Unknown, $"Created FiveDayStats system without five day stats type.");
-                    break;
+                EstimatorResult = Estimator.Fit(estimatorType.Value, X, Y);
             }
-            _ = logger.Log(ReportSeverity.Critical, ReportType.Warning, ReportLocation.Unknown, $"Estimator Weights are {string.Join(",", Estimator.Estimator)}");
+            else
+            {    
+                _ = logger.Log(ReportSeverity.Critical, ReportType.Error, ReportLocation.Unknown, $"Created ArbitraryStats system without correct type.");
+            }
+            
+            _ = logger.Log(ReportSeverity.Critical, ReportType.Warning, ReportLocation.Unknown, $"Estimator Weights are {string.Join(",", EstimatorResult.Estimator)}");
         }
 
         /// <inheritdoc/>
@@ -96,7 +92,7 @@ namespace TradingConsole.DecisionSystem.Implementation
             {
                 TradeDecision decision;
                 double[] values = stock.Values(day, 5, 0, StockDataStream.Open).Select(value => Convert.ToDouble(value)).ToArray();
-                double value = Estimator.Evaluate(values);
+                double value = EstimatorResult.Evaluate(values);
 
                 if (value > fBuyThreshold)
                 {
