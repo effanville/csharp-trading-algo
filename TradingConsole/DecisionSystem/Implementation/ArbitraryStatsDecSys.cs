@@ -21,12 +21,9 @@ namespace TradingConsole.DecisionSystem.Implementation
     /// </summary>
     internal sealed class ArbitraryStatsDecisionSystem : IDecisionSystem
     {
-        private readonly DecisionSystem fDecisionType;
+        private readonly DecisionSystemFactory.Settings fSettings;
         private readonly IReadOnlyList<IStockStatistic> fStockStatistics;
-        private readonly int fDayAfterPredictor;
         private Estimator.Result EstimatorResult;
-        private double fSellThreshold;
-        private double fBuyThreshold;
 
         /// <summary>
         /// Construct an instance.
@@ -38,18 +35,13 @@ namespace TradingConsole.DecisionSystem.Implementation
             {
                 stockStatistics.Add(StockStatisticFactory.Create(statistic));
             }
-
-            fDayAfterPredictor = decisionParameters.DayAfterPredictor;
+            fSettings = decisionParameters;
             fStockStatistics = stockStatistics;
-            fDecisionType = decisionParameters.DecisionSystemType;
-            fSellThreshold = decisionParameters.SellThreshold;
-            fBuyThreshold = decisionParameters.BuyThreshold;
         }
 
         /// <inheritdoc/>
         public void Calibrate(StockMarketEvolver.Settings settings, IReportLogger logger)
         {
-            TimeSpan simulationLength = settings.EndTime - settings.StartTime;
             DateTime burnInLength = settings.BurnInEnd;
 
             int delayTime = fStockStatistics.Max(stock => stock.BurnInTime) + 2;
@@ -67,11 +59,11 @@ namespace TradingConsole.DecisionSystem.Implementation
                         X[entryIndex * settings.Exchange.Stocks.Count + stockIndex, statisticIndex] = fStockStatistics[statisticIndex].Calculate(settings.StartTime.AddDays(delayTime + entryIndex), settings.Exchange.Stocks[stockIndex]);
                     }
 
-                    Y[entryIndex * settings.Exchange.Stocks.Count + stockIndex] = Convert.ToDouble(settings.Exchange.Stocks[stockIndex].Values(burnInLength.AddDays(delayTime + entryIndex), 0, fDayAfterPredictor, StockDataStream.Open).Last() / 100m);
+                    Y[entryIndex * settings.Exchange.Stocks.Count + stockIndex] = Convert.ToDouble(settings.Exchange.Stocks[stockIndex].Values(burnInLength.AddDays(delayTime + entryIndex), 0, fSettings.DayAfterPredictor, StockDataStream.Open).Last() / 100m);
                 }
             }
                         
-            var estimatorType = TypeHelpers.ConvertFrom(fDecisionType);
+            var estimatorType = TypeHelpers.ConvertFrom(fSettings.DecisionSystemType);
             if(!estimatorType.IsError())
             {
                 EstimatorResult = Estimator.Fit(estimatorType.Value, X, Y);
@@ -94,11 +86,11 @@ namespace TradingConsole.DecisionSystem.Implementation
                 double[] values = stock.Values(day, 5, 0, StockDataStream.Open).Select(value => Convert.ToDouble(value)).ToArray();
                 double value = EstimatorResult.Evaluate(values);
 
-                if (value > fBuyThreshold)
+                if (value > fSettings.BuyThreshold)
                 {
                     decision = TradeDecision.Buy;
                 }
-                else if (value < fSellThreshold)
+                else if (value < fSettings.SellThreshold)
                 {
                     decision = TradeDecision.Sell;
                 }
