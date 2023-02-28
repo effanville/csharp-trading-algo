@@ -1,0 +1,3 @@
+[submodule "FinancialStructures"]
+	path = FinancialStructures
+	url = https://github.com/effanville/FinancialStructures.git
