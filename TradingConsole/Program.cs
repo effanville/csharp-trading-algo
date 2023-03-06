@@ -13,7 +13,7 @@ namespace TradingConsole
 {
     internal class Program
     {
-        internal static void Main(string[] args)
+        internal static int Main(string[] args)
         {
             var fileSystem = new FileSystem();
 
@@ -44,10 +44,10 @@ namespace TradingConsole
                 Console.ForegroundColor = color;
             }
             IReportLogger logger = new LogReporter(reportAction);
-            InternalMain(args, fileSystem, console, logger);
+            return InternalMain(args, fileSystem, console, logger);
         }
 
-        internal static void InternalMain(string[] args, IFileSystem fileSystem, IConsole console, IReportLogger logger)
+        internal static int InternalMain(string[] args, IFileSystem fileSystem, IConsole console, IReportLogger logger)
         {
             var globals = new ConsoleGlobals(fileSystem, console, logger);
             // Define the acceptable commands for this program.
@@ -59,8 +59,8 @@ namespace TradingConsole
             };
 
             // Generate the context, validate the arguments and execute.
-            ConsoleContext.SetAndExecute(args, globals, validCommands);
-            return;
+            int exitCode = ConsoleContext.SetAndExecute(args, globals, validCommands);
+            return exitCode;
         }
     }
 }
