@@ -53,8 +53,7 @@ namespace TradingSystem.Simulator
                 while (time < simulatorSettings.EndTime)
                 {
                     // update with opening times of the stocks in this time period.
-                    StockExchangeFactory.UpdateFromBase(simulatorSettings.Exchange, exchange, time, openOnly: true);
-
+                    StockExchangeFactory.UpdateFromBase(simulatorSettings.Exchange, exchange, time);
 
                     // ensure that time of evaluation is valid.
                     if (!IsCalcTimeValid(time, simulatorSettings.CountryDateCode))
@@ -75,7 +74,7 @@ namespace TradingSystem.Simulator
                     decisionRecord.AddForTheRecord(time, result.Decisions);
                     tradeRecord.AddForTheRecord(time, result.Trades);
                     // Update the Stock exchange for the recent time period.
-                    StockExchangeFactory.UpdateFromBase(simulatorSettings.Exchange, exchange, time, openOnly: false);
+                    StockExchangeFactory.UpdateFromBase(simulatorSettings.Exchange, exchange, time);
 
                     // update the portfolio values for the new data.
                     UpdatePortfolioData(time, exchange, startPortfolio);

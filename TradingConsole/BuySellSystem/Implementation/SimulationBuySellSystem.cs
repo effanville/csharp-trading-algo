@@ -47,18 +47,15 @@ namespace TradingConsole.BuySellSystem.Implementation
 
             // If not enough money to buy then exit.
             decimal priceToBuy = calculateBuyPrice(time, buy.StockName);
-            reportLogger.LogUsefulError(ReportLocation.Unknown, "Buy price:" + priceToBuy.ToString());
             if (priceToBuy.Equals(decimal.MinValue))
             {
                 return false;
             }
 
             decimal cashAvailable = portfolio.TotalValue(Totals.BankAccount, time);
-            reportLogger.LogUsefulError(ReportLocation.Unknown, "AvailableCash:"+cashAvailable.ToString());
             
             if (priceToBuy == 0.0m || cashAvailable <= priceToBuy)
             {
-                reportLogger.LogUsefulError(ReportLocation.Unknown, "Dont buy. Not enough AvailableCash:");
                 return false;
             }
 
@@ -71,7 +68,6 @@ namespace TradingConsole.BuySellSystem.Implementation
 
             if (numShares <= 0)
             {
-                reportLogger.LogUsefulError(ReportLocation.Unknown, "Cant buy exact no shares.");
                 return false;
             }
 
@@ -79,7 +75,6 @@ namespace TradingConsole.BuySellSystem.Implementation
             var tradeDetails = new SecurityTrade(TradeType.Buy, buy.StockName, time, numShares, priceToBuy, traderOptions.TradeCost);
             if (cashAvailable <= tradeDetails.TotalCost)
             {
-                reportLogger.LogUsefulError(ReportLocation.Unknown, "Total cost stops buyign");
                 return false;
             }
 

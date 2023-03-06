@@ -2,7 +2,7 @@ using NUnit.Framework;
 
 namespace TradingConsole.Tests.ExchangeLoadingTests
 {
-    public class ExchangeLoadingTests
+    internal class ExchangeLoadingTests
     {
         [SetUp]
         public void Setup()

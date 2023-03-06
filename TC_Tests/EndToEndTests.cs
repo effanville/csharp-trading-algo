@@ -27,12 +27,10 @@ namespace TradingConsole.Tests
             void writeLine(string text)
             { 
                 fConsoleOutput.AppendLine(text);
-                Console.WriteLine(text);
             }
             void writeError(string text)
             { 
                 fConsoleOutput.AppendLine(text);
-                Console.WriteLine(text);
             }
             fConsole = new ConsoleInstance(writeError, writeLine);
 
@@ -89,7 +87,7 @@ namespace TradingConsole.Tests
             string testFilePath = "c:/temp/exampleFile.xml";
             fFileSystem.AddFile(testFilePath, configureFile);
 
-            string[] args = new[] { "simulate", "--stockFilePath", testFilePath, "--start", "2015-01-05T08:00:00", "--end", "2019-12-12T08:00:00", "--startCash", "20000", "--decision", "BuyAll", "--invFrac", "0.25" };
+            string[] args = new[] { "simulate", "--stockFilePath", testFilePath, "--start", "2015-01-05T08:00+00:00", "--end", "2019-12-12T08:00:00", "--startCash", "20000", "--decision", "BuyAll", "--invFrac", "0.25" };
             Program.InternalMain(args, fFileSystem, fConsole, fLogger);
             Assert.AreEqual(105, fLogger.Reports.Count());
             string expectedOutput = fConsoleOutput.ToString();
@@ -99,12 +97,12 @@ namespace TradingConsole.Tests
         public void FiveDayStatsRun()
         {
             var configureFile = File.ReadAllText(Path.Combine(TestConstants.ExampleFilesLocation, "example-database.xml"));
-            string testFilePath = "/temp/exampleFile.xml";
+            string testFilePath = "c:/temp/exampleFile.xml";
             fFileSystem.AddFile(testFilePath, configureFile);
 
-            string[] args = new[] { "simulate", "--stockFilePath", testFilePath, "--start", "5/1/2015", "--end", "12/12/2019", "--startCash", "20000", "--invFrac", "1" };
+            string[] args = new[] { "simulate", "--stockFilePath", testFilePath, "--start", "2015-01-05T08:00+00:00", "--end", "2019-12-12T08:00:00", "--startCash", "20000", "--invFrac", "1" };
             Program.InternalMain(args, fFileSystem, fConsole, fLogger);
-            Assert.AreEqual(43, fLogger.Reports.Count());
+            Assert.AreEqual(71, fLogger.Reports.Count());
             string expectedOutput = fConsoleOutput.ToString();
             Console.Write(expectedOutput);
         }

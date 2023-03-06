@@ -4,7 +4,7 @@ using NUnit.Framework;
 
 namespace TradingConsole.Tests.DecisionSystemTests
 {
-    public class BasicDecisionSystemTests
+    internal class BasicDecisionSystemTests
     {
         [Test]
         public void DecisionsCorrect()

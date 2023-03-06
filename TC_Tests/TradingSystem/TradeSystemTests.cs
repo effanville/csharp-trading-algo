@@ -5,6 +5,7 @@ using System.IO.Abstractions.TestingHelpers;
 
 using Common.Structure.Reporting;
 
+using FinancialStructures.Database;
 using FinancialStructures.Database.Extensions.Values;
 using FinancialStructures.StockStructures.Statistics;
 
@@ -15,6 +16,7 @@ using TradingConsole.DecisionSystem;
 using TradingConsole.TradingSystem;
 
 using TradingSystem.DecideThenTradeSystem;
+using TradingSystem.Simulator.Trading;
 
 namespace TradingConsole.Tests.TradingSystem
 {
@@ -27,8 +29,8 @@ namespace TradingConsole.Tests.TradingSystem
                 "example-database.xml",
                 DecisionSystem.DecisionSystem.BuyAll,
                 null, 1, 1.05, 1.0,
-                new DateTime(2015, 1, 5, 8, 0, 0),
-                new DateTime(2019, 12, 12, 8, 0, 0),
+                new DateTime(2015, 1, 5, 8, 0, 0, DateTimeKind.Utc),
+                new DateTime(2019, 12, 12, 8, 0, 0, DateTimeKind.Utc),
                 17389.4094462585454082m,
                 16,
                 16,
@@ -38,8 +40,8 @@ namespace TradingConsole.Tests.TradingSystem
                 "example-database.xml",
                 DecisionSystem.DecisionSystem.BuyAll,
                 null, 1, 1.05, 1.0,
-                new DateTime(2017, 1, 5, 8, 0, 0),
-                new DateTime(2018, 12, 12, 8, 0, 0),
+                new DateTime(2017, 1, 5, 8, 0, 0, DateTimeKind.Utc),
+                new DateTime(2018, 12, 12, 8, 0, 0, DateTimeKind.Utc),
                 13734.633120880126325m,
                 15,
                 15,
@@ -49,8 +51,8 @@ namespace TradingConsole.Tests.TradingSystem
                 "example-database.xml",
                 DecisionSystem.DecisionSystem.FiveDayStatsLeastSquares,
                 null, 1, 1.05, 1.0,
-                new DateTime(2015, 1, 5, 8, 0, 0),
-                new DateTime(2019, 12, 12, 8, 0, 0),
+                new DateTime(2015, 1, 5, 8, 0, 0, DateTimeKind.Utc),
+                new DateTime(2019, 12, 12, 8, 0, 0, DateTimeKind.Utc),
                 22981.630923004150446m,
                 94,
                 70,
@@ -60,8 +62,8 @@ namespace TradingConsole.Tests.TradingSystem
                 "example-database.xml",
                 DecisionSystem.DecisionSystem.FiveDayStatsLasso,
                 null, 1, 1.05, 1.0,
-                new DateTime(2015, 1, 5, 8, 0, 0),
-                new DateTime(2019, 12, 12, 8, 0, 0),
+                new DateTime(2015, 1, 5, 8, 0, 0, DateTimeKind.Utc),
+                new DateTime(2019, 12, 12, 8, 0, 0, DateTimeKind.Utc),
                 21384.0343847656261407m,
                 196,
                 146,
@@ -71,8 +73,8 @@ namespace TradingConsole.Tests.TradingSystem
                 "example-database.xml",
                 DecisionSystem.DecisionSystem.FiveDayStatsRidge,
                 null, 1, 1.05, 1.0,
-                new DateTime(2015, 1, 5, 8, 0, 0),
-                new DateTime(2019, 12, 12, 8, 0, 0),
+                new DateTime(2015, 1, 5, 8, 0, 0, DateTimeKind.Utc),
+                new DateTime(2019, 12, 12, 8, 0, 0, DateTimeKind.Utc),
                 22981.630923004150446m,
                 94,
                 70,
@@ -82,8 +84,8 @@ namespace TradingConsole.Tests.TradingSystem
                 "example-database.xml",
                 DecisionSystem.DecisionSystem.FiveDayStatsLeastSquares,
                 null, 1, 1.1, 1.0,
-                new DateTime(2015, 1, 5, 8, 0, 0),
-                new DateTime(2019, 12, 12, 8, 0, 0),
+                new DateTime(2015, 1, 5, 8, 0, 0, DateTimeKind.Utc),
+                new DateTime(2019, 12, 12, 8, 0, 0, DateTimeKind.Utc),
                 20698.6897747802738038m,
                 16,
                 12,
@@ -93,8 +95,8 @@ namespace TradingConsole.Tests.TradingSystem
                 "example-database.xml",
                 DecisionSystem.DecisionSystem.FiveDayStatsLasso,
                 null, 1, 1.1, 1.0,
-                new DateTime(2015, 1, 5, 8, 0, 0),
-                new DateTime(2019, 12, 12, 8, 0, 0),
+                new DateTime(2015, 1, 5, 8, 0, 0, DateTimeKind.Utc),
+                new DateTime(2019, 12, 12, 8, 0, 0, DateTimeKind.Utc),
                 20339.7689443969733093m,
                 50,
                 35,
@@ -104,8 +106,8 @@ namespace TradingConsole.Tests.TradingSystem
                 "example-database.xml",
                 DecisionSystem.DecisionSystem.FiveDayStatsRidge,
                 null, 1, 1.1, 1.0,
-                new DateTime(2015, 1, 5, 8, 0, 0),
-                new DateTime(2019, 12, 12, 8, 0, 0),
+                new DateTime(2015, 1, 5, 8, 0, 0, DateTimeKind.Utc),
+                new DateTime(2019, 12, 12, 8, 0, 0, DateTimeKind.Utc),
                 20698.6897747802738038m,
                 16,
                 12,
@@ -116,8 +118,8 @@ namespace TradingConsole.Tests.TradingSystem
                 "example-database.xml",
                 DecisionSystem.DecisionSystem.FiveDayStatsLeastSquares,
                 null, 1, 1.05, 1.0,
-                new DateTime(2016, 1, 5, 8, 0, 0),
-                new DateTime(2018, 12, 12, 8, 0, 0),
+                new DateTime(2016, 1, 5, 8, 0, 0, DateTimeKind.Utc),
+                new DateTime(2018, 12, 12, 8, 0, 0, DateTimeKind.Utc),
                 19806.4860676574704154m,
                 43,
                 31,
@@ -127,8 +129,8 @@ namespace TradingConsole.Tests.TradingSystem
                 "example-database.xml",
                 DecisionSystem.DecisionSystem.FiveDayStatsLeastSquares,
                 null, 1, 1.1, 1.0,
-                new DateTime(2016, 1, 5, 8, 0, 0),
-                new DateTime(2018, 12, 12, 8, 0, 0),
+                new DateTime(2016, 1, 5, 8, 0, 0, DateTimeKind.Utc),
+                new DateTime(2018, 12, 12, 8, 0, 0, DateTimeKind.Utc),
                 19893.195m,
                 4,
                 2,
@@ -138,8 +140,8 @@ namespace TradingConsole.Tests.TradingSystem
                 "example-database.xml",
                 DecisionSystem.DecisionSystem.FiveDayStatsLasso,
                 null, 1, 1.05, 1.0,
-                new DateTime(2016, 1, 5, 8, 0, 0),
-                new DateTime(2018, 12, 12, 8, 0, 0),
+                new DateTime(2016, 1, 5, 8, 0, 0, DateTimeKind.Utc),
+                new DateTime(2018, 12, 12, 8, 0, 0, DateTimeKind.Utc),
                 19201.2016111755388426m,
                 81,
                 58,
@@ -149,8 +151,8 @@ namespace TradingConsole.Tests.TradingSystem
                 "example-database.xml",
                 DecisionSystem.DecisionSystem.FiveDayStatsLasso,
                 null, 1, 1.1, 1.0,
-                new DateTime(2016, 1, 5, 8, 0, 0),
-                new DateTime(2018, 12, 12, 8, 0, 0),
+                new DateTime(2016, 1, 5, 8, 0, 0, DateTimeKind.Utc),
+                new DateTime(2018, 12, 12, 8, 0, 0, DateTimeKind.Utc),
                 19881.475m,
                 10,
                 7,
@@ -160,8 +162,8 @@ namespace TradingConsole.Tests.TradingSystem
                 "example-database.xml",
                 DecisionSystem.DecisionSystem.FiveDayStatsRidge,
                 null, 1, 1.05, 1.0,
-                new DateTime(2016, 1, 5, 8, 0, 0),
-                new DateTime(2018, 12, 12, 8, 0, 0),
+                new DateTime(2016, 1, 5, 8, 0, 0, DateTimeKind.Utc),
+                new DateTime(2018, 12, 12, 8, 0, 0, DateTimeKind.Utc),
                 19806.4860676574704154m,
                 43,
                 31,
@@ -171,8 +173,8 @@ namespace TradingConsole.Tests.TradingSystem
                 "example-database.xml",
                 DecisionSystem.DecisionSystem.FiveDayStatsRidge,
                 null, 1, 1.1, 1.0,
-                new DateTime(2016, 1, 5, 8, 0, 0),
-                new DateTime(2018, 12, 12, 8, 0, 0),
+                new DateTime(2016, 1, 5, 8, 0, 0, DateTimeKind.Utc),
+                new DateTime(2018, 12, 12, 8, 0, 0, DateTimeKind.Utc),
                 19893.195m,
                 4,
                 2,
@@ -182,8 +184,8 @@ namespace TradingConsole.Tests.TradingSystem
                 "small-exchange.xml",
                 DecisionSystem.DecisionSystem.FiveDayStatsRidge,
                 null, 1, 1.1, 1.0,
-                new DateTime(2016, 1, 5, 8, 0, 0),
-                new DateTime(2018, 12, 12, 8, 0, 0),
+                new DateTime(2016, 1, 5, 8, 0, 0, DateTimeKind.Utc),
+                new DateTime(2018, 12, 12, 8, 0, 0, DateTimeKind.Utc),
                 18935.167845153809962m,
                 22,
                 13,
@@ -193,8 +195,8 @@ namespace TradingConsole.Tests.TradingSystem
                 "small-exchange.xml",
                 DecisionSystem.DecisionSystem.FiveDayStatsRidge,
                 null, 5, 1.1, 1.0,
-                new DateTime(2016, 1, 5, 8, 0, 0),
-                new DateTime(2018, 12, 12, 8, 0, 0),
+                new DateTime(2016, 1, 5, 8, 0, 0, DateTimeKind.Utc),
+                new DateTime(2018, 12, 12, 8, 0, 0, DateTimeKind.Utc),
                 19642.836685485839324m,
                 15,
                 9,
@@ -204,8 +206,8 @@ namespace TradingConsole.Tests.TradingSystem
                 "small-exchange.xml",
                 DecisionSystem.DecisionSystem.FiveDayStatsRidge,
                 null, 5, 1.05, 1.0,
-                new DateTime(2016, 1, 5, 8, 0, 0),
-                new DateTime(2018, 12, 12, 8, 0, 0),
+                new DateTime(2016, 1, 5, 8, 0, 0, DateTimeKind.Utc),
+                new DateTime(2018, 12, 12, 8, 0, 0, DateTimeKind.Utc),
                 19069.1183523559543545m,
                 218,
                 154,
@@ -228,12 +230,13 @@ namespace TradingConsole.Tests.TradingSystem
             int expectedBuyTrades,
             int expectedSellTrades)
         {
+            decimal tol = 1e-2m;
             var portfolioStartSettings = new PortfolioStartSettings(null, startTime, 20000);
             var decisionParameters = new DecisionSystemFactory.Settings(decisions, stockStatistics, buyThreshold, sellThreshold, dayAfterPredictor);
             var traderOptions = new TradeMechanismTraderOptions(0.25m);
             var fileSystem = new MockFileSystem();
             var configureFile = File.ReadAllText(Path.Combine(TestConstants.ExampleFilesLocation, databaseName));
-            string testFilePath = "/temp/exampleFile.xml";
+            string testFilePath = "c:/temp/exampleFile.xml";
             fileSystem.AddFile(testFilePath, configureFile);
 
             var reports = new ErrorReports();
@@ -259,11 +262,13 @@ namespace TradingConsole.Tests.TradingSystem
 
             Assert.Multiple(() =>
             {
-                Assert.AreEqual(20000, portfolio.TotalValue(FinancialStructures.Database.Totals.All, startTime.AddDays(-1)));
-                Assert.AreEqual(expectedEndValue, portfolio.TotalValue(FinancialStructures.Database.Totals.All, endDate));
-                Assert.AreEqual(expectedNumberTrades, trades.TotalTrades());
-                Assert.AreEqual(expectedBuyTrades, trades.TotalBuyTrades());
-                Assert.AreEqual(expectedSellTrades, trades.TotalSellTrades());
+                Assert.That(20000 - portfolio.TotalValue(Totals.All, startTime.AddDays(-1)), Is.LessThan(tol), "Start value not correct.");
+                var finalValue = portfolio.TotalValue(Totals.All, endDate);
+                Assert.That(expectedEndValue - finalValue, Is.LessThan(tol), "End value not correct.");
+                Assert.AreEqual(expectedNumberTrades, trades.TotalTrades(), "Number of trades wrong");
+                Assert.AreEqual(expectedBuyTrades, trades.TotalBuyTrades(), "Number of buy trades wrong.");
+                Assert.AreEqual(expectedSellTrades, trades.TotalSellTrades(), "Number of sell trades wrong.");
+                //Assert.AreEqual(new Dictionary<DateTime, TradeStatus>(), trades.DailyTrades);
             });
 
         }

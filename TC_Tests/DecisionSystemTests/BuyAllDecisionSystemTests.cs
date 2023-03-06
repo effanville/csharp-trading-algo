@@ -11,7 +11,7 @@ using TradingSystem.Simulator.Trading.Decisions;
 
 namespace TradingConsole.Tests.DecisionSystemTests
 {
-    public class BuyAllDecisionSystemTests
+    internal class BuyAllDecisionSystemTests
     {
         [Test]
         public void DecisionAsExpected()
