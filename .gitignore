@@ -263,3 +263,6 @@ Build/tools
 Build/source/tools
 tools
 Build/source/Properties/launchSettings.json
+
+# Mac object stores
+**/.DS_Store
