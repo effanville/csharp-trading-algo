@@ -1,8 +1,9 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
-    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+
+<Platforms>x64;AnyCPU</Platforms>
 	<OutputPath>..\bin</OutputPath>
   </PropertyGroup>
 
