@@ -36,7 +36,7 @@ namespace TradingConsole.Tests
 
             // Create the logger.
             var reports = new ErrorReports();
-            void reportAction(ReportSeverity severity, ReportType reportType, ReportLocation location, string text)
+            void reportAction(ReportSeverity severity, ReportType reportType, string location, string text)
             {
                 reports.AddErrorReport(severity, reportType, location, text);
                 fConsole.WriteLine($"({reportType}) {text}");
@@ -73,9 +73,9 @@ namespace TradingConsole.Tests
         public void Download(string fileName)
         {
             var configureFile = File.ReadAllText(Path.Combine(TestConstants.ExampleFilesLocation, fileName));
-            string testFilePath = "c:/temp/exampleFile.xml";
+            string testFilePath = "/Users/CindyTsoi/Documents/exampleFile.xml";
             fFileSystem.AddFile(testFilePath, configureFile);
-            string[] args = new[] { "download", "all", "--stockFilePath", testFilePath, "--start", "1/1/2015", "--end", "1/1/2020" };
+            string[] args = new[] { "download", "all", "--stockFilePath", testFilePath, "--start", "1/1/2010", "--end", "1/1/2023" };
             Program.InternalMain(args, fFileSystem, fConsole, fLogger);
             Assert.AreEqual(4, fLogger.Reports.Count());
         }

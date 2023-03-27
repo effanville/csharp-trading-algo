@@ -30,7 +30,7 @@ namespace TradingConsole
 
             // Create the logger.
             var reports = new ErrorReports();
-            void reportAction(ReportSeverity severity, ReportType reportType, ReportLocation location, string text)
+            void reportAction(ReportSeverity severity, ReportType reportType, string location, string text)
             {
                 reports.AddErrorReport(severity, reportType, location, text);
                 var color = Console.ForegroundColor;

@@ -46,11 +46,23 @@ namespace TradingConsole.Commands.ExchangeCreation
         /// <inheritdoc/>
         public int Execute(IConsole console, string[] args)
         {
+            return Execute(console, null, args);
+        }
+
+        /// <inheritdoc/>
+        public int Execute(IConsole console, IReportLogger logger, string[] args)
+        {
             return CommandExtensions.Execute(this, console, args);
         }
 
         /// <inheritdoc/>
         public bool Validate(IConsole console, string[] args)
+        {
+            return Validate(console, null, args);
+        }
+
+        /// <inheritdoc/>
+        public bool Validate(IConsole console, IReportLogger logger, string[] args)
         {
             return CommandExtensions.Validate(this, args, console);
         }

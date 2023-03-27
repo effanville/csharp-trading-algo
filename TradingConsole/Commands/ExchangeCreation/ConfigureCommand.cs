@@ -50,9 +50,14 @@ namespace TradingConsole.Commands.ExchangeCreation
         {
             CommandExtensions.WriteHelp(this, console);
         }
-
         /// <inheritdoc/>
         public int Execute(IConsole console, string[] args)
+        {
+            return Execute(console, fLogger, args);
+        }
+
+        /// <inheritdoc/>
+        public int Execute(IConsole console, IReportLogger logger, string[] args)
         {
             IStockExchange exchange = new StockExchange();
             string inputPath = fStockFilePathOption.Value;
@@ -65,7 +70,13 @@ namespace TradingConsole.Commands.ExchangeCreation
         /// <inheritdoc/>
         public bool Validate(IConsole console, string[] args)
         {
-            return CommandExtensions.Validate(this, args, console);
+            return Validate(console, null, args);
+        }
+
+        /// <inheritdoc/>
+        public bool Validate(IConsole console, IReportLogger logger, string[] args)
+        {
+            return CommandExtensions.Validate(this, args, console, logger);
         }
     }
 }

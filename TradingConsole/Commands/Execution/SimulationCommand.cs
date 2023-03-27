@@ -22,7 +22,6 @@ namespace TradingConsole.Commands.Execution
     /// </summary>
     internal sealed partial class SimulationCommand : ICommand
     {
-        private readonly IReportLogger fLogger;
         private readonly IFileSystem fFileSystem;
 
         private const string StartDateName = "start";
@@ -54,7 +53,6 @@ namespace TradingConsole.Commands.Execution
         /// </summary>
         public SimulationCommand(IReportLogger logger, IFileSystem fileSystem)
         {
-            fLogger = logger;
             fFileSystem = fileSystem;
 
             Options.Add(new CommandOption<string>("jsonSettingsPath", "The path to the json file containing the options for this execution."));
@@ -84,13 +82,25 @@ namespace TradingConsole.Commands.Execution
         /// <inheritdoc/>
         public bool Validate(IConsole console, string[] args)
         {
+            return Validate(console, null, args);
+        }
+
+        /// <inheritdoc/>
+        public bool Validate(IConsole console, IReportLogger logger, string[] args)
+        {
             return CommandExtensions.Validate(this, args, console);
         }
 
         /// <inheritdoc/>
         public int Execute(IConsole console, string[] args = null)
         {
-            using (new Timer(fLogger, "TotalTime"))
+            return Execute(console, null, args);
+        }
+
+        /// <inheritdoc/>
+        public int Execute(IConsole console, IReportLogger logger, string[] args)
+        {
+            using (new Timer(logger, "TotalTime"))
             {
                 var settings = Settings.CreateSettings(Options, fFileSystem);
                 console.WriteLine(settings.StockFilePath);
@@ -104,7 +114,7 @@ namespace TradingConsole.Commands.Execution
                     settings.TradingOptions,
                     TradeMechanismType.SellAllThenBuy,
                     fFileSystem,
-                    fLogger);
+                    logger);
 
                 if (output.Portfolio == null)
                 {

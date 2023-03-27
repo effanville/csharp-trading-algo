@@ -6,7 +6,7 @@ namespace TradingConsole.Tests
     {
         public static LogReporter ReportLogger = new LogReporter((critical, type, location, message) => NothingFunction(critical, type, location, message));
 
-        private static void NothingFunction(ReportSeverity one, ReportType two, ReportLocation three, string four)
+        private static void NothingFunction(ReportSeverity one, ReportType two, string three, string four)
         {
         }
     }
