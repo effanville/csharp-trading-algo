@@ -3,22 +3,23 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.1.32210.238
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TradingConsole", "TradingConsole\TradingConsole.csproj", "{D9B73324-0AD9-4395-9152-200FCF5F29CB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TradingConsole", "TradingConsole\TradingConsole.csproj", "{D9B73324-0AD9-4395-9152-200FCF5F29CB}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{56DDC8A0-ED45-4B0D-BC0D-5B8B4EE2A22F}"
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
+		Directory.Build.props = Directory.Build.props
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TradingConsole.Tests", "TC_Tests\TradingConsole.Tests.csproj", "{EEDE1C6B-B7C5-40E5-9AB1-B9F39ADD3BB3}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TradingSystem", "TradingSystem\TradingSystem.csproj", "{28CC78D8-F5ED-4785-AB1F-7F5D0E2FEBAB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FinancialStructures", "FinancialStructures\FinancialStructures\FinancialStructures.csproj", "{780A1A86-BAFF-4840-A6B1-6E28CD508AF3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FinancialStructures", "FinancialStructures\FinancialStructures\FinancialStructures.csproj", "{780A1A86-BAFF-4840-A6B1-6E28CD508AF3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Common.Structure", "FinancialStructures\Common\Common.Structure\Common.Structure.csproj", "{22BEF8BB-0C66-4E25-9CEA-5F0F35B434C2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Common.Structure", "FinancialStructures\Common\Common.Structure\Common.Structure.csproj", "{22BEF8BB-0C66-4E25-9CEA-5F0F35B434C2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Common.Console", "FinancialStructures\Common\Common.Console\Common.Console.csproj", "{2A4968F6-F545-4439-A698-D1CD2E9874E3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Common.Console", "FinancialStructures\Common\Common.Console\Common.Console.csproj", "{2A4968F6-F545-4439-A698-D1CD2E9874E3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

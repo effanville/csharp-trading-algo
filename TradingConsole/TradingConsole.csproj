@@ -2,13 +2,6 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFrameworks>net6.0;net6.0-windows</TargetFrameworks>
-<Platforms>x64;AnyCPU</Platforms>
-  </PropertyGroup>
-
-  <PropertyGroup>
-    <OutputPath>..\bin</OutputPath>
-    <DocumentationFile>..\bin\TradingConsole.xml</DocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>
@@ -23,10 +16,6 @@
     <ProjectReference Include="..\FinancialStructures\FinancialStructures\FinancialStructures.csproj" />
     <ProjectReference Include="..\FinancialStructures\Common\Common.Structure\Common.Structure.csproj" />
     <ProjectReference Include="..\FinancialStructures\Common\Common.Console\Common.Console.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Include="..\.editorconfig" Link=".editorconfig" />
   </ItemGroup>
 
 </Project>

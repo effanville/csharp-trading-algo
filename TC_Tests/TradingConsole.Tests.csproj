@@ -1,13 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
     <IsPackable>false</IsPackable>
-  </PropertyGroup>
-
-  <PropertyGroup>
-    <OutputPath>..\bin</OutputPath>
-    <DocumentationFile>..\bin\TradingConsole.xml</DocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>
