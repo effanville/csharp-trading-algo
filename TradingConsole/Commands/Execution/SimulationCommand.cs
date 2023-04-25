@@ -93,6 +93,7 @@ namespace TradingConsole.Commands.Execution
             using (new Timer(fLogger, "TotalTime"))
             {
                 var settings = Settings.CreateSettings(Options, fFileSystem);
+                console.WriteLine(settings.StockFilePath);
                 var output = TradeSystem.SetupAndSimulate(
                     settings.StockFilePath,
                     settings.StartTime,

@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.IO.Abstractions.TestingHelpers;
 using System.Text;
 
@@ -10,7 +11,7 @@ using NUnit.Framework;
 namespace TradingConsole.Tests
 {
     [TestFixture]
-    public class EndToEndTests
+    internal sealed class EndToEndTests
     {
         private MockFileSystem fFileSystem;
         private StringBuilder fConsoleOutput;
@@ -23,8 +24,16 @@ namespace TradingConsole.Tests
             fFileSystem = new MockFileSystem();
             // Create the Console to write output.
             fConsoleOutput = new StringBuilder();
-            void writeLine(string text) => fConsoleOutput.AppendLine(text);
-            void writeError(string text) => fConsoleOutput.AppendLine(text);
+            void writeLine(string text)
+            { 
+                fConsoleOutput.AppendLine(text);
+                Console.WriteLine(text);
+            }
+            void writeError(string text)
+            { 
+                fConsoleOutput.AppendLine(text);
+                Console.WriteLine(text);
+            }
             fConsole = new ConsoleInstance(writeError, writeLine);
 
             // Create the logger.
@@ -50,7 +59,7 @@ namespace TradingConsole.Tests
         [TestCase("small-exchange.csv")]
         public void Configure(string fileName)
         {
-            var configureFile = File.ReadAllText($"{TestConstants.ExampleFilesLocation}\\{fileName}");
+            var configureFile = File.ReadAllText(Path.Combine(TestConstants.ExampleFilesLocation, fileName));
             string testFilePath = "c:/temp/exampleFile.csv";
             fFileSystem.AddFile(testFilePath, configureFile);
             string[] args = new[] { "configure", "--stockFilePath", testFilePath };
@@ -58,15 +67,15 @@ namespace TradingConsole.Tests
 
             Assert.IsTrue(fFileSystem.File.Exists("c:/temp/exampleFile.xml"));
             Assert.AreEqual(2, fLogger.Reports.Count());
-            string expectedOutput = "(Information) Configured StockExchange from file c:/temp/exampleFile.csv.\r\n(Information) Saved StockExchange at c:/temp/exampleFile.xml\r\n";
+            string expectedOutput = $"(Information) Configured StockExchange from file c:/temp/exampleFile.csv.{Environment.NewLine}(Information) Saved StockExchange at c:/temp/exampleFile.xml{Environment.NewLine}";
             Assert.AreEqual(expectedOutput, fConsoleOutput.ToString());
         }
 
         [TestCase("example-database-empty.xml")]
         public void Download(string fileName)
         {
-            var configureFile = File.ReadAllText($"{TestConstants.ExampleFilesLocation}\\{fileName}");
-            string testFilePath = "c:\\temp\\exampleFile.xml";
+            var configureFile = File.ReadAllText(Path.Combine(TestConstants.ExampleFilesLocation, fileName));
+            string testFilePath = "c:/temp/exampleFile.xml";
             fFileSystem.AddFile(testFilePath, configureFile);
             string[] args = new[] { "download", "all", "--stockFilePath", testFilePath, "--start", "1/1/2015", "--end", "1/1/2020" };
             Program.InternalMain(args, fFileSystem, fConsole, fLogger);
@@ -76,8 +85,8 @@ namespace TradingConsole.Tests
         [Test]
         public void BasicRun()
         {
-            var configureFile = File.ReadAllText($"{TestConstants.ExampleFilesLocation}\\example-database.xml");
-            string testFilePath = "c:\\temp\\exampleFile.xml";
+            var configureFile = File.ReadAllText(Path.Combine(TestConstants.ExampleFilesLocation, "example-database.xml"));
+            string testFilePath = "c:/temp/exampleFile.xml";
             fFileSystem.AddFile(testFilePath, configureFile);
 
             string[] args = new[] { "simulate", "--stockFilePath", testFilePath, "--start", "2015-01-05T08:00:00", "--end", "2019-12-12T08:00:00", "--startCash", "20000", "--decision", "BuyAll", "--invFrac", "0.25" };
@@ -89,14 +98,15 @@ namespace TradingConsole.Tests
         [Test]
         public void FiveDayStatsRun()
         {
-            var configureFile = File.ReadAllText($"{TestConstants.ExampleFilesLocation}\\example-database.xml");
-            string testFilePath = "c:/temp/exampleFile.xml";
+            var configureFile = File.ReadAllText(Path.Combine(TestConstants.ExampleFilesLocation, "example-database.xml"));
+            string testFilePath = "/temp/exampleFile.xml";
             fFileSystem.AddFile(testFilePath, configureFile);
 
             string[] args = new[] { "simulate", "--stockFilePath", testFilePath, "--start", "5/1/2015", "--end", "12/12/2019", "--startCash", "20000", "--invFrac", "1" };
             Program.InternalMain(args, fFileSystem, fConsole, fLogger);
             Assert.AreEqual(43, fLogger.Reports.Count());
             string expectedOutput = fConsoleOutput.ToString();
+            Console.Write(expectedOutput);
         }
     }
 }

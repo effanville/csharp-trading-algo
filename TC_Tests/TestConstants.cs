@@ -8,6 +8,6 @@ namespace TradingConsole.Tests
 
         public const string ExampleFilesFolder = "ExampleFiles";
 
-        public static readonly string ExampleFilesLocation = $"{CurrentPath}\\{ExampleFilesFolder}";
+        public static readonly string ExampleFilesLocation = $"{CurrentPath}/{ExampleFilesFolder}";
     }
 }

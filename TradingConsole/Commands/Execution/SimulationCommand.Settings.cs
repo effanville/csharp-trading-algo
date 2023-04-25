@@ -69,7 +69,7 @@ namespace TradingConsole.Commands.Execution
             public static Settings CreateSettings(IList<CommandOption> options, IFileSystem fileSystem)
             {
                 var jsonPath = options.FirstOrDefault(option => option.Name == "jsonSettingsPath");
-                if (jsonPath != null)
+                if (jsonPath != null && jsonPath.ValueAsObject != null)
                 {
                     string path = jsonPath.ValueAsObject.ToString();
                     string jsonContents = fileSystem.File.ReadAllText(path);

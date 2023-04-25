@@ -19,5 +19,10 @@
             NumberBuys = numberBuys;
             NumberSells = numberSells;
         }
+
+        public override string ToString()
+        {
+            return $"Buys: {NumberBuys}. Sells: {NumberSells}.";
+        }
     }
 }

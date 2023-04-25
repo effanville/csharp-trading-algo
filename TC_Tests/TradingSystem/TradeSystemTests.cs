@@ -19,7 +19,7 @@ using TradingSystem.DecideThenTradeSystem;
 namespace TradingConsole.Tests.TradingSystem
 {
     [TestFixture]
-    public sealed class TradeSystemTests
+    internal sealed class TradeSystemTests
     {
         public static IEnumerable<TestCaseData> TradeSystemCases()
         {
@@ -232,8 +232,8 @@ namespace TradingConsole.Tests.TradingSystem
             var decisionParameters = new DecisionSystemFactory.Settings(decisions, stockStatistics, buyThreshold, sellThreshold, dayAfterPredictor);
             var traderOptions = new TradeMechanismTraderOptions(0.25m);
             var fileSystem = new MockFileSystem();
-            var configureFile = File.ReadAllText($"{TestConstants.ExampleFilesLocation}\\{databaseName}");
-            string testFilePath = "c:/temp/exampleFile.xml";
+            var configureFile = File.ReadAllText(Path.Combine(TestConstants.ExampleFilesLocation, databaseName));
+            string testFilePath = "/temp/exampleFile.xml";
             fileSystem.AddFile(testFilePath, configureFile);
 
             var reports = new ErrorReports();

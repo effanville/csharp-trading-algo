@@ -74,7 +74,6 @@ namespace TradingSystem.Simulator
                     // take a record of the decisions and trades.
                     decisionRecord.AddForTheRecord(time, result.Decisions);
                     tradeRecord.AddForTheRecord(time, result.Trades);
-
                     // Update the Stock exchange for the recent time period.
                     StockExchangeFactory.UpdateFromBase(simulatorSettings.Exchange, exchange, time, openOnly: false);
 
