@@ -16,7 +16,6 @@ using TradingConsole.DecisionSystem;
 using TradingConsole.TradingSystem;
 
 using TradingSystem.DecideThenTradeSystem;
-using TradingSystem.Simulator.Trading;
 
 namespace TradingConsole.Tests.TradingSystem
 {
@@ -42,7 +41,7 @@ namespace TradingConsole.Tests.TradingSystem
                 null, 1, 1.05, 1.0,
                 new DateTime(2017, 1, 5, 8, 0, 0, DateTimeKind.Utc),
                 new DateTime(2018, 12, 12, 8, 0, 0, DateTimeKind.Utc),
-                13734.633120880126325m,
+                13637.6561m,
                 15,
                 15,
                 0)
@@ -65,8 +64,8 @@ namespace TradingConsole.Tests.TradingSystem
                 new DateTime(2015, 1, 5, 8, 0, 0, DateTimeKind.Utc),
                 new DateTime(2019, 12, 12, 8, 0, 0, DateTimeKind.Utc),
                 21384.0343847656261407m,
-                196,
-                146,
+                197,
+                147,
                 50)
                 .SetName("FiveDayStatsLasso-2015-2019");
             yield return new TestCaseData(
@@ -87,8 +86,8 @@ namespace TradingConsole.Tests.TradingSystem
                 new DateTime(2015, 1, 5, 8, 0, 0, DateTimeKind.Utc),
                 new DateTime(2019, 12, 12, 8, 0, 0, DateTimeKind.Utc),
                 20698.6897747802738038m,
-                16,
-                12,
+                15,
+                11,
                 4)
                 .SetName("FiveDayStatsLeastSquares-2015-2019-hardBuy");
             yield return new TestCaseData(
@@ -98,9 +97,9 @@ namespace TradingConsole.Tests.TradingSystem
                 new DateTime(2015, 1, 5, 8, 0, 0, DateTimeKind.Utc),
                 new DateTime(2019, 12, 12, 8, 0, 0, DateTimeKind.Utc),
                 20339.7689443969733093m,
-                50,
-                35,
-                15)
+                47,
+                33,
+                14)
                 .SetName("FiveDayStatsLasso-2015-2019-hardbuy");
             yield return new TestCaseData(
                 "example-database.xml",
@@ -109,8 +108,8 @@ namespace TradingConsole.Tests.TradingSystem
                 new DateTime(2015, 1, 5, 8, 0, 0, DateTimeKind.Utc),
                 new DateTime(2019, 12, 12, 8, 0, 0, DateTimeKind.Utc),
                 20698.6897747802738038m,
-                16,
-                12,
+                15,
+                11,
                 4)
                 .SetName("FiveDayStatsRidge-2015-2019-hardbuy");
 
@@ -120,7 +119,7 @@ namespace TradingConsole.Tests.TradingSystem
                 null, 1, 1.05, 1.0,
                 new DateTime(2016, 1, 5, 8, 0, 0, DateTimeKind.Utc),
                 new DateTime(2018, 12, 12, 8, 0, 0, DateTimeKind.Utc),
-                19806.4860676574704154m,
+                18956.283569488525106m,
                 43,
                 31,
                 12)
@@ -131,7 +130,7 @@ namespace TradingConsole.Tests.TradingSystem
                 null, 1, 1.1, 1.0,
                 new DateTime(2016, 1, 5, 8, 0, 0, DateTimeKind.Utc),
                 new DateTime(2018, 12, 12, 8, 0, 0, DateTimeKind.Utc),
-                19893.195m,
+                19803.945m,
                 4,
                 2,
                 2)
@@ -142,7 +141,7 @@ namespace TradingConsole.Tests.TradingSystem
                 null, 1, 1.05, 1.0,
                 new DateTime(2016, 1, 5, 8, 0, 0, DateTimeKind.Utc),
                 new DateTime(2018, 12, 12, 8, 0, 0, DateTimeKind.Utc),
-                19201.2016111755388426m,
+                18196.5226364135759164m,
                 81,
                 58,
                 23)
@@ -153,7 +152,7 @@ namespace TradingConsole.Tests.TradingSystem
                 null, 1, 1.1, 1.0,
                 new DateTime(2016, 1, 5, 8, 0, 0, DateTimeKind.Utc),
                 new DateTime(2018, 12, 12, 8, 0, 0, DateTimeKind.Utc),
-                19881.475m,
+                19702.815m,
                 10,
                 7,
                 3)
@@ -164,7 +163,7 @@ namespace TradingConsole.Tests.TradingSystem
                 null, 1, 1.05, 1.0,
                 new DateTime(2016, 1, 5, 8, 0, 0, DateTimeKind.Utc),
                 new DateTime(2018, 12, 12, 8, 0, 0, DateTimeKind.Utc),
-                19806.4860676574704154m,
+                18956.283569488525106m,
                 43,
                 31,
                 12)
@@ -175,7 +174,7 @@ namespace TradingConsole.Tests.TradingSystem
                 null, 1, 1.1, 1.0,
                 new DateTime(2016, 1, 5, 8, 0, 0, DateTimeKind.Utc),
                 new DateTime(2018, 12, 12, 8, 0, 0, DateTimeKind.Utc),
-                19893.195m,
+                19803.845m,
                 4,
                 2,
                 2)
@@ -186,7 +185,7 @@ namespace TradingConsole.Tests.TradingSystem
                 null, 1, 1.1, 1.0,
                 new DateTime(2016, 1, 5, 8, 0, 0, DateTimeKind.Utc),
                 new DateTime(2018, 12, 12, 8, 0, 0, DateTimeKind.Utc),
-                18935.167845153809962m,
+                18785.4859167480495155m,
                 22,
                 13,
                 9)
@@ -197,10 +196,10 @@ namespace TradingConsole.Tests.TradingSystem
                 null, 5, 1.1, 1.0,
                 new DateTime(2016, 1, 5, 8, 0, 0, DateTimeKind.Utc),
                 new DateTime(2018, 12, 12, 8, 0, 0, DateTimeKind.Utc),
-                19642.836685485839324m,
-                15,
-                9,
-                6)
+                19311.252608642577984m,
+                18,
+                11,
+                7)
                 .SetName("FiveDayStatsRidge-small-db-2016-2018-hardbuy-5daylater");
             yield return new TestCaseData(
                 "small-exchange.xml",
@@ -208,9 +207,9 @@ namespace TradingConsole.Tests.TradingSystem
                 null, 5, 1.05, 1.0,
                 new DateTime(2016, 1, 5, 8, 0, 0, DateTimeKind.Utc),
                 new DateTime(2018, 12, 12, 8, 0, 0, DateTimeKind.Utc),
-                19069.1183523559543545m,
-                218,
-                154,
+                18638.3596334838838717m,
+                221,
+                157,
                 64)
                 .SetName("FiveDayStatsRidge-small-db-2016-2018-5 day later");
         }
@@ -233,19 +232,16 @@ namespace TradingConsole.Tests.TradingSystem
             decimal tol = 1e-2m;
             var portfolioStartSettings = new PortfolioStartSettings(null, startTime, 20000);
             var decisionParameters = new DecisionSystemFactory.Settings(decisions, stockStatistics, buyThreshold, sellThreshold, dayAfterPredictor);
-            var traderOptions = new TradeMechanismTraderOptions(0.25m);
             var fileSystem = new MockFileSystem();
-            var configureFile = File.ReadAllText(Path.Combine(TestConstants.ExampleFilesLocation, databaseName));
+            string configureFile = File.ReadAllText(Path.Combine(TestConstants.ExampleFilesLocation, databaseName));
             string testFilePath = "c:/temp/exampleFile.xml";
             fileSystem.AddFile(testFilePath, configureFile);
 
-            var reports = new ErrorReports();
             void reportAction(ReportSeverity severity, ReportType reportType, string location, string text)
             {
-                reports.AddErrorReport(severity, reportType, location, text);
             }
 
-            var logger = new LogReporter(reportAction);
+            var logger = new LogReporter(reportAction, saveInternally: true);
             var output = TradeSystem.SetupAndSimulate(
                 testFilePath,
                 startTime,
@@ -253,7 +249,7 @@ namespace TradingConsole.Tests.TradingSystem
                 TimeSpan.FromDays(1),
                 portfolioStartSettings,
                 decisionParameters,
-                traderOptions,
+                new TradeMechanismTraderOptions(),
                 TradeMechanismType.SellAllThenBuy,
                 fileSystem,
                 logger);
@@ -263,12 +259,11 @@ namespace TradingConsole.Tests.TradingSystem
             Assert.Multiple(() =>
             {
                 Assert.That(20000 - portfolio.TotalValue(Totals.All, startTime.AddDays(-1)), Is.LessThan(tol), "Start value not correct.");
-                var finalValue = portfolio.TotalValue(Totals.All, endDate);
-                Assert.That(expectedEndValue - finalValue, Is.LessThan(tol), "End value not correct.");
+                decimal finalValue = portfolio.TotalValue(Totals.All, endDate);
+                Assert.That(expectedEndValue - finalValue, Is.LessThan(tol), $"End value not correct. Expected {expectedEndValue} but was {finalValue}");
                 Assert.AreEqual(expectedNumberTrades, trades.TotalTrades(), "Number of trades wrong");
                 Assert.AreEqual(expectedBuyTrades, trades.TotalBuyTrades(), "Number of buy trades wrong.");
                 Assert.AreEqual(expectedSellTrades, trades.TotalSellTrades(), "Number of sell trades wrong.");
-                //Assert.AreEqual(new Dictionary<DateTime, TradeStatus>(), trades.DailyTrades);
             });
 
         }
