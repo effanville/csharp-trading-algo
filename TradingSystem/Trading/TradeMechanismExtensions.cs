@@ -6,8 +6,9 @@ using FinancialStructures.Database;
 using FinancialStructures.NamingStructures;
 using TradingSystem.Simulator.Trading.Decisions;
 using TradingSystem.Simulator.Trading;
+using TradingSystem.DecideThenTradeSystem;
 
-namespace TradingSystem.DecideThenTradeSystem
+namespace TradingSystem.Trading
 {
     public static class TradeMechanismExtensions
     {

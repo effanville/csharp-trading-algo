@@ -11,11 +11,11 @@ using FinancialStructures.StockStructures.Statistics;
 
 using NUnit.Framework;
 
-using TradingConsole.BuySellSystem;
 using TradingConsole.DecisionSystem;
 using TradingConsole.TradingSystem;
 
 using TradingSystem.DecideThenTradeSystem;
+using TradingSystem.Trading;
 
 namespace TradingConsole.Tests.TradingSystem
 {

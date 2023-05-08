@@ -1,4 +1,4 @@
-﻿namespace TradingConsole.BuySellSystem
+﻿namespace TradingSystem.Trading
 {
     /// <summary>
     /// The type of the trade mechanism to use.

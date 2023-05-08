@@ -5,10 +5,11 @@ using Common.Structure.Reporting;
 using FinancialStructures.Database;
 using FinancialStructures.NamingStructures;
 
+using TradingSystem.DecideThenTradeSystem;
 using TradingSystem.Simulator.Trading;
 using TradingSystem.Simulator.Trading.Decisions;
 
-namespace TradingSystem.DecideThenTradeSystem
+namespace TradingSystem.Trading
 {
     /// <summary>
     /// Mechanism to enact the buying and selling of stocks.

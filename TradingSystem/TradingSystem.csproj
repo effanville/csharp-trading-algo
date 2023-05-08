@@ -16,8 +16,4 @@
 			<_Parameter1>TradingConsole.Tests</_Parameter1>
 		</AssemblyAttribute>
 	</ItemGroup>
-
-	<ItemGroup>
-	  <Folder Include="Trading\" />
-	</ItemGroup>
 </Project>

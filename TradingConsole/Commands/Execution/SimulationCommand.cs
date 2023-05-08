@@ -9,10 +9,10 @@ using Common.Structure.Reporting;
 
 using FinancialStructures.StockStructures.Statistics;
 
-using TradingConsole.BuySellSystem;
 using TradingConsole.TradingSystem;
 
 using TradingSystem;
+using TradingSystem.Trading;
 
 namespace TradingConsole.Commands.Execution
 {

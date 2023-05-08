@@ -15,7 +15,7 @@ using TradingSystem.DecideThenTradeSystem;
 using TradingSystem.Simulator.Trading;
 using TradingSystem.Simulator.Trading.Decisions;
 
-namespace TradingConsole.BuySellSystem.Implementation
+namespace TradingSystem.Trading.Implementation
 {
     /// <summary>
     /// Trading system for use in simulation systems.
@@ -53,7 +53,7 @@ namespace TradingConsole.BuySellSystem.Implementation
             }
 
             decimal cashAvailable = portfolio.TotalValue(Totals.BankAccount, time);
-            
+
             if (priceToBuy == 0.0m || cashAvailable <= priceToBuy)
             {
                 return false;

@@ -9,7 +9,6 @@ using FinancialStructures.Database.Extensions;
 using FinancialStructures.NamingStructures;
 using FinancialStructures.StockStructures;
 
-using TradingConsole.BuySellSystem;
 using TradingConsole.DecisionSystem;
 
 using TradingSystem;
