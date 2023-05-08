@@ -7,11 +7,10 @@ using Common.Structure.Reporting;
 
 using FinancialStructures.StockStructures;
 
-using TradingSystem.DecideThenTradeSystem;
 using TradingSystem.Simulator;
 using TradingSystem.Simulator.Trading.Decisions;
 
-namespace TradingConsole.DecisionSystem.Implementation
+namespace TradingSystem.Decisions.Implementation
 {
     /// <summary>
     /// Decision system based upon the 5 previous stock days prices.
@@ -60,14 +59,14 @@ namespace TradingConsole.DecisionSystem.Implementation
                     Y[i + stockIndex] = values.Last() / values[0];
                 }
             }
-            
+
             var estimatorType = TypeHelpers.ConvertFrom(fSettings.DecisionSystemType);
-            if(!estimatorType.IsError())
+            if (!estimatorType.IsError())
             {
                 EstimatorResult = Estimator.Fit(estimatorType.Value, X, Y);
             }
             else
-            {    
+            {
                 _ = logger.Log(ReportSeverity.Critical, ReportType.Error, ReportLocation.Unknown, $"Created FiveDayStats system without five day stats type.");
             }
 
@@ -77,10 +76,10 @@ namespace TradingConsole.DecisionSystem.Implementation
         /// <inheritdoc />
         public DecisionStatus Decide(DateTime day, IStockExchange stockExchange, IReportLogger logger)
         {
-            var decisions = new DecisionStatus();
+            var decisions = new TradeCollection(day, day);
             foreach (IStock stock in stockExchange.Stocks)
             {
-                TradeDecision decision;
+                TradeType decision = TradeType.Unknown;
                 double[] values = stock.Values(day, 5, 0, StockDataStream.Open).Select(value => Convert.ToDouble(value)).ToArray();
                 double normaliseFactor = values[0];
                 for (int valueIndex = 0; valueIndex < values.Length; valueIndex++)
@@ -97,10 +96,6 @@ namespace TradingConsole.DecisionSystem.Implementation
                 else if (value < fSettings.SellThreshold)
                 {
                     decision = TradeDecision.Sell;
-                }
-                else
-                {
-                    decision = TradeDecision.Hold;
                 }
 
                 _ = logger?.Log(ReportSeverity.Detailed, ReportType.Information, ReportLocation.Execution, $"{stock.Name} - value {value} - decision {decision}.");

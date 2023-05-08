@@ -1,12 +1,12 @@
 using Common.Structure.MathLibrary;
 using Common.Structure.MathLibrary.ParameterEstimation;
 
-namespace TradingConsole.DecisionSystem.Implementation
+namespace TradingSystem.Decisions.Implementation
 {
     internal static class TypeHelpers
     {
         internal static Result<Estimator.Type> ConvertFrom(DecisionSystem system)
-        {            
+        {
             switch (system)
             {
                 case DecisionSystem.FiveDayStatsLeastSquares:

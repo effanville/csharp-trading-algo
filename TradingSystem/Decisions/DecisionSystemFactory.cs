@@ -1,18 +1,18 @@
-﻿using Common.Structure.Reporting;
+﻿using System;
 
-using TradingConsole.DecisionSystem.Implementation;
+using Common.Structure.Reporting;
 
-using TradingSystem.DecideThenTradeSystem;
+using TradingSystem.Decisions.Implementation;
 using TradingSystem.Simulator;
 
-namespace TradingConsole.DecisionSystem
+namespace TradingSystem.Decisions
 {
     /// <summary>
     /// Factory for creating a decision system.
     /// </summary>
     public static partial class DecisionSystemFactory
     {
-        internal static IDecisionSystem Create(Settings settings)
+        public static IDecisionSystem Create(Settings settings)
         {
             switch (settings.DecisionSystemType)
             {
@@ -35,7 +35,7 @@ namespace TradingConsole.DecisionSystem
             }
         }
 
-        internal static IDecisionSystem CreateAndCalibrate(Settings settings, StockMarketEvolver.Settings simulatorSettings, IReportLogger logger)
+        public static IDecisionSystem CreateAndCalibrate(Settings settings, StockMarketEvolver.Settings simulatorSettings, IReportLogger logger)
         {
             var decisionSystem = Create(settings);
             decisionSystem.Calibrate(simulatorSettings, logger);

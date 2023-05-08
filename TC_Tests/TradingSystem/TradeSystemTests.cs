@@ -11,10 +11,10 @@ using FinancialStructures.StockStructures.Statistics;
 
 using NUnit.Framework;
 
-using TradingConsole.DecisionSystem;
 using TradingConsole.TradingSystem;
 
 using TradingSystem.DecideThenTradeSystem;
+using TradingSystem.Decisions;
 using TradingSystem.Trading;
 
 namespace TradingConsole.Tests.TradingSystem
@@ -26,7 +26,7 @@ namespace TradingConsole.Tests.TradingSystem
         {
             yield return new TestCaseData(
                 "example-database.xml",
-                DecisionSystem.DecisionSystem.BuyAll,
+                DecisionSystem.BuyAll,
                 null, 1, 1.05, 1.0,
                 new DateTime(2015, 1, 5, 8, 0, 0, DateTimeKind.Utc),
                 new DateTime(2019, 12, 12, 8, 0, 0, DateTimeKind.Utc),
@@ -37,7 +37,7 @@ namespace TradingConsole.Tests.TradingSystem
                 .SetName("BuyAll-2015-2019");
             yield return new TestCaseData(
                 "example-database.xml",
-                DecisionSystem.DecisionSystem.BuyAll,
+                DecisionSystem.BuyAll,
                 null, 1, 1.05, 1.0,
                 new DateTime(2017, 1, 5, 8, 0, 0, DateTimeKind.Utc),
                 new DateTime(2018, 12, 12, 8, 0, 0, DateTimeKind.Utc),
@@ -48,7 +48,7 @@ namespace TradingConsole.Tests.TradingSystem
                 .SetName("BuyAll-2017-2018");
             yield return new TestCaseData(
                 "example-database.xml",
-                DecisionSystem.DecisionSystem.FiveDayStatsLeastSquares,
+                DecisionSystem.FiveDayStatsLeastSquares,
                 null, 1, 1.05, 1.0,
                 new DateTime(2015, 1, 5, 8, 0, 0, DateTimeKind.Utc),
                 new DateTime(2019, 12, 12, 8, 0, 0, DateTimeKind.Utc),
@@ -59,7 +59,7 @@ namespace TradingConsole.Tests.TradingSystem
                 .SetName("FiveDayStatsLeastSquares-2015-2019");
             yield return new TestCaseData(
                 "example-database.xml",
-                DecisionSystem.DecisionSystem.FiveDayStatsLasso,
+                DecisionSystem.FiveDayStatsLasso,
                 null, 1, 1.05, 1.0,
                 new DateTime(2015, 1, 5, 8, 0, 0, DateTimeKind.Utc),
                 new DateTime(2019, 12, 12, 8, 0, 0, DateTimeKind.Utc),
@@ -70,7 +70,7 @@ namespace TradingConsole.Tests.TradingSystem
                 .SetName("FiveDayStatsLasso-2015-2019");
             yield return new TestCaseData(
                 "example-database.xml",
-                DecisionSystem.DecisionSystem.FiveDayStatsRidge,
+                DecisionSystem.FiveDayStatsRidge,
                 null, 1, 1.05, 1.0,
                 new DateTime(2015, 1, 5, 8, 0, 0, DateTimeKind.Utc),
                 new DateTime(2019, 12, 12, 8, 0, 0, DateTimeKind.Utc),
@@ -81,7 +81,7 @@ namespace TradingConsole.Tests.TradingSystem
                 .SetName("FiveDayStatsRidge-2015-2019");
             yield return new TestCaseData(
                 "example-database.xml",
-                DecisionSystem.DecisionSystem.FiveDayStatsLeastSquares,
+                DecisionSystem.FiveDayStatsLeastSquares,
                 null, 1, 1.1, 1.0,
                 new DateTime(2015, 1, 5, 8, 0, 0, DateTimeKind.Utc),
                 new DateTime(2019, 12, 12, 8, 0, 0, DateTimeKind.Utc),
@@ -92,7 +92,7 @@ namespace TradingConsole.Tests.TradingSystem
                 .SetName("FiveDayStatsLeastSquares-2015-2019-hardBuy");
             yield return new TestCaseData(
                 "example-database.xml",
-                DecisionSystem.DecisionSystem.FiveDayStatsLasso,
+                DecisionSystem.FiveDayStatsLasso,
                 null, 1, 1.1, 1.0,
                 new DateTime(2015, 1, 5, 8, 0, 0, DateTimeKind.Utc),
                 new DateTime(2019, 12, 12, 8, 0, 0, DateTimeKind.Utc),
@@ -103,7 +103,7 @@ namespace TradingConsole.Tests.TradingSystem
                 .SetName("FiveDayStatsLasso-2015-2019-hardbuy");
             yield return new TestCaseData(
                 "example-database.xml",
-                DecisionSystem.DecisionSystem.FiveDayStatsRidge,
+                DecisionSystem.FiveDayStatsRidge,
                 null, 1, 1.1, 1.0,
                 new DateTime(2015, 1, 5, 8, 0, 0, DateTimeKind.Utc),
                 new DateTime(2019, 12, 12, 8, 0, 0, DateTimeKind.Utc),
@@ -115,7 +115,7 @@ namespace TradingConsole.Tests.TradingSystem
 
             yield return new TestCaseData(
                 "example-database.xml",
-                DecisionSystem.DecisionSystem.FiveDayStatsLeastSquares,
+                DecisionSystem.FiveDayStatsLeastSquares,
                 null, 1, 1.05, 1.0,
                 new DateTime(2016, 1, 5, 8, 0, 0, DateTimeKind.Utc),
                 new DateTime(2018, 12, 12, 8, 0, 0, DateTimeKind.Utc),
@@ -126,7 +126,7 @@ namespace TradingConsole.Tests.TradingSystem
                 .SetName("FiveDayStatsLeastSquares-2016-2018");
             yield return new TestCaseData(
                 "example-database.xml",
-                DecisionSystem.DecisionSystem.FiveDayStatsLeastSquares,
+                DecisionSystem.FiveDayStatsLeastSquares,
                 null, 1, 1.1, 1.0,
                 new DateTime(2016, 1, 5, 8, 0, 0, DateTimeKind.Utc),
                 new DateTime(2018, 12, 12, 8, 0, 0, DateTimeKind.Utc),
@@ -137,7 +137,7 @@ namespace TradingConsole.Tests.TradingSystem
                 .SetName("FiveDayStatsLeastSquares-2016-2018-hardbuy");
             yield return new TestCaseData(
                 "example-database.xml",
-                DecisionSystem.DecisionSystem.FiveDayStatsLasso,
+                DecisionSystem.FiveDayStatsLasso,
                 null, 1, 1.05, 1.0,
                 new DateTime(2016, 1, 5, 8, 0, 0, DateTimeKind.Utc),
                 new DateTime(2018, 12, 12, 8, 0, 0, DateTimeKind.Utc),
@@ -148,7 +148,7 @@ namespace TradingConsole.Tests.TradingSystem
                 .SetName("FiveDayStatsLasso-2016-2018");
             yield return new TestCaseData(
                 "example-database.xml",
-                DecisionSystem.DecisionSystem.FiveDayStatsLasso,
+                DecisionSystem.FiveDayStatsLasso,
                 null, 1, 1.1, 1.0,
                 new DateTime(2016, 1, 5, 8, 0, 0, DateTimeKind.Utc),
                 new DateTime(2018, 12, 12, 8, 0, 0, DateTimeKind.Utc),
@@ -159,7 +159,7 @@ namespace TradingConsole.Tests.TradingSystem
                 .SetName("FiveDayStatsLasso-2016-2018-hardbuy");
             yield return new TestCaseData(
                 "example-database.xml",
-                DecisionSystem.DecisionSystem.FiveDayStatsRidge,
+                DecisionSystem.FiveDayStatsRidge,
                 null, 1, 1.05, 1.0,
                 new DateTime(2016, 1, 5, 8, 0, 0, DateTimeKind.Utc),
                 new DateTime(2018, 12, 12, 8, 0, 0, DateTimeKind.Utc),
@@ -170,7 +170,7 @@ namespace TradingConsole.Tests.TradingSystem
                 .SetName("FiveDayStatsRidge-2016-2018");
             yield return new TestCaseData(
                 "example-database.xml",
-                DecisionSystem.DecisionSystem.FiveDayStatsRidge,
+                DecisionSystem.FiveDayStatsRidge,
                 null, 1, 1.1, 1.0,
                 new DateTime(2016, 1, 5, 8, 0, 0, DateTimeKind.Utc),
                 new DateTime(2018, 12, 12, 8, 0, 0, DateTimeKind.Utc),
@@ -181,7 +181,7 @@ namespace TradingConsole.Tests.TradingSystem
                 .SetName("FiveDayStatsRidge-2016-2018-hardbuy");
             yield return new TestCaseData(
                 "small-exchange.xml",
-                DecisionSystem.DecisionSystem.FiveDayStatsRidge,
+                DecisionSystem.FiveDayStatsRidge,
                 null, 1, 1.1, 1.0,
                 new DateTime(2016, 1, 5, 8, 0, 0, DateTimeKind.Utc),
                 new DateTime(2018, 12, 12, 8, 0, 0, DateTimeKind.Utc),
@@ -192,7 +192,7 @@ namespace TradingConsole.Tests.TradingSystem
                 .SetName("FiveDayStatsRidge-small-db-2016-2018-hardbuy");
             yield return new TestCaseData(
                 "small-exchange.xml",
-                DecisionSystem.DecisionSystem.FiveDayStatsRidge,
+                DecisionSystem.FiveDayStatsRidge,
                 null, 5, 1.1, 1.0,
                 new DateTime(2016, 1, 5, 8, 0, 0, DateTimeKind.Utc),
                 new DateTime(2018, 12, 12, 8, 0, 0, DateTimeKind.Utc),
@@ -203,7 +203,7 @@ namespace TradingConsole.Tests.TradingSystem
                 .SetName("FiveDayStatsRidge-small-db-2016-2018-hardbuy-5daylater");
             yield return new TestCaseData(
                 "small-exchange.xml",
-                DecisionSystem.DecisionSystem.FiveDayStatsRidge,
+                DecisionSystem.FiveDayStatsRidge,
                 null, 5, 1.05, 1.0,
                 new DateTime(2016, 1, 5, 8, 0, 0, DateTimeKind.Utc),
                 new DateTime(2018, 12, 12, 8, 0, 0, DateTimeKind.Utc),
@@ -217,7 +217,7 @@ namespace TradingConsole.Tests.TradingSystem
         [TestCaseSource(nameof(TradeSystemCases))]
         public void RunTradeSystem(
             string databaseName,
-            DecisionSystem.DecisionSystem decisions,
+            DecisionSystem decisions,
             List<StockStatisticType> stockStatistics,
             int dayAfterPredictor,
             double buyThreshold,

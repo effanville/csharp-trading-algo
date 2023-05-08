@@ -12,6 +12,7 @@ using FinancialStructures.StockStructures.Statistics;
 using TradingConsole.TradingSystem;
 
 using TradingSystem;
+using TradingSystem.Decisions;
 using TradingSystem.Trading;
 
 namespace TradingConsole.Commands.Execution
@@ -68,7 +69,7 @@ namespace TradingConsole.Commands.Execution
             Options.Add(new CommandOption<TimeSpan>(IncrementName, "The interval between evaluations."));
 
             // Decision system options.
-            Options.Add(new CommandOption<DecisionSystem.DecisionSystem>(DecisionSystemName, "The type of decision system to use."));
+            Options.Add(new CommandOption<DecisionSystem>(DecisionSystemName, "The type of decision system to use."));
             Options.Add(new CommandOption<List<StockStatisticType>>(DecisionSystemStatsName, ""));
             Options.Add(new CommandOption<decimal>(FractionInvestName, "The maximum fraction of available cash to put in any purchase."));
         }

@@ -2,13 +2,13 @@
 
 using Common.Structure.Reporting;
 
+using FinancialStructures.DataStructures;
 using FinancialStructures.StockStructures;
 
-using TradingSystem.DecideThenTradeSystem;
 using TradingSystem.Simulator;
-using TradingSystem.Simulator.Trading.Decisions;
+using TradingSystem.Trading;
 
-namespace TradingConsole.DecisionSystem.Implementation
+namespace TradingSystem.Decisions.Implementation
 {
     /// <summary>
     /// Decision system which at any time reports to buy every stock held in the exchange.
@@ -28,12 +28,12 @@ namespace TradingConsole.DecisionSystem.Implementation
         }
 
         /// <inheritdoc />
-        public DecisionStatus Decide(DateTime day, IStockExchange stockExchange, IReportLogger logger)
+        public TradeCollection Decide(DateTime day, IStockExchange stockExchange, IReportLogger logger)
         {
-            var decisions = new DecisionStatus();
+            var decisions = new TradeCollection(day, day);
             foreach (IStock stock in stockExchange.Stocks)
             {
-                decisions.AddDecision(stock.Name, TradeDecision.Buy);
+                decisions.Add(stock.Name, TradeType.Buy);
             }
 
             return decisions;

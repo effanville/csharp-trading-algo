@@ -2,7 +2,7 @@
 
 using System.Collections.Generic;
 
-namespace TradingConsole.DecisionSystem
+namespace TradingSystem.Decisions
 {
     public static partial class DecisionSystemFactory
     {

@@ -7,7 +7,7 @@ using FinancialStructures.StockStructures;
 using TradingSystem.Simulator;
 using TradingSystem.Simulator.Trading.Decisions;
 
-namespace TradingSystem.DecideThenTradeSystem
+namespace TradingSystem.Decisions
 {
     /// <summary>
     /// Interface for the system by which one decides at what point to buy and sell stocks.

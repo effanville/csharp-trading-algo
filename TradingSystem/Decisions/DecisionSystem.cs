@@ -1,4 +1,4 @@
-﻿namespace TradingConsole.DecisionSystem
+﻿namespace TradingSystem.Decisions
 {
     /// <summary>
     /// The type of the decision system to be used.

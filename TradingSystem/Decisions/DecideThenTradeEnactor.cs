@@ -12,8 +12,9 @@ using TradingSystem.DecideThenTradeSystem;
 using TradingSystem.Simulator.PriceCalculation;
 using TradingSystem.Simulator.Trading;
 using TradingSystem.Simulator.Trading.Decisions;
+using TradingSystem.Trading;
 
-namespace TradingSystem.Trading
+namespace TradingSystem.Decisions
 {
     /// <summary>
     /// A <see cref="ITradeEnactor"/> that acts simply by first deciding on

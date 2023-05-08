@@ -9,10 +9,10 @@ using FinancialStructures.StockStructures.Statistics;
 
 using Newtonsoft.Json;
 
-using TradingConsole.DecisionSystem;
 using TradingConsole.TradingSystem;
 
 using TradingSystem.DecideThenTradeSystem;
+using TradingSystem.Decisions;
 
 namespace TradingConsole.Commands.Execution
 {
@@ -89,7 +89,7 @@ namespace TradingConsole.Commands.Execution
                     settings.EvolutionIncrement = gap.Value;
 
                     var fractionInvest = options.GetOption<decimal>(FractionInvestName);
-                    var decisionType = options.GetOption<DecisionSystem.DecisionSystem>(DecisionSystemName);
+                    var decisionType = options.GetOption<DecisionSystem>(DecisionSystemName);
                     var startingCash = options.GetOption<decimal>(StartingCashName);
                     var portfolioFilePath = options.GetOption<string>(PortfolioFilePathName);
                     var decisionSystemStats = options.GetOption<List<StockStatisticType>>(DecisionSystemStatsName);

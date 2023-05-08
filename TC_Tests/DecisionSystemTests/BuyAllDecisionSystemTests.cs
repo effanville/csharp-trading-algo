@@ -5,9 +5,8 @@ using FinancialStructures.StockStructures.Implementation;
 
 using NUnit.Framework;
 
-using TradingConsole.DecisionSystem.Implementation;
-
-using TradingSystem.DecideThenTradeSystem;
+using TradingSystem.Decisions;
+using TradingSystem.Decisions.Implementation;
 using TradingSystem.Simulator.Trading.Decisions;
 
 namespace TradingConsole.Tests.DecisionSystemTests

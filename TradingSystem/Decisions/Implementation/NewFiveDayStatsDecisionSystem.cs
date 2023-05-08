@@ -6,11 +6,10 @@ using Common.Structure.Reporting;
 using FinancialStructures.StockStructures;
 using FinancialStructures.StockStructures.Statistics;
 
-using TradingSystem.DecideThenTradeSystem;
 using TradingSystem.Simulator;
 using TradingSystem.Simulator.Trading.Decisions;
 
-namespace TradingConsole.DecisionSystem.Implementation
+namespace TradingSystem.Decisions.Implementation
 {
     internal sealed class NewFiveDayStatsDecisionSystem : IDecisionSystem
     {

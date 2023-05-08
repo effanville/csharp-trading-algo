@@ -9,10 +9,9 @@ using FinancialStructures.Database.Extensions;
 using FinancialStructures.NamingStructures;
 using FinancialStructures.StockStructures;
 
-using TradingConsole.DecisionSystem;
-
 using TradingSystem;
 using TradingSystem.DecideThenTradeSystem;
+using TradingSystem.Decisions;
 using TradingSystem.Simulator;
 using TradingSystem.Simulator.Trading.Decisions;
 using TradingSystem.Trading;

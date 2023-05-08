@@ -8,11 +8,10 @@ using Common.Structure.Reporting;
 using FinancialStructures.StockStructures;
 using FinancialStructures.StockStructures.Statistics;
 
-using TradingSystem.DecideThenTradeSystem;
 using TradingSystem.Simulator;
 using TradingSystem.Simulator.Trading.Decisions;
 
-namespace TradingConsole.DecisionSystem.Implementation
+namespace TradingSystem.Decisions.Implementation
 {
     /// <summary>
     /// A decision system consisting of arbitrary statistics. It has a least
@@ -62,27 +61,27 @@ namespace TradingConsole.DecisionSystem.Implementation
                     Y[entryIndex * settings.Exchange.Stocks.Count + stockIndex] = Convert.ToDouble(settings.Exchange.Stocks[stockIndex].Values(burnInLength.AddDays(delayTime + entryIndex), 0, fSettings.DayAfterPredictor, StockDataStream.Open).Last() / 100m);
                 }
             }
-                        
+
             var estimatorType = TypeHelpers.ConvertFrom(fSettings.DecisionSystemType);
-            if(!estimatorType.IsError())
+            if (!estimatorType.IsError())
             {
                 EstimatorResult = Estimator.Fit(estimatorType.Value, X, Y);
             }
             else
-            {    
+            {
                 _ = logger.Log(ReportSeverity.Critical, ReportType.Error, ReportLocation.Unknown, $"Created ArbitraryStats system without correct type.");
             }
-            
+
             _ = logger.Log(ReportSeverity.Critical, ReportType.Warning, ReportLocation.Unknown, $"Estimator Weights are {string.Join(",", EstimatorResult.Estimator)}");
         }
 
         /// <inheritdoc/>
         public DecisionStatus Decide(DateTime day, IStockExchange stockExchange, IReportLogger logger)
         {
-            var decisions = new DecisionStatus();
+            var decisions = new TradeCollection(day, day);
             foreach (IStock stock in stockExchange.Stocks)
             {
-                TradeDecision decision;
+                TradeType decision = TradeType.Unknown;
                 double[] values = stock.Values(day, 5, 0, StockDataStream.Open).Select(value => Convert.ToDouble(value)).ToArray();
                 double value = EstimatorResult.Evaluate(values);
 
@@ -93,10 +92,6 @@ namespace TradingConsole.DecisionSystem.Implementation
                 else if (value < fSettings.SellThreshold)
                 {
                     decision = TradeDecision.Sell;
-                }
-                else
-                {
-                    decision = TradeDecision.Hold;
                 }
 
                 decisions.AddDecision(stock.Name, decision);
