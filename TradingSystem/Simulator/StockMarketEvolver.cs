@@ -9,8 +9,6 @@ using FinancialStructures.StockStructures;
 using Nager.Date;
 
 using TradingSystem.Simulator.PriceCalculation;
-using TradingSystem.Simulator.Trading;
-using TradingSystem.Simulator.Trading.Decisions;
 using TradingSystem.Trading;
 
 namespace TradingSystem.Simulator
@@ -44,7 +42,7 @@ namespace TradingSystem.Simulator
             ITradeEnactor enactTrades,
             Reporting callbacks)
         {
-            DecisionHistory decisionRecord = new DecisionHistory();
+            TradeHistory decisionRecord = new TradeHistory();
             TradeHistory tradeRecord = new TradeHistory();
             using (new Timer(callbacks.Logger, "Simulation of Evolution"))
             {
@@ -72,8 +70,8 @@ namespace TradingSystem.Simulator
                         callbacks.Logger);
 
                     // take a record of the decisions and trades.
-                    decisionRecord.AddForTheRecord(time, result.Decisions);
-                    tradeRecord.AddForTheRecord(time, result.Trades);
+                    decisionRecord.AddIfNotNull(time, result.Decisions);
+                    tradeRecord.AddIfNotNull(time, result.Trades);
                     // Update the Stock exchange for the recent time period.
                     StockExchangeFactory.UpdateFromBase(simulatorSettings.Exchange, exchange, time);
 

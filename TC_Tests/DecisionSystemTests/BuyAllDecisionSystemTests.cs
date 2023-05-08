@@ -7,7 +7,7 @@ using NUnit.Framework;
 
 using TradingSystem.Decisions;
 using TradingSystem.Decisions.Implementation;
-using TradingSystem.Simulator.Trading.Decisions;
+using TradingSystem.Trading;
 
 namespace TradingConsole.Tests.DecisionSystemTests
 {
@@ -21,7 +21,7 @@ namespace TradingConsole.Tests.DecisionSystemTests
             exchange.Stocks[0].AddValue(DateTime.Today, 43, 47, 40, 41, 1);
 
             IDecisionSystem decisionSystem = new BuyAllDecisionSystem();
-            DecisionStatus status = decisionSystem.Decide(DateTime.Today, exchange, logger: null);
+            TradeCollection status = decisionSystem.Decide(DateTime.Today, exchange, logger: null);
 
             Assert.AreEqual(1, status.GetBuyDecisions().Count);
             Assert.AreEqual(0, status.GetSellDecisions().Count);

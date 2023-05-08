@@ -1,7 +1,6 @@
 ﻿using FinancialStructures.Database;
 
-using TradingSystem.Simulator.Trading;
-using TradingSystem.Simulator.Trading.Decisions;
+using TradingSystem.Trading;
 
 namespace TradingSystem.Simulator
 {
@@ -23,7 +22,7 @@ namespace TradingSystem.Simulator
             /// <summary>
             /// The history of all decisions made during the evolution.
             /// </summary>
-            public DecisionHistory Decisions
+            public TradeHistory Decisions
             {
                 get;
             }
@@ -43,7 +42,7 @@ namespace TradingSystem.Simulator
                 Trades = null;
             }
 
-            public Result(IPortfolio portfolio, DecisionHistory decisions, TradeHistory trades)
+            public Result(IPortfolio portfolio, TradeHistory decisions, TradeHistory trades)
             {
                 Portfolio = portfolio;
                 Decisions = decisions;

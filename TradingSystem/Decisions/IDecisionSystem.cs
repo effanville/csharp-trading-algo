@@ -5,7 +5,7 @@ using Common.Structure.Reporting;
 using FinancialStructures.StockStructures;
 
 using TradingSystem.Simulator;
-using TradingSystem.Simulator.Trading.Decisions;
+using TradingSystem.Trading;
 
 namespace TradingSystem.Decisions
 {
@@ -24,6 +24,6 @@ namespace TradingSystem.Decisions
         /// <summary>
         /// The process by which a decision on each stock in the exchange is made.
         /// </summary>
-        DecisionStatus Decide(DateTime day, IStockExchange stockExchange, IReportLogger logger);
+        TradeCollection Decide(DateTime day, IStockExchange stockExchange, IReportLogger logger);
     }
 }

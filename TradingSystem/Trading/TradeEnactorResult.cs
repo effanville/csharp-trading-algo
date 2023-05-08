@@ -1,21 +1,18 @@
-﻿using TradingSystem.Simulator.Trading;
-using TradingSystem.Simulator.Trading.Decisions;
-
-namespace TradingSystem.Trading
+﻿namespace TradingSystem.Trading
 {
     public sealed class TradeEnactorResult
     {
-        public TradeStatus Trades
+        public TradeCollection Trades
         {
             get;
         }
 
-        public DecisionStatus Decisions
+        public TradeCollection Decisions
         {
             get;
         }
 
-        public TradeEnactorResult(TradeStatus trades, DecisionStatus decisions)
+        public TradeEnactorResult(TradeCollection trades, TradeCollection decisions)
         {
             Trades = trades;
             Decisions = decisions;

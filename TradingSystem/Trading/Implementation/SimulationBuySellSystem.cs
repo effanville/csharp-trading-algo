@@ -12,8 +12,6 @@ using FinancialStructures.FinanceStructures;
 using FinancialStructures.NamingStructures;
 
 using TradingSystem.DecideThenTradeSystem;
-using TradingSystem.Simulator.Trading;
-using TradingSystem.Simulator.Trading.Decisions;
 
 namespace TradingSystem.Trading.Implementation
 {
@@ -33,14 +31,14 @@ namespace TradingSystem.Trading.Implementation
         /// <inheritdoc/>
         public bool Buy(
             DateTime time,
-            Decision buy,
+            Trade buy,
             Func<DateTime, TwoName, decimal> calculateBuyPrice,
             IPortfolio portfolio,
             TradeMechanismTraderOptions traderOptions,
             IReportLogger reportLogger)
         {
             // If not a buy then stop.
-            if (buy.BuySell != TradeDecision.Buy)
+            if (buy.BuySell != TradeType.Buy)
             {
                 return false;
             }
@@ -71,6 +69,8 @@ namespace TradingSystem.Trading.Implementation
                 return false;
             }
 
+            buy.NumberShares = numShares;
+
             // If not enough money to deal with the total cost then exit.
             var tradeDetails = new SecurityTrade(TradeType.Buy, buy.StockName, time, numShares, priceToBuy, traderOptions.TradeCost);
             if (cashAvailable <= tradeDetails.TotalCost)
@@ -99,14 +99,14 @@ namespace TradingSystem.Trading.Implementation
         /// <inheritdoc/>
         public bool Sell(
             DateTime time,
-            Decision sell,
+            Trade sell,
             Func<DateTime, TwoName, decimal> calculateSellPrice,
             IPortfolio portfolio,
             TradeMechanismTraderOptions traderOptions,
             IReportLogger reportLogger)
 
         {
-            if (sell.BuySell != TradeDecision.Sell)
+            if (sell.BuySell != TradeType.Sell)
             {
                 return false;
             }
@@ -133,6 +133,7 @@ namespace TradingSystem.Trading.Implementation
                 return false;
             }
 
+            sell.NumberShares = numShares;
             var tradeDetails = new SecurityTrade(TradeType.Sell, sell.StockName, time, numShares, price, traderOptions.TradeCost);
 
             // Now perform selling. This consists of removing the security at the specific value in our portfolio.
@@ -148,9 +149,9 @@ namespace TradingSystem.Trading.Implementation
         }
 
         /// <inheritdoc/>
-        public TradeStatus EnactAllTrades(
+        public TradeCollection EnactAllTrades(
             DateTime time,
-            DecisionStatus decisions,
+            TradeCollection decisions,
             Func<DateTime, TwoName, decimal> calculateBuyPrice,
             Func<DateTime, TwoName, decimal> calculateSellPrice,
             IPortfolio portfolio,

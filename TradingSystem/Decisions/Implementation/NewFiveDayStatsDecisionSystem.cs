@@ -7,7 +7,7 @@ using FinancialStructures.StockStructures;
 using FinancialStructures.StockStructures.Statistics;
 
 using TradingSystem.Simulator;
-using TradingSystem.Simulator.Trading.Decisions;
+using TradingSystem.Trading;
 
 namespace TradingSystem.Decisions.Implementation
 {
@@ -38,7 +38,7 @@ namespace TradingSystem.Decisions.Implementation
             InnerSystem.Calibrate(settings, logger);
         }
 
-        public DecisionStatus Decide(DateTime day, IStockExchange stockExchange, IReportLogger logger)
+        public TradeCollection Decide(DateTime day, IStockExchange stockExchange, IReportLogger logger)
         {
             return InnerSystem.Decide(day, stockExchange, logger);
         }

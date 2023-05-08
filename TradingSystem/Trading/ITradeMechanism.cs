@@ -6,8 +6,6 @@ using FinancialStructures.Database;
 using FinancialStructures.NamingStructures;
 
 using TradingSystem.DecideThenTradeSystem;
-using TradingSystem.Simulator.Trading;
-using TradingSystem.Simulator.Trading.Decisions;
 
 namespace TradingSystem.Trading
 {
@@ -22,7 +20,7 @@ namespace TradingSystem.Trading
         /// </summary>
         bool Buy(
             DateTime time,
-            Decision buy,
+            Trade buy,
             Func<DateTime, TwoName, decimal> calculateBuyPrice,
             IPortfolio portfolio,
             TradeMechanismTraderOptions traderOptions,
@@ -33,7 +31,7 @@ namespace TradingSystem.Trading
         /// </summary>
         bool Sell(
             DateTime time,
-            Decision sell,
+            Trade sell,
             Func<DateTime, TwoName, decimal> calculateSellPrice,
             IPortfolio portfolio,
             TradeMechanismTraderOptions traderOptions,
@@ -42,9 +40,9 @@ namespace TradingSystem.Trading
         /// <summary>
         /// Routine to enact all trades.
         /// </summary>
-        TradeStatus EnactAllTrades(
+        TradeCollection EnactAllTrades(
             DateTime time,
-            DecisionStatus decisions,
+            TradeCollection decisions,
             Func<DateTime, TwoName, decimal> calculateBuyPrice,
             Func<DateTime, TwoName, decimal> calculateSellPrice,
             IPortfolio portfolio,

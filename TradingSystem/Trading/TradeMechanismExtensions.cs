@@ -2,47 +2,54 @@
 using System.Collections.Generic;
 
 using Common.Structure.Reporting;
+
 using FinancialStructures.Database;
 using FinancialStructures.NamingStructures;
-using TradingSystem.Simulator.Trading.Decisions;
-using TradingSystem.Simulator.Trading;
+
 using TradingSystem.DecideThenTradeSystem;
 
 namespace TradingSystem.Trading
 {
     public static class TradeMechanismExtensions
     {
-        public static TradeStatus SellThenBuy(
+        public static TradeCollection SellThenBuy(
             this ITradeMechanism tradeMechanism,
             DateTime time,
-            DecisionStatus decisions,
+            TradeCollection decisions,
             Func<DateTime, TwoName, decimal> calculateBuyPrice,
             Func<DateTime, TwoName, decimal> calculateSellPrice,
             IPortfolio portfolio,
             TradeMechanismTraderOptions traderOptions,
             IReportLogger reportLogger)
         {
-            List<Decision> sellDecisions = decisions.GetSellDecisions();
-            int numberSells = 0;
-            foreach (Decision sell in sellDecisions)
+            List<Trade> sellDecisions = decisions.GetSellDecisions();
+            var trades = new TradeCollection(time, time);
+            bool wasTrade = false;
+            foreach (Trade sell in sellDecisions)
             {
                 if (tradeMechanism.Sell(time, sell, calculateSellPrice, portfolio, traderOptions, reportLogger))
                 {
-                    numberSells++;
+                    wasTrade = true;
+                    trades.Add(sell.StockName, sell.BuySell, sell.NumberShares);
                 }
             }
 
-            int numberBuys = 0;
-            List<Decision> buyDecisions = decisions.GetBuyDecisions();
-            foreach (Decision buy in buyDecisions)
+            List<Trade> buyDecisions = decisions.GetBuyDecisions();
+            foreach (Trade buy in buyDecisions)
             {
                 if (tradeMechanism.Buy(time, buy, calculateBuyPrice, portfolio, traderOptions, reportLogger))
                 {
-                    numberBuys++;
+                    wasTrade = true;
+                    trades.Add(buy.StockName, buy.BuySell, buy.NumberShares);
                 }
             }
 
-            return new TradeStatus(numberBuys, numberSells);
+            if (!wasTrade)
+            {
+                return null;
+            }
+
+            return trades;
         }
     }
 }

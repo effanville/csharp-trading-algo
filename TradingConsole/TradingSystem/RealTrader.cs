@@ -13,7 +13,6 @@ using TradingSystem;
 using TradingSystem.DecideThenTradeSystem;
 using TradingSystem.Decisions;
 using TradingSystem.Simulator;
-using TradingSystem.Simulator.Trading.Decisions;
 using TradingSystem.Trading;
 
 namespace TradingConsole.TradingSystem
@@ -90,7 +89,7 @@ namespace TradingConsole.TradingSystem
         private void PerformDailyTrades(DateTime day, IStockExchange exchange, IPortfolio portfolio)
         {
             // Decide which stocks to buy, sell or do nothing with.
-            DecisionStatus status = DecisionSystem.Decide(day, exchange, null);
+            TradeCollection status = DecisionSystem.Decide(day, exchange, null);
 
             decimal CalculatePurchasePrice(DateTime time, TwoName stock)
             {

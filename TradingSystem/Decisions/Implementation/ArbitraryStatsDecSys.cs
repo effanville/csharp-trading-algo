@@ -5,11 +5,12 @@ using System.Linq;
 using Common.Structure.MathLibrary.ParameterEstimation;
 using Common.Structure.Reporting;
 
+using FinancialStructures.DataStructures;
 using FinancialStructures.StockStructures;
 using FinancialStructures.StockStructures.Statistics;
 
 using TradingSystem.Simulator;
-using TradingSystem.Simulator.Trading.Decisions;
+using TradingSystem.Trading;
 
 namespace TradingSystem.Decisions.Implementation
 {
@@ -76,7 +77,7 @@ namespace TradingSystem.Decisions.Implementation
         }
 
         /// <inheritdoc/>
-        public DecisionStatus Decide(DateTime day, IStockExchange stockExchange, IReportLogger logger)
+        public TradeCollection Decide(DateTime day, IStockExchange stockExchange, IReportLogger logger)
         {
             var decisions = new TradeCollection(day, day);
             foreach (IStock stock in stockExchange.Stocks)
@@ -87,14 +88,14 @@ namespace TradingSystem.Decisions.Implementation
 
                 if (value > fSettings.BuyThreshold)
                 {
-                    decision = TradeDecision.Buy;
+                    decision = TradeType.Buy;
                 }
                 else if (value < fSettings.SellThreshold)
                 {
-                    decision = TradeDecision.Sell;
+                    decision = TradeType.Sell;
                 }
 
-                decisions.AddDecision(stock.Name, decision);
+                decisions.Add(stock.Name, decision);
             }
 
             return decisions;

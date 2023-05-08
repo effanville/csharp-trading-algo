@@ -261,9 +261,9 @@ namespace TradingConsole.Tests.TradingSystem
                 Assert.That(20000 - portfolio.TotalValue(Totals.All, startTime.AddDays(-1)), Is.LessThan(tol), "Start value not correct.");
                 decimal finalValue = portfolio.TotalValue(Totals.All, endDate);
                 Assert.That(expectedEndValue - finalValue, Is.LessThan(tol), $"End value not correct. Expected {expectedEndValue} but was {finalValue}");
-                Assert.AreEqual(expectedNumberTrades, trades.TotalTrades(), "Number of trades wrong");
-                Assert.AreEqual(expectedBuyTrades, trades.TotalBuyTrades(), "Number of buy trades wrong.");
-                Assert.AreEqual(expectedSellTrades, trades.TotalSellTrades(), "Number of sell trades wrong.");
+                Assert.AreEqual(expectedNumberTrades, trades.TotalTrades, "Number of trades wrong");
+                Assert.AreEqual(expectedBuyTrades, trades.TotalBuyTrades, "Number of buy trades wrong.");
+                Assert.AreEqual(expectedSellTrades, trades.TotalSellTrades, "Number of sell trades wrong.");
             });
 
         }

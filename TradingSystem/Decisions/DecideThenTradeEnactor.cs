@@ -10,8 +10,6 @@ using FinancialStructures.StockStructures;
 
 using TradingSystem.DecideThenTradeSystem;
 using TradingSystem.Simulator.PriceCalculation;
-using TradingSystem.Simulator.Trading;
-using TradingSystem.Simulator.Trading.Decisions;
 using TradingSystem.Trading;
 
 namespace TradingSystem.Decisions
@@ -48,10 +46,10 @@ namespace TradingSystem.Decisions
             IReportLogger reportLogger)
         {
             // Decide which stocks to buy, sell or do nothing with.
-            DecisionStatus status = fDecisionSystem.Decide(time, stockExchange, logger: null);
+            TradeCollection status = fDecisionSystem.Decide(time, stockExchange, logger: null);
 
             // Exact the buy/Sell decisions.
-            TradeStatus trades = fTradeMechanism.EnactAllTrades(
+            TradeCollection trades = fTradeMechanism.EnactAllTrades(
                 time,
                 status,
                 (date, name) => priceCalculator.CalculateBuyPrice(date, stockExchange, name),
