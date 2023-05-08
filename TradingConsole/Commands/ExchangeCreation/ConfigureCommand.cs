@@ -17,7 +17,6 @@ namespace TradingConsole.Commands.ExchangeCreation
     internal sealed class ConfigureCommand : ICommand
     {
         private readonly IFileSystem fFileSystem;
-        private readonly IReportLogger fLogger;
         private readonly CommandOption<string> fStockFilePathOption;
 
         /// <inheritdoc/>
@@ -37,9 +36,8 @@ namespace TradingConsole.Commands.ExchangeCreation
         /// <summary>
         /// Default constructor.
         /// </summary>
-        public ConfigureCommand(IReportLogger reportLogger, IFileSystem fileSystem)
+        public ConfigureCommand(IFileSystem fileSystem)
         {
-            fLogger = reportLogger;
             fFileSystem = fileSystem;
             fStockFilePathOption = new CommandOption<string>("stockFilePath", "FilePath to the stock database to add data to.", inputString => !string.IsNullOrWhiteSpace(inputString));
             Options.Add(fStockFilePathOption);
@@ -53,7 +51,7 @@ namespace TradingConsole.Commands.ExchangeCreation
         /// <inheritdoc/>
         public int Execute(IConsole console, string[] args)
         {
-            return Execute(console, fLogger, args);
+            return Execute(console, null, args);
         }
 
         /// <inheritdoc/>
@@ -61,9 +59,9 @@ namespace TradingConsole.Commands.ExchangeCreation
         {
             IStockExchange exchange = new StockExchange();
             string inputPath = fStockFilePathOption.Value;
-            exchange.Configure(inputPath, fFileSystem, fLogger);
+            exchange.Configure(inputPath, fFileSystem, logger);
             string filePath = fFileSystem.Path.ChangeExtension(inputPath, "xml");
-            exchange.SaveStockExchange(filePath, fFileSystem, fLogger);
+            exchange.SaveStockExchange(filePath, fFileSystem, logger);
             return 0;
         }
 

@@ -17,7 +17,6 @@ namespace TradingConsole.Commands.ExchangeCreation
     /// </summary>
     internal sealed class DownloadAllCommand : ICommand
     {
-        private readonly IReportLogger fLogger;
         private readonly IFileSystem fFileSystem;
         private readonly CommandOption<string> fStockFilePathOption;
         private readonly CommandOption<DateTime> fStartDateOption;
@@ -41,9 +40,8 @@ namespace TradingConsole.Commands.ExchangeCreation
         /// <summary>
         /// Default constructor.
         /// </summary>
-        public DownloadAllCommand(IReportLogger logger, IFileSystem fileSystem)
+        public DownloadAllCommand(IFileSystem fileSystem)
         {
-            fLogger = logger;
             fFileSystem = fileSystem;
             fStockFilePathOption = new CommandOption<string>("stockFilePath", "FilePath to the stock database to add data to.");
             Options.Add(fStockFilePathOption);
@@ -70,23 +68,23 @@ namespace TradingConsole.Commands.ExchangeCreation
         /// <inheritdoc/>
         public bool Validate(IConsole console, IReportLogger logger, string[] args)
         {
-            return CommandExtensions.Validate(this, args, console);
+            return CommandExtensions.Validate(this, args, console, logger);
         }
 
 
         /// <inheritdoc/>
         public int Execute(IConsole console, string[] args = null)
         {
-            return Execute(console, fLogger, args);
+            return Execute(console, null, args);
         }
 
         /// <inheritdoc/>
         public int Execute(IConsole console, IReportLogger logger, string[] args)
         {
             IStockExchange exchange = new StockExchange();
-            exchange.LoadStockExchange(fStockFilePathOption.Value, fFileSystem, fLogger);
-            exchange.Download(fStartDateOption.Value, fEndDateOption.Value, fLogger).Wait();
-            exchange.SaveStockExchange(fStockFilePathOption.Value, fFileSystem, fLogger);
+            exchange.LoadStockExchange(fStockFilePathOption.Value, fFileSystem, logger);
+            exchange.Download(fStartDateOption.Value, fEndDateOption.Value, logger).Wait();
+            exchange.SaveStockExchange(fStockFilePathOption.Value, fFileSystem, logger);
             return 0;
         }
     }

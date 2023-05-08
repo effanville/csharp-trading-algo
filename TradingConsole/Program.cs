@@ -53,9 +53,9 @@ namespace TradingConsole
             // Define the acceptable commands for this program.
             var validCommands = new List<ICommand>()
             {
-                new ConfigureCommand(logger, fileSystem),
-                new DownloadCommand(logger, fileSystem),
-                new SimulationCommand(logger, fileSystem)
+                new ConfigureCommand(fileSystem),
+                new DownloadCommand(fileSystem),
+                new SimulationCommand(fileSystem)
             };
 
             // Generate the context, validate the arguments and execute.

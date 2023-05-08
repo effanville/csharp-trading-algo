@@ -51,7 +51,7 @@ namespace TradingConsole.Commands.Execution
         /// <summary>
         /// Construct an instance.
         /// </summary>
-        public SimulationCommand(IReportLogger logger, IFileSystem fileSystem)
+        public SimulationCommand(IFileSystem fileSystem)
         {
             fFileSystem = fileSystem;
 
@@ -88,7 +88,7 @@ namespace TradingConsole.Commands.Execution
         /// <inheritdoc/>
         public bool Validate(IConsole console, IReportLogger logger, string[] args)
         {
-            return CommandExtensions.Validate(this, args, console);
+            return CommandExtensions.Validate(this, args, console, logger);
         }
 
         /// <inheritdoc/>

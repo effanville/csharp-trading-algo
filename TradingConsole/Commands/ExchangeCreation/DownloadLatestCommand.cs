@@ -38,7 +38,7 @@ namespace TradingConsole.Commands.ExchangeCreation
         /// <summary>
         /// Default constructor.
         /// </summary>
-        public DownloadLatestCommand(IReportLogger logger, IFileSystem fileSystem)
+        public DownloadLatestCommand(IFileSystem fileSystem)
         {
             fFileSystem = fileSystem;
             fStockFilePathOption = new CommandOption<string>("stockFilePath", "FilePath to the stock database to add data to.");
@@ -60,7 +60,7 @@ namespace TradingConsole.Commands.ExchangeCreation
         /// <inheritdoc/>
         public bool Validate(IConsole console, IReportLogger logger, string[] args)
         {
-            return CommandExtensions.Validate(this, args, console);
+            return CommandExtensions.Validate(this, args, console, logger);
         }
 
         /// <inheritdoc/>

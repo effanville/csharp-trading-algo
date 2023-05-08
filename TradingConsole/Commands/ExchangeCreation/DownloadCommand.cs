@@ -31,10 +31,10 @@ namespace TradingConsole.Commands.ExchangeCreation
         /// <summary>
         /// Default Constructor.
         /// </summary>
-        public DownloadCommand(IReportLogger logger, IFileSystem fileSystem)
+        public DownloadCommand(IFileSystem fileSystem)
         {
-            SubCommands.Add(new DownloadAllCommand(logger, fileSystem));
-            SubCommands.Add(new DownloadLatestCommand(logger, fileSystem));
+            SubCommands.Add(new DownloadAllCommand(fileSystem));
+            SubCommands.Add(new DownloadLatestCommand(fileSystem));
         }
 
         /// <inheritdoc/>
@@ -52,7 +52,7 @@ namespace TradingConsole.Commands.ExchangeCreation
         /// <inheritdoc/>
         public int Execute(IConsole console, IReportLogger logger, string[] args)
         {
-            return CommandExtensions.Execute(this, console, args);
+            return CommandExtensions.Execute(this, console, logger, args);
         }
 
         /// <inheritdoc/>
@@ -64,7 +64,7 @@ namespace TradingConsole.Commands.ExchangeCreation
         /// <inheritdoc/>
         public bool Validate(IConsole console, IReportLogger logger, string[] args)
         {
-            return CommandExtensions.Validate(this, args, console);
+            return CommandExtensions.Validate(this, args, console, logger);
         }
     }
 }

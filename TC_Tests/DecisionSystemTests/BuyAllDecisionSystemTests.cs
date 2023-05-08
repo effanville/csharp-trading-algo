@@ -17,7 +17,7 @@ namespace TradingConsole.Tests.DecisionSystemTests
         public void DecisionAsExpected()
         {
             var exchange = new StockExchange();
-            exchange.Stocks.Add(new Stock("MyTicker", "MyCompany", "MyName", ""));
+            exchange.Stocks.Add(new Stock("MyTicker", "MyCompany", "MyName", "", ""));
             exchange.Stocks[0].AddValue(DateTime.Today, 43, 47, 40, 41, 1);
 
             BuyAllDecisionSystem decisionSystem = new BuyAllDecisionSystem();
