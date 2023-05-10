@@ -7,7 +7,7 @@ using FinancialStructures.StockStructures;
 
 using TradingSystem.Simulator.PriceCalculation;
 
-namespace TradingSystem.Simulator.Trading
+namespace TradingSystem.Trading
 {
     /// <summary>
     /// Interface for holding the routine to carry out any trades.

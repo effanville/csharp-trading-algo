@@ -1,6 +1,7 @@
-﻿using TradingSystem.Simulator.Trading.Decisions;
+﻿using TradingSystem.Simulator.Trading;
+using TradingSystem.Simulator.Trading.Decisions;
 
-namespace TradingSystem.Simulator.Trading
+namespace TradingSystem.Trading
 {
     public sealed class TradeEnactorResult
     {

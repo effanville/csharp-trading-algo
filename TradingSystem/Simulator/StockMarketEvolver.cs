@@ -11,6 +11,7 @@ using Nager.Date;
 using TradingSystem.Simulator.PriceCalculation;
 using TradingSystem.Simulator.Trading;
 using TradingSystem.Simulator.Trading.Decisions;
+using TradingSystem.Trading;
 
 namespace TradingSystem.Simulator
 {
