@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 
 namespace TradingSystem.Trading
 {
@@ -47,5 +48,30 @@ namespace TradingSystem.Trading
         public int TotalBuyTrades => DailyTrades.Sum(trade => trade.Value.NumberBuys);
 
         public int TotalSellTrades => DailyTrades.Sum(trade => trade.Value.NumberSells);
+
+        public string ConvertToTable()
+        {
+            StringBuilder sb = new StringBuilder("|StartDate|EndDate|StockName|TradeType|NumberShares|\r\n|-|-|-|-|-|\r\n");
+            foreach (var entry in DailyTrades)
+            {
+                foreach (var trade in entry.Value.Trades)
+                {
+                    _ = sb.Append('|')
+                        .Append(entry.Key.ToString("yyyy-MM-ddThh:mm:ss"))
+                        .Append('|')
+                        .Append(entry.Key.ToString("yyyy-MM-ddThh:mm:ss"))
+                        .Append('|')
+                        .Append(trade.StockName.Company).Append('-').Append(trade.StockName.Name)
+                        .Append('|')
+                        .Append(trade.BuySell)
+                        .Append('|')
+                        .Append(trade.NumberShares)
+                        .Append('|')
+                        .AppendLine();
+                }
+            }
+
+            return sb.ToString();
+        }
     }
 }
