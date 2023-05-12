@@ -106,8 +106,8 @@ namespace TradingSystem.Simulator
         private static bool IsCalcTimeValid(DateTime time, CountryCode countryCode)
         {
             return (time.DayOfWeek != DayOfWeek.Saturday)
-                || (time.DayOfWeek != DayOfWeek.Sunday)
-                || !DateSystem.IsPublicHoliday(time, countryCode);
+                && (time.DayOfWeek != DayOfWeek.Sunday)
+                && !DateSystem.IsPublicHoliday(time, countryCode);
         }
     }
 }
