@@ -9,7 +9,7 @@ using FinancialStructures.Database.Extensions;
 using FinancialStructures.NamingStructures;
 using FinancialStructures.StockStructures;
 
-using TradingSystem;
+using TradingSystem.Diagnostics;
 using TradingSystem.DecideThenTradeSystem;
 using TradingSystem.Decisions;
 using TradingSystem.Simulator;

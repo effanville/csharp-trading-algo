@@ -8,6 +8,7 @@ using FinancialStructures.StockStructures;
 
 using Nager.Date;
 
+using TradingSystem.Diagnostics;
 using TradingSystem.Simulator.PriceCalculation;
 using TradingSystem.Trading;
 

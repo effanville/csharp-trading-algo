@@ -11,8 +11,8 @@ using FinancialStructures.StockStructures.Statistics;
 
 using TradingConsole.TradingSystem;
 
-using TradingSystem;
 using TradingSystem.Decisions;
+using TradingSystem.Diagnostics;
 using TradingSystem.Trading;
 
 namespace TradingConsole.Commands.Execution

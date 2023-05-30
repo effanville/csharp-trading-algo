@@ -3,7 +3,7 @@ using System.Diagnostics;
 
 using Common.Structure.Reporting;
 
-namespace TradingSystem
+namespace TradingSystem.Diagnostics
 {
     /// <summary>
     /// Enables timing of operations. Timing starts upon creation and
