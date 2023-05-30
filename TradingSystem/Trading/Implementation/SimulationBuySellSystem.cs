@@ -12,6 +12,7 @@ using FinancialStructures.FinanceStructures;
 using FinancialStructures.NamingStructures;
 
 using TradingSystem.DecideThenTradeSystem;
+using TradingSystem.PriceSystem;
 
 namespace TradingSystem.Trading.Implementation
 {
@@ -32,7 +33,7 @@ namespace TradingSystem.Trading.Implementation
         public bool Buy(
             DateTime time,
             Trade buy,
-            Func<DateTime, TwoName, decimal> calculateBuyPrice,
+            IPriceService priceService,
             IPortfolio portfolio,
             TradeMechanismTraderOptions traderOptions,
             IReportLogger reportLogger)
@@ -44,7 +45,7 @@ namespace TradingSystem.Trading.Implementation
             }
 
             // If not enough money to buy then exit.
-            decimal priceToBuy = calculateBuyPrice(time, buy.StockName);
+            decimal priceToBuy = priceService.GetAskPrice(time, buy.StockName);
             if (priceToBuy.Equals(decimal.MinValue))
             {
                 return false;
@@ -100,7 +101,7 @@ namespace TradingSystem.Trading.Implementation
         public bool Sell(
             DateTime time,
             Trade sell,
-            Func<DateTime, TwoName, decimal> calculateSellPrice,
+            IPriceService priceService,
             IPortfolio portfolio,
             TradeMechanismTraderOptions traderOptions,
             IReportLogger reportLogger)
@@ -125,7 +126,7 @@ namespace TradingSystem.Trading.Implementation
                 return false;
             }
 
-            decimal price = calculateSellPrice(time, sell.StockName);
+            decimal price = priceService.GetBidPrice(time, sell.StockName);
 
             // some error with price data (or shouldnt be evaluating on this date) so ignore trade.
             if (price.Equals(decimal.MinValue))
@@ -152,13 +153,12 @@ namespace TradingSystem.Trading.Implementation
         public TradeCollection EnactAllTrades(
             DateTime time,
             TradeCollection decisions,
-            Func<DateTime, TwoName, decimal> calculateBuyPrice,
-            Func<DateTime, TwoName, decimal> calculateSellPrice,
+            IPriceService priceService,
             IPortfolio portfolio,
             TradeMechanismTraderOptions traderOptions,
             IReportLogger reportLogger)
         {
-            return this.SellThenBuy(time, decisions, calculateBuyPrice, calculateSellPrice, portfolio, traderOptions, reportLogger);
+            return this.SellThenBuy(time, decisions, priceService, portfolio, traderOptions, reportLogger);
         }
     }
 }

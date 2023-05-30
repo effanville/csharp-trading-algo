@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace TradingSystem.Simulator.Implementation
+namespace TradingSystem.PriceSystem
 {
     /// <summary>
     /// Settings for the BuySell system.
@@ -38,11 +38,16 @@ namespace TradingSystem.Simulator.Implementation
         /// Construct an instance.
         /// </summary>
         public PriceCalculationSettings(
-            double upTickProbability = 0.5,
-            double upTickSize = 0.01)
+            double upTickProbability,
+            double upTickSize)
         {
             UpTickProbability = upTickProbability;
             UpTickSize = upTickSize;
+        }
+
+        public static PriceCalculationSettings Default()
+        {
+            return new PriceCalculationSettings(0.5, 0.01);
         }
     }
 }

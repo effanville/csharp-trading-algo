@@ -5,7 +5,7 @@ using Common.Structure.Reporting;
 using FinancialStructures.Database;
 using FinancialStructures.StockStructures;
 
-using TradingSystem.Simulator.PriceCalculation;
+using TradingSystem.PriceSystem;
 
 namespace TradingSystem.Trading
 {
@@ -20,14 +20,14 @@ namespace TradingSystem.Trading
         /// <param name="time">The time to enact trades at.</param>
         /// <param name="stockExchange">The stock exchange to use for available stocks.</param>
         /// <param name="portfolio">The portfolio detailing current holdings. This is updated so after the call returns the new portfolio.</param>
-        /// <param name="priceCalculator">A mechanism to determine the price to trade at.</param>
+        /// <param name="priceService">A mechanism to determine the price to trade at.</param>
         /// <param name="reportLogger">A logger to report back.</param>
         /// <returns>A record of the trades and decisions in this enaction.</returns>
         TradeEnactorResult EnactTrades(
             DateTime time,
             IStockExchange stockExchange,
             IPortfolio portfolio,
-            IPriceCalculator priceCalculator,
+            IPriceService priceService,
             IReportLogger reportLogger);
     }
 }

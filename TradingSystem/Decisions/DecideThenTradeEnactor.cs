@@ -1,15 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
 
 using Common.Structure.Reporting;
 
 using FinancialStructures.Database;
-using FinancialStructures.Database.Implementation;
-using FinancialStructures.NamingStructures;
 using FinancialStructures.StockStructures;
 
 using TradingSystem.DecideThenTradeSystem;
-using TradingSystem.Simulator.PriceCalculation;
+using TradingSystem.PriceSystem;
 using TradingSystem.Trading;
 
 namespace TradingSystem.Decisions
@@ -42,7 +39,7 @@ namespace TradingSystem.Decisions
             DateTime time,
             IStockExchange stockExchange,
             IPortfolio portfolio,
-            IPriceCalculator priceCalculator,
+            IPriceService priceService,
             IReportLogger reportLogger)
         {
             // Decide which stocks to buy, sell or do nothing with.
@@ -52,8 +49,7 @@ namespace TradingSystem.Decisions
             TradeCollection trades = fTradeMechanism.EnactAllTrades(
                 time,
                 status,
-                (date, name) => priceCalculator.CalculateBuyPrice(date, stockExchange, name),
-                (date, name) => priceCalculator.CalculateSellPrice(date, stockExchange, name),
+                priceService,
                 portfolio,
                 fTraderOptions,
                 reportLogger);

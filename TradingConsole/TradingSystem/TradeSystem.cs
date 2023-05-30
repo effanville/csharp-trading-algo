@@ -13,8 +13,8 @@ using TradingSystem.Diagnostics;
 using TradingSystem.DecideThenTradeSystem;
 using TradingSystem.Decisions;
 using TradingSystem.Simulator;
-using TradingSystem.Simulator.Implementation;
 using TradingSystem.Trading;
+using TradingSystem.PriceSystem;
 
 namespace TradingConsole.TradingSystem
 {
@@ -50,7 +50,6 @@ namespace TradingConsole.TradingSystem
             IFileSystem fileSystem,
             IReportLogger reportLogger)
         {
-            var randomWobblePriceCalculator = new RandomWobblePriceCalculator(new PriceCalculationSettings());
             IStockExchange exchange;
             StockMarketEvolver.Settings simulatorSettings;
             IPortfolio portfolio;
@@ -86,6 +85,8 @@ namespace TradingConsole.TradingSystem
                     portfolio = LoadStartPortfolio(startSettings, fileSystem, reportLogger);
                 }
             }
+
+            var randomWobblePriceCalculator = PriceServiceFactory.Create(PriceType.RandomWobble, PriceCalculationSettings.Default(), exchange);
 
             void FirstOfTheMonthReport(DateTime time, string message)
             {

@@ -9,7 +9,7 @@ using FinancialStructures.StockStructures;
 using Nager.Date;
 
 using TradingSystem.Diagnostics;
-using TradingSystem.Simulator.PriceCalculation;
+using TradingSystem.PriceSystem;
 using TradingSystem.Trading;
 
 namespace TradingSystem.Simulator
@@ -30,7 +30,7 @@ namespace TradingSystem.Simulator
         /// end date 
         /// </summary>
         /// <param name="simulatorSettings">Contains the exchange and the dates for start and end of the simulation.</param>
-        /// <param name="priceCalculator">The method to determine the price to buy or sell at.</param>
+        /// <param name="priceService">The method to determine the price to buy or sell at.</param>
         /// <param name="startPortfolio">The initial portfolio to hold at the start of the simulation.</param>
         /// <param name="enactTrades">The mechanim by which trades are decided and enacted.</param>
         /// <param name="callbacks">Any reporting callbacks used.</param>
@@ -38,7 +38,7 @@ namespace TradingSystem.Simulator
         /// <returns>A result of the end of the simulation.</returns>
         public static Result Simulate(
             Settings simulatorSettings,
-            IPriceCalculator priceCalculator,
+            IPriceService priceService,
             IPortfolio startPortfolio,
             ITradeEnactor enactTrades,
             Reporting callbacks)
@@ -67,7 +67,7 @@ namespace TradingSystem.Simulator
                         time,
                         exchange,
                         startPortfolio,
-                        priceCalculator,
+                        priceService,
                         callbacks.Logger);
 
                     // take a record of the decisions and trades.

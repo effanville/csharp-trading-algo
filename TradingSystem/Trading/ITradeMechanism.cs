@@ -3,9 +3,9 @@
 using Common.Structure.Reporting;
 
 using FinancialStructures.Database;
-using FinancialStructures.NamingStructures;
 
 using TradingSystem.DecideThenTradeSystem;
+using TradingSystem.PriceSystem;
 
 namespace TradingSystem.Trading
 {
@@ -21,7 +21,7 @@ namespace TradingSystem.Trading
         bool Buy(
             DateTime time,
             Trade buy,
-            Func<DateTime, TwoName, decimal> calculateBuyPrice,
+            IPriceService priceService,
             IPortfolio portfolio,
             TradeMechanismTraderOptions traderOptions,
             IReportLogger reportLogger);
@@ -32,7 +32,7 @@ namespace TradingSystem.Trading
         bool Sell(
             DateTime time,
             Trade sell,
-            Func<DateTime, TwoName, decimal> calculateSellPrice,
+            IPriceService priceService,
             IPortfolio portfolio,
             TradeMechanismTraderOptions traderOptions,
             IReportLogger reportLogger);
@@ -43,8 +43,7 @@ namespace TradingSystem.Trading
         TradeCollection EnactAllTrades(
             DateTime time,
             TradeCollection decisions,
-            Func<DateTime, TwoName, decimal> calculateBuyPrice,
-            Func<DateTime, TwoName, decimal> calculateSellPrice,
+            IPriceService priceService,
             IPortfolio portfolio,
             TradeMechanismTraderOptions traderOptions,
             IReportLogger reportLogger);

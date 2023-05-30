@@ -12,6 +12,7 @@ using FinancialStructures.StockStructures;
 using TradingSystem.DecideThenTradeSystem;
 using TradingSystem.Decisions;
 using TradingSystem.Diagnostics;
+using TradingSystem.PriceSystem;
 using TradingSystem.Simulator;
 using TradingSystem.Trading;
 
@@ -91,22 +92,16 @@ namespace TradingConsole.TradingSystem
             // Decide which stocks to buy, sell or do nothing with.
             TradeCollection status = DecisionSystem.Decide(day, exchange, null);
 
-            decimal CalculatePurchasePrice(DateTime time, TwoName stock)
-            {
-                return exchange.GetValue(stock, time);
-            }
-
-            decimal CalculateSellPrice(DateTime time, TwoName stock)
-            {
-                return exchange.GetValue(stock, time);
-            }
+            var priceService = PriceServiceFactory.Create(
+                PriceType.ExchangeFile,
+                PriceCalculationSettings.Default(),
+                exchange);
 
             // Exact the buy/Sell decisions.
             _ = BuySellSystem.EnactAllTrades(
                 day,
                 status,
-                (date, name) => CalculatePurchasePrice(date, name),
-                (date, name) => CalculateSellPrice(date, name),
+                priceService,
                 portfolio,
                 fTraderOptions,
                 ReportLogger);

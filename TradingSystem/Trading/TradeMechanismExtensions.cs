@@ -4,9 +4,9 @@ using System.Collections.Generic;
 using Common.Structure.Reporting;
 
 using FinancialStructures.Database;
-using FinancialStructures.NamingStructures;
 
 using TradingSystem.DecideThenTradeSystem;
+using TradingSystem.PriceSystem;
 
 namespace TradingSystem.Trading
 {
@@ -16,8 +16,7 @@ namespace TradingSystem.Trading
             this ITradeMechanism tradeMechanism,
             DateTime time,
             TradeCollection decisions,
-            Func<DateTime, TwoName, decimal> calculateBuyPrice,
-            Func<DateTime, TwoName, decimal> calculateSellPrice,
+            IPriceService priceService,
             IPortfolio portfolio,
             TradeMechanismTraderOptions traderOptions,
             IReportLogger reportLogger)
@@ -27,7 +26,7 @@ namespace TradingSystem.Trading
             bool wasTrade = false;
             foreach (Trade sell in sellDecisions)
             {
-                if (tradeMechanism.Sell(time, sell, calculateSellPrice, portfolio, traderOptions, reportLogger))
+                if (tradeMechanism.Sell(time, sell, priceService, portfolio, traderOptions, reportLogger))
                 {
                     wasTrade = true;
                     trades.Add(sell.StockName, sell.BuySell, sell.NumberShares);
@@ -37,7 +36,7 @@ namespace TradingSystem.Trading
             List<Trade> buyDecisions = decisions.GetBuyDecisions();
             foreach (Trade buy in buyDecisions)
             {
-                if (tradeMechanism.Buy(time, buy, calculateBuyPrice, portfolio, traderOptions, reportLogger))
+                if (tradeMechanism.Buy(time, buy, priceService, portfolio, traderOptions, reportLogger))
                 {
                     wasTrade = true;
                     trades.Add(buy.StockName, buy.BuySell, buy.NumberShares);
