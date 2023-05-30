@@ -9,10 +9,9 @@ using FinancialStructures.StockStructures.Statistics;
 
 using Newtonsoft.Json;
 
-using TradingConsole.TradingSystem;
-
 using TradingSystem.DecideThenTradeSystem;
 using TradingSystem.Decisions;
+using TradingSystem.PortfolioStrategies;
 
 namespace TradingConsole.Commands.Execution
 {

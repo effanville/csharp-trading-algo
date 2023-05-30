@@ -3,12 +3,12 @@
 using FinancialStructures.Database;
 using FinancialStructures.Database.Extensions.Rates;
 using FinancialStructures.Database.Extensions.Values;
-using FinancialStructures.NamingStructures;
 using FinancialStructures.StockStructures;
 
 using Nager.Date;
 
 using TradingSystem.Diagnostics;
+using TradingSystem.PortfolioStrategies;
 using TradingSystem.PriceSystem;
 using TradingSystem.Trading;
 
@@ -31,7 +31,7 @@ namespace TradingSystem.Simulator
         /// </summary>
         /// <param name="simulatorSettings">Contains the exchange and the dates for start and end of the simulation.</param>
         /// <param name="priceService">The method to determine the price to buy or sell at.</param>
-        /// <param name="startPortfolio">The initial portfolio to hold at the start of the simulation.</param>
+        /// <param name="portfolioManager">The portfolio manager which deals with portfolio updates.</param>
         /// <param name="enactTrades">The mechanim by which trades are decided and enacted.</param>
         /// <param name="callbacks">Any reporting callbacks used.</param>
         /// <param name="logger">A logger reporting information.</param>
@@ -39,7 +39,7 @@ namespace TradingSystem.Simulator
         public static Result Simulate(
             Settings simulatorSettings,
             IPriceService priceService,
-            IPortfolio startPortfolio,
+            IPortfolioManager portfolioManager,
             ITradeEnactor enactTrades,
             Reporting callbacks)
         {
@@ -48,7 +48,7 @@ namespace TradingSystem.Simulator
             using (new Timer(callbacks.Logger, "Simulation of Evolution"))
             {
                 DateTime time = simulatorSettings.BurnInEnd;
-                callbacks.StartReportCallback($"StartDate {time} total value {startPortfolio.TotalValue(Totals.All):C2}");
+                callbacks.StartReportCallback($"StartDate {time} total value {portfolioManager.StartPortfolio.TotalValue(Totals.All):C2}");
                 IStockExchange exchange = StockExchangeFactory.Create(simulatorSettings.Exchange, time);
                 while (time < simulatorSettings.EndTime)
                 {
@@ -66,7 +66,7 @@ namespace TradingSystem.Simulator
                     TradeEnactorResult result = enactTrades.EnactTrades(
                         time,
                         exchange,
-                        startPortfolio,
+                        portfolioManager,
                         priceService,
                         callbacks.Logger);
 
@@ -77,30 +77,18 @@ namespace TradingSystem.Simulator
                     StockExchangeFactory.UpdateFromBase(simulatorSettings.Exchange, exchange, time);
 
                     // update the portfolio values for the new data.
-                    UpdatePortfolioData(time, exchange, startPortfolio);
+                    portfolioManager.UpdateData(time, exchange);
 
-                    callbacks.ReportCallback(time, $"Date: {time}. TotalVal: {startPortfolio.TotalValue(Totals.All):C2}. TotalCash: {startPortfolio.TotalValue(Totals.BankAccount):C2}");
+                    callbacks.ReportCallback(time, $"Date: {time}. TotalVal: {portfolioManager.Portfolio.TotalValue(Totals.All):C2}. TotalCash: {portfolioManager.Portfolio.TotalValue(Totals.BankAccount):C2}");
 
                     time += simulatorSettings.EvolutionIncrement;
                 }
 
-                callbacks.EndReportCallback($"EndDate {time} total value {startPortfolio.TotalValue(Totals.All):C2}");
-                callbacks.EndReportCallback($"EndDate {time} total CAR {startPortfolio.TotalIRR(Totals.All)}");
+                callbacks.EndReportCallback($"EndDate {time} total value {portfolioManager.Portfolio.TotalValue(Totals.All):C2}");
+                callbacks.EndReportCallback($"EndDate {time} total CAR {portfolioManager.Portfolio.TotalIRR(Totals.All)}");
             }
 
-            return new Result(startPortfolio, decisionRecord, tradeRecord);
-        }
-
-        private static void UpdatePortfolioData(DateTime day, IStockExchange exchange, IPortfolio portfolio)
-        {
-            foreach (var security in portfolio.FundsThreadSafe)
-            {
-                decimal value = exchange.GetValue(security.Names.ToTwoName(), day);
-                if (!value.Equals(decimal.MinValue))
-                {
-                    security.SetData(day, value);
-                }
-            }
+            return new Result(portfolioManager.Portfolio, decisionRecord, tradeRecord);
         }
 
         private static bool IsCalcTimeValid(DateTime time, CountryCode countryCode)

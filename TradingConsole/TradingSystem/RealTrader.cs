@@ -1,17 +1,14 @@
 ﻿using System;
 using System.IO.Abstractions;
 
-using Common.Structure.DataStructures;
 using Common.Structure.Reporting;
 
-using FinancialStructures.Database;
-using FinancialStructures.Database.Extensions;
-using FinancialStructures.NamingStructures;
 using FinancialStructures.StockStructures;
 
 using TradingSystem.DecideThenTradeSystem;
 using TradingSystem.Decisions;
 using TradingSystem.Diagnostics;
+using TradingSystem.PortfolioStrategies;
 using TradingSystem.PriceSystem;
 using TradingSystem.Simulator;
 using TradingSystem.Trading;
@@ -24,7 +21,7 @@ namespace TradingConsole.TradingSystem
         private readonly ITradeMechanism BuySellSystem;
         private readonly TradeMechanismTraderOptions fTraderOptions;
         private readonly StockMarketEvolver.Settings fSimulatorSettings;
-        private readonly IPortfolio fPortfolio;
+        private readonly IPortfolioManager fPortfolioManager;
 
         private readonly IReportLogger ReportLogger;
         private readonly IFileSystem fFileSystem;
@@ -75,19 +72,19 @@ namespace TradingConsole.TradingSystem
 
                 using (new Timer(reportLogger, "Loading Portfolio"))
                 {
-                    fPortfolio = LoadStartPortfolio(startSettings, reportLogger);
+                    fPortfolioManager = PortfolioManager.LoadFromFile(fFileSystem, startSettings, reportLogger);
                 }
             }
         }
 
         public void Run(string portfolioFilePath)
         {
-            PerformDailyTrades(DateTime.Today, fSimulatorSettings.Exchange, fPortfolio);
+            PerformDailyTrades(DateTime.Today, fSimulatorSettings.Exchange, fPortfolioManager);
 
-            fPortfolio.SavePortfolio(portfolioFilePath, fFileSystem, ReportLogger);
+            fPortfolioManager.Portfolio.SavePortfolio(portfolioFilePath, fFileSystem, ReportLogger);
         }
 
-        private void PerformDailyTrades(DateTime day, IStockExchange exchange, IPortfolio portfolio)
+        private void PerformDailyTrades(DateTime day, IStockExchange exchange, IPortfolioManager portfolioManager)
         {
             // Decide which stocks to buy, sell or do nothing with.
             TradeCollection status = DecisionSystem.Decide(day, exchange, null);
@@ -102,26 +99,9 @@ namespace TradingConsole.TradingSystem
                 day,
                 status,
                 priceService,
-                portfolio,
+                portfolioManager,
                 fTraderOptions,
                 ReportLogger);
-        }
-
-        private IPortfolio LoadStartPortfolio(PortfolioStartSettings settings, IReportLogger logger)
-        {
-            IPortfolio portfolio = PortfolioFactory.GenerateEmpty();
-            if (settings.PortfolioFilePath != null)
-            {
-                portfolio.LoadPortfolio(settings.PortfolioFilePath, fFileSystem, ReportLogger);
-            }
-            else
-            {
-                _ = portfolio.TryAdd(Account.BankAccount, new NameData(settings.DefaultBankAccName.Company, settings.DefaultBankAccName.Name), logger);
-                var data = new DailyValuation(settings.StartTime.AddDays(-1), settings.StartingCash);
-                _ = portfolio.TryAddOrEditData(Account.BankAccount, settings.DefaultBankAccName, data, data, logger);
-            }
-
-            return portfolio;
         }
     }
 }

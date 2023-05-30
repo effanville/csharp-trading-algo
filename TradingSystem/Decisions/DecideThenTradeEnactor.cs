@@ -2,10 +2,10 @@
 
 using Common.Structure.Reporting;
 
-using FinancialStructures.Database;
 using FinancialStructures.StockStructures;
 
 using TradingSystem.DecideThenTradeSystem;
+using TradingSystem.PortfolioStrategies;
 using TradingSystem.PriceSystem;
 using TradingSystem.Trading;
 
@@ -38,7 +38,7 @@ namespace TradingSystem.Decisions
         public TradeEnactorResult EnactTrades(
             DateTime time,
             IStockExchange stockExchange,
-            IPortfolio portfolio,
+            IPortfolioManager portfolioManager,
             IPriceService priceService,
             IReportLogger reportLogger)
         {
@@ -50,7 +50,7 @@ namespace TradingSystem.Decisions
                 time,
                 status,
                 priceService,
-                portfolio,
+                portfolioManager,
                 fTraderOptions,
                 reportLogger);
             return new TradeEnactorResult(trades, status);

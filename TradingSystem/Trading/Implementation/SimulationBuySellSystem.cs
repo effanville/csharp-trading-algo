@@ -1,17 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
 
-using Common.Structure.DataStructures;
 using Common.Structure.Reporting;
 
-using FinancialStructures.Database;
-using FinancialStructures.Database.Extensions;
-using FinancialStructures.Database.Extensions.Values;
 using FinancialStructures.DataStructures;
-using FinancialStructures.FinanceStructures;
-using FinancialStructures.NamingStructures;
 
 using TradingSystem.DecideThenTradeSystem;
+using TradingSystem.PortfolioStrategies;
 using TradingSystem.PriceSystem;
 
 namespace TradingSystem.Trading.Implementation
@@ -34,7 +28,7 @@ namespace TradingSystem.Trading.Implementation
             DateTime time,
             Trade buy,
             IPriceService priceService,
-            IPortfolio portfolio,
+            IPortfolioManager portfolioManager,
             TradeMechanismTraderOptions traderOptions,
             IReportLogger reportLogger)
         {
@@ -44,57 +38,29 @@ namespace TradingSystem.Trading.Implementation
                 return false;
             }
 
-            // If not enough money to buy then exit.
-            decimal priceToBuy = priceService.GetAskPrice(time, buy.StockName);
-            if (priceToBuy.Equals(decimal.MinValue))
+            decimal cashAvailable = portfolioManager.AvailableFunds(time);
+            Trade requestedTrade = portfolioManager.ValidateTrade(time, buy, priceService);
+            decimal price = priceService.GetAskPrice(time, buy.StockName);
+            if (price.Equals(decimal.MinValue))
             {
                 return false;
             }
 
-            decimal cashAvailable = portfolio.TotalValue(Totals.BankAccount, time);
-
-            if (priceToBuy == 0.0m || cashAvailable <= priceToBuy)
+            if (requestedTrade == null)
             {
                 return false;
             }
 
-            int numShares = 0;
-            while (numShares * priceToBuy < traderOptions.FractionInvest * cashAvailable)
-            {
-                numShares++;
-            }
-            numShares--;
-
-            if (numShares <= 0)
-            {
-                return false;
-            }
-
-            buy.NumberShares = numShares;
+            buy.NumberShares = requestedTrade.NumberShares;
 
             // If not enough money to deal with the total cost then exit.
-            var tradeDetails = new SecurityTrade(TradeType.Buy, buy.StockName, time, numShares, priceToBuy, traderOptions.TradeCost);
+            SecurityTrade tradeDetails = new SecurityTrade(TradeType.Buy, buy.StockName, time, requestedTrade.NumberShares, price, traderOptions.TradeCost);
             if (cashAvailable <= tradeDetails.TotalCost)
             {
                 return false;
             }
 
-            if (!portfolio.Exists(Account.Security, buy.StockName))
-            {
-                _ = portfolio.TryAdd(Account.Security, new NameData(buy.StockName.Company, buy.StockName.Name, "GBP", buy.StockName.Url, new HashSet<string>()), reportLogger);
-            }
-
-            // "Buy" the shares by adding the number of shares in the security desired. First must ensure we know the number of shares held.
-            _ = portfolio.TryGetAccount(Account.Security, buy.StockName, out var desired);
-
-            _ = portfolio.TryAddOrEditTradeData(Account.Security, buy.StockName, tradeDetails, tradeDetails, reportLogger);
-
-            // Remove the cash used to buy the shares from the portfolio.
-            var value = new DailyValuation(time, cashAvailable - tradeDetails.TotalCost);
-            _ = portfolio.TryAddOrEditData(Account.BankAccount, traderOptions.BankAccData, value, value, reportLogger: null);
-
-            _ = reportLogger.Log(ReportSeverity.Critical, ReportType.Warning, ReportLocation.Execution, $"Date {time} bought {buy.StockName} Cost {tradeDetails.TotalCost:C2} price");
-            return true;
+            return portfolioManager.AddTrade(time, buy, tradeDetails);
         }
 
         /// <inheritdoc/>
@@ -102,7 +68,7 @@ namespace TradingSystem.Trading.Implementation
             DateTime time,
             Trade sell,
             IPriceService priceService,
-            IPortfolio portfolio,
+            IPortfolioManager portfolioManager,
             TradeMechanismTraderOptions traderOptions,
             IReportLogger reportLogger)
 
@@ -112,21 +78,12 @@ namespace TradingSystem.Trading.Implementation
                 return false;
             }
 
-            // One can only sell if one already owns some of the security.
-            if (!portfolio.Exists(Account.Security, sell.StockName))
-            {
-                return false;
-            }
-
-            _ = portfolio.TryGetAccount(Account.Security, sell.StockName, out var desired);
-            ISecurity security = desired as ISecurity;
-            decimal numShares = security.Shares.ValueOnOrBefore(time)?.Value ?? 0.0m;
-            if (numShares <= 0)
-            {
-                return false;
-            }
-
+            Trade requestedTrade = portfolioManager.ValidateTrade(time, sell, priceService);
             decimal price = priceService.GetBidPrice(time, sell.StockName);
+            if (requestedTrade == null)
+            {
+                return false;
+            }
 
             // some error with price data (or shouldnt be evaluating on this date) so ignore trade.
             if (price.Equals(decimal.MinValue))
@@ -134,19 +91,9 @@ namespace TradingSystem.Trading.Implementation
                 return false;
             }
 
-            sell.NumberShares = numShares;
-            var tradeDetails = new SecurityTrade(TradeType.Sell, sell.StockName, time, numShares, price, traderOptions.TradeCost);
-
-            // Now perform selling. This consists of removing the security at the specific value in our portfolio.
-            _ = portfolio.TryAddOrEditTradeData(Account.Security, sell.StockName, tradeDetails, tradeDetails);
-
-            // Now increase the amount in the bank account, i.e. free cash, held in the portfolio, to free it up to be used on other securities.
-            decimal cashAvailable = portfolio.TotalValue(Totals.BankAccount, time);
-            var value = new DailyValuation(time, cashAvailable + tradeDetails.TotalCost);
-            _ = portfolio.TryAddOrEditData(Account.BankAccount, traderOptions.BankAccData, value, value, reportLogger: null);
-
-            _ = reportLogger.Log(ReportSeverity.Critical, ReportType.Warning, ReportLocation.Execution, $"Date {time} sold {sell.StockName} for {tradeDetails.TotalCost:C2}");
-            return true;
+            sell.NumberShares = requestedTrade.NumberShares;
+            SecurityTrade tradeDetails = new SecurityTrade(TradeType.Sell, requestedTrade.StockName, time, requestedTrade.NumberShares, price, traderOptions.TradeCost);
+            return portfolioManager.AddTrade(time, sell, tradeDetails);
         }
 
         /// <inheritdoc/>
@@ -154,11 +101,11 @@ namespace TradingSystem.Trading.Implementation
             DateTime time,
             TradeCollection decisions,
             IPriceService priceService,
-            IPortfolio portfolio,
+            IPortfolioManager portfolioManager,
             TradeMechanismTraderOptions traderOptions,
             IReportLogger reportLogger)
         {
-            return this.SellThenBuy(time, decisions, priceService, portfolio, traderOptions, reportLogger);
+            return this.SellThenBuy(time, decisions, priceService, portfolioManager, traderOptions, reportLogger);
         }
     }
 }

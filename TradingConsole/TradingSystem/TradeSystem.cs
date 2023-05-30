@@ -1,12 +1,8 @@
 ﻿using System;
 using System.IO.Abstractions;
 
-using Common.Structure.DataStructures;
 using Common.Structure.Reporting;
 
-using FinancialStructures.Database;
-using FinancialStructures.Database.Extensions;
-using FinancialStructures.NamingStructures;
 using FinancialStructures.StockStructures;
 
 using TradingSystem.Diagnostics;
@@ -15,6 +11,7 @@ using TradingSystem.Decisions;
 using TradingSystem.Simulator;
 using TradingSystem.Trading;
 using TradingSystem.PriceSystem;
+using TradingSystem.PortfolioStrategies;
 
 namespace TradingConsole.TradingSystem
 {
@@ -52,7 +49,7 @@ namespace TradingConsole.TradingSystem
         {
             IStockExchange exchange;
             StockMarketEvolver.Settings simulatorSettings;
-            IPortfolio portfolio;
+            IPortfolioManager portfolioManager;
             IDecisionSystem decisionSystem;
             ITradeMechanism tradeMechanism;
 
@@ -82,7 +79,7 @@ namespace TradingConsole.TradingSystem
 
                 using (new Timer(reportLogger, "Loading Portfolio"))
                 {
-                    portfolio = LoadStartPortfolio(startSettings, fileSystem, reportLogger);
+                    portfolioManager = PortfolioManager.LoadFromFile(fileSystem, startSettings, reportLogger);
                 }
             }
 
@@ -106,29 +103,9 @@ namespace TradingConsole.TradingSystem
 
             return StockMarketEvolver.Simulate(simulatorSettings,
                 randomWobblePriceCalculator,
-                portfolio.Copy(),
+                portfolioManager,
                 tradeEnactor,
                 callbacks);
-        }
-
-        /// <summary>
-        /// Loads the starting portfolio, either from file or with the cash specified in the settings.
-        /// </summary>
-        private static IPortfolio LoadStartPortfolio(PortfolioStartSettings settings, IFileSystem fileSystem, IReportLogger logger)
-        {
-            IPortfolio portfolio = PortfolioFactory.GenerateEmpty();
-            if (settings.PortfolioFilePath != null)
-            {
-                portfolio.LoadPortfolio(settings.PortfolioFilePath, fileSystem, logger);
-            }
-            else
-            {
-                _ = portfolio.TryAdd(Account.BankAccount, new NameData(settings.DefaultBankAccName.Company, settings.DefaultBankAccName.Name), logger);
-                var data = new DailyValuation(settings.StartTime.AddDays(-1), settings.StartingCash);
-                _ = portfolio.TryAddOrEditData(Account.BankAccount, settings.DefaultBankAccName, data, data, logger);
-            }
-
-            return portfolio;
         }
     }
 }

@@ -2,7 +2,7 @@
 
 using FinancialStructures.NamingStructures;
 
-namespace TradingConsole.TradingSystem
+namespace TradingSystem.PortfolioStrategies
 {
     /// <summary>
     /// Settings for constructing the start portfolio.

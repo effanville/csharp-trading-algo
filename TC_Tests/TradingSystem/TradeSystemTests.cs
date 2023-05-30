@@ -15,6 +15,7 @@ using TradingConsole.TradingSystem;
 
 using TradingSystem.DecideThenTradeSystem;
 using TradingSystem.Decisions;
+using TradingSystem.PortfolioStrategies;
 using TradingSystem.Trading;
 
 namespace TradingConsole.Tests.TradingSystem
