@@ -4,7 +4,6 @@ using Common.Structure.Reporting;
 
 using FinancialStructures.StockStructures;
 
-using TradingSystem.DecideThenTradeSystem;
 using TradingSystem.PortfolioStrategies;
 using TradingSystem.PriceSystem;
 using TradingSystem.Trading;
@@ -22,12 +21,12 @@ namespace TradingSystem.Decisions
     {
         private readonly IDecisionSystem fDecisionSystem;
         private readonly ITradeMechanism fTradeMechanism;
-        private readonly TradeMechanismTraderOptions fTraderOptions;
+        private readonly TradeMechanismSettings fTraderOptions;
 
         /// <summary>
         /// Construct an instance.
         /// </summary>
-        public DecideThenTradeEnactor(IDecisionSystem decisionSystem, ITradeMechanism tradeMechanism, TradeMechanismTraderOptions traderOptions)
+        public DecideThenTradeEnactor(IDecisionSystem decisionSystem, ITradeMechanism tradeMechanism, TradeMechanismSettings traderOptions)
         {
             fDecisionSystem = decisionSystem;
             fTradeMechanism = tradeMechanism;

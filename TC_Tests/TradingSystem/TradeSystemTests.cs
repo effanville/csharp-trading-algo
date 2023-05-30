@@ -13,7 +13,6 @@ using NUnit.Framework;
 
 using TradingConsole.TradingSystem;
 
-using TradingSystem.DecideThenTradeSystem;
 using TradingSystem.Decisions;
 using TradingSystem.PortfolioStrategies;
 using TradingSystem.Trading;
@@ -424,8 +423,9 @@ $@"|StartDate|EndDate|StockName|TradeType|NumberShares|
                 endDate,
                 TimeSpan.FromDays(1),
                 portfolioStartSettings,
+                PortfolioConstructionSettings.Default(),
                 decisionParameters,
-                new TradeMechanismTraderOptions(),
+                TradeMechanismSettings.Default(),
                 TradeMechanismType.SellAllThenBuy,
                 fileSystem,
                 logger);

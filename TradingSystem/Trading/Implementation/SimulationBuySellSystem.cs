@@ -4,7 +4,6 @@ using Common.Structure.Reporting;
 
 using FinancialStructures.DataStructures;
 
-using TradingSystem.DecideThenTradeSystem;
 using TradingSystem.PortfolioStrategies;
 using TradingSystem.PriceSystem;
 
@@ -29,7 +28,7 @@ namespace TradingSystem.Trading.Implementation
             Trade buy,
             IPriceService priceService,
             IPortfolioManager portfolioManager,
-            TradeMechanismTraderOptions traderOptions,
+            TradeMechanismSettings tradeMechanismSettings,
             IReportLogger reportLogger)
         {
             // If not a buy then stop.
@@ -54,7 +53,7 @@ namespace TradingSystem.Trading.Implementation
             buy.NumberShares = requestedTrade.NumberShares;
 
             // If not enough money to deal with the total cost then exit.
-            SecurityTrade tradeDetails = new SecurityTrade(TradeType.Buy, buy.StockName, time, requestedTrade.NumberShares, price, traderOptions.TradeCost);
+            SecurityTrade tradeDetails = new SecurityTrade(TradeType.Buy, buy.StockName, time, requestedTrade.NumberShares, price, tradeMechanismSettings.TradeCost);
             if (cashAvailable <= tradeDetails.TotalCost)
             {
                 return false;
@@ -69,7 +68,7 @@ namespace TradingSystem.Trading.Implementation
             Trade sell,
             IPriceService priceService,
             IPortfolioManager portfolioManager,
-            TradeMechanismTraderOptions traderOptions,
+            TradeMechanismSettings tradeMechanismSettings,
             IReportLogger reportLogger)
 
         {
@@ -92,7 +91,7 @@ namespace TradingSystem.Trading.Implementation
             }
 
             sell.NumberShares = requestedTrade.NumberShares;
-            SecurityTrade tradeDetails = new SecurityTrade(TradeType.Sell, requestedTrade.StockName, time, requestedTrade.NumberShares, price, traderOptions.TradeCost);
+            SecurityTrade tradeDetails = new SecurityTrade(TradeType.Sell, requestedTrade.StockName, time, requestedTrade.NumberShares, price, tradeMechanismSettings.TradeCost);
             return portfolioManager.AddTrade(time, sell, tradeDetails);
         }
 
@@ -102,10 +101,10 @@ namespace TradingSystem.Trading.Implementation
             TradeCollection decisions,
             IPriceService priceService,
             IPortfolioManager portfolioManager,
-            TradeMechanismTraderOptions traderOptions,
+            TradeMechanismSettings tradeMechanismSettings,
             IReportLogger reportLogger)
         {
-            return this.SellThenBuy(time, decisions, priceService, portfolioManager, traderOptions, reportLogger);
+            return this.SellThenBuy(time, decisions, priceService, portfolioManager, tradeMechanismSettings, reportLogger);
         }
     }
 }

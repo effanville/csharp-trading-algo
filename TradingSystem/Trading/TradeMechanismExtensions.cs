@@ -3,7 +3,6 @@ using System.Collections.Generic;
 
 using Common.Structure.Reporting;
 
-using TradingSystem.DecideThenTradeSystem;
 using TradingSystem.PortfolioStrategies;
 using TradingSystem.PriceSystem;
 
@@ -17,7 +16,7 @@ namespace TradingSystem.Trading
             TradeCollection decisions,
             IPriceService priceService,
             IPortfolioManager portfolioManager,
-            TradeMechanismTraderOptions traderOptions,
+            TradeMechanismSettings traderOptions,
             IReportLogger reportLogger)
         {
             List<Trade> sellDecisions = decisions.GetSellDecisions();

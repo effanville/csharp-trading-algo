@@ -5,7 +5,6 @@ using Common.Structure.Reporting;
 
 using FinancialStructures.StockStructures;
 
-using TradingSystem.DecideThenTradeSystem;
 using TradingSystem.Decisions;
 using TradingSystem.Diagnostics;
 using TradingSystem.PortfolioStrategies;
@@ -19,7 +18,7 @@ namespace TradingConsole.TradingSystem
     {
         private readonly IDecisionSystem DecisionSystem;
         private readonly ITradeMechanism BuySellSystem;
-        private readonly TradeMechanismTraderOptions fTraderOptions;
+        private readonly TradeMechanismSettings fTradeMechanismSettings;
         private readonly StockMarketEvolver.Settings fSimulatorSettings;
         private readonly IPortfolioManager fPortfolioManager;
 
@@ -38,6 +37,7 @@ namespace TradingConsole.TradingSystem
         public RealTrader(
             string stockFilePath,
             PortfolioStartSettings startSettings,
+            PortfolioConstructionSettings constructionSettings,
             DecisionSystemFactory.Settings decisionParameters,
             TradeMechanismType buySellType,
             IFileSystem fileSystem,
@@ -46,7 +46,7 @@ namespace TradingConsole.TradingSystem
             ReportLogger = reportLogger;
             fFileSystem = fileSystem;
 
-            fTraderOptions = new TradeMechanismTraderOptions();
+            fTradeMechanismSettings = TradeMechanismSettings.Default();
 
             IStockExchange exchange;
             using (new Timer(ReportLogger, "Setup"))
@@ -72,7 +72,7 @@ namespace TradingConsole.TradingSystem
 
                 using (new Timer(reportLogger, "Loading Portfolio"))
                 {
-                    fPortfolioManager = PortfolioManager.LoadFromFile(fFileSystem, startSettings, reportLogger);
+                    fPortfolioManager = PortfolioManager.LoadFromFile(fFileSystem, startSettings, constructionSettings, reportLogger);
                 }
             }
         }
@@ -100,7 +100,7 @@ namespace TradingConsole.TradingSystem
                 status,
                 priceService,
                 portfolioManager,
-                fTraderOptions,
+                fTradeMechanismSettings,
                 ReportLogger);
         }
     }

@@ -9,9 +9,9 @@ using FinancialStructures.StockStructures.Statistics;
 
 using Newtonsoft.Json;
 
-using TradingSystem.DecideThenTradeSystem;
 using TradingSystem.Decisions;
 using TradingSystem.PortfolioStrategies;
+using TradingSystem.Trading;
 
 namespace TradingConsole.Commands.Execution
 {
@@ -49,13 +49,16 @@ namespace TradingConsole.Commands.Execution
                 set;
             }
 
+            public PortfolioConstructionSettings PortfolioConstructionSettings
+            { get; set; }
+
             public DecisionSystemFactory.Settings DecisionSystemSettings
             {
                 get;
                 set;
             }
 
-            public TradeMechanismTraderOptions TradingOptions
+            public TradeMechanismSettings TradeMechanismSettings
             {
                 get;
                 set;
@@ -95,7 +98,8 @@ namespace TradingConsole.Commands.Execution
 
                     settings.PortfolioSettings = new PortfolioStartSettings(portfolioFilePath.Value, startDate.Value, startingCash.Value);
                     settings.DecisionSystemSettings = new DecisionSystemFactory.Settings(decisionType.Value, decisionSystemStats.Value, 1.05, 1.0, 1);
-                    settings.TradingOptions = new TradeMechanismTraderOptions(fractionInvest?.Value ?? 0.25m);
+                    settings.TradeMechanismSettings = TradeMechanismSettings.Default();
+                    settings.PortfolioConstructionSettings = new PortfolioConstructionSettings(fractionInvest?.Value ?? 0.25m);
                     return settings;
                 }
             }

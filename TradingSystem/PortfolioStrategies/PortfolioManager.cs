@@ -27,7 +27,7 @@ namespace TradingSystem.PortfolioStrategies
         public PortfolioConstructionSettings PortfolioConstructionSettings
         {
             get;
-        } = PortfolioConstructionSettings.Default();
+        }
 
         /// <inheritdoc/>
         public PortfolioStartSettings StartSettings
@@ -47,12 +47,17 @@ namespace TradingSystem.PortfolioStrategies
             get;
         }
 
-        public PortfolioManager(IPortfolio portfolio, PortfolioStartSettings startSettings, IReportLogger logger)
+        public PortfolioManager(
+            IPortfolio portfolio,
+            PortfolioStartSettings startSettings,
+            PortfolioConstructionSettings constructionSettings,
+            IReportLogger logger)
         {
             _logger = logger;
             Portfolio = portfolio;
             StartPortfolio = portfolio.Copy();
             StartSettings = startSettings;
+            PortfolioConstructionSettings = constructionSettings;
         }
 
         /// <summary>
@@ -61,10 +66,11 @@ namespace TradingSystem.PortfolioStrategies
         public static PortfolioManager LoadFromFile(
             IFileSystem fileSystem,
             PortfolioStartSettings startSettings,
+            PortfolioConstructionSettings constructionSettings,
             IReportLogger logger)
         {
             var portfolio = LoadStartPortfolio(startSettings, fileSystem, logger);
-            return new PortfolioManager(portfolio, startSettings, logger);
+            return new PortfolioManager(portfolio, startSettings, constructionSettings, logger);
         }
 
         private static IPortfolio LoadStartPortfolio(PortfolioStartSettings settings, IFileSystem fileSystem, IReportLogger logger)

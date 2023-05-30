@@ -2,7 +2,6 @@
 
 using Common.Structure.Reporting;
 
-using TradingSystem.DecideThenTradeSystem;
 using TradingSystem.PortfolioStrategies;
 using TradingSystem.PriceSystem;
 
@@ -22,7 +21,7 @@ namespace TradingSystem.Trading
             Trade buy,
             IPriceService priceService,
             IPortfolioManager portfolioManager,
-            TradeMechanismTraderOptions traderOptions,
+            TradeMechanismSettings tradeMechanismSettings,
             IReportLogger reportLogger);
 
         /// <summary>
@@ -33,7 +32,7 @@ namespace TradingSystem.Trading
             Trade sell,
             IPriceService priceService,
             IPortfolioManager portfolioManager,
-            TradeMechanismTraderOptions traderOptions,
+            TradeMechanismSettings tradeMechanismSettings,
             IReportLogger reportLogger);
 
         /// <summary>
@@ -44,7 +43,7 @@ namespace TradingSystem.Trading
             TradeCollection decisions,
             IPriceService priceService,
             IPortfolioManager portfolioManager,
-            TradeMechanismTraderOptions traderOptions,
+            TradeMechanismSettings tradeMechanismSettings,
             IReportLogger reportLogger);
     }
 }

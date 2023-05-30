@@ -13,6 +13,7 @@ using TradingConsole.TradingSystem;
 
 using TradingSystem.Decisions;
 using TradingSystem.Diagnostics;
+using TradingSystem.PortfolioStrategies;
 using TradingSystem.Trading;
 
 namespace TradingConsole.Commands.Execution
@@ -111,8 +112,9 @@ namespace TradingConsole.Commands.Execution
                     settings.EndTime,
                     settings.EvolutionIncrement,
                     settings.PortfolioSettings,
+                    PortfolioConstructionSettings.Default(),
                     settings.DecisionSystemSettings,
-                    settings.TradingOptions,
+                    settings.TradeMechanismSettings,
                     TradeMechanismType.SellAllThenBuy,
                     fFileSystem,
                     logger);

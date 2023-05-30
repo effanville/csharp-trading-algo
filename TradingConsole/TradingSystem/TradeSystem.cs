@@ -6,7 +6,6 @@ using Common.Structure.Reporting;
 using FinancialStructures.StockStructures;
 
 using TradingSystem.Diagnostics;
-using TradingSystem.DecideThenTradeSystem;
 using TradingSystem.Decisions;
 using TradingSystem.Simulator;
 using TradingSystem.Trading;
@@ -41,8 +40,9 @@ namespace TradingConsole.TradingSystem
             DateTime endTime,
             TimeSpan evolutionIncrement,
             PortfolioStartSettings startSettings,
+            PortfolioConstructionSettings constructionSettings,
             DecisionSystemFactory.Settings decisionParameters,
-            TradeMechanismTraderOptions traderOptions,
+            TradeMechanismSettings traderOptions,
             TradeMechanismType buySellType,
             IFileSystem fileSystem,
             IReportLogger reportLogger)
@@ -79,7 +79,7 @@ namespace TradingConsole.TradingSystem
 
                 using (new Timer(reportLogger, "Loading Portfolio"))
                 {
-                    portfolioManager = PortfolioManager.LoadFromFile(fileSystem, startSettings, reportLogger);
+                    portfolioManager = PortfolioManager.LoadFromFile(fileSystem, startSettings, constructionSettings, reportLogger);
                 }
             }
 
