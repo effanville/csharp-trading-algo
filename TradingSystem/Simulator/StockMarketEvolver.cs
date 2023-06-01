@@ -73,15 +73,18 @@ namespace TradingSystem.Simulator
                     // take a record of the decisions and trades.
                     decisionRecord.AddIfNotNull(time, result.Decisions);
                     tradeRecord.AddIfNotNull(time, result.Trades);
+
                     // Update the Stock exchange for the recent time period.
+                    time = time.Add(TimeSpan.FromHours(8.5));
                     StockExchangeFactory.UpdateFromBase(simulatorSettings.Exchange, exchange, time);
 
                     // update the portfolio values for the new data.
                     portfolioManager.UpdateData(time, exchange);
 
-                    callbacks.ReportCallback(time, $"Date: {time}. TotalVal: {portfolioManager.Portfolio.TotalValue(Totals.All):C2}. TotalCash: {portfolioManager.Portfolio.TotalValue(Totals.BankAccount):C2}");
+                    var totalValue = portfolioManager.Portfolio.TotalValue(Totals.All);
+                    callbacks.ReportCallback(time, $"Date: {time}. TotalVal: {totalValue:C2}. TotalCash: {portfolioManager.Portfolio.TotalValue(Totals.BankAccount):C2}");
 
-                    time += simulatorSettings.EvolutionIncrement;
+                    time += (simulatorSettings.EvolutionIncrement - TimeSpan.FromHours(8.5));
                 }
 
                 callbacks.EndReportCallback($"EndDate {time} total value {portfolioManager.Portfolio.TotalValue(Totals.All):C2}");
