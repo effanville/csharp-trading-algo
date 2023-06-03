@@ -52,6 +52,12 @@ namespace TradingSystem.Simulator
                 IStockExchange exchange = StockExchangeFactory.Create(simulatorSettings.Exchange, time);
                 while (time < simulatorSettings.EndTime)
                 {
+                    var exchangeOpen = exchange.ExchangeOpenInUtc(time);
+                    if (exchangeOpen > time)
+                    {
+                        time = exchangeOpen;
+                    }
+
                     // update with opening times of the stocks in this time period.
                     StockExchangeFactory.UpdateFromBase(simulatorSettings.Exchange, exchange, time);
 
@@ -75,7 +81,12 @@ namespace TradingSystem.Simulator
                     tradeRecord.AddIfNotNull(time, result.Trades);
 
                     // Update the Stock exchange for the recent time period.
-                    time = time.Add(TimeSpan.FromHours(8.5));
+
+                    var exchangeClose = exchange.ExchangeCloseInUtc(time);
+                    if (exchangeClose.Date == time.Date && exchangeClose > time)
+                    {
+                        time = exchangeClose;
+                    }
                     StockExchangeFactory.UpdateFromBase(simulatorSettings.Exchange, exchange, time);
 
                     // update the portfolio values for the new data.
@@ -84,7 +95,7 @@ namespace TradingSystem.Simulator
                     var totalValue = portfolioManager.Portfolio.TotalValue(Totals.All);
                     callbacks.ReportCallback(time, $"Date: {time}. TotalVal: {totalValue:C2}. TotalCash: {portfolioManager.Portfolio.TotalValue(Totals.BankAccount):C2}");
 
-                    time += (simulatorSettings.EvolutionIncrement - TimeSpan.FromHours(8.5));
+                    time += (simulatorSettings.EvolutionIncrement - time.TimeOfDay);
                 }
 
                 callbacks.EndReportCallback($"EndDate {time} total value {portfolioManager.Portfolio.TotalValue(Totals.All):C2}");

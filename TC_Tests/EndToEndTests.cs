@@ -81,9 +81,9 @@ namespace TradingConsole.Tests
             string testFilePath = "c:/temp/exampleFile.xml";
             fFileSystem.AddFile(testFilePath, configureFile);
 
-            string[] args = new[] { "simulate", "--stockFilePath", testFilePath, "--start", "2015-01-05T08:00+00:00", "--end", "2019-12-12T08:00:00", "--startCash", "20000", "--decision", "BuyAll", "--invFrac", "0.25" };
+            string[] args = new[] { "simulate", "--stockFilePath", testFilePath, "--start", "2015-01-05T08:00:00", "--end", "2019-12-12T08:00:00", "--startCash", "20000", "--decision", "BuyAll", "--invFrac", "0.25" };
             _ = Program.InternalMain(args, fFileSystem, fConsole, fLogger);
-            Assert.GreaterOrEqual(fLogger.Reports.Count(), 80);
+            Assert.GreaterOrEqual(fLogger.Reports.Count(), 65);
         }
 
         [Test]
