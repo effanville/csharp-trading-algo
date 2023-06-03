@@ -43,8 +43,8 @@ namespace TradingConsole.Tests.TradingSystem
 |2015-01-15T08:00:00|2015-01-15T08:00:00|{barcName}|Buy|1|
 |2015-01-16T08:00:00|2015-01-16T08:00:00|{barcName}|Buy|1|
 |2015-01-19T08:00:00|2015-01-19T08:00:00|{barcName}|Buy|1|
-|2016-01-12T08:00:00|2016-01-12T08:00:00|{barcName}|Buy|1|
-|2016-03-31T08:00:00|2016-03-31T08:00:00|{barcName}|Buy|1|";
+|2016-01-19T08:00:00|2016-01-19T08:00:00|{barcName}|Buy|1|
+|2016-06-27T08:00:00|2016-06-27T08:00:00|{barcName}|Buy|1|";
             var trades = new TradeDictionaryBuilder().BuildFromString(tradeString);
             yield return new TestCaseData(
                 "example-database.xml",
@@ -74,8 +74,8 @@ namespace TradingConsole.Tests.TradingSystem
 |2017-01-13T08:00:00|2017-01-13T08:00:00|{barcName}|Buy|1|
 |2017-01-16T08:00:00|2017-01-16T08:00:00|{barcName}|Buy|1|
 |2017-01-17T08:00:00|2017-01-17T08:00:00|{barcName}|Buy|1|
-|2017-01-19T08:00:00|2017-01-19T08:00:00|{barcName}|Buy|1|
-|2018-09-17T08:00:00|2018-09-17T08:00:00|{barcName}|Buy|1|";
+|2017-02-02T08:00:00|2017-02-02T08:00:00|{barcName}|Buy|1|
+|2018-10-17T08:00:00|2018-10-17T08:00:00|{barcName}|Buy|1|";
             trades = new TradeDictionaryBuilder().BuildFromString(tradeString);
             yield return new TestCaseData(
                 "example-database.xml",
@@ -83,7 +83,7 @@ namespace TradingConsole.Tests.TradingSystem
                 null, 1, 1.05, 1.0,
                 new DateTime(2017, 1, 5, 8, 0, 0, DateTimeKind.Utc),
                 new DateTime(2018, 12, 12, 8, 0, 0, DateTimeKind.Utc),
-                13637.6561m,
+                13631.6481098m,
                 15,
                 15,
                 0,
@@ -95,7 +95,7 @@ namespace TradingConsole.Tests.TradingSystem
                 null, 1, 1.05, 1.0,
                 new DateTime(2015, 1, 5, 8, 0, 0, DateTimeKind.Utc),
                 new DateTime(2019, 12, 12, 8, 0, 0, DateTimeKind.Utc),
-                22981.630923004150446m,
+                22735.32432571411139m,
                 94,
                 70,
                 24,
@@ -107,9 +107,9 @@ namespace TradingConsole.Tests.TradingSystem
                 null, 1, 1.05, 1.0,
                 new DateTime(2015, 1, 5, 8, 0, 0, DateTimeKind.Utc),
                 new DateTime(2019, 12, 12, 8, 0, 0, DateTimeKind.Utc),
-                21384.0343847656261407m,
-                197,
-                147,
+                20971.81046203m,
+                196,
+                146,
                 50,
                 new Dictionary<DateTime, TradeCollection>())
                 .SetName("FiveDayStatsLasso-2015-2019");
@@ -119,7 +119,7 @@ namespace TradingConsole.Tests.TradingSystem
                 null, 1, 1.05, 1.0,
                 new DateTime(2015, 1, 5, 8, 0, 0, DateTimeKind.Utc),
                 new DateTime(2019, 12, 12, 8, 0, 0, DateTimeKind.Utc),
-                22981.630923004150446m,
+                22735.3243257141113909m,
                 94,
                 70,
                 24,
@@ -135,11 +135,11 @@ namespace TradingConsole.Tests.TradingSystem
 |2019-01-10T08:00:00|2019-01-10T08:00:00|stuff-Dunelm|Buy|4|
 |2019-01-11T08:00:00|2019-01-11T08:00:00|stuff-Dunelm|Buy|3|
 |2019-01-16T08:00:00|2019-01-16T08:00:00|stuff-Dunelm|Sell|19|
-|2019-10-16T08:00:00|2019-10-16T08:00:00|Barclays|Buy|30|
-|2019-10-17T08:00:00|2019-10-17T08:00:00|Barclays|Buy|22|
+|2019-10-16T08:00:00|2019-10-16T08:00:00|-Barclays|Buy|31|
+|2019-10-17T08:00:00|2019-10-17T08:00:00|-Barclays|Buy|22|
 |2019-10-18T08:00:00|2019-10-18T08:00:00|stuff-Dunelm|Buy|3|
 |2019-10-25T08:00:00|2019-10-25T08:00:00|stuff-Dunelm|Sell|3|
-|2019-11-04T08:00:00|2019-11-04T08:00:00|Barclays|Sell|52.0|
+|2019-11-04T08:00:00|2019-11-04T08:00:00|-Barclays|Sell|53|
 |2019-12-09T08:00:00|2019-12-09T08:00:00|stuff-Dunelm|Buy|5|
 |2019-12-10T08:00:00|2019-12-10T08:00:00|stuff-Dunelm|Buy|3|
 |2019-12-11T08:00:00|2019-12-11T08:00:00|stuff-Dunelm|Buy|2|";
@@ -178,11 +178,11 @@ namespace TradingConsole.Tests.TradingSystem
 |2019-01-10T08:00:00|2019-01-10T08:00:00|stuff-Dunelm|Buy|4|
 |2019-01-11T08:00:00|2019-01-11T08:00:00|stuff-Dunelm|Buy|3|
 |2019-01-16T08:00:00|2019-01-16T08:00:00|stuff-Dunelm|Sell|19|
-|2019-10-16T08:00:00|2019-10-16T08:00:00|Barclays|Buy|30|
-|2019-10-17T08:00:00|2019-10-17T08:00:00|Barclays|Buy|22|
+|2019-10-16T08:00:00|2019-10-16T08:00:00|-Barclays|Buy|31|
+|2019-10-17T08:00:00|2019-10-17T08:00:00|-Barclays|Buy|22|
 |2019-10-18T08:00:00|2019-10-18T08:00:00|stuff-Dunelm|Buy|3|
 |2019-10-25T08:00:00|2019-10-25T08:00:00|stuff-Dunelm|Sell|3|
-|2019-11-04T08:00:00|2019-11-04T08:00:00|Barclays|Sell|52.0|
+|2019-11-04T08:00:00|2019-11-04T08:00:00|-Barclays|Sell|53|
 |2019-12-09T08:00:00|2019-12-09T08:00:00|stuff-Dunelm|Buy|5|
 |2019-12-10T08:00:00|2019-12-10T08:00:00|stuff-Dunelm|Buy|3|
 |2019-12-11T08:00:00|2019-12-11T08:00:00|stuff-Dunelm|Buy|2|";
@@ -206,7 +206,7 @@ namespace TradingConsole.Tests.TradingSystem
                 null, 1, 1.05, 1.0,
                 new DateTime(2016, 1, 5, 8, 0, 0, DateTimeKind.Utc),
                 new DateTime(2018, 12, 12, 8, 0, 0, DateTimeKind.Utc),
-                18956.283569488525106m,
+                18747.796563110351293m,
                 43,
                 31,
                 12,
@@ -215,10 +215,10 @@ namespace TradingConsole.Tests.TradingSystem
             tradeString =
 @$"|StartDate|EndDate|StockName|TradeType|NumberShares|
 |-|-|-|-|-|
-|2017-09-18T08:00:00|2017-09-18T08:00:00|{dunelmName}|Buy|7|
-|2017-09-21T08:00:00|2017-09-21T08:00:00|{dunelmName}|Sell|7|
-|2018-12-07T08:00:00|2018-12-07T08:00:00|{dunelmName}|Buy|8|
-|2018-12-11T08:00:00|2018-12-11T08:00:00|{dunelmName}|Sell|8|";
+|2017-09-18T08:00:00|2017-09-18T08:00:00|stuff-Dunelm|Buy|7|
+|2017-09-21T08:00:00|2017-09-21T08:00:00|stuff-Dunelm|Sell|7|
+|2018-12-07T08:00:00|2018-12-07T08:00:00|stuff-Dunelm|Buy|8|
+|2018-12-11T08:00:00|2018-12-11T08:00:00|stuff-Dunelm|Sell|8|";
             trades = new TradeDictionaryBuilder().BuildFromString(tradeString);
             yield return new TestCaseData(
                 "example-database.xml",
@@ -254,9 +254,9 @@ namespace TradingConsole.Tests.TradingSystem
 |2018-09-18T08:00:00|2018-09-18T08:00:00|{dunelmName}|Buy|6|
 |2018-09-20T08:00:00|2018-09-20T08:00:00|{dunelmName}|Sell|14|
 |2018-12-06T08:00:00|2018-12-06T08:00:00|{dunelmName}|Buy|8|
-|2018-12-07T08:00:00|2018-12-07T08:00:00|{dunelmName}|Buy|6|
+|2018-12-07T08:00:00|2018-12-07T08:00:00|{dunelmName}|Buy|5|
 |2018-12-10T08:00:00|2018-12-10T08:00:00|{dunelmName}|Buy|4|
-|2018-12-11T08:00:00|2018-12-11T08:00:00|{dunelmName}|Sell|18|";
+|2018-12-11T08:00:00|2018-12-11T08:00:00|{dunelmName}|Sell|17|";
             trades = new TradeDictionaryBuilder().BuildFromString(tradeString);
             yield return new TestCaseData(
                 "example-database.xml",
@@ -276,7 +276,7 @@ namespace TradingConsole.Tests.TradingSystem
                 null, 1, 1.05, 1.0,
                 new DateTime(2016, 1, 5, 8, 0, 0, DateTimeKind.Utc),
                 new DateTime(2018, 12, 12, 8, 0, 0, DateTimeKind.Utc),
-                18956.283569488525106m,
+                18747.796563110351293m,
                 43,
                 31,
                 12,
@@ -285,10 +285,10 @@ namespace TradingConsole.Tests.TradingSystem
             tradeString =
 @$"|StartDate|EndDate|StockName|TradeType|NumberShares|
 |-|-|-|-|-|
-|2017-09-18T08:00:00|2017-09-18T08:00:00|{dunelmName}|Buy|7|
-|2017-09-21T08:00:00|2017-09-21T08:00:00|{dunelmName}|Sell|7|
-|2018-12-07T08:00:00|2018-12-07T08:00:00|{dunelmName}|Buy|8|
-|2018-12-11T08:00:00|2018-12-11T08:00:00|{dunelmName}|Sell|8|";
+|2017-09-18T08:00:00|2017-09-18T08:00:00|stuff-Dunelm|Buy|7|
+|2017-09-21T08:00:00|2017-09-21T08:00:00|stuff-Dunelm|Sell|7|
+|2018-12-07T08:00:00|2018-12-07T08:00:00|stuff-Dunelm|Buy|8|
+|2018-12-11T08:00:00|2018-12-11T08:00:00|stuff-Dunelm|Sell|8|";
             trades = new TradeDictionaryBuilder().BuildFromString(tradeString);
             yield return new TestCaseData(
                 "example-database.xml",
@@ -312,15 +312,15 @@ $@"|StartDate|EndDate|StockName|TradeType|NumberShares|
 |2018-04-16T08:00:00|2018-04-16T08:00:00|Tesco-|Buy|12|
 |2018-04-17T08:00:00|2018-04-17T08:00:00|Tesco-|Buy|9|
 |2018-04-24T08:00:00|2018-04-24T08:00:00|Glencore-|Buy|5|
-|2018-04-26T08:00:00|2018-04-26T08:00:00|Tesco-|Sell|38.0|
-|2018-04-27T08:00:00|2018-04-27T08:00:00|Glencore-|Sell|5.0|
+|2018-04-26T08:00:00|2018-04-26T08:00:00|Tesco-|Sell|38|
+|2018-04-27T08:00:00|2018-04-27T08:00:00|Glencore-|Sell|5|
 |2018-06-06T08:00:00|2018-06-06T08:00:00|Johnson Matthew-|Buy|1|
 |2018-06-07T08:00:00|2018-06-07T08:00:00|Johnson Matthew-|Buy|1|
 |2018-06-19T08:00:00|2018-06-19T08:00:00|Johnson Matthew-|Sell|2|
-|2018-09-24T08:00:00|2018-09-24T08:00:00|Glencore-|Buy|15|
-|2018-10-02T08:00:00|2018-10-02T08:00:00|Glencore-|Sell|15|
-|2018-11-05T08:00:00|2018-11-05T08:00:00|Glencore-|Buy|15|
-|2018-11-08T08:00:00|2018-11-08T08:00:00|Glencore-|Sell|15|
+|2018-09-24T08:00:00|2018-09-24T08:00:00|Glencore-|Buy|14|
+|2018-10-02T08:00:00|2018-10-02T08:00:00|Glencore-|Sell|14|
+|2018-11-05T08:00:00|2018-11-05T08:00:00|Glencore-|Buy|14|
+|2018-11-08T08:00:00|2018-11-08T08:00:00|Glencore-|Sell|14|
 |2018-11-13T08:00:00|2018-11-13T08:00:00|Associated British Foods-|Buy|1|
 |2018-11-16T08:00:00|2018-11-16T08:00:00|Associated British Foods-|Sell|1|
 |2018-12-04T08:00:00|2018-12-04T08:00:00|Glencore-|Buy|15|
@@ -334,7 +334,7 @@ $@"|StartDate|EndDate|StockName|TradeType|NumberShares|
                 null, 1, 1.1, 1.0,
                 new DateTime(2016, 1, 5, 8, 0, 0, DateTimeKind.Utc),
                 new DateTime(2018, 12, 12, 8, 0, 0, DateTimeKind.Utc),
-                18785.4859167480495155m,
+                18762.1630072021498325m,
                 22,
                 13,
                 9,
@@ -368,7 +368,7 @@ $@"|StartDate|EndDate|StockName|TradeType|NumberShares|
                 null, 5, 1.1, 1.0,
                 new DateTime(2016, 1, 5, 8, 0, 0, DateTimeKind.Utc),
                 new DateTime(2018, 12, 12, 8, 0, 0, DateTimeKind.Utc),
-                19311.252608642577984m,
+                19288.5256390380858m,
                 18,
                 11,
                 7,
@@ -380,10 +380,10 @@ $@"|StartDate|EndDate|StockName|TradeType|NumberShares|
                 null, 5, 1.05, 1.0,
                 new DateTime(2016, 1, 5, 8, 0, 0, DateTimeKind.Utc),
                 new DateTime(2018, 12, 12, 8, 0, 0, DateTimeKind.Utc),
-                18638.3596334838838717m,
-                221,
-                157,
-                64,
+                18148.1899784851045508m,
+                218,
+                155,
+                63,
                 new Dictionary<DateTime, TradeCollection>())
                 .SetName("FiveDayStatsRidge-small-db-2016-2018-5 day later");
         }
