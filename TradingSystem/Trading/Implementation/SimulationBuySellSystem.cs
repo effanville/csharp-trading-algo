@@ -71,16 +71,5 @@ namespace TradingSystem.Trading.Implementation
             portfolioManager.AddTrade(time, requestedTrade, tradeDetails);
             return tradeDetails;
         }
-
-        /// <inheritdoc/>
-        public TradeCollection EnactAllTrades(
-            DateTime time,
-            TradeCollection decisions,
-            IPriceService priceService,
-            IPortfolioManager portfolioManager,
-            IReportLogger reportLogger)
-        {
-            return this.SellThenBuy(time, decisions, priceService, portfolioManager, reportLogger);
-        }
     }
 }

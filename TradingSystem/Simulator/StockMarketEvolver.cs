@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 
 using FinancialStructures.Database;
 using FinancialStructures.Database.Extensions.Rates;
 using FinancialStructures.Database.Extensions.Values;
+using FinancialStructures.NamingStructures;
 using FinancialStructures.StockStructures;
 
 using Nager.Date;
@@ -43,7 +45,6 @@ namespace TradingSystem.Simulator
             IPortfolioManager portfolioManager,
             IDecisionSystem decisionSystem,
             ITradeMechanism tradeMechanism,
-            TradeMechanismSettings traderOptions,
             Reporting callbacks)
         {
             TradeHistory decisionRecord = new TradeHistory();
@@ -72,19 +73,40 @@ namespace TradingSystem.Simulator
                     }
 
                     // Decide which stocks to buy, sell or do nothing with.
-                    TradeCollection status = decisionSystem.Decide(time, exchange, logger: null);
+                    TradeCollection decisions = decisionSystem.Decide(time, exchange, logger: null);
 
                     // Exact the buy/Sell decisions.
-                    TradeCollection trades = tradeMechanism.EnactAllTrades(
-                        time,
-                        status,
-                        priceService,
-                        portfolioManager,
-                        traderOptions,
-                        callbacks.Logger);
+                    List<Trade> sellDecisions = decisions.GetSellDecisions();
+                    var trades = new TradeCollection(time, time);
+                    bool wasTrade = false;
+                    foreach (Trade sell in sellDecisions)
+                    {
+                        var actualTrade = tradeMechanism.Trade(time, sell, priceService, portfolioManager, 0.0m, callbacks.Logger);
+                        if (actualTrade != null)
+                        {
+                            wasTrade = true;
+                            trades.Add(new NameData(actualTrade.Company, actualTrade.Name), actualTrade.TradeType, actualTrade.NumberShares);
+                        }
+                    }
+
+                    List<Trade> buyDecisions = decisions.GetBuyDecisions();
+                    foreach (Trade buy in buyDecisions)
+                    {
+                        var actualTrade = tradeMechanism.Trade(time, buy, priceService, portfolioManager, 0.0m, callbacks.Logger);
+                        if (actualTrade != null)
+                        {
+                            wasTrade = true;
+                            trades.Add(new NameData(actualTrade.Company, actualTrade.Name), actualTrade.TradeType, actualTrade.NumberShares);
+                        }
+                    }
+
+                    if (!wasTrade)
+                    {
+                        trades = null;
+                    }
 
                     // take a record of the decisions and trades.
-                    decisionRecord.AddIfNotNull(time, status);
+                    decisionRecord.AddIfNotNull(time, decisions);
                     tradeRecord.AddIfNotNull(time, trades);
 
                     // Update the Stock exchange for the recent time period.

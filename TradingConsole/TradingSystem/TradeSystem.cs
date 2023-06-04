@@ -104,7 +104,6 @@ namespace TradingConsole.TradingSystem
                 portfolioManager,
                 decisionSystem,
                 tradeMechanism,
-                traderOptions,
                 callbacks);
         }
     }

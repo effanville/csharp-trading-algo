@@ -30,15 +30,5 @@ namespace TradingSystem.Trading
             IPortfolioManager portfolioManager,
             decimal availableFunds,
             IReportLogger reportLogger);
-
-        /// <summary>
-        /// Routine to enact all trades.
-        /// </summary>
-        TradeCollection EnactAllTrades(
-            DateTime time,
-            TradeCollection decisions,
-            IPriceService priceService,
-            IPortfolioManager portfolioManager,
-            IReportLogger reportLogger);
     }
 }

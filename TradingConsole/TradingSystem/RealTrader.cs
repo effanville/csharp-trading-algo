@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO.Abstractions;
 
 using Common.Structure.Reporting;
 
+using FinancialStructures.NamingStructures;
 using FinancialStructures.StockStructures;
 
 using TradingSystem.Decisions;
@@ -82,10 +84,10 @@ namespace TradingConsole.TradingSystem
             fPortfolioManager.Portfolio.SavePortfolio(portfolioFilePath, fFileSystem, ReportLogger);
         }
 
-        private void PerformDailyTrades(DateTime day, IStockExchange exchange, IPortfolioManager portfolioManager)
+        private void PerformDailyTrades(DateTime time, IStockExchange exchange, IPortfolioManager portfolioManager)
         {
             // Decide which stocks to buy, sell or do nothing with.
-            TradeCollection status = DecisionSystem.Decide(day, exchange, null);
+            TradeCollection decisions = DecisionSystem.Decide(time, exchange, null);
 
             var priceService = PriceServiceFactory.Create(
                 PriceType.ExchangeFile,
@@ -93,13 +95,26 @@ namespace TradingConsole.TradingSystem
                 exchange);
 
             // Exact the buy/Sell decisions.
-            _ = BuySellSystem.EnactAllTrades(
-                day,
-                status,
-                priceService,
-                portfolioManager,
-                fTradeMechanismSettings,
-                ReportLogger);
+            List<Trade> sellDecisions = decisions.GetSellDecisions();
+            var trades = new TradeCollection(time, time);
+            foreach (Trade sell in sellDecisions)
+            {
+                var actualTrade = BuySellSystem.Trade(time, sell, priceService, portfolioManager, 0.0m, ReportLogger);
+                if (actualTrade != null)
+                {
+                    trades.Add(new NameData(actualTrade.Company, actualTrade.Name), actualTrade.TradeType, actualTrade.NumberShares);
+                }
+            }
+
+            List<Trade> buyDecisions = decisions.GetBuyDecisions();
+            foreach (Trade buy in buyDecisions)
+            {
+                var actualTrade = BuySellSystem.Trade(time, buy, priceService, portfolioManager, 0.0m, ReportLogger);
+                if (actualTrade != null)
+                {
+                    trades.Add(new NameData(actualTrade.Company, actualTrade.Name), actualTrade.TradeType, actualTrade.NumberShares);
+                }
+            }
         }
     }
 }
