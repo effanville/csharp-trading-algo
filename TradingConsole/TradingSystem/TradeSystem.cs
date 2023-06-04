@@ -43,7 +43,7 @@ namespace TradingConsole.TradingSystem
             PortfolioConstructionSettings constructionSettings,
             DecisionSystemFactory.Settings decisionParameters,
             TradeMechanismSettings traderOptions,
-            TradeMechanismType buySellType,
+            TradeSubmitterType buySellType,
             IFileSystem fileSystem,
             IReportLogger reportLogger)
         {
@@ -75,7 +75,7 @@ namespace TradingConsole.TradingSystem
                     decisionSystem = DecisionSystemFactory.CreateAndCalibrate(decisionParameters, simulatorSettings, reportLogger);
                 }
 
-                tradeMechanism = TradeMechanismFactory.Create(buySellType, traderOptions);
+                tradeMechanism = TradeSubmitterFactory.Create(buySellType, traderOptions);
 
                 using (new Timer(reportLogger, "Loading Portfolio"))
                 {

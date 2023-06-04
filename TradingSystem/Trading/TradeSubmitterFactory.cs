@@ -2,13 +2,13 @@
 
 namespace TradingSystem.Trading
 {
-    public static class TradeMechanismFactory
+    public static class TradeSubmitterFactory
     {
-        public static ITradeSubmitter Create(TradeMechanismType buySellType, TradeMechanismSettings settings)
+        public static ITradeSubmitter Create(TradeSubmitterType buySellType, TradeMechanismSettings settings)
         {
             switch (buySellType)
             {
-                case TradeMechanismType.SellAllThenBuy:
+                case TradeSubmitterType.SellAllThenBuy:
                 default:
                     return new SimulationBuySellSystem(settings);
             }

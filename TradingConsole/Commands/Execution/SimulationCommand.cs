@@ -115,7 +115,7 @@ namespace TradingConsole.Commands.Execution
                     PortfolioConstructionSettings.Default(),
                     settings.DecisionSystemSettings,
                     settings.TradeMechanismSettings,
-                    TradeMechanismType.SellAllThenBuy,
+                    TradeSubmitterType.SellAllThenBuy,
                     fFileSystem,
                     logger);
 
