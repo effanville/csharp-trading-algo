@@ -78,6 +78,7 @@ namespace TradingSystem.Trading.Implementation
             }
 
             Trade requestedTrade = portfolioManager.ValidateTrade(time, sell, priceService);
+
             decimal price = priceService.GetBidPrice(time, sell.StockName);
             if (requestedTrade == null)
             {

@@ -99,12 +99,12 @@ namespace TradingConsole.TradingSystem
             }
 
             var callbacks = new StockMarketEvolver.Reporting(startEndReportCallback, FirstOfTheMonthReport, startEndReportCallback, reportLogger);
-            DecideThenTradeEnactor tradeEnactor = new DecideThenTradeEnactor(decisionSystem, tradeMechanism, traderOptions);
-
             return StockMarketEvolver.Simulate(simulatorSettings,
                 randomWobblePriceCalculator,
                 portfolioManager,
-                tradeEnactor,
+                decisionSystem,
+                tradeMechanism,
+                traderOptions,
                 callbacks);
         }
     }

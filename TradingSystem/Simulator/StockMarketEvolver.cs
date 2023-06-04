@@ -7,6 +7,7 @@ using FinancialStructures.StockStructures;
 
 using Nager.Date;
 
+using TradingSystem.Decisions;
 using TradingSystem.Diagnostics;
 using TradingSystem.PortfolioStrategies;
 using TradingSystem.PriceSystem;
@@ -40,7 +41,9 @@ namespace TradingSystem.Simulator
             Settings simulatorSettings,
             IPriceService priceService,
             IPortfolioManager portfolioManager,
-            ITradeEnactor enactTrades,
+            IDecisionSystem decisionSystem,
+            ITradeMechanism tradeMechanism,
+            TradeMechanismSettings traderOptions,
             Reporting callbacks)
         {
             TradeHistory decisionRecord = new TradeHistory();
@@ -68,17 +71,21 @@ namespace TradingSystem.Simulator
                         continue;
                     }
 
-                    // carry out the trades at the desired time.
-                    TradeEnactorResult result = enactTrades.EnactTrades(
+                    // Decide which stocks to buy, sell or do nothing with.
+                    TradeCollection status = decisionSystem.Decide(time, exchange, logger: null);
+
+                    // Exact the buy/Sell decisions.
+                    TradeCollection trades = tradeMechanism.EnactAllTrades(
                         time,
-                        exchange,
-                        portfolioManager,
+                        status,
                         priceService,
+                        portfolioManager,
+                        traderOptions,
                         callbacks.Logger);
 
                     // take a record of the decisions and trades.
-                    decisionRecord.AddIfNotNull(time, result.Decisions);
-                    tradeRecord.AddIfNotNull(time, result.Trades);
+                    decisionRecord.AddIfNotNull(time, status);
+                    tradeRecord.AddIfNotNull(time, trades);
 
                     // Update the Stock exchange for the recent time period.
 
