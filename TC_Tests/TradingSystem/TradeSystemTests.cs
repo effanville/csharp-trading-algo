@@ -41,7 +41,7 @@ namespace TradingConsole.Tests.TradingSystem
 |2015-01-15T08:00:00|2015-01-15T08:00:00|-Barclays|Buy|1|
 |2015-01-16T08:00:00|2015-01-16T08:00:00|-Barclays|Buy|1|
 |2015-01-19T08:00:00|2015-01-19T08:00:00|-Barclays|Buy|1|
-|2016-01-20T08:00:00|2016-01-20T08:00:00|-Barclays|Buy|1|
+|2016-01-15T08:00:00|2016-01-15T08:00:00|-Barclays|Buy|1|
 |2016-06-24T07:00:00|2016-06-24T07:00:00|-Barclays|Buy|1|";
             var trades = new TradeDictionaryBuilder().BuildFromString(tradeString);
             yield return new TestCaseData(
@@ -69,11 +69,10 @@ namespace TradingConsole.Tests.TradingSystem
 |2017-01-10T08:00:00|2017-01-10T08:00:00|stuff-Dunelm|Buy|1|
 |2017-01-11T08:00:00|2017-01-11T08:00:00|-Barclays|Buy|3|
 |2017-01-12T08:00:00|2017-01-12T08:00:00|-Barclays|Buy|2|
-|2017-01-13T08:00:00|2017-01-13T08:00:00|-Barclays|Buy|1|
+|2017-01-13T08:00:00|2017-01-13T08:00:00|-Barclays|Buy|2|
 |2017-01-16T08:00:00|2017-01-16T08:00:00|-Barclays|Buy|1|
 |2017-01-17T08:00:00|2017-01-17T08:00:00|-Barclays|Buy|1|
-|2017-01-18T08:00:00|2017-01-18T08:00:00|-Barclays|Buy|1|
-|2017-02-01T08:00:00|2017-02-01T08:00:00|-Barclays|Buy|1|
+|2017-02-02T08:00:00|2017-02-02T08:00:00|-Barclays|Buy|1|
 |2018-10-15T07:00:00|2018-10-15T07:00:00|-Barclays|Buy|1|";
             trades = new TradeDictionaryBuilder().BuildFromString(tradeString);
             yield return new TestCaseData(
@@ -83,8 +82,8 @@ namespace TradingConsole.Tests.TradingSystem
                 new DateTime(2017, 1, 5, 8, 0, 0, DateTimeKind.Utc),
                 new DateTime(2018, 12, 12, 8, 0, 0, DateTimeKind.Utc),
                 13631.6481098m,
-                16,
-                16,
+                15,
+                15,
                 0,
                 trades)
                 .SetName("BuyAll-2017-2018");
@@ -95,8 +94,8 @@ namespace TradingConsole.Tests.TradingSystem
                 new DateTime(2015, 1, 5, 8, 0, 0, DateTimeKind.Utc),
                 new DateTime(2019, 12, 12, 8, 0, 0, DateTimeKind.Utc),
                 22735.32432571411139m,
-                95,
-                71,
+                96,
+                72,
                 24,
                 new Dictionary<DateTime, TradeCollection>())
                 .SetName("FiveDayStatsLeastSquares-2015-2019");
@@ -106,9 +105,9 @@ namespace TradingConsole.Tests.TradingSystem
                 null, 1, 1.05, 1.0,
                 new DateTime(2015, 1, 5, 8, 0, 0, DateTimeKind.Utc),
                 new DateTime(2019, 12, 12, 8, 0, 0, DateTimeKind.Utc),
-                20971.81046203m,
-                198,
-                148,
+                20339.7689443969733093m,
+                199,
+                149,
                 50,
                 new Dictionary<DateTime, TradeCollection>())
                 .SetName("FiveDayStatsLasso-2015-2019");
@@ -150,7 +149,7 @@ namespace TradingConsole.Tests.TradingSystem
                 null, 1, 1.1, 1.0,
                 new DateTime(2015, 1, 5, 8, 0, 0, DateTimeKind.Utc),
                 new DateTime(2019, 12, 12, 8, 0, 0, DateTimeKind.Utc),
-                20698.6897747802738038m,
+                20182.8519476318365826m,
                 16,
                 12,
                 4,
@@ -162,7 +161,7 @@ namespace TradingConsole.Tests.TradingSystem
                 null, 1, 1.1, 1.0,
                 new DateTime(2015, 1, 5, 8, 0, 0, DateTimeKind.Utc),
                 new DateTime(2019, 12, 12, 8, 0, 0, DateTimeKind.Utc),
-                20339.7689443969733093m,
+                20182.8519476318365826m,
                 50,
                 35,
                 15,
@@ -179,10 +178,10 @@ namespace TradingConsole.Tests.TradingSystem
 |2019-01-10T08:00:00|2019-01-10T08:00:00|stuff-Dunelm|Buy|3|
 |2019-01-15T08:00:00|2019-01-15T08:00:00|stuff-Dunelm|Sell|19|
 |2019-10-15T07:00:00|2019-10-15T07:00:00|-Barclays|Buy|31|
-|2019-10-16T07:00:00|2019-10-16T07:00:00|-Barclays|Buy|22|
+|2019-10-16T07:00:00|2019-10-16T07:00:00|-Barclays|Buy|23|
 |2019-10-17T07:00:00|2019-10-17T07:00:00|stuff-Dunelm|Buy|3|
 |2019-10-24T07:00:00|2019-10-24T07:00:00|stuff-Dunelm|Sell|3|
-|2019-11-01T08:00:00|2019-11-01T08:00:00|-Barclays|Sell|53|
+|2019-11-01T08:00:00|2019-11-01T08:00:00|-Barclays|Sell|54|
 |2019-12-06T08:00:00|2019-12-06T08:00:00|stuff-Dunelm|Buy|5|
 |2019-12-09T08:00:00|2019-12-09T08:00:00|stuff-Dunelm|Buy|3|
 |2019-12-10T08:00:00|2019-12-10T08:00:00|stuff-Dunelm|Buy|2|
@@ -309,17 +308,17 @@ $@"|StartDate|EndDate|StockName|TradeType|NumberShares|
 |2017-09-22T07:00:00|2017-09-22T07:00:00|Johnson Matthew-|Buy|1|
 |2017-09-25T07:00:00|2017-09-25T07:00:00|Johnson Matthew-|Buy|1|
 |2017-09-29T07:00:00|2017-09-29T07:00:00|Johnson Matthew-|Sell|2|
-|2018-04-12T07:00:00|2018-04-12T07:00:00|Tesco-|Buy|17|
+|2018-04-12T07:00:00|2018-04-12T07:00:00|Tesco-|Buy|16|
 |2018-04-13T07:00:00|2018-04-13T07:00:00|Tesco-|Buy|12|
 |2018-04-16T07:00:00|2018-04-16T07:00:00|Tesco-|Buy|9|
-|2018-04-23T07:00:00|2018-04-23T07:00:00|Glencore-|Buy|5|
-|2018-04-25T07:00:00|2018-04-25T07:00:00|Tesco-|Sell|38|
-|2018-04-26T07:00:00|2018-04-26T07:00:00|Glencore-|Sell|5|
+|2018-04-23T07:00:00|2018-04-23T07:00:00|Glencore-|Buy|6|
+|2018-04-25T07:00:00|2018-04-25T07:00:00|Tesco-|Sell|37|
+|2018-04-26T07:00:00|2018-04-26T07:00:00|Glencore-|Sell|6|
 |2018-06-05T07:00:00|2018-06-05T07:00:00|Johnson Matthew-|Buy|1|
 |2018-06-06T07:00:00|2018-06-06T07:00:00|Johnson Matthew-|Buy|1|
 |2018-06-18T07:00:00|2018-06-18T07:00:00|Johnson Matthew-|Sell|2|
-|2018-09-21T07:00:00|2018-09-21T07:00:00|Glencore-|Buy|14|
-|2018-10-01T07:00:00|2018-10-01T07:00:00|Glencore-|Sell|14|
+|2018-09-21T07:00:00|2018-09-21T07:00:00|Glencore-|Buy|15|
+|2018-10-01T07:00:00|2018-10-01T07:00:00|Glencore-|Sell|15|
 |2018-11-02T08:00:00|2018-11-02T08:00:00|Glencore-|Buy|14|
 |2018-11-07T08:00:00|2018-11-07T08:00:00|Glencore-|Sell|14|
 |2018-11-12T08:00:00|2018-11-12T08:00:00|Associated British Foods-|Buy|1|
@@ -354,8 +353,8 @@ $@"|StartDate|EndDate|StockName|TradeType|NumberShares|
 |2018-04-23T07:00:00|2018-04-23T07:00:00|Glencore-|Buy|7|
 |2018-04-30T07:00:00|2018-04-30T07:00:00|Glencore-|Sell|7|
 |2018-07-02T07:00:00|2018-07-02T07:00:00|Tesco-|Sell|28|
-|2018-09-17T07:00:00|2018-09-17T07:00:00|Dunelm-|Buy|8|
-|2018-09-19T07:00:00|2018-09-19T07:00:00|Dunelm-|Sell|8|
+|2018-09-17T07:00:00|2018-09-17T07:00:00|Dunelm-|Buy|9|
+|2018-09-19T07:00:00|2018-09-19T07:00:00|Dunelm-|Sell|9|
 |2018-12-06T08:00:00|2018-12-06T08:00:00|Dunelm-|Buy|8|
 |2018-12-07T08:00:00|2018-12-07T08:00:00|Dunelm-|Buy|6|
 |2018-12-11T08:00:00|2018-12-11T08:00:00|Dunelm-|Sell|14|";
@@ -378,9 +377,9 @@ $@"|StartDate|EndDate|StockName|TradeType|NumberShares|
                 null, 5, 1.05, 1.0,
                 new DateTime(2016, 1, 5, 8, 0, 0, DateTimeKind.Utc),
                 new DateTime(2018, 12, 12, 8, 0, 0, DateTimeKind.Utc),
-                18148.1899784851045508m,
-                218,
-                154,
+                18125.4970196533177773m,
+                217,
+                153,
                 64,
                 new Dictionary<DateTime, TradeCollection>())
                 .SetName("FiveDayStatsRidge-small-db-2016-2018-5 day later");

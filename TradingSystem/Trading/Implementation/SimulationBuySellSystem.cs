@@ -42,6 +42,11 @@ namespace TradingSystem.Trading.Implementation
 
             availableFunds = portfolioManager.AvailableFunds(time);
             Trade requestedTrade = portfolioManager.ValidateTrade(time, trade, priceService);
+            if (requestedTrade == null)
+            {
+                return null;
+            }
+
             decimal price = trade.BuySell == TradeType.Buy
                 ? priceService.GetAskPrice(time, trade.StockName)
                 : priceService.GetBidPrice(time, trade.StockName);
@@ -50,10 +55,7 @@ namespace TradingSystem.Trading.Implementation
                 return null;
             }
 
-            if (requestedTrade == null)
-            {
-                return null;
-            }
+
 
             SecurityTrade tradeDetails = new SecurityTrade(
                 requestedTrade.BuySell,
