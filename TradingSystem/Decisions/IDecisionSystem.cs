@@ -4,7 +4,7 @@ using Common.Structure.Reporting;
 
 using FinancialStructures.StockStructures;
 
-using TradingSystem.Simulator;
+using TradingSystem.MarketEvolvers;
 using TradingSystem.Trading;
 
 namespace TradingSystem.Decisions
@@ -19,7 +19,7 @@ namespace TradingSystem.Decisions
         /// e.g. any parameters from an estimation are set at this point.
         /// This may alter the simulation parameters (e.g. the start time of the simulation).
         /// </summary>
-        void Calibrate(StockMarketEvolver.Settings settings, IReportLogger logger);
+        void Calibrate(EvolverSettings settings, IReportLogger logger);
 
         /// <summary>
         /// The process by which a decision on each stock in the exchange is made.

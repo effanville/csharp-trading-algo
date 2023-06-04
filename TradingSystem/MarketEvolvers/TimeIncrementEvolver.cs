@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 
+using Common.Structure.Reporting;
+
 using FinancialStructures.Database;
 using FinancialStructures.Database.Extensions.Rates;
 using FinancialStructures.Database.Extensions.Values;
@@ -10,11 +12,12 @@ using Nager.Date;
 
 using TradingSystem.Decisions;
 using TradingSystem.Diagnostics;
+using TradingSystem.MarketEvolvers;
 using TradingSystem.PortfolioStrategies;
 using TradingSystem.PriceSystem;
 using TradingSystem.Trading;
 
-namespace TradingSystem.Simulator
+namespace TradingSystem.MarketEvolvers
 {
     /// <summary>
     /// Provides the logic for simulating the evolution in time
@@ -24,7 +27,7 @@ namespace TradingSystem.Simulator
     /// Further this provides reporting of the trades and decisions taken
     /// at each point in time.
     /// </summary>
-    public static partial class StockMarketEvolver
+    public static class TimeIncrementEvolver
     {
         /// <summary>
         /// Simulates the evolution of the Stock market from the parameters specified.
@@ -38,20 +41,23 @@ namespace TradingSystem.Simulator
         /// <param name="callbacks">Any reporting callbacks used.</param>
         /// <param name="logger">A logger reporting information.</param>
         /// <returns>A result of the end of the simulation.</returns>
-        public static Result Simulate(
-            Settings simulatorSettings,
+        public static EvolverResult Simulate(
+            EvolverSettings simulatorSettings,
             IPriceService priceService,
             IPortfolioManager portfolioManager,
             IDecisionSystem decisionSystem,
             ITradeSubmitter tradeSubmitter,
-            Reporting callbacks)
+            Action<string> startReportCallback,
+            Action<DateTime, string> reportCallback,
+            Action<string> endReportCallback,
+            IReportLogger logger)
         {
             TradeHistory decisionRecord = new TradeHistory();
             TradeHistory tradeRecord = new TradeHistory();
-            using (new Timer(callbacks.Logger, "Simulation of Evolution"))
+            using (new Timer(logger, "Simulation of Evolution"))
             {
                 DateTime time = simulatorSettings.BurnInEnd;
-                callbacks.StartReportCallback($"StartDate {time} total value {portfolioManager.StartPortfolio.TotalValue(Totals.All):C2}");
+                startReportCallback($"StartDate {time} total value {portfolioManager.StartPortfolio.TotalValue(Totals.All):C2}");
                 IStockExchange exchange = StockExchangeFactory.Create(simulatorSettings.Exchange, time);
                 while (time < simulatorSettings.EndTime)
                 {
@@ -87,7 +93,7 @@ namespace TradingSystem.Simulator
                             tradeSubmitter,
                             tradeRecord,
                             decisionRecord,
-                            callbacks.Logger);
+                            logger);
                     }
 
                     List<Trade> buyDecisions = decisions.GetBuyDecisions();
@@ -101,7 +107,7 @@ namespace TradingSystem.Simulator
                             tradeSubmitter,
                             tradeRecord,
                             decisionRecord,
-                            callbacks.Logger);
+                            logger);
                     }
 
                     // Update the Stock exchange for the recent time period.
@@ -117,16 +123,16 @@ namespace TradingSystem.Simulator
                     portfolioManager.UpdateData(time, exchange);
 
                     var totalValue = portfolioManager.Portfolio.TotalValue(Totals.All);
-                    callbacks.ReportCallback(time, $"Date: {time}. TotalVal: {totalValue:C2}. TotalCash: {portfolioManager.Portfolio.TotalValue(Totals.BankAccount):C2}");
+                    reportCallback(time, $"Date: {time}. TotalVal: {totalValue:C2}. TotalCash: {portfolioManager.Portfolio.TotalValue(Totals.BankAccount):C2}");
 
                     time += (simulatorSettings.EvolutionIncrement - time.TimeOfDay);
                 }
 
-                callbacks.EndReportCallback($"EndDate {time} total value {portfolioManager.Portfolio.TotalValue(Totals.All):C2}");
-                callbacks.EndReportCallback($"EndDate {time} total CAR {portfolioManager.Portfolio.TotalIRR(Totals.All)}");
+                endReportCallback($"EndDate {time} total value {portfolioManager.Portfolio.TotalValue(Totals.All):C2}");
+                endReportCallback($"EndDate {time} total CAR {portfolioManager.Portfolio.TotalIRR(Totals.All)}");
             }
 
-            return new Result(portfolioManager.Portfolio, decisionRecord, tradeRecord);
+            return new EvolverResult(portfolioManager.Portfolio, decisionRecord, tradeRecord);
         }
 
         private static bool IsCalcTimeValid(DateTime time, CountryCode countryCode)

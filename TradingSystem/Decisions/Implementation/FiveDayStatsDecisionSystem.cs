@@ -8,7 +8,7 @@ using Common.Structure.Reporting;
 using FinancialStructures.DataStructures;
 using FinancialStructures.StockStructures;
 
-using TradingSystem.Simulator;
+using TradingSystem.MarketEvolvers;
 using TradingSystem.Trading;
 
 namespace TradingSystem.Decisions.Implementation
@@ -30,7 +30,7 @@ namespace TradingSystem.Decisions.Implementation
         }
 
         /// <inheritdoc />
-        public void Calibrate(StockMarketEvolver.Settings settings, IReportLogger logger)
+        public void Calibrate(EvolverSettings settings, IReportLogger logger)
         {
             DateTime burnInLength = settings.BurnInEnd;
             int numberEntries = ((burnInLength - settings.StartTime).Days - 5) * 5 / 7;

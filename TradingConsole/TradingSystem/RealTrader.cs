@@ -9,9 +9,9 @@ using FinancialStructures.StockStructures;
 
 using TradingSystem.Decisions;
 using TradingSystem.Diagnostics;
+using TradingSystem.MarketEvolvers;
 using TradingSystem.PortfolioStrategies;
 using TradingSystem.PriceSystem;
-using TradingSystem.Simulator;
 using TradingSystem.Trading;
 
 namespace TradingConsole.TradingSystem
@@ -21,7 +21,7 @@ namespace TradingConsole.TradingSystem
         private readonly IDecisionSystem DecisionSystem;
         private readonly ITradeSubmitter BuySellSystem;
         private readonly TradeMechanismSettings fTradeMechanismSettings;
-        private readonly StockMarketEvolver.Settings fSimulatorSettings;
+        private readonly EvolverSettings fSimulatorSettings;
         private readonly IPortfolioManager fPortfolioManager;
 
         private readonly IReportLogger ReportLogger;

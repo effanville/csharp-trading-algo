@@ -6,7 +6,7 @@ using Common.Structure.Reporting;
 using FinancialStructures.StockStructures;
 using FinancialStructures.StockStructures.Statistics;
 
-using TradingSystem.Simulator;
+using TradingSystem.MarketEvolvers;
 using TradingSystem.Trading;
 
 namespace TradingSystem.Decisions.Implementation
@@ -33,7 +33,7 @@ namespace TradingSystem.Decisions.Implementation
             InnerSystem = new ArbitraryStatsDecisionSystem(newSettings);
         }
 
-        public void Calibrate(StockMarketEvolver.Settings settings, IReportLogger logger)
+        public void Calibrate(EvolverSettings settings, IReportLogger logger)
         {
             InnerSystem.Calibrate(settings, logger);
         }

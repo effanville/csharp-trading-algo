@@ -1,9 +1,7 @@
-﻿using System;
-
-using Common.Structure.Reporting;
+﻿using Common.Structure.Reporting;
 
 using TradingSystem.Decisions.Implementation;
-using TradingSystem.Simulator;
+using TradingSystem.MarketEvolvers;
 
 namespace TradingSystem.Decisions
 {
@@ -35,7 +33,7 @@ namespace TradingSystem.Decisions
             }
         }
 
-        public static IDecisionSystem CreateAndCalibrate(Settings settings, StockMarketEvolver.Settings simulatorSettings, IReportLogger logger)
+        public static IDecisionSystem CreateAndCalibrate(Settings settings, EvolverSettings simulatorSettings, IReportLogger logger)
         {
             var decisionSystem = Create(settings);
             decisionSystem.Calibrate(simulatorSettings, logger);

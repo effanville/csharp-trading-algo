@@ -7,10 +7,10 @@ using FinancialStructures.StockStructures;
 
 using TradingSystem.Diagnostics;
 using TradingSystem.Decisions;
-using TradingSystem.Simulator;
 using TradingSystem.Trading;
 using TradingSystem.PriceSystem;
 using TradingSystem.PortfolioStrategies;
+using TradingSystem.MarketEvolvers;
 
 namespace TradingConsole.TradingSystem
 {
@@ -34,7 +34,7 @@ namespace TradingConsole.TradingSystem
         /// <param name="fileSystem">The file system to use.</param>
         /// <param name="reportLogger">A logging mechanism</param>
         /// <returns>The final portfolio, and the records of the decisions and trades.</returns>
-        public static StockMarketEvolver.Result SetupAndSimulate(
+        public static EvolverResult SetupAndSimulate(
             string stockFilePath,
             DateTime startTime,
             DateTime endTime,
@@ -48,7 +48,7 @@ namespace TradingConsole.TradingSystem
             IReportLogger reportLogger)
         {
             IStockExchange exchange;
-            StockMarketEvolver.Settings simulatorSettings;
+            EvolverSettings simulatorSettings;
             IPortfolioManager portfolioManager;
             IDecisionSystem decisionSystem;
             ITradeSubmitter tradeMechanism;
@@ -60,11 +60,11 @@ namespace TradingConsole.TradingSystem
                     exchange = StockExchangeFactory.Create(stockFilePath, fileSystem, reportLogger);
                     if (exchange == null)
                     {
-                        return StockMarketEvolver.Result.NoResult();
+                        return EvolverResult.NoResult();
                     }
                 }
 
-                simulatorSettings = new StockMarketEvolver.Settings(
+                simulatorSettings = new EvolverSettings(
                     startTime,
                     endTime,
                     evolutionIncrement,
@@ -98,13 +98,15 @@ namespace TradingConsole.TradingSystem
                 _ = reportLogger.Log(ReportSeverity.Critical, ReportType.Warning, ReportLocation.DatabaseAccess, message);
             }
 
-            var callbacks = new StockMarketEvolver.Reporting(startEndReportCallback, FirstOfTheMonthReport, startEndReportCallback, reportLogger);
-            return StockMarketEvolver.Simulate(simulatorSettings,
+            return TimeIncrementEvolver.Simulate(simulatorSettings,
                 randomWobblePriceCalculator,
                 portfolioManager,
                 decisionSystem,
                 tradeMechanism,
-                callbacks);
+                startEndReportCallback,
+                FirstOfTheMonthReport,
+                startEndReportCallback,
+                reportLogger);
         }
     }
 }
