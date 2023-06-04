@@ -5,28 +5,29 @@ using FinancialStructures.StockStructures.Implementation;
 
 using NUnit.Framework;
 
-using TradingConsole.DecisionSystem.Implementation;
-
-using TradingSystem.Simulator.Trading.Decisions;
+using TradingSystem.Decisions;
+using TradingSystem.Decisions.Implementation;
+using TradingSystem.Trading;
 
 namespace TradingConsole.Tests.DecisionSystemTests
 {
-    public class BuyAllDecisionSystemTests
+    internal class BuyAllDecisionSystemTests
     {
         [Test]
         public void DecisionAsExpected()
         {
             var exchange = new StockExchange();
-            exchange.Stocks.Add(new Stock("MyTicker", "MyCompany", "MyName", ""));
+            exchange.Stocks.Add(new Stock("MyTicker", "MyCompany", "MyName", "GBP", ""));
             exchange.Stocks[0].AddValue(DateTime.Today, 43, 47, 40, 41, 1);
 
-            BuyAllDecisionSystem decisionSystem = new BuyAllDecisionSystem();
-            DecisionStatus status = decisionSystem.Decide(DateTime.Today, exchange, logger: null);
+            IDecisionSystem decisionSystem = new BuyAllDecisionSystem();
+            TradeCollection status = decisionSystem.Decide(DateTime.Today, exchange, logger: null);
 
             Assert.AreEqual(1, status.GetBuyDecisions().Count);
             Assert.AreEqual(0, status.GetSellDecisions().Count);
 
-            Assert.AreEqual("MyCompany-MyName", status.GetBuyDecisionsStockNames().Single());
+            var name = status.GetBuyDecisions().Single().StockName;
+            Assert.AreEqual("MyCompany-MyName", name.ToString());
         }
     }
 }

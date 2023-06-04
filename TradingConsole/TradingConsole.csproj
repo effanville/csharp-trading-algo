@@ -1,20 +1,10 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>net6.0-windows</TargetFramework>
-    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
-  </PropertyGroup>
-
-  <PropertyGroup>
-    <OutputPath>..\bin</OutputPath>
-    <DocumentationFile>..\bin\TradingConsole.xml</DocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Common.Console" Version="1.1.0" />
-	  <PackageReference Include="Common.Structure" Version="1.3.0" />
-	  <PackageReference Include="FinancialStructures" Version="22.10.0" />
     <PackageReference Include="Nager.Date" Version="1.30.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
 	  <PackageReference Include="System.IO.Abstractions" Version="17.2.3" />
@@ -23,10 +13,13 @@
 
   <ItemGroup>
     <ProjectReference Include="..\TradingSystem\TradingSystem.csproj" />
+    <ProjectReference Include="..\FinancialStructures\FinancialStructures\FinancialStructures.csproj" />
+    <ProjectReference Include="..\FinancialStructures\Common\Common.Structure\Common.Structure.csproj" />
+    <ProjectReference Include="..\FinancialStructures\Common\Common.Console\Common.Console.csproj" />
   </ItemGroup>
-
-  <ItemGroup>
-    <None Include="..\.editorconfig" Link=".editorconfig" />
-  </ItemGroup>
-
+	<ItemGroup>
+		<AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleToAttribute">
+			<_Parameter1>TradingConsole.Tests</_Parameter1>
+		</AssemblyAttribute>
+	</ItemGroup>
 </Project>

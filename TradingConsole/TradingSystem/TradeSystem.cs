@@ -1,22 +1,16 @@
 ﻿using System;
 using System.IO.Abstractions;
 
-using Common.Structure.DataStructures;
 using Common.Structure.Reporting;
 
-using FinancialStructures.Database;
-using FinancialStructures.Database.Extensions;
-using FinancialStructures.NamingStructures;
 using FinancialStructures.StockStructures;
 
-using TradingConsole.BuySellSystem;
-using TradingConsole.DecisionSystem;
-
-using TradingSystem;
-using TradingSystem.DecideThenTradeSystem;
-using TradingSystem.Simulator;
-using TradingSystem.Simulator.Implementation;
+using TradingSystem.Diagnostics;
+using TradingSystem.Decisions;
 using TradingSystem.Trading;
+using TradingSystem.PriceSystem;
+using TradingSystem.PortfolioStrategies;
+using TradingSystem.MarketEvolvers;
 
 namespace TradingConsole.TradingSystem
 {
@@ -40,24 +34,24 @@ namespace TradingConsole.TradingSystem
         /// <param name="fileSystem">The file system to use.</param>
         /// <param name="reportLogger">A logging mechanism</param>
         /// <returns>The final portfolio, and the records of the decisions and trades.</returns>
-        public static StockMarketEvolver.Result SetupAndSimulate(
+        public static EvolverResult SetupAndSimulate(
             string stockFilePath,
             DateTime startTime,
             DateTime endTime,
             TimeSpan evolutionIncrement,
             PortfolioStartSettings startSettings,
+            PortfolioConstructionSettings constructionSettings,
             DecisionSystemFactory.Settings decisionParameters,
-            TradeMechanismTraderOptions traderOptions,
-            TradeMechanismType buySellType,
+            TradeMechanismSettings traderOptions,
+            TradeSubmitterType buySellType,
             IFileSystem fileSystem,
             IReportLogger reportLogger)
         {
-            var randomWobblePriceCalculator = new RandomWobblePriceCalculator(new PriceCalculationSettings());
             IStockExchange exchange;
-            StockMarketEvolver.Settings simulatorSettings;
-            IPortfolio portfolio;
+            EvolverSettings simulatorSettings;
+            IPortfolioManager portfolioManager;
             IDecisionSystem decisionSystem;
-            ITradeMechanism tradeMechanism;
+            ITradeSubmitter tradeMechanism;
 
             using (new Timer(reportLogger, "Setup"))
             {
@@ -66,11 +60,11 @@ namespace TradingConsole.TradingSystem
                     exchange = StockExchangeFactory.Create(stockFilePath, fileSystem, reportLogger);
                     if (exchange == null)
                     {
-                        return StockMarketEvolver.Result.NoResult();
+                        return EvolverResult.NoResult();
                     }
                 }
 
-                simulatorSettings = new StockMarketEvolver.Settings(
+                simulatorSettings = new EvolverSettings(
                     startTime,
                     endTime,
                     evolutionIncrement,
@@ -81,13 +75,15 @@ namespace TradingConsole.TradingSystem
                     decisionSystem = DecisionSystemFactory.CreateAndCalibrate(decisionParameters, simulatorSettings, reportLogger);
                 }
 
-                tradeMechanism = TradeMechanismFactory.Create(buySellType);
+                tradeMechanism = TradeSubmitterFactory.Create(buySellType, traderOptions);
 
                 using (new Timer(reportLogger, "Loading Portfolio"))
                 {
-                    portfolio = LoadStartPortfolio(startSettings, fileSystem, reportLogger);
+                    portfolioManager = PortfolioManager.LoadFromFile(fileSystem, startSettings, constructionSettings, reportLogger);
                 }
             }
+
+            var randomWobblePriceCalculator = PriceServiceFactory.Create(PriceType.RandomWobble, PriceCalculationSettings.Default(), exchange);
 
             void FirstOfTheMonthReport(DateTime time, string message)
             {
@@ -102,34 +98,15 @@ namespace TradingConsole.TradingSystem
                 _ = reportLogger.Log(ReportSeverity.Critical, ReportType.Warning, ReportLocation.DatabaseAccess, message);
             }
 
-            var callbacks = new StockMarketEvolver.Reporting(startEndReportCallback, FirstOfTheMonthReport, startEndReportCallback, reportLogger);
-            DecideThenTradeEnactor tradeEnactor = new DecideThenTradeEnactor(decisionSystem, tradeMechanism, traderOptions);
-
-            return StockMarketEvolver.Simulate(simulatorSettings,
+            return TimeIncrementEvolver.Simulate(simulatorSettings,
                 randomWobblePriceCalculator,
-                portfolio.Copy(),
-                tradeEnactor,
-                callbacks);
-        }
-
-        /// <summary>
-        /// Loads the starting portfolio, either from file or with the cash specified in the settings.
-        /// </summary>
-        private static IPortfolio LoadStartPortfolio(PortfolioStartSettings settings, IFileSystem fileSystem, IReportLogger logger)
-        {
-            IPortfolio portfolio = PortfolioFactory.GenerateEmpty();
-            if (settings.PortfolioFilePath != null)
-            {
-                portfolio.LoadPortfolio(settings.PortfolioFilePath, fileSystem, logger);
-            }
-            else
-            {
-                _ = portfolio.TryAdd(Account.BankAccount, new NameData(settings.DefaultBankAccName.Company, settings.DefaultBankAccName.Name), logger);
-                var data = new DailyValuation(settings.StartTime.AddDays(-1), settings.StartingCash);
-                _ = portfolio.TryAddOrEditData(Account.BankAccount, settings.DefaultBankAccName, data, data, logger);
-            }
-
-            return portfolio;
+                portfolioManager,
+                decisionSystem,
+                tradeMechanism,
+                startEndReportCallback,
+                FirstOfTheMonthReport,
+                startEndReportCallback,
+                reportLogger);
         }
     }
 }

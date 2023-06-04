@@ -13,7 +13,7 @@ namespace TradingConsole
 {
     internal class Program
     {
-        internal static void Main(string[] args)
+        internal static int Main(string[] args)
         {
             var fileSystem = new FileSystem();
 
@@ -23,36 +23,44 @@ namespace TradingConsole
             {
                 var color = Console.ForegroundColor;
                 Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine(text);
+                Console.WriteLine($"[{DateTime.Now:yyyyMMdd-hh:mm:ss}]: {text}");
                 Console.ForegroundColor = color;
             }
             IConsole console = new ConsoleInstance(writeError, writeLine);
 
             // Create the logger.
             var reports = new ErrorReports();
-            void reportAction(ReportSeverity severity, ReportType reportType, ReportLocation location, string text)
+            void reportAction(ReportSeverity severity, ReportType reportType, string location, string text)
             {
                 reports.AddErrorReport(severity, reportType, location, text);
-                console.WriteLine($"{DateTime.Now}({reportType}) {text}");
+                var color = Console.ForegroundColor;
+                Console.ForegroundColor = reportType == ReportType.Error
+                    ? ConsoleColor.Red
+                    : reportType == ReportType.Warning
+                        ? ConsoleColor.Yellow
+                        : color;
+                console.WriteLine($"[{DateTime.Now:yyyyMMdd-hh:mm:ss}]: ({reportType}): {text}");
+
+                Console.ForegroundColor = color;
             }
             IReportLogger logger = new LogReporter(reportAction);
-            InternalMain(args, fileSystem, console, logger);
+            return InternalMain(args, fileSystem, console, logger);
         }
 
-        internal static void InternalMain(string[] args, IFileSystem fileSystem, IConsole console, IReportLogger logger)
+        internal static int InternalMain(string[] args, IFileSystem fileSystem, IConsole console, IReportLogger logger)
         {
             var globals = new ConsoleGlobals(fileSystem, console, logger);
             // Define the acceptable commands for this program.
             var validCommands = new List<ICommand>()
             {
-                new ConfigureCommand(logger, fileSystem),
-                new DownloadCommand(logger, fileSystem),
-                new SimulationCommand(logger, fileSystem)
+                new ConfigureCommand(fileSystem),
+                new DownloadCommand(fileSystem),
+                new SimulationCommand(fileSystem)
             };
 
             // Generate the context, validate the arguments and execute.
-            ConsoleContext.SetAndExecute(args, globals, validCommands);
-            return;
+            int exitCode = ConsoleContext.SetAndExecute(args, globals, validCommands);
+            return exitCode;
         }
     }
 }

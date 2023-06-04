@@ -9,10 +9,9 @@ using FinancialStructures.StockStructures.Statistics;
 
 using Newtonsoft.Json;
 
-using TradingConsole.DecisionSystem;
-using TradingConsole.TradingSystem;
-
-using TradingSystem.DecideThenTradeSystem;
+using TradingSystem.Decisions;
+using TradingSystem.PortfolioStrategies;
+using TradingSystem.Trading;
 
 namespace TradingConsole.Commands.Execution
 {
@@ -50,13 +49,16 @@ namespace TradingConsole.Commands.Execution
                 set;
             }
 
+            public PortfolioConstructionSettings PortfolioConstructionSettings
+            { get; set; }
+
             public DecisionSystemFactory.Settings DecisionSystemSettings
             {
                 get;
                 set;
             }
 
-            public TradeMechanismTraderOptions TradingOptions
+            public TradeMechanismSettings TradeMechanismSettings
             {
                 get;
                 set;
@@ -69,7 +71,7 @@ namespace TradingConsole.Commands.Execution
             public static Settings CreateSettings(IList<CommandOption> options, IFileSystem fileSystem)
             {
                 var jsonPath = options.FirstOrDefault(option => option.Name == "jsonSettingsPath");
-                if (jsonPath != null)
+                if (jsonPath != null && jsonPath.ValueAsObject != null)
                 {
                     string path = jsonPath.ValueAsObject.ToString();
                     string jsonContents = fileSystem.File.ReadAllText(path);
@@ -89,14 +91,15 @@ namespace TradingConsole.Commands.Execution
                     settings.EvolutionIncrement = gap.Value;
 
                     var fractionInvest = options.GetOption<decimal>(FractionInvestName);
-                    var decisionType = options.GetOption<DecisionSystem.DecisionSystem>(DecisionSystemName);
+                    var decisionType = options.GetOption<DecisionSystem>(DecisionSystemName);
                     var startingCash = options.GetOption<decimal>(StartingCashName);
                     var portfolioFilePath = options.GetOption<string>(PortfolioFilePathName);
                     var decisionSystemStats = options.GetOption<List<StockStatisticType>>(DecisionSystemStatsName);
 
                     settings.PortfolioSettings = new PortfolioStartSettings(portfolioFilePath.Value, startDate.Value, startingCash.Value);
                     settings.DecisionSystemSettings = new DecisionSystemFactory.Settings(decisionType.Value, decisionSystemStats.Value, 1.05, 1.0, 1);
-                    settings.TradingOptions = new TradeMechanismTraderOptions(fractionInvest?.Value ?? 0.25m);
+                    settings.TradeMechanismSettings = TradeMechanismSettings.Default();
+                    settings.PortfolioConstructionSettings = new PortfolioConstructionSettings(fractionInvest?.Value ?? 0.25m);
                     return settings;
                 }
             }

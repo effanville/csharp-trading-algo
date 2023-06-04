@@ -84,16 +84,16 @@ csharp_style_var_when_type_is_apparent = false:silent
 csharp_style_expression_bodied_accessors = when_on_single_line:error
 csharp_style_expression_bodied_constructors = false:error
 csharp_style_expression_bodied_indexers = false:error
-csharp_style_expression_bodied_lambdas = true:silent
-csharp_style_expression_bodied_local_functions = false:silent
-csharp_style_expression_bodied_methods = false:warning
-csharp_style_expression_bodied_operators = false:silent
-csharp_style_expression_bodied_properties = when_on_single_line:suggestion
+csharp_style_expression_bodied_lambdas = when_on_single_line:warning
+csharp_style_expression_bodied_local_functions = when_on_single_line:warning
+csharp_style_expression_bodied_methods = when_on_single_line:warning
+csharp_style_expression_bodied_operators = when_on_single_line:warning
+csharp_style_expression_bodied_properties = when_on_single_line:warning
 
 # Pattern matching preferences
 csharp_style_pattern_matching_over_as_with_null_check = true:warning
 csharp_style_pattern_matching_over_is_with_cast_check = true:warning
-csharp_style_prefer_switch_expression = false:suggestion
+csharp_style_prefer_switch_expression = true:warning
 
 # Null-checking preferences
 csharp_style_conditional_delegate_call = true:suggestion
@@ -164,8 +164,8 @@ csharp_space_between_parentheses = false
 csharp_space_between_square_brackets = false
 
 # Wrapping preferences
-csharp_preserve_single_line_blocks = false
-csharp_preserve_single_line_statements = false
+csharp_preserve_single_line_blocks = true
+csharp_preserve_single_line_statements = true
 
 #### Naming styles ####
 

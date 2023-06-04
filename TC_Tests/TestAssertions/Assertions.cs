@@ -2,7 +2,7 @@
 
 namespace TC_Tests
 {
-    public static class Assertions
+    internal static class Assertions
     {
         /// <summary>
         /// Asserts that two matrices are equal up to the given tolerance.

@@ -1,15 +1,19 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
-
-  <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
-    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
-  </PropertyGroup>
+<Project Sdk="Microsoft.NET.Sdk">
 
   <ItemGroup> 
-	  <PackageReference Include="Common.Structure" Version="1.3.0" />
-	  <PackageReference Include="FinancialStructures" Version="22.10.0" />
 	  <PackageReference Include="Nager.Date" Version="1.30.0" />
 	  <PackageReference Include="System.IO.Abstractions" Version="17.2.3" />
     <PackageReference Include="System.Net.Http" Version="4.3.4" />
   </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\FinancialStructures\FinancialStructures\FinancialStructures.csproj" />
+    <ProjectReference Include="..\FinancialStructures\Common\Common.Structure\Common.Structure.csproj" />
+  </ItemGroup>
+
+	<ItemGroup>
+		<AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleToAttribute">
+			<_Parameter1>TradingConsole.Tests</_Parameter1>
+		</AssemblyAttribute>
+	</ItemGroup>
 </Project>
