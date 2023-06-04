@@ -3,6 +3,8 @@ using System.Collections.Generic;
 
 using Common.Structure.Reporting;
 
+using FinancialStructures.NamingStructures;
+
 using TradingSystem.PortfolioStrategies;
 using TradingSystem.PriceSystem;
 
@@ -16,7 +18,6 @@ namespace TradingSystem.Trading
             TradeCollection decisions,
             IPriceService priceService,
             IPortfolioManager portfolioManager,
-            TradeMechanismSettings traderOptions,
             IReportLogger reportLogger)
         {
             List<Trade> sellDecisions = decisions.GetSellDecisions();
@@ -24,20 +25,22 @@ namespace TradingSystem.Trading
             bool wasTrade = false;
             foreach (Trade sell in sellDecisions)
             {
-                if (tradeMechanism.Sell(time, sell, priceService, portfolioManager, traderOptions, reportLogger))
+                var actualTrade = tradeMechanism.Trade(time, sell, priceService, portfolioManager, 0.0m, reportLogger);
+                if (actualTrade != null)
                 {
                     wasTrade = true;
-                    trades.Add(sell.StockName, sell.BuySell, sell.NumberShares);
+                    trades.Add(new NameData(actualTrade.Company, actualTrade.Name), actualTrade.TradeType, actualTrade.NumberShares);
                 }
             }
 
             List<Trade> buyDecisions = decisions.GetBuyDecisions();
             foreach (Trade buy in buyDecisions)
             {
-                if (tradeMechanism.Buy(time, buy, priceService, portfolioManager, traderOptions, reportLogger))
+                var actualTrade = tradeMechanism.Trade(time, buy, priceService, portfolioManager, 0.0m, reportLogger);
+                if (actualTrade != null)
                 {
                     wasTrade = true;
-                    trades.Add(buy.StockName, buy.BuySell, buy.NumberShares);
+                    trades.Add(new NameData(actualTrade.Company, actualTrade.Name), actualTrade.TradeType, actualTrade.NumberShares);
                 }
             }
 

@@ -2,6 +2,8 @@
 
 using Common.Structure.Reporting;
 
+using FinancialStructures.DataStructures;
+
 using TradingSystem.PortfolioStrategies;
 using TradingSystem.PriceSystem;
 
@@ -14,25 +16,19 @@ namespace TradingSystem.Trading
     public interface ITradeMechanism
     {
         /// <summary>
-        /// Enact a buy decision.
+        /// The settings for the trade submitter.
         /// </summary>
-        bool Buy(
-            DateTime time,
-            Trade buy,
-            IPriceService priceService,
-            IPortfolioManager portfolioManager,
-            TradeMechanismSettings tradeMechanismSettings,
-            IReportLogger reportLogger);
+        TradeMechanismSettings Settings { get; }
 
         /// <summary>
-        /// Enact a sell decision
+        /// Enact a trade which was submitted at a given time.
         /// </summary>
-        bool Sell(
+        SecurityTrade Trade(
             DateTime time,
-            Trade sell,
+            Trade trade,
             IPriceService priceService,
             IPortfolioManager portfolioManager,
-            TradeMechanismSettings tradeMechanismSettings,
+            decimal availableFunds,
             IReportLogger reportLogger);
 
         /// <summary>
@@ -43,7 +39,6 @@ namespace TradingSystem.Trading
             TradeCollection decisions,
             IPriceService priceService,
             IPortfolioManager portfolioManager,
-            TradeMechanismSettings tradeMechanismSettings,
             IReportLogger reportLogger);
     }
 }

@@ -46,8 +46,6 @@ namespace TradingConsole.TradingSystem
             ReportLogger = reportLogger;
             fFileSystem = fileSystem;
 
-            fTradeMechanismSettings = TradeMechanismSettings.Default();
-
             IStockExchange exchange;
             using (new Timer(ReportLogger, "Setup"))
             {
@@ -68,7 +66,7 @@ namespace TradingConsole.TradingSystem
                     DecisionSystem.Calibrate(fSimulatorSettings, ReportLogger);
                 }
 
-                BuySellSystem = TradeMechanismFactory.Create(buySellType);
+                BuySellSystem = TradeMechanismFactory.Create(buySellType, TradeMechanismSettings.Default());
 
                 using (new Timer(reportLogger, "Loading Portfolio"))
                 {

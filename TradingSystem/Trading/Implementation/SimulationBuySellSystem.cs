@@ -15,85 +15,61 @@ namespace TradingSystem.Trading.Implementation
     internal class SimulationBuySellSystem : ITradeMechanism
     {
 
+        /// <inheritdoc/>
+        public TradeMechanismSettings Settings { get; }
+
         /// <summary>
         /// Create an instance.
         /// </summary>
-        internal SimulationBuySellSystem()
+        internal SimulationBuySellSystem(TradeMechanismSettings settings)
         {
+            Settings = settings;
         }
 
         /// <inheritdoc/>
-        public bool Buy(
+        public SecurityTrade Trade(
             DateTime time,
-            Trade buy,
+            Trade trade,
             IPriceService priceService,
             IPortfolioManager portfolioManager,
-            TradeMechanismSettings tradeMechanismSettings,
+            decimal availableFunds,
             IReportLogger reportLogger)
         {
-            // If not a buy then stop.
-            if (buy.BuySell != TradeType.Buy)
+            if (trade.BuySell != TradeType.Buy && trade.BuySell != TradeType.Sell)
             {
-                return false;
+                return null;
             }
 
-            decimal cashAvailable = portfolioManager.AvailableFunds(time);
-            Trade requestedTrade = portfolioManager.ValidateTrade(time, buy, priceService);
-            decimal price = priceService.GetAskPrice(time, buy.StockName);
+            availableFunds = portfolioManager.AvailableFunds(time);
+            Trade requestedTrade = portfolioManager.ValidateTrade(time, trade, priceService);
+            decimal price = trade.BuySell == TradeType.Buy
+                ? priceService.GetAskPrice(time, trade.StockName)
+                : priceService.GetBidPrice(time, trade.StockName);
             if (price.Equals(decimal.MinValue))
             {
-                return false;
+                return null;
             }
 
             if (requestedTrade == null)
             {
-                return false;
+                return null;
             }
 
-            buy.NumberShares = requestedTrade.NumberShares;
+            SecurityTrade tradeDetails = new SecurityTrade(
+                requestedTrade.BuySell,
+                requestedTrade.StockName,
+                time,
+                requestedTrade.NumberShares,
+                price,
+                Settings.TradeCost);
 
-            // If not enough money to deal with the total cost then exit.
-            SecurityTrade tradeDetails = new SecurityTrade(TradeType.Buy, buy.StockName, time, requestedTrade.NumberShares, price, tradeMechanismSettings.TradeCost);
-            if (cashAvailable <= tradeDetails.TotalCost)
+            if (requestedTrade.BuySell == TradeType.Buy
+                && tradeDetails.TotalCost > availableFunds)
             {
-                return false;
+                return null;
             }
-
-            return portfolioManager.AddTrade(time, buy, tradeDetails);
-        }
-
-        /// <inheritdoc/>
-        public bool Sell(
-            DateTime time,
-            Trade sell,
-            IPriceService priceService,
-            IPortfolioManager portfolioManager,
-            TradeMechanismSettings tradeMechanismSettings,
-            IReportLogger reportLogger)
-
-        {
-            if (sell.BuySell != TradeType.Sell)
-            {
-                return false;
-            }
-
-            Trade requestedTrade = portfolioManager.ValidateTrade(time, sell, priceService);
-
-            decimal price = priceService.GetBidPrice(time, sell.StockName);
-            if (requestedTrade == null)
-            {
-                return false;
-            }
-
-            // some error with price data (or shouldnt be evaluating on this date) so ignore trade.
-            if (price.Equals(decimal.MinValue))
-            {
-                return false;
-            }
-
-            sell.NumberShares = requestedTrade.NumberShares;
-            SecurityTrade tradeDetails = new SecurityTrade(TradeType.Sell, requestedTrade.StockName, time, requestedTrade.NumberShares, price, tradeMechanismSettings.TradeCost);
-            return portfolioManager.AddTrade(time, sell, tradeDetails);
+            portfolioManager.AddTrade(time, requestedTrade, tradeDetails);
+            return tradeDetails;
         }
 
         /// <inheritdoc/>
@@ -102,10 +78,9 @@ namespace TradingSystem.Trading.Implementation
             TradeCollection decisions,
             IPriceService priceService,
             IPortfolioManager portfolioManager,
-            TradeMechanismSettings tradeMechanismSettings,
             IReportLogger reportLogger)
         {
-            return this.SellThenBuy(time, decisions, priceService, portfolioManager, tradeMechanismSettings, reportLogger);
+            return this.SellThenBuy(time, decisions, priceService, portfolioManager, reportLogger);
         }
     }
 }
