@@ -23,7 +23,7 @@ namespace TradingSystem.Decisions.Implementation
         }
 
         /// <inheritdoc />
-        public void Calibrate(EvolverSettings settings, IReportLogger logger)
+        public void Calibrate(TimeIncrementEvolverSettings settings, IReportLogger logger)
         {
         }
 

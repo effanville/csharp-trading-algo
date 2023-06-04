@@ -33,7 +33,7 @@ namespace TradingSystem.Decisions
             }
         }
 
-        public static IDecisionSystem CreateAndCalibrate(Settings settings, EvolverSettings simulatorSettings, IReportLogger logger)
+        public static IDecisionSystem CreateAndCalibrate(Settings settings, TimeIncrementEvolverSettings simulatorSettings, IReportLogger logger)
         {
             var decisionSystem = Create(settings);
             decisionSystem.Calibrate(simulatorSettings, logger);

@@ -4,17 +4,52 @@ using FinancialStructures.NamingStructures;
 using FinancialStructures.StockStructures;
 using FinancialStructures.StockStructures.Implementation;
 
+using TradingSystem.ExchangeStructures;
+
 namespace TradingSystem.PriceSystem.Implementation
 {
     public sealed class RandomWobblePriceCalculator : IPriceService
     {
         private readonly PriceCalculationSettings _settings;
         private readonly IStockExchange _stockExchange;
+        private readonly Scheduler _scheduler;
 
-        public RandomWobblePriceCalculator(PriceCalculationSettings settings, IStockExchange stockExchange)
+        public event EventHandler<PriceUpdateEventArgs> PriceChanged;
+
+        public RandomWobblePriceCalculator(PriceCalculationSettings settings, IStockExchange stockExchange, Scheduler scheduler)
         {
             _settings = settings;
             _stockExchange = stockExchange;
+            _scheduler = scheduler;
+        }
+
+        public void Initialise(DateTime startTime, DateTime endTime)
+        {
+            foreach (var stock in _stockExchange.Stocks)
+            {
+                foreach (var valuation in stock.Valuations)
+                {
+                    if (valuation.Start > startTime && valuation.Start < endTime)
+                    {
+                        var updateArgs = new PriceUpdateEventArgs(valuation.Start, new StockInstrument(stock), valuation.Open, valuation.CopyAsOpenOnly());
+                        _scheduler.ScheduleNewEvent(() => RaisePriceChanged(null, updateArgs), valuation.Start);
+                    }
+                    if (valuation.Start > startTime && valuation.End < endTime)
+                    {
+                        var updateArgs = new PriceUpdateEventArgs(valuation.End, new StockInstrument(stock), valuation.Close, valuation);
+                        _scheduler.ScheduleNewEvent(() => RaisePriceChanged(null, updateArgs), valuation.End);
+                    }
+                }
+            }
+        }
+
+        private void RaisePriceChanged(object obj, PriceUpdateEventArgs args)
+        {
+            EventHandler<PriceUpdateEventArgs> handler = PriceChanged;
+            if (handler != null)
+            {
+                handler?.Invoke(obj, args);
+            }
         }
 
         public decimal GetPrice(DateTime time, string ticker) => _stockExchange.GetValue(ticker, time);

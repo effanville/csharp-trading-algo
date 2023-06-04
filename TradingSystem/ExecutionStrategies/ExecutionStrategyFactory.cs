@@ -1,0 +1,28 @@
+﻿using System;
+
+using Common.Structure.Reporting;
+
+using FinancialStructures.StockStructures;
+
+using TradingSystem.Decisions;
+using TradingSystem.Time;
+
+namespace TradingSystem.ExecutionStrategies;
+
+public static class ExecutionStrategyFactory
+{
+    public static IExecutionStrategy Create(
+        StrategyType strategyType,
+        IClock clock,
+        IReportLogger logger,
+        IStockExchange stockExchange,
+        IDecisionSystem decisionSystem)
+    {
+        return strategyType switch
+        {
+            StrategyType.LogExecution => new LogExecutionStrategy(clock, logger),
+            StrategyType.TimeIncrementExecution => new TimeIncrementExecutionStrategy(clock, logger, stockExchange, decisionSystem),
+            _ => throw new ArgumentOutOfRangeException($"StrategyType {strategyType} invalid."),
+        };
+    }
+}

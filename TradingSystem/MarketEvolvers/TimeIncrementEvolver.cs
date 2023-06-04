@@ -8,13 +8,11 @@ using FinancialStructures.Database.Extensions.Rates;
 using FinancialStructures.Database.Extensions.Values;
 using FinancialStructures.StockStructures;
 
-using Nager.Date;
-
 using TradingSystem.Decisions;
 using TradingSystem.Diagnostics;
-using TradingSystem.MarketEvolvers;
 using TradingSystem.PortfolioStrategies;
 using TradingSystem.PriceSystem;
+using TradingSystem.Time;
 using TradingSystem.Trading;
 
 namespace TradingSystem.MarketEvolvers
@@ -42,7 +40,7 @@ namespace TradingSystem.MarketEvolvers
         /// <param name="logger">A logger reporting information.</param>
         /// <returns>A result of the end of the simulation.</returns>
         public static EvolverResult Simulate(
-            EvolverSettings simulatorSettings,
+            TimeIncrementEvolverSettings simulatorSettings,
             IPriceService priceService,
             IPortfolioManager portfolioManager,
             IDecisionSystem decisionSystem,
@@ -71,7 +69,7 @@ namespace TradingSystem.MarketEvolvers
                     StockExchangeFactory.UpdateFromBase(simulatorSettings.Exchange, exchange, time);
 
                     // ensure that time of evaluation is valid.
-                    if (!IsCalcTimeValid(time, simulatorSettings.CountryDateCode))
+                    if (!DateHelpers.IsCalcTimeValid(time, simulatorSettings.CountryDateCode))
                     {
                         time += simulatorSettings.EvolutionIncrement;
                         continue;
@@ -133,13 +131,6 @@ namespace TradingSystem.MarketEvolvers
             }
 
             return new EvolverResult(portfolioManager.Portfolio, decisionRecord, tradeRecord);
-        }
-
-        private static bool IsCalcTimeValid(DateTime time, CountryCode countryCode)
-        {
-            return (time.DayOfWeek != DayOfWeek.Saturday)
-                && (time.DayOfWeek != DayOfWeek.Sunday)
-                && !DateSystem.IsPublicHoliday(time, countryCode);
         }
     }
 }

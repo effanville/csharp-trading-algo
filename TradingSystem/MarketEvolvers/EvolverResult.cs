@@ -15,6 +15,7 @@ namespace TradingSystem.MarketEvolvers
         public IPortfolio Portfolio
         {
             get;
+            set;
         }
 
         /// <summary>
@@ -35,9 +36,9 @@ namespace TradingSystem.MarketEvolvers
 
         public EvolverResult()
         {
-            Portfolio = null;
-            Decisions = null;
-            Trades = null;
+            Portfolio = PortfolioFactory.GenerateEmpty();
+            Decisions = new TradeHistory();
+            Trades = new TradeHistory();
         }
 
         public EvolverResult(IPortfolio portfolio, TradeHistory decisions, TradeHistory trades)

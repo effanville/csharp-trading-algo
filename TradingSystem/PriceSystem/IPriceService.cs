@@ -11,6 +11,8 @@ namespace TradingSystem.PriceSystem
     /// </summary>
     public interface IPriceService
     {
+        event EventHandler<PriceUpdateEventArgs> PriceChanged;
+        void Initialise(DateTime startTime, DateTime endTime);
         decimal GetPrice(DateTime time, string ticker);
         decimal GetPrice(DateTime time, NameData name);
         decimal GetBidPrice(DateTime time, string ticker);

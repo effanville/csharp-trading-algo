@@ -4,7 +4,6 @@ using System.IO.Abstractions;
 
 using Common.Structure.Reporting;
 
-using FinancialStructures.NamingStructures;
 using FinancialStructures.StockStructures;
 
 using TradingSystem.Decisions;
@@ -21,7 +20,7 @@ namespace TradingConsole.TradingSystem
         private readonly IDecisionSystem DecisionSystem;
         private readonly ITradeSubmitter BuySellSystem;
         private readonly TradeMechanismSettings fTradeMechanismSettings;
-        private readonly EvolverSettings fSimulatorSettings;
+        private readonly TimeIncrementEvolverSettings fSimulatorSettings;
         private readonly IPortfolioManager fPortfolioManager;
 
         private readonly IReportLogger ReportLogger;
@@ -94,7 +93,8 @@ namespace TradingConsole.TradingSystem
             var priceService = PriceServiceFactory.Create(
                 PriceType.ExchangeFile,
                 PriceCalculationSettings.Default(),
-                exchange);
+                exchange,
+                null);
 
             // Exact the buy/Sell decisions.
             List<Trade> sellDecisions = decisions.GetSellDecisions();

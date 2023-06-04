@@ -1,0 +1,46 @@
+﻿using System;
+
+using Common.Structure.Reporting;
+
+using TradingSystem.ExchangeStructures;
+using TradingSystem.PriceSystem;
+using TradingSystem.Time;
+using TradingSystem.Trading;
+
+namespace TradingSystem.ExecutionStrategies
+{
+    public class LogExecutionStrategy : IExecutionStrategy
+    {
+        public event EventHandler<TradeSubmittedEventArgs> SubmitTradeEvent;
+        private readonly IReportLogger _logger;
+        private readonly IClock _clock;
+
+        public LogExecutionStrategy(IClock clock, IReportLogger logger)
+        {
+            _clock = clock;
+            _logger = logger;
+        }
+
+        /// <inheritdoc/>
+        public void Initialise()
+        {
+        }
+
+        /// <inheritdoc/>
+        public void OnTimeIncrementUpdate(object obj, TimeIncrementEventArgs eventArgs)
+            => _logger.Log(ReportType.Information, "TimeUpdate", $"TimeIncrement occurred. Time now is {eventArgs.Time.ToUniversalTime()}");
+
+        /// <inheritdoc/>
+        public void OnPriceUpdate(object obj, PriceUpdateEventArgs eventArgs)
+            => _logger.Log(ReportType.Information, "PriceService", $"Price for {eventArgs.Instrument.Ticker} has changed to {eventArgs.Price} at time {_clock.UtcNow()}");
+
+        /// <inheritdoc/>
+        public void OnExchangeStatusChanged(object obj, ExchangeStatusChangedEventArgs eventArgs)
+            => _logger.Log(ReportType.Information, "ExchangeService", $"Exchange session changed from {eventArgs.PreviousSession} to {eventArgs.NewSession} at time {_clock.UtcNow()}");
+
+        /// <inheritdoc/>
+        public void Shutdown()
+        {
+        }
+    }
+}

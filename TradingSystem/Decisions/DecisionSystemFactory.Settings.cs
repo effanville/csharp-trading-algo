@@ -39,21 +39,23 @@ namespace TradingSystem.Decisions
                 double buyThreshold,
                 double sellThreshold,
                 int dayAfterPredictor)
+                 : this(decisionSystemType)
             {
-                DecisionSystemType = decisionSystemType;
                 Statistics = statistics;
                 BuyThreshold = buyThreshold;
                 SellThreshold = sellThreshold;
                 DayAfterPredictor = dayAfterPredictor;
             }
 
+            public Settings(DecisionSystem decisionSystemType)
+            {
+                DecisionSystemType = decisionSystemType;
+            }
+
             /// <summary>
             /// Do the settings require the dates to use a burn in period.
             /// </summary>
-            public bool IsBurnInRequired()
-            {
-                return DecisionSystemType == DecisionSystem.BuyAll;
-            }
+            public bool IsBurnInRequired() => DecisionSystemType == DecisionSystem.BuyAll;
         }
     }
 }

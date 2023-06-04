@@ -48,7 +48,7 @@ namespace TradingConsole.TradingSystem
             IReportLogger reportLogger)
         {
             IStockExchange exchange;
-            EvolverSettings simulatorSettings;
+            TimeIncrementEvolverSettings simulatorSettings;
             IPortfolioManager portfolioManager;
             IDecisionSystem decisionSystem;
             ITradeSubmitter tradeMechanism;
@@ -64,7 +64,7 @@ namespace TradingConsole.TradingSystem
                     }
                 }
 
-                simulatorSettings = new EvolverSettings(
+                simulatorSettings = new TimeIncrementEvolverSettings(
                     startTime,
                     endTime,
                     evolutionIncrement,
@@ -83,7 +83,7 @@ namespace TradingConsole.TradingSystem
                 }
             }
 
-            var randomWobblePriceCalculator = PriceServiceFactory.Create(PriceType.RandomWobble, PriceCalculationSettings.Default(), exchange);
+            var randomWobblePriceCalculator = PriceServiceFactory.Create(PriceType.RandomWobble, PriceCalculationSettings.Default(), exchange, null);
 
             void FirstOfTheMonthReport(DateTime time, string message)
             {

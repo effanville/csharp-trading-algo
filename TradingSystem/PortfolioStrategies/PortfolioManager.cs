@@ -170,6 +170,21 @@ namespace TradingSystem.PortfolioStrategies
 
         public decimal AvailableFunds(DateTime time) => Portfolio.TotalValue(Totals.BankAccount, time);
 
+        public void OnPriceUpdate(object obj, PriceUpdateEventArgs eventArgs)
+        {
+            TwoName updateName = eventArgs.Instrument.Name;
+            if (updateName != null && Portfolio.Exists(Account.Security, updateName))
+            {
+                var valuation = new DailyValuation(eventArgs.Time, eventArgs.Price);
+                _ = Portfolio.TryAddOrEditData(
+                    Account.Security,
+                    updateName,
+                    valuation,
+                    valuation,
+                    _logger);
+            }
+        }
+
         public void ReportStatus(DateTime time)
         {
             if (time.Day != 1)
