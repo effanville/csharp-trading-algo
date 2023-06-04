@@ -44,15 +44,9 @@ namespace TradingConsole.Commands.ExchangeCreation
         }
 
         /// <inheritdoc/>
-        public void WriteHelp(IConsole console)
-        {
-            CommandExtensions.WriteHelp(this, console);
-        }
+        public void WriteHelp(IConsole console) => CommandExtensions.WriteHelp(this, console);
         /// <inheritdoc/>
-        public int Execute(IConsole console, string[] args)
-        {
-            return Execute(console, null, args);
-        }
+        public int Execute(IConsole console, string[] args) => Execute(console, null, args);
 
         /// <inheritdoc/>
         public int Execute(IConsole console, IReportLogger logger, string[] args)
@@ -66,15 +60,9 @@ namespace TradingConsole.Commands.ExchangeCreation
         }
 
         /// <inheritdoc/>
-        public bool Validate(IConsole console, string[] args)
-        {
-            return Validate(console, null, args);
-        }
+        public bool Validate(IConsole console, string[] args) => Validate(console, null, args);
 
         /// <inheritdoc/>
-        public bool Validate(IConsole console, IReportLogger logger, string[] args)
-        {
-            return CommandExtensions.Validate(this, args, console, logger);
-        }
+        public bool Validate(IConsole console, IReportLogger logger, string[] args) => CommandExtensions.Validate(this, args, console, logger);
     }
 }

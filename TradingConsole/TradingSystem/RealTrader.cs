@@ -88,6 +88,8 @@ namespace TradingConsole.TradingSystem
         {
             // Decide which stocks to buy, sell or do nothing with.
             TradeCollection decisions = DecisionSystem.Decide(time, exchange, null);
+            TradeHistory decisionRecord = new TradeHistory();
+            TradeHistory tradeRecord = new TradeHistory();
 
             var priceService = PriceServiceFactory.Create(
                 PriceType.ExchangeFile,
@@ -99,21 +101,29 @@ namespace TradingConsole.TradingSystem
             var trades = new TradeCollection(time, time);
             foreach (Trade sell in sellDecisions)
             {
-                var actualTrade = BuySellSystem.Trade(time, sell, priceService, 0.0m, ReportLogger);
-                if (actualTrade != null)
-                {
-                    trades.Add(new NameData(actualTrade.Company, actualTrade.Name), actualTrade.TradeType, actualTrade.NumberShares);
-                }
+                TradeSubmitterHelpers.SubmitAndReportTrade(
+                    time,
+                    sell,
+                    priceService,
+                    portfolioManager,
+                    BuySellSystem,
+                    tradeRecord,
+                    decisionRecord,
+                    ReportLogger);
             }
 
             List<Trade> buyDecisions = decisions.GetBuyDecisions();
             foreach (Trade buy in buyDecisions)
             {
-                var actualTrade = BuySellSystem.Trade(time, buy, priceService, 0.0m, ReportLogger);
-                if (actualTrade != null)
-                {
-                    trades.Add(new NameData(actualTrade.Company, actualTrade.Name), actualTrade.TradeType, actualTrade.NumberShares);
-                }
+                TradeSubmitterHelpers.SubmitAndReportTrade(
+                    time,
+                    buy,
+                    priceService,
+                    portfolioManager,
+                    BuySellSystem,
+                    tradeRecord,
+                    decisionRecord,
+                    ReportLogger);
             }
         }
     }

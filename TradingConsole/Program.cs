@@ -23,7 +23,7 @@ namespace TradingConsole
             {
                 var color = Console.ForegroundColor;
                 Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine($"[{DateTime.Now.ToString("yyyyMMdd-hh:mm:ss")}]: {text}");
+                Console.WriteLine($"[{DateTime.Now:yyyyMMdd-hh:mm:ss}]: {text}");
                 Console.ForegroundColor = color;
             }
             IConsole console = new ConsoleInstance(writeError, writeLine);
@@ -39,7 +39,7 @@ namespace TradingConsole
                     : reportType == ReportType.Warning
                         ? ConsoleColor.Yellow
                         : color;
-                console.WriteLine($"[{DateTime.Now.ToString("yyyyMMdd-hh:mm:ss")}]: ({reportType}): {text}");
+                console.WriteLine($"[{DateTime.Now:yyyyMMdd-hh:mm:ss}]: ({reportType}): {text}");
 
                 Console.ForegroundColor = color;
             }

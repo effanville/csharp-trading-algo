@@ -7,7 +7,7 @@ using TradingSystem.PriceSystem;
 
 namespace TradingSystem.Trading
 {
-    internal static class TradeSubmitterHelpers
+    public static class TradeSubmitterHelpers
     {
         public static void SubmitAndReportTrade(
             DateTime time,
