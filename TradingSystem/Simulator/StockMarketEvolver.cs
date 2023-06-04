@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using FinancialStructures.Database;
 using FinancialStructures.Database.Extensions.Rates;
 using FinancialStructures.Database.Extensions.Values;
-using FinancialStructures.NamingStructures;
 using FinancialStructures.StockStructures;
 
 using Nager.Date;
@@ -78,36 +77,32 @@ namespace TradingSystem.Simulator
                     // Exact the buy/Sell decisions.
                     List<Trade> sellDecisions = decisions.GetSellDecisions();
                     var trades = new TradeCollection(time, time);
-                    bool wasTrade = false;
                     foreach (Trade sell in sellDecisions)
                     {
-                        var actualTrade = tradeMechanism.Trade(time, sell, priceService, portfolioManager, 0.0m, callbacks.Logger);
-                        if (actualTrade != null)
-                        {
-                            wasTrade = true;
-                            trades.Add(new NameData(actualTrade.Company, actualTrade.Name), actualTrade.TradeType, actualTrade.NumberShares);
-                        }
+                        TradeSubmitterHelpers.SubmitAndReportTrade(
+                            time,
+                            sell,
+                            priceService,
+                            portfolioManager,
+                            tradeMechanism,
+                            tradeRecord,
+                            decisionRecord,
+                            callbacks.Logger);
                     }
 
                     List<Trade> buyDecisions = decisions.GetBuyDecisions();
                     foreach (Trade buy in buyDecisions)
                     {
-                        var actualTrade = tradeMechanism.Trade(time, buy, priceService, portfolioManager, 0.0m, callbacks.Logger);
-                        if (actualTrade != null)
-                        {
-                            wasTrade = true;
-                            trades.Add(new NameData(actualTrade.Company, actualTrade.Name), actualTrade.TradeType, actualTrade.NumberShares);
-                        }
+                        TradeSubmitterHelpers.SubmitAndReportTrade(
+                            time,
+                            buy,
+                            priceService,
+                            portfolioManager,
+                            tradeMechanism,
+                            tradeRecord,
+                            decisionRecord,
+                            callbacks.Logger);
                     }
-
-                    if (!wasTrade)
-                    {
-                        trades = null;
-                    }
-
-                    // take a record of the decisions and trades.
-                    decisionRecord.AddIfNotNull(time, decisions);
-                    tradeRecord.AddIfNotNull(time, trades);
 
                     // Update the Stock exchange for the recent time period.
 
