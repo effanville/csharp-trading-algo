@@ -4,7 +4,6 @@ using Common.Structure.Reporting;
 
 using FinancialStructures.DataStructures;
 
-using TradingSystem.PortfolioStrategies;
 using TradingSystem.PriceSystem;
 
 namespace TradingSystem.Trading
@@ -27,7 +26,6 @@ namespace TradingSystem.Trading
             DateTime time,
             Trade trade,
             IPriceService priceService,
-            IPortfolioManager portfolioManager,
             decimal availableFunds,
             IReportLogger reportLogger);
     }

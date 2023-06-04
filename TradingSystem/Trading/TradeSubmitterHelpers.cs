@@ -2,8 +2,6 @@
 
 using Common.Structure.Reporting;
 
-using FinancialStructures.NamingStructures;
-
 using TradingSystem.PortfolioStrategies;
 using TradingSystem.PriceSystem;
 
@@ -21,10 +19,26 @@ namespace TradingSystem.Trading
             TradeHistory decisionHistory,
             IReportLogger logger)
         {
-            var actualTrade = tradeSubmitter.Trade(time, trade, priceService, portfolioManager, 0.0m, logger);
-            if (actualTrade != null)
+            Trade validatedTrade = portfolioManager.ValidateTrade(time, trade, priceService);
+            if (validatedTrade == null)
             {
-                tradeHistory.Add(time, new Trade(new NameData(actualTrade.Company, actualTrade.Name), actualTrade.TradeType, actualTrade.NumberShares));
+                logger.Log(ReportType.Information, "Trading", $"{time} - Trade {trade} was not valid.");
+                return;
+            }
+
+            decimal availableFunds = portfolioManager.AvailableFunds(time);
+            if (availableFunds <= 0.0m)
+            {
+                logger.Log(ReportType.Information, "Trading", $"{time} - No available funds.");
+                return;
+            }
+
+            var tradeConfirmation = tradeSubmitter.Trade(time, validatedTrade, priceService, availableFunds, logger);
+            if (tradeConfirmation != null)
+            {
+                _ = portfolioManager.AddTrade(time, trade, tradeConfirmation);
+                logger.Log(ReportType.Information, "Trading", $"{time} - Confirm trade '{tradeConfirmation}' reported and added.");
+                tradeHistory.Add(time, validatedTrade);
             }
             decisionHistory.Add(time, trade);
         }

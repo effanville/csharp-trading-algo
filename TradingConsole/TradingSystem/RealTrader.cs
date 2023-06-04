@@ -99,7 +99,7 @@ namespace TradingConsole.TradingSystem
             var trades = new TradeCollection(time, time);
             foreach (Trade sell in sellDecisions)
             {
-                var actualTrade = BuySellSystem.Trade(time, sell, priceService, portfolioManager, 0.0m, ReportLogger);
+                var actualTrade = BuySellSystem.Trade(time, sell, priceService, 0.0m, ReportLogger);
                 if (actualTrade != null)
                 {
                     trades.Add(new NameData(actualTrade.Company, actualTrade.Name), actualTrade.TradeType, actualTrade.NumberShares);
@@ -109,7 +109,7 @@ namespace TradingConsole.TradingSystem
             List<Trade> buyDecisions = decisions.GetBuyDecisions();
             foreach (Trade buy in buyDecisions)
             {
-                var actualTrade = BuySellSystem.Trade(time, buy, priceService, portfolioManager, 0.0m, ReportLogger);
+                var actualTrade = BuySellSystem.Trade(time, buy, priceService, 0.0m, ReportLogger);
                 if (actualTrade != null)
                 {
                     trades.Add(new NameData(actualTrade.Company, actualTrade.Name), actualTrade.TradeType, actualTrade.NumberShares);

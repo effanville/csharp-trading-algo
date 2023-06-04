@@ -4,7 +4,6 @@ using Common.Structure.Reporting;
 
 using FinancialStructures.DataStructures;
 
-using TradingSystem.PortfolioStrategies;
 using TradingSystem.PriceSystem;
 
 namespace TradingSystem.Trading.Implementation
@@ -14,7 +13,6 @@ namespace TradingSystem.Trading.Implementation
     /// </summary>
     internal class SimulationBuySellSystem : ITradeSubmitter
     {
-
         /// <inheritdoc/>
         public TradeMechanismSettings Settings { get; }
 
@@ -31,18 +29,10 @@ namespace TradingSystem.Trading.Implementation
             DateTime time,
             Trade trade,
             IPriceService priceService,
-            IPortfolioManager portfolioManager,
             decimal availableFunds,
             IReportLogger reportLogger)
         {
             if (trade.BuySell != TradeType.Buy && trade.BuySell != TradeType.Sell)
-            {
-                return null;
-            }
-
-            availableFunds = portfolioManager.AvailableFunds(time);
-            Trade requestedTrade = portfolioManager.ValidateTrade(time, trade, priceService);
-            if (requestedTrade == null)
             {
                 return null;
             }
@@ -55,22 +45,19 @@ namespace TradingSystem.Trading.Implementation
                 return null;
             }
 
-
-
             SecurityTrade tradeDetails = new SecurityTrade(
-                requestedTrade.BuySell,
-                requestedTrade.StockName,
+                trade.BuySell,
+                trade.StockName,
                 time,
-                requestedTrade.NumberShares,
+                trade.NumberShares,
                 price,
                 Settings.TradeCost);
 
-            if (requestedTrade.BuySell == TradeType.Buy
+            if (trade.BuySell == TradeType.Buy
                 && tradeDetails.TotalCost > availableFunds)
             {
                 return null;
             }
-            portfolioManager.AddTrade(time, requestedTrade, tradeDetails);
             return tradeDetails;
         }
     }
