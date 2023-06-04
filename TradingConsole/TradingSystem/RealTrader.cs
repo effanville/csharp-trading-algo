@@ -19,7 +19,7 @@ namespace TradingConsole.TradingSystem
     internal partial class RealTrader
     {
         private readonly IDecisionSystem DecisionSystem;
-        private readonly ITradeMechanism BuySellSystem;
+        private readonly ITradeSubmitter BuySellSystem;
         private readonly TradeMechanismSettings fTradeMechanismSettings;
         private readonly StockMarketEvolver.Settings fSimulatorSettings;
         private readonly IPortfolioManager fPortfolioManager;

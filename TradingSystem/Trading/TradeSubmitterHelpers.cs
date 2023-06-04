@@ -13,20 +13,20 @@ namespace TradingSystem.Trading
     {
         public static void SubmitAndReportTrade(
             DateTime time,
-            Trade buy,
+            Trade trade,
             IPriceService priceService,
             IPortfolioManager portfolioManager,
-            ITradeMechanism tradeSubmitter,
+            ITradeSubmitter tradeSubmitter,
             TradeHistory tradeHistory,
             TradeHistory decisionHistory,
             IReportLogger logger)
         {
-            var actualTrade = tradeSubmitter.Trade(time, buy, priceService, portfolioManager, 0.0m, logger);
+            var actualTrade = tradeSubmitter.Trade(time, trade, priceService, portfolioManager, 0.0m, logger);
             if (actualTrade != null)
             {
                 tradeHistory.Add(time, new Trade(new NameData(actualTrade.Company, actualTrade.Name), actualTrade.TradeType, actualTrade.NumberShares));
             }
-            decisionHistory.Add(time, buy);
+            decisionHistory.Add(time, trade);
         }
     }
 }

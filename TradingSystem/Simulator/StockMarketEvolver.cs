@@ -43,7 +43,7 @@ namespace TradingSystem.Simulator
             IPriceService priceService,
             IPortfolioManager portfolioManager,
             IDecisionSystem decisionSystem,
-            ITradeMechanism tradeMechanism,
+            ITradeSubmitter tradeSubmitter,
             Reporting callbacks)
         {
             TradeHistory decisionRecord = new TradeHistory();
@@ -84,7 +84,7 @@ namespace TradingSystem.Simulator
                             sell,
                             priceService,
                             portfolioManager,
-                            tradeMechanism,
+                            tradeSubmitter,
                             tradeRecord,
                             decisionRecord,
                             callbacks.Logger);
@@ -98,7 +98,7 @@ namespace TradingSystem.Simulator
                             buy,
                             priceService,
                             portfolioManager,
-                            tradeMechanism,
+                            tradeSubmitter,
                             tradeRecord,
                             decisionRecord,
                             callbacks.Logger);

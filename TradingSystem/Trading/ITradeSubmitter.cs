@@ -13,7 +13,7 @@ namespace TradingSystem.Trading
     /// Mechanism to enact the buying and selling of stocks.
     /// e.g. one could have a simulation system, or one could use this to interact with a broker.
     /// </summary>
-    public interface ITradeMechanism
+    public interface ITradeSubmitter
     {
         /// <summary>
         /// The settings for the trade submitter.

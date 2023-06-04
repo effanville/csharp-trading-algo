@@ -51,7 +51,7 @@ namespace TradingConsole.TradingSystem
             StockMarketEvolver.Settings simulatorSettings;
             IPortfolioManager portfolioManager;
             IDecisionSystem decisionSystem;
-            ITradeMechanism tradeMechanism;
+            ITradeSubmitter tradeMechanism;
 
             using (new Timer(reportLogger, "Setup"))
             {

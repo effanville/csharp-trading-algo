@@ -4,7 +4,7 @@ namespace TradingSystem.Trading
 {
     public static class TradeMechanismFactory
     {
-        public static ITradeMechanism Create(TradeMechanismType buySellType, TradeMechanismSettings settings)
+        public static ITradeSubmitter Create(TradeMechanismType buySellType, TradeMechanismSettings settings)
         {
             switch (buySellType)
             {

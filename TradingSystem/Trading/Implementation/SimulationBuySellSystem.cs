@@ -12,7 +12,7 @@ namespace TradingSystem.Trading.Implementation
     /// <summary>
     /// Trading system for use in simulation systems.
     /// </summary>
-    internal class SimulationBuySellSystem : ITradeMechanism
+    internal class SimulationBuySellSystem : ITradeSubmitter
     {
 
         /// <inheritdoc/>
