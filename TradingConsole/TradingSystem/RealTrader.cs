@@ -1,31 +1,28 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO.Abstractions;
 
-using Common.Structure.DataStructures;
 using Common.Structure.Reporting;
 
-using FinancialStructures.Database;
-using FinancialStructures.Database.Extensions;
 using FinancialStructures.NamingStructures;
 using FinancialStructures.StockStructures;
 
-using TradingConsole.BuySellSystem;
-using TradingConsole.DecisionSystem;
-
-using TradingSystem;
-using TradingSystem.DecideThenTradeSystem;
-using TradingSystem.Simulator;
-using TradingSystem.Simulator.Trading.Decisions;
+using TradingSystem.Decisions;
+using TradingSystem.Diagnostics;
+using TradingSystem.MarketEvolvers;
+using TradingSystem.PortfolioStrategies;
+using TradingSystem.PriceSystem;
+using TradingSystem.Trading;
 
 namespace TradingConsole.TradingSystem
 {
     internal partial class RealTrader
     {
         private readonly IDecisionSystem DecisionSystem;
-        private readonly ITradeMechanism BuySellSystem;
-        private readonly TradeMechanismTraderOptions fTraderOptions;
-        private readonly StockMarketEvolver.Settings fSimulatorSettings;
-        private readonly IPortfolio fPortfolio;
+        private readonly ITradeSubmitter BuySellSystem;
+        private readonly TradeMechanismSettings fTradeMechanismSettings;
+        private readonly EvolverSettings fSimulatorSettings;
+        private readonly IPortfolioManager fPortfolioManager;
 
         private readonly IReportLogger ReportLogger;
         private readonly IFileSystem fFileSystem;
@@ -42,15 +39,14 @@ namespace TradingConsole.TradingSystem
         public RealTrader(
             string stockFilePath,
             PortfolioStartSettings startSettings,
+            PortfolioConstructionSettings constructionSettings,
             DecisionSystemFactory.Settings decisionParameters,
-            TradeMechanismType buySellType,
+            TradeSubmitterType buySellType,
             IFileSystem fileSystem,
             IReportLogger reportLogger)
         {
             ReportLogger = reportLogger;
             fFileSystem = fileSystem;
-
-            fTraderOptions = new TradeMechanismTraderOptions();
 
             IStockExchange exchange;
             using (new Timer(ReportLogger, "Setup"))
@@ -72,63 +68,63 @@ namespace TradingConsole.TradingSystem
                     DecisionSystem.Calibrate(fSimulatorSettings, ReportLogger);
                 }
 
-                BuySellSystem = TradeMechanismFactory.Create(buySellType);
+                BuySellSystem = TradeSubmitterFactory.Create(buySellType, TradeMechanismSettings.Default());
 
                 using (new Timer(reportLogger, "Loading Portfolio"))
                 {
-                    fPortfolio = LoadStartPortfolio(startSettings, reportLogger);
+                    fPortfolioManager = PortfolioManager.LoadFromFile(fFileSystem, startSettings, constructionSettings, reportLogger);
                 }
             }
         }
 
         public void Run(string portfolioFilePath)
         {
-            PerformDailyTrades(DateTime.Today, fSimulatorSettings.Exchange, fPortfolio);
+            PerformDailyTrades(DateTime.Today, fSimulatorSettings.Exchange, fPortfolioManager);
 
-            fPortfolio.SavePortfolio(portfolioFilePath, fFileSystem, ReportLogger);
+            fPortfolioManager.Portfolio.SavePortfolio(portfolioFilePath, fFileSystem, ReportLogger);
         }
 
-        private void PerformDailyTrades(DateTime day, IStockExchange exchange, IPortfolio portfolio)
+        private void PerformDailyTrades(DateTime time, IStockExchange exchange, IPortfolioManager portfolioManager)
         {
             // Decide which stocks to buy, sell or do nothing with.
-            DecisionStatus status = DecisionSystem.Decide(day, exchange, null);
+            TradeCollection decisions = DecisionSystem.Decide(time, exchange, null);
+            TradeHistory decisionRecord = new TradeHistory();
+            TradeHistory tradeRecord = new TradeHistory();
 
-            decimal CalculatePurchasePrice(DateTime time, TwoName stock)
-            {
-                return exchange.GetValue(stock, time);
-            }
-
-            decimal CalculateSellPrice(DateTime time, TwoName stock)
-            {
-                return exchange.GetValue(stock, time);
-            }
+            var priceService = PriceServiceFactory.Create(
+                PriceType.ExchangeFile,
+                PriceCalculationSettings.Default(),
+                exchange);
 
             // Exact the buy/Sell decisions.
-            _ = BuySellSystem.EnactAllTrades(
-                day,
-                status,
-                (date, name) => CalculatePurchasePrice(date, name),
-                (date, name) => CalculateSellPrice(date, name),
-                portfolio,
-                fTraderOptions,
-                ReportLogger);
-        }
-
-        private IPortfolio LoadStartPortfolio(PortfolioStartSettings settings, IReportLogger logger)
-        {
-            IPortfolio portfolio = PortfolioFactory.GenerateEmpty();
-            if (settings.PortfolioFilePath != null)
+            List<Trade> sellDecisions = decisions.GetSellDecisions();
+            var trades = new TradeCollection(time, time);
+            foreach (Trade sell in sellDecisions)
             {
-                portfolio.LoadPortfolio(settings.PortfolioFilePath, fFileSystem, ReportLogger);
-            }
-            else
-            {
-                _ = portfolio.TryAdd(Account.BankAccount, new NameData(settings.DefaultBankAccName.Company, settings.DefaultBankAccName.Name), logger);
-                var data = new DailyValuation(settings.StartTime.AddDays(-1), settings.StartingCash);
-                _ = portfolio.TryAddOrEditData(Account.BankAccount, settings.DefaultBankAccName, data, data, logger);
+                TradeSubmitterHelpers.SubmitAndReportTrade(
+                    time,
+                    sell,
+                    priceService,
+                    portfolioManager,
+                    BuySellSystem,
+                    tradeRecord,
+                    decisionRecord,
+                    ReportLogger);
             }
 
-            return portfolio;
+            List<Trade> buyDecisions = decisions.GetBuyDecisions();
+            foreach (Trade buy in buyDecisions)
+            {
+                TradeSubmitterHelpers.SubmitAndReportTrade(
+                    time,
+                    buy,
+                    priceService,
+                    portfolioManager,
+                    BuySellSystem,
+                    tradeRecord,
+                    decisionRecord,
+                    ReportLogger);
+            }
         }
     }
 }

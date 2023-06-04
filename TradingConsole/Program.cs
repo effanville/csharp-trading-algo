@@ -23,7 +23,7 @@ namespace TradingConsole
             {
                 var color = Console.ForegroundColor;
                 Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine($"[{DateTime.Now.ToString("yyyyMMdd-hh:mm:ss")}]: {text}");
+                Console.WriteLine($"[{DateTime.Now:yyyyMMdd-hh:mm:ss}]: {text}");
                 Console.ForegroundColor = color;
             }
             IConsole console = new ConsoleInstance(writeError, writeLine);
@@ -39,7 +39,7 @@ namespace TradingConsole
                     : reportType == ReportType.Warning
                         ? ConsoleColor.Yellow
                         : color;
-                console.WriteLine($"[{DateTime.Now.ToString("yyyyMMdd-hh:mm:ss")}]: ({reportType}): {text}");
+                console.WriteLine($"[{DateTime.Now:yyyyMMdd-hh:mm:ss}]: ({reportType}): {text}");
 
                 Console.ForegroundColor = color;
             }
@@ -53,9 +53,9 @@ namespace TradingConsole
             // Define the acceptable commands for this program.
             var validCommands = new List<ICommand>()
             {
-                new ConfigureCommand(logger, fileSystem),
-                new DownloadCommand(logger, fileSystem),
-                new SimulationCommand(logger, fileSystem)
+                new ConfigureCommand(fileSystem),
+                new DownloadCommand(fileSystem),
+                new SimulationCommand(fileSystem)
             };
 
             // Generate the context, validate the arguments and execute.

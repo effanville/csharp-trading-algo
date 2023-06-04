@@ -9,10 +9,12 @@ using Common.Structure.Reporting;
 
 using FinancialStructures.StockStructures.Statistics;
 
-using TradingConsole.BuySellSystem;
 using TradingConsole.TradingSystem;
 
-using TradingSystem;
+using TradingSystem.Decisions;
+using TradingSystem.Diagnostics;
+using TradingSystem.PortfolioStrategies;
+using TradingSystem.Trading;
 
 namespace TradingConsole.Commands.Execution
 {
@@ -51,7 +53,7 @@ namespace TradingConsole.Commands.Execution
         /// <summary>
         /// Construct an instance.
         /// </summary>
-        public SimulationCommand(IReportLogger logger, IFileSystem fileSystem)
+        public SimulationCommand(IFileSystem fileSystem)
         {
             fFileSystem = fileSystem;
 
@@ -68,34 +70,22 @@ namespace TradingConsole.Commands.Execution
             Options.Add(new CommandOption<TimeSpan>(IncrementName, "The interval between evaluations."));
 
             // Decision system options.
-            Options.Add(new CommandOption<DecisionSystem.DecisionSystem>(DecisionSystemName, "The type of decision system to use."));
+            Options.Add(new CommandOption<DecisionSystem>(DecisionSystemName, "The type of decision system to use."));
             Options.Add(new CommandOption<List<StockStatisticType>>(DecisionSystemStatsName, ""));
             Options.Add(new CommandOption<decimal>(FractionInvestName, "The maximum fraction of available cash to put in any purchase."));
         }
 
         /// <inheritdoc/>
-        public void WriteHelp(IConsole console)
-        {
-            CommandExtensions.WriteHelp(this, console);
-        }
+        public void WriteHelp(IConsole console) => CommandExtensions.WriteHelp(this, console);
 
         /// <inheritdoc/>
-        public bool Validate(IConsole console, string[] args)
-        {
-            return Validate(console, null, args);
-        }
+        public bool Validate(IConsole console, string[] args) => Validate(console, null, args);
 
         /// <inheritdoc/>
-        public bool Validate(IConsole console, IReportLogger logger, string[] args)
-        {
-            return CommandExtensions.Validate(this, args, console);
-        }
+        public bool Validate(IConsole console, IReportLogger logger, string[] args) => CommandExtensions.Validate(this, args, console, logger);
 
         /// <inheritdoc/>
-        public int Execute(IConsole console, string[] args = null)
-        {
-            return Execute(console, null, args);
-        }
+        public int Execute(IConsole console, string[] args = null) => Execute(console, null, args);
 
         /// <inheritdoc/>
         public int Execute(IConsole console, IReportLogger logger, string[] args)
@@ -110,9 +100,10 @@ namespace TradingConsole.Commands.Execution
                     settings.EndTime,
                     settings.EvolutionIncrement,
                     settings.PortfolioSettings,
+                    PortfolioConstructionSettings.Default(),
                     settings.DecisionSystemSettings,
-                    settings.TradingOptions,
-                    TradeMechanismType.SellAllThenBuy,
+                    settings.TradeMechanismSettings,
+                    TradeSubmitterType.SellAllThenBuy,
                     fFileSystem,
                     logger);
 

@@ -17,5 +17,9 @@
     <ProjectReference Include="..\FinancialStructures\Common\Common.Structure\Common.Structure.csproj" />
     <ProjectReference Include="..\FinancialStructures\Common\Common.Console\Common.Console.csproj" />
   </ItemGroup>
-
+	<ItemGroup>
+		<AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleToAttribute">
+			<_Parameter1>TradingConsole.Tests</_Parameter1>
+		</AssemblyAttribute>
+	</ItemGroup>
 </Project>

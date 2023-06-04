@@ -31,40 +31,25 @@ namespace TradingConsole.Commands.ExchangeCreation
         /// <summary>
         /// Default Constructor.
         /// </summary>
-        public DownloadCommand(IReportLogger logger, IFileSystem fileSystem)
+        public DownloadCommand(IFileSystem fileSystem)
         {
-            SubCommands.Add(new DownloadAllCommand(logger, fileSystem));
-            SubCommands.Add(new DownloadLatestCommand(logger, fileSystem));
+            SubCommands.Add(new DownloadAllCommand(fileSystem));
+            SubCommands.Add(new DownloadLatestCommand(fileSystem));
         }
 
         /// <inheritdoc/>
-        public void WriteHelp(IConsole console)
-        {
-            CommandExtensions.WriteHelp(this, console);
-        }
+        public void WriteHelp(IConsole console) => CommandExtensions.WriteHelp(this, console);
 
         /// <inheritdoc/>
-        public int Execute(IConsole console, string[] args)
-        {
-            return Execute(console, null, args);
-        }
+        public int Execute(IConsole console, string[] args) => Execute(console, null, args);
 
         /// <inheritdoc/>
-        public int Execute(IConsole console, IReportLogger logger, string[] args)
-        {
-            return CommandExtensions.Execute(this, console, args);
-        }
+        public int Execute(IConsole console, IReportLogger logger, string[] args) => CommandExtensions.Execute(this, console, logger, args);
 
         /// <inheritdoc/>
-        public bool Validate(IConsole console, string[] args)
-        {
-            return Validate(console, null, args);
-        }
+        public bool Validate(IConsole console, string[] args) => Validate(console, null, args);
 
         /// <inheritdoc/>
-        public bool Validate(IConsole console, IReportLogger logger, string[] args)
-        {
-            return CommandExtensions.Validate(this, args, console);
-        }
+        public bool Validate(IConsole console, IReportLogger logger, string[] args) => CommandExtensions.Validate(this, args, console, logger);
     }
 }
