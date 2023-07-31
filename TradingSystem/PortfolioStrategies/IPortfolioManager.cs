@@ -11,7 +11,7 @@ namespace TradingSystem.PortfolioStrategies
     /// An interface dealing with the construction of a portfolio. For example
     /// an implementor could try to create a Markowitz portfolio.
     /// </summary>
-    public interface IPortfolioManager
+    public interface IPortfolioManager : IService
     {
         /// <summary>
         /// Various settings used in the initial setup of the portfolio.

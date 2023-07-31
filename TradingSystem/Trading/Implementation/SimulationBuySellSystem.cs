@@ -4,6 +4,7 @@ using Common.Structure.Reporting;
 
 using FinancialStructures.DataStructures;
 
+using TradingSystem.MarketEvolvers;
 using TradingSystem.PriceSystem;
 
 namespace TradingSystem.Trading.Implementation
@@ -16,6 +17,8 @@ namespace TradingSystem.Trading.Implementation
         /// <inheritdoc/>
         public TradeMechanismSettings Settings { get; }
 
+        public string Name => nameof(SimulationBuySellSystem);
+
         /// <summary>
         /// Create an instance.
         /// </summary>
@@ -23,6 +26,10 @@ namespace TradingSystem.Trading.Implementation
         {
             Settings = settings;
         }
+
+        public void Initialize(EvolverSettings settings) { }
+        public void Restart() => throw new NotImplementedException();
+        public void Shutdown() { }
 
         /// <inheritdoc/>
         public SecurityTrade Trade(

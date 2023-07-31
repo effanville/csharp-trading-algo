@@ -10,17 +10,12 @@ namespace TradingSystem.ExecutionStrategies;
 /// <summary>
 /// Contains all necessary methods for the execution of a stock market trading strategy
 /// </summary>
-public interface IExecutionStrategy
+public interface IExecutionStrategy : IService
 {
     /// <summary>
     /// Event to subscribe to for the dealing with Trades created.
     /// </summary>
     event EventHandler<TradeSubmittedEventArgs> SubmitTradeEvent;
-
-    /// <summary>
-    /// Perform any setup required of the strategy.
-    /// </summary>
-    void Initialise();
 
     /// <summary>
     /// Event that fires every short time period for checking strategy.
@@ -36,9 +31,4 @@ public interface IExecutionStrategy
     /// Event that is called at the point of a price change occurring.
     /// </summary>
     void OnPriceUpdate(object obj, PriceUpdateEventArgs eventArgs);
-
-    /// <summary>
-    /// Perform any cleanup at the end of the execution.
-    /// </summary>
-    void Shutdown();
 }

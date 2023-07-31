@@ -7,6 +7,7 @@ using FinancialStructures.StockStructures;
 
 using TradingSystem.Decisions;
 using TradingSystem.ExchangeStructures;
+using TradingSystem.MarketEvolvers;
 using TradingSystem.PriceSystem;
 using TradingSystem.Time;
 using TradingSystem.Trading;
@@ -22,6 +23,8 @@ public class TimeIncrementExecutionStrategy : IExecutionStrategy
     private readonly IDecisionSystem _decisionSystem;
     private TradeCollection _tradeCollection;
 
+    public string Name => nameof(TimeIncrementExecutionStrategy);
+
     public TimeIncrementExecutionStrategy(
         IClock clock,
         IReportLogger logger,
@@ -34,10 +37,11 @@ public class TimeIncrementExecutionStrategy : IExecutionStrategy
         _decisionSystem = decisionSystem;
     }
 
-    public void Initialise()
+    public void Initialize(EvolverSettings settings)
     {
     }
 
+    public void Restart() => throw new NotImplementedException();
     public void OnTimeIncrementUpdate(object obj, TimeIncrementEventArgs eventArgs)
     {
     }

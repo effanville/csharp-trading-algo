@@ -12,6 +12,7 @@ using System.Collections.Generic;
 using FinancialStructures.FinanceStructures;
 using FinancialStructures.StockStructures;
 using System.IO.Abstractions;
+using TradingSystem.MarketEvolvers;
 
 namespace TradingSystem.PortfolioStrategies
 {
@@ -47,6 +48,8 @@ namespace TradingSystem.PortfolioStrategies
             get;
         }
 
+        public string Name => nameof(PortfolioManager);
+
         public PortfolioManager(
             IPortfolio portfolio,
             PortfolioStartSettings startSettings,
@@ -59,6 +62,10 @@ namespace TradingSystem.PortfolioStrategies
             StartSettings = startSettings;
             PortfolioConstructionSettings = constructionSettings;
         }
+
+        public void Initialize(EvolverSettings settings) { }
+        public void Restart() { }
+        public void Shutdown() { }
 
         /// <summary>
         /// Create a portfolioManager from a settings object.

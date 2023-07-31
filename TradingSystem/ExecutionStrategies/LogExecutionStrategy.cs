@@ -3,6 +3,7 @@
 using Common.Structure.Reporting;
 
 using TradingSystem.ExchangeStructures;
+using TradingSystem.MarketEvolvers;
 using TradingSystem.PriceSystem;
 using TradingSystem.Time;
 using TradingSystem.Trading;
@@ -15,6 +16,8 @@ namespace TradingSystem.ExecutionStrategies
         private readonly IReportLogger _logger;
         private readonly IClock _clock;
 
+        public string Name => throw new NotImplementedException();
+
         public LogExecutionStrategy(IClock clock, IReportLogger logger)
         {
             _clock = clock;
@@ -22,9 +25,11 @@ namespace TradingSystem.ExecutionStrategies
         }
 
         /// <inheritdoc/>
-        public void Initialise()
+        public void Initialize(EvolverSettings settings)
         {
         }
+
+        public void Restart() => throw new NotImplementedException();
 
         /// <inheritdoc/>
         public void OnTimeIncrementUpdate(object obj, TimeIncrementEventArgs eventArgs)

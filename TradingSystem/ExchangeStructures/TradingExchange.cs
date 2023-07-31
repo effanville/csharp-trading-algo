@@ -17,7 +17,7 @@ namespace TradingSystem.ExchangeStructures;
 /// <summary>
 /// Representation of a exchange and all instruments that are traded upon it.
 /// </summary>
-public sealed class TradingExchange
+public sealed class TradingExchange : IService
 {
     private readonly Scheduler _scheduler;
 
@@ -65,7 +65,8 @@ public sealed class TradingExchange
         Configure(stockExchange);
     }
 
-    public void Initialise(EvolverSettings settings)
+
+    public void Initialize(EvolverSettings settings)
     {
         DateTime time = settings.StartTime;
         while (time < settings.EndTime)
@@ -87,6 +88,8 @@ public sealed class TradingExchange
                 new DateTime(time.Year, time.Month, time.Day, ExchangeClose.Hour, ExchangeClose.Minute, ExchangeClose.Second));
         }
     }
+    public void Restart() => throw new NotImplementedException();
+    public void Shutdown() { }
 
     private void RaiseExchangeStatusChanged(object obj, ExchangeStatusChangedEventArgs eventArgs)
     {

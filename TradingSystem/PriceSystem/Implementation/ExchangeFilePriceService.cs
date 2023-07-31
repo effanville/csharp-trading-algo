@@ -5,6 +5,7 @@ using FinancialStructures.StockStructures;
 using FinancialStructures.StockStructures.Implementation;
 
 using TradingSystem.ExchangeStructures;
+using TradingSystem.MarketEvolvers;
 
 namespace TradingSystem.PriceSystem.Implementation
 {
@@ -15,6 +16,9 @@ namespace TradingSystem.PriceSystem.Implementation
     {
         private readonly Scheduler _scheduler;
         private readonly IStockExchange _stockExchange;
+
+        public string Name => throw new NotImplementedException();
+
         public event EventHandler<PriceUpdateEventArgs> PriceChanged;
 
         public ExchangeFilePriceService(IStockExchange stockExchange, Scheduler scheduler)
@@ -23,8 +27,10 @@ namespace TradingSystem.PriceSystem.Implementation
             _scheduler = scheduler;
         }
 
-        public void Initialise(DateTime startTime, DateTime endTime)
+        public void Initialize(EvolverSettings settings)
         {
+            var startTime = settings.StartTime;
+            var endTime = settings.EndTime;
             foreach (var stock in _stockExchange.Stocks)
             {
                 foreach (var valuation in stock.Valuations)
@@ -43,6 +49,9 @@ namespace TradingSystem.PriceSystem.Implementation
             }
         }
 
+        public void Restart() => throw new NotImplementedException();
+        public void Shutdown() { }
+
         private void RaisePriceChanged(object obj, PriceUpdateEventArgs args)
         {
             EventHandler<PriceUpdateEventArgs> handler = PriceChanged;
@@ -56,7 +65,7 @@ namespace TradingSystem.PriceSystem.Implementation
 
         public decimal GetPrice(DateTime time, NameData name) => _stockExchange.GetValue(name, time);
 
-        public StockDay GetCandle(DateTime time, TwoName name) => _stockExchange.GetCandle(name, time);
+        public StockDay GetCandle(DateTime startTime, DateTime endTime, TwoName name) => _stockExchange.GetCandle(name, startTime);
 
         public decimal GetBidPrice(DateTime time, string ticker) => _stockExchange.GetValue(ticker, time);
 

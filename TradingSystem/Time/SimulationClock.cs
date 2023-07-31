@@ -27,10 +27,8 @@ public sealed class SimulationClock : IClock
     private void OnTimedEvent(object source, ElapsedEventArgs e) => _ticks += _increment;
 
     /// <inheritdoc/>
-    public DateTime Now() => _started ? new DateTime(_ticks, DateTimeKind.Local) : DateTime.MinValue;
-
-    /// <inheritdoc/>
-    public DateTime UtcNow() => _started ? new DateTime(_ticks, DateTimeKind.Utc) : DateTime.MinValue;
+    public DateTime Now() => new DateTime(_ticks, DateTimeKind.Local);
+    public DateTime UtcNow() => new DateTime(_ticks, DateTimeKind.Utc);
 
     /// <inheritdoc/>
     public DateTime NowInTimeZone(TimeZoneInfo timeZoneInfo)

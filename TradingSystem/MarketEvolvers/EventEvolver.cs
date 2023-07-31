@@ -27,11 +27,12 @@ public sealed partial class EventEvolver
     readonly EvolverSettings _settings;
     readonly IReportLogger _logger;
     readonly Scheduler _scheduler;
-    readonly IPriceService _priceService;
-    readonly ITradeSubmitter _tradeSubmitter;
-    readonly TradingExchange _exchange;
-    readonly IExecutionStrategy _executionStrategy;
-    readonly IPortfolioManager _portfolioManager;
+    readonly ServiceManager _serviceManager = new ServiceManager();
+    IPortfolioManager PortfolioManager => _serviceManager.GetService<IPortfolioManager>(nameof(IPortfolioManager));
+    IPriceService PriceService => _serviceManager.GetService<IPriceService>(nameof(IPriceService));
+    TradingExchange Exchange => _serviceManager.GetService<TradingExchange>(nameof(TradingExchange));
+    ITradeSubmitter TradeSubmitter => _serviceManager.GetService<ITradeSubmitter>(nameof(ITradeSubmitter));
+    IExecutionStrategy ExecutionStrategy => _serviceManager.GetService<IExecutionStrategy>(nameof(IExecutionStrategy));
 
     /// <summary>
     /// Contains the timing mechanism in the evolver.
@@ -68,13 +69,20 @@ public sealed partial class EventEvolver
         Clock = new SimulationClock(settings.StartTime);
         _scheduler = new Scheduler(Clock);
 
-        _exchange = new TradingExchange(_scheduler, exchange);
-        _tradeSubmitter = TradeSubmitterFactory.Create(TradeSubmitterType.SellAllThenBuy, TradeMechanismSettings.Default());
-        _priceService = PriceServiceFactory.Create(PriceType.RandomWobble, PriceCalculationSettings.Default(), exchange, _scheduler);
+        var tradingExchange = new TradingExchange(_scheduler, exchange);
+        _serviceManager.RegisterService(nameof(TradingExchange), tradingExchange);
+
+        var tradeSubmitter = TradeSubmitterFactory.Create(TradeSubmitterType.SellAllThenBuy, TradeMechanismSettings.Default());
+        _serviceManager.RegisterService(nameof(ITradeSubmitter), tradeSubmitter);
+
+        var priceService = PriceServiceFactory.Create(PriceType.RandomWobble, PriceCalculationSettings.Default(), exchange, _scheduler);
+        _serviceManager.RegisterService(nameof(IPriceService), priceService);
 
         IStockExchange baseStockExchange = StockExchangeFactory.Create(exchange, DateTime.MinValue);
-        _portfolioManager = portfolioManager;
-        _executionStrategy = ExecutionStrategyFactory.Create(strategyType, Clock, logger, baseStockExchange, decisionSystem);
+        var executionStrategy = ExecutionStrategyFactory.Create(strategyType, Clock, logger, baseStockExchange, decisionSystem);
+        _serviceManager.RegisterService(nameof(IExecutionStrategy), executionStrategy);
+
+        _serviceManager.RegisterService(nameof(IPortfolioManager), portfolioManager);
     }
 
     /// <summary>
@@ -82,25 +90,23 @@ public sealed partial class EventEvolver
     /// </summary>
     public void Initialise()
     {
-        _exchange.Initialise(_settings);
-        _priceService.Initialise(_settings.StartTime, _settings.EndTime);
+        _serviceManager.Initialize(_settings);
 
-        _executionStrategy.Initialise();
-        _executionStrategy.SubmitTradeEvent += OnTradeRequested;
-        _exchange.ExchangeStatusChanged += _executionStrategy.OnExchangeStatusChanged;
-        _priceService.PriceChanged += _executionStrategy.OnPriceUpdate;
-        _priceService.PriceChanged += _portfolioManager.OnPriceUpdate;
+        ExecutionStrategy.SubmitTradeEvent += OnTradeRequested;
+        Exchange.ExchangeStatusChanged += ExecutionStrategy.OnExchangeStatusChanged;
+        PriceService.PriceChanged += ExecutionStrategy.OnPriceUpdate;
+        PriceService.PriceChanged += PortfolioManager.OnPriceUpdate;
         ScheduleShutdown();
         _scheduler.ScheduleNewEvent(TimeUpdate, Clock.UtcNow().AddDays(1));
         _isInitialised = true;
-        _logger.Log(ReportType.Information, "EventEvolver", "Inititalization complete");
+        _logger.Log(ReportType.Information, nameof(EventEvolver), "Inititalization complete");
     }
 
     public void TimeUpdate()
     {
         var time = Clock.UtcNow();
-        _ = Task.Run(() => _executionStrategy.OnTimeIncrementUpdate(null, new TimeIncrementEventArgs(time)));
-        _ = Task.Run(() => _portfolioManager.ReportStatus(time));
+        _ = Task.Run(() => ExecutionStrategy.OnTimeIncrementUpdate(null, new TimeIncrementEventArgs(time)));
+        _ = Task.Run(() => PortfolioManager.ReportStatus(time));
         _scheduler.ScheduleNewEvent(TimeUpdate, time.AddDays(1));
     }
 
@@ -108,14 +114,14 @@ public sealed partial class EventEvolver
         => TradeSubmitterHelpers.SubmitAndReportTrade(
             Clock.UtcNow(),
             eventArgs.RequestedTrade,
-            _priceService,
-            _portfolioManager,
-            _tradeSubmitter,
+            PriceService,
+            PortfolioManager,
+            TradeSubmitter,
             Result.Trades,
             Result.Decisions,
             _logger);
 
-    private void ScheduleShutdown() => _scheduler.ScheduleNewEvent(End, _settings.EndTime);
+    private void ScheduleShutdown() => _scheduler.ScheduleNewEvent(Shutdown, _settings.EndTime);
 
     /// <summary>
     /// Start the clock running and the trading.
@@ -135,13 +141,14 @@ public sealed partial class EventEvolver
     /// <summary>
     /// End everything from running and record the results.
     /// </summary>
-    public void End()
+    public void Shutdown()
     {
-        _executionStrategy.Shutdown();
-        Result.Portfolio = _portfolioManager.Portfolio;
+        _scheduler.Stop();
+        _serviceManager.Shutdown();
+        Result.Portfolio = PortfolioManager.Portfolio;
         DateTime time = Clock.UtcNow();
-        _logger.Log(ReportSeverity.Critical, ReportType.Information, "Ending", $"{time} total value {_portfolioManager.Portfolio.TotalValue(Totals.All):C2}");
-        _logger.Log(ReportSeverity.Critical, ReportType.Information, "Ending", $"{time} total CAR {_portfolioManager.Portfolio.TotalIRR(Totals.All)}");
+        _logger.Log(ReportSeverity.Critical, ReportType.Information, "Ending", $"{time} total value {PortfolioManager.Portfolio.TotalValue(Totals.All):C2}");
+        _logger.Log(ReportSeverity.Critical, ReportType.Information, "Ending", $"{time} total CAR {PortfolioManager.Portfolio.TotalIRR(Totals.All)}");
         IsActive = false;
     }
 }

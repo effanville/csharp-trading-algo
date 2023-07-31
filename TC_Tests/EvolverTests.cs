@@ -54,5 +54,6 @@ internal class EventEvolverTests
 
         var reports = logger.Reports;
         Assert.IsNotNull(reports);
+        Assert.AreEqual(56, reports.Count());
     }
 }
