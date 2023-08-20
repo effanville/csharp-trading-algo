@@ -33,11 +33,11 @@ namespace TradingSystem
         private readonly Timer _timer;
         private readonly IClock _internalClock;
         private readonly object _listLock = new object();
-        private readonly List<ScheduleEvent> _actionsToRun;
+        private readonly PriorityQueue<ScheduleEvent, DateTime> _actionsToRun;
 
         public Scheduler(IClock clock, int timerDelay = 50)
         {
-            _actionsToRun = new List<ScheduleEvent>();
+            _actionsToRun = new PriorityQueue<ScheduleEvent, DateTime>();
             _internalClock = clock;
             _timer = new Timer(timerDelay);
             _timer.Elapsed += OnTimedEvent;
@@ -49,12 +49,11 @@ namespace TradingSystem
             var currentTime = _internalClock.UtcNow();
             lock (_listLock)
             {
-                ScheduleEvent scheduleEvent = _actionsToRun.Count > 0 ? _actionsToRun[0] : null;
+                ScheduleEvent scheduleEvent = _actionsToRun.Count > 0 ? _actionsToRun.Dequeue() : null;
                 while (scheduleEvent != null && scheduleEvent.TimeToRun <= currentTime)
                 {
                     _ = scheduleEvent.TaskToRun();
-                    _ = _actionsToRun.Remove(scheduleEvent);
-                    scheduleEvent = _actionsToRun.Count > 0 ? _actionsToRun[0] : null;
+                    scheduleEvent = _actionsToRun.Count > 0 ? _actionsToRun.Dequeue() : null;
                 }
             }
 
@@ -67,32 +66,7 @@ namespace TradingSystem
         {
             lock (_listLock)
             {
-                if (_actionsToRun.Count == 0)
-                {
-                    _actionsToRun.Add(new ScheduleEvent(actionToSchedule, timeToSchedule));
-                    return;
-                }
-                if (timeToSchedule <= _actionsToRun[0].TimeToRun)
-                {
-                    _actionsToRun.Insert(0, new ScheduleEvent(actionToSchedule, timeToSchedule));
-                    return;
-                }
-                if (timeToSchedule >= _actionsToRun[_actionsToRun.Count - 1].TimeToRun)
-                {
-                    _actionsToRun.Add(new ScheduleEvent(actionToSchedule, timeToSchedule));
-                    return;
-                }
-
-                for (int index = 1; index < _actionsToRun.Count; index++)
-                {
-                    var prevScheduleEvent = _actionsToRun[index - 1];
-                    var scheduleEvent = _actionsToRun[index];
-                    if (timeToSchedule >= prevScheduleEvent.TimeToRun && timeToSchedule < scheduleEvent.TimeToRun)
-                    {
-                        _actionsToRun.Insert(index, new ScheduleEvent(actionToSchedule, timeToSchedule));
-                        return;
-                    }
-                }
+                _actionsToRun.Enqueue(new ScheduleEvent(actionToSchedule, timeToSchedule), timeToSchedule);
             }
         }
 
