@@ -37,7 +37,7 @@ namespace TradingConsole.Tests
                 fConsole.WriteLine($"({reportType}) {text}");
             }
 
-            fLogger = new LogReporter(reportAction,  new SingleTaskQueue(), saveInternally: true);
+            fLogger = new LogReporter(reportAction, new SingleTaskQueue(), saveInternally: true);
         }
 
         [TearDown]

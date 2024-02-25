@@ -3,6 +3,7 @@ using System.IO;
 using System.IO.Abstractions.TestingHelpers;
 using System.Threading.Tasks;
 
+using Effanville.Common.Structure.DataStructures;
 using Effanville.Common.Structure.Reporting;
 
 using Effanville.FinancialStructures.Stocks;
@@ -28,7 +29,7 @@ internal class EventEvolverTests
         string testFilePath = "c:/temp/exampleFile.xml";
         fileSystem.AddFile(testFilePath, configureFile);
 
-        var logger = new LogReporter(null, saveInternally: true);
+        var logger = new LogReporter(null, new SingleTaskQueue(), saveInternally: true);
         var stockExchange = StockExchangeFactory.Create(testFilePath, fileSystem, logger);
         DateTime startTime = new DateTime(2015, 1, 20);
         var settings = new EvolverSettings(startTime, new DateTime(2015, 1, 25), TimeSpan.FromMinutes(1));
