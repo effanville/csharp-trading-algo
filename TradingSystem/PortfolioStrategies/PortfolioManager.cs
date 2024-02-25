@@ -185,8 +185,8 @@ namespace TradingSystem.PortfolioStrategies
 
         public void OnPriceUpdate(object obj, PriceUpdateEventArgs eventArgs)
         {
-            TwoName updateName = eventArgs.Instrument.Name;
-            if (updateName != null && Portfolio.Exists(Account.Security, updateName))
+            NameData updateName = eventArgs.Instrument.Name;
+            if (updateName != null && Portfolio.Exists(Account.Security, updateName.ToTwoName()))
             {
                 var valuation = new DailyValuation(eventArgs.Time, eventArgs.Price);
                 _ = Portfolio.TryAddOrEditData(
