@@ -3,11 +3,12 @@ using System.Collections.Generic;
 using System.IO;
 using System.IO.Abstractions.TestingHelpers;
 
-using Common.Structure.Reporting;
+using Effanville.Common.Structure.DataStructures;
+using Effanville.Common.Structure.Reporting;
 
-using FinancialStructures.Database;
-using FinancialStructures.Database.Extensions.Values;
-using FinancialStructures.StockStructures.Statistics;
+using Effanville.FinancialStructures.Database;
+using Effanville.FinancialStructures.Database.Extensions.Values;
+using Effanville.FinancialStructures.Stocks.Statistics;
 
 using NUnit.Framework;
 
@@ -409,11 +410,7 @@ $@"|StartDate|EndDate|StockName|TradeType|NumberShares|
             string testFilePath = "c:/temp/exampleFile.xml";
             fileSystem.AddFile(testFilePath, configureFile);
 
-            void reportAction(ReportSeverity severity, ReportType reportType, string location, string text)
-            {
-            }
-
-            var logger = new LogReporter(reportAction, saveInternally: true);
+            var logger = new LogReporter(null, new SingleTaskQueue(),  saveInternally: true);
             var output = TradeSystem.SetupAndSimulate(
                 testFilePath,
                 startTime,

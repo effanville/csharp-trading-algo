@@ -15,11 +15,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TradingConsole.Tests", "TC_
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TradingSystem", "TradingSystem\TradingSystem.csproj", "{28CC78D8-F5ED-4785-AB1F-7F5D0E2FEBAB}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FinancialStructures", "FinancialStructures\FinancialStructures\FinancialStructures.csproj", "{780A1A86-BAFF-4840-A6B1-6E28CD508AF3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FinancialStructures", "FinancialStructures\src\FinancialStructures\FinancialStructures.csproj", "{780A1A86-BAFF-4840-A6B1-6E28CD508AF3}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Common.Structure", "FinancialStructures\Common\Common.Structure\Common.Structure.csproj", "{22BEF8BB-0C66-4E25-9CEA-5F0F35B434C2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Common.Structure", "FinancialStructures\Common\src\Common.Structure\Common.Structure.csproj", "{22BEF8BB-0C66-4E25-9CEA-5F0F35B434C2}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Common.Console", "FinancialStructures\Common\Common.Console\Common.Console.csproj", "{2A4968F6-F545-4439-A698-D1CD2E9874E3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Common.Console", "FinancialStructures\Common\src\Common.Console\Common.Console.csproj", "{2A4968F6-F545-4439-A698-D1CD2E9874E3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FinancialStructures.Stocks", "FinancialStructures\src\FinancialStructures.Stocks\FinancialStructures.Stocks.csproj", "{1EEDD44D-1DBB-4FCE-80A3-A2ACECF59BDE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -51,6 +53,10 @@ Global
 		{2A4968F6-F545-4439-A698-D1CD2E9874E3}.Debug|x64.Build.0 = Debug|x64
 		{2A4968F6-F545-4439-A698-D1CD2E9874E3}.Release|x64.ActiveCfg = Release|x64
 		{2A4968F6-F545-4439-A698-D1CD2E9874E3}.Release|x64.Build.0 = Release|x64
+		{1EEDD44D-1DBB-4FCE-80A3-A2ACECF59BDE}.Debug|x64.ActiveCfg = Debug|x64
+		{1EEDD44D-1DBB-4FCE-80A3-A2ACECF59BDE}.Debug|x64.Build.0 = Debug|x64
+		{1EEDD44D-1DBB-4FCE-80A3-A2ACECF59BDE}.Release|x64.ActiveCfg = Release|x64
+		{1EEDD44D-1DBB-4FCE-80A3-A2ACECF59BDE}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

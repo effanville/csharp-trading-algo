@@ -49,11 +49,12 @@ namespace TradingSystem
             var currentTime = _internalClock.UtcNow();
             lock (_listLock)
             {
-                ScheduleEvent scheduleEvent = _actionsToRun.Count > 0 ? _actionsToRun.Dequeue() : null;
+                ScheduleEvent scheduleEvent = _actionsToRun.Count > 0 ? _actionsToRun.Peek() : null;
                 while (scheduleEvent != null && scheduleEvent.TimeToRun <= currentTime)
                 {
+                    scheduleEvent = _actionsToRun.Dequeue();
                     _ = scheduleEvent.TaskToRun();
-                    scheduleEvent = _actionsToRun.Count > 0 ? _actionsToRun.Dequeue() : null;
+                    scheduleEvent = _actionsToRun.Count > 0 ? _actionsToRun.Peek() : null;
                 }
             }
 

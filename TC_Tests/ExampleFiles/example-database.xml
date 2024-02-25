@@ -6,6 +6,7 @@
       <Name>
         <Company />
         <Name>Barclays</Name>
+        <Ticker>BARC.L</Ticker>
         <Url>https://uk.finance.yahoo.com/quote/BARC.L</Url>
         <Currency />
         <Sectors />
@@ -1282,6 +1283,7 @@
       <Name>
         <Company>stuff</Company>
         <Name>Dunelm</Name>
+        <Ticker>DNLM.L</Ticker>
         <Url>https://uk.finance.yahoo.com/quote/DNLM.L</Url>
         <Currency />
         <Sectors />

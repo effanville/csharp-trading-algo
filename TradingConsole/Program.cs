@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.IO.Abstractions;
 
-using Common.Console;
-using Common.Console.Commands;
-using Common.Structure.Reporting;
+using Effanville.Common.Console;
+using Effanville.Common.Console.Commands;
+using Effanville.Common.Structure.Reporting;
 
 using TradingConsole.Commands.ExchangeCreation;
 using TradingConsole.Commands.Execution;

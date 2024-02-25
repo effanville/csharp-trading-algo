@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.IO.Abstractions;
 
-using Common.Console;
-using Common.Console.Commands;
-using Common.Console.Options;
-using Common.Structure.Reporting;
+using Effanville.Common.Console;
+using Effanville.Common.Console.Commands;
+using Effanville.Common.Console.Options;
+using Effanville.Common.Structure.Reporting;
 
 namespace TradingConsole.Commands.ExchangeCreation
 {

@@ -1,4 +1,4 @@
-﻿using FinancialStructures.Database;
+﻿using Effanville.FinancialStructures.Database;
 
 using TradingSystem.Trading;
 

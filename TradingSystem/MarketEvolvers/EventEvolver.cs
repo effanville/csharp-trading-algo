@@ -1,7 +1,7 @@
-﻿using Common.Structure.Reporting;
+﻿using Effanville.Common.Structure.Reporting;
 
-using FinancialStructures.Database;
-using FinancialStructures.StockStructures;
+using Effanville.FinancialStructures.Database;
+using Effanville.FinancialStructures.Stocks;
 
 using TradingSystem.Decisions;
 using TradingSystem.ExchangeStructures;
@@ -12,8 +12,11 @@ using TradingSystem.Time;
 using TradingSystem.PortfolioStrategies;
 using System;
 using System.Threading.Tasks;
-using FinancialStructures.Database.Extensions.Values;
-using FinancialStructures.Database.Extensions.Rates;
+
+using Effanville.Common.Structure.DataStructures;
+using Effanville.Common.Structure.MathLibrary.Finance;
+using Effanville.FinancialStructures.Database.Extensions.Values;
+using Effanville.FinancialStructures.Database.Extensions.Rates;
 
 namespace TradingSystem.MarketEvolvers;
 
@@ -99,7 +102,7 @@ public sealed partial class EventEvolver
         ScheduleShutdown();
         _scheduler.ScheduleNewEvent(TimeUpdate, Clock.UtcNow().AddDays(1));
         _isInitialised = true;
-        _logger.Log(ReportType.Information, nameof(EventEvolver), "Inititalization complete");
+        _logger.Log(ReportType.Information, nameof(EventEvolver), "Initialization complete");
     }
 
     public void TimeUpdate()
@@ -147,8 +150,14 @@ public sealed partial class EventEvolver
         _serviceManager.Shutdown();
         Result.Portfolio = PortfolioManager.Portfolio;
         DateTime time = Clock.UtcNow();
-        _logger.Log(ReportSeverity.Critical, ReportType.Information, "Ending", $"{time} total value {PortfolioManager.Portfolio.TotalValue(Totals.All):C2}");
-        _logger.Log(ReportSeverity.Critical, ReportType.Information, "Ending", $"{time} total CAR {PortfolioManager.Portfolio.TotalIRR(Totals.All)}");
+            var latestValue = PortfolioManager.Portfolio.TotalValue(Totals.All, time);
+            DateTime earliestTime = PortfolioManager.Portfolio.FirstValueDate(Totals.All, null);
+            var startValue = PortfolioManager.Portfolio.TotalValue(Totals.All, earliestTime);
+
+            DateTime latestTime = PortfolioManager.Portfolio.LatestDate(Totals.All, null);
+        var car = FinanceFunctions.CAR(new DailyValuation(earliestTime, startValue), new DailyValuation(latestTime, latestValue));
+        _logger.Log(ReportSeverity.Critical, ReportType.Information, "Ending", $"{time:yyyy-MM-ddTHH:mm:ss} total value {latestValue:C2}");
+        _logger.Log(ReportSeverity.Critical, ReportType.Information, "Ending", $"{time:yyyy-MM-ddTHH:mm:ss} total CAR {car}");
         IsActive = false;
     }
 }

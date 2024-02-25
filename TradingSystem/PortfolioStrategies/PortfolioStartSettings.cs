@@ -1,6 +1,6 @@
 ﻿using System;
 
-using FinancialStructures.NamingStructures;
+using Effanville.FinancialStructures.NamingStructures;
 
 namespace TradingSystem.PortfolioStrategies
 {

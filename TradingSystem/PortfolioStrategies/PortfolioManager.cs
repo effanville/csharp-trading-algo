@@ -1,17 +1,20 @@
-﻿using FinancialStructures.Database;
-using FinancialStructures.DataStructures;
+﻿using Effanville.FinancialStructures.Database;
+using Effanville.FinancialStructures.DataStructures;
 using TradingSystem.PriceSystem;
 using TradingSystem.Trading;
 using System;
-using FinancialStructures.Database.Extensions;
-using Common.Structure.DataStructures;
-using FinancialStructures.Database.Extensions.Values;
-using Common.Structure.Reporting;
-using FinancialStructures.NamingStructures;
+using Effanville.Common.Structure.DataStructures;
+using Effanville.FinancialStructures.Database.Extensions.Values;
+using Effanville.Common.Structure.Reporting;
+using Effanville.FinancialStructures.NamingStructures;
 using System.Collections.Generic;
-using FinancialStructures.FinanceStructures;
-using FinancialStructures.StockStructures;
+using Effanville.FinancialStructures.FinanceStructures;
+using Effanville.FinancialStructures.Stocks;
 using System.IO.Abstractions;
+
+using Effanville.FinancialStructures.Database.Extensions.DataEdit;
+using Effanville.FinancialStructures.Persistence;
+
 using TradingSystem.MarketEvolvers;
 
 namespace TradingSystem.PortfolioStrategies
@@ -82,13 +85,15 @@ namespace TradingSystem.PortfolioStrategies
 
         private static IPortfolio LoadStartPortfolio(PortfolioStartSettings settings, IFileSystem fileSystem, IReportLogger logger)
         {
-            IPortfolio portfolio = PortfolioFactory.GenerateEmpty();
+            var persistence = new PortfolioPersistence();
+            IPortfolio portfolio;
             if (!string.IsNullOrWhiteSpace(settings.PortfolioFilePath))
             {
-                portfolio.LoadPortfolio(settings.PortfolioFilePath, fileSystem, logger);
+                portfolio = persistence.Load(PortfolioPersistence.CreateOptions(settings.PortfolioFilePath, fileSystem), logger);
             }
             else
             {
+                portfolio = PortfolioFactory.GenerateEmpty();
                 _ = portfolio.TryAdd(Account.BankAccount, new NameData(settings.DefaultBankAccName.Company, settings.DefaultBankAccName.Name), logger);
                 var data = new DailyValuation(settings.StartTime.AddDays(-1), settings.StartingCash);
                 _ = portfolio.TryAddOrEditData(Account.BankAccount, settings.DefaultBankAccName, data, data, logger);
@@ -133,7 +138,8 @@ namespace TradingSystem.PortfolioStrategies
             else if (trade.BuySell == TradeType.Sell)
             {
                 // One can only sell if one already owns some of the security.
-                if (!Portfolio.Exists(Account.Security, trade.StockName))
+                var twoName = trade.StockName.ToTwoName();
+                if (!Portfolio.Exists(Account.Security, twoName))
                 {
                     return null;
                 }
@@ -179,8 +185,8 @@ namespace TradingSystem.PortfolioStrategies
 
         public void OnPriceUpdate(object obj, PriceUpdateEventArgs eventArgs)
         {
-            TwoName updateName = eventArgs.Instrument.Name;
-            if (updateName != null && Portfolio.Exists(Account.Security, updateName))
+            NameData updateName = eventArgs.Instrument.Name;
+            if (updateName != null && Portfolio.Exists(Account.Security, updateName.ToTwoName()))
             {
                 var valuation = new DailyValuation(eventArgs.Time, eventArgs.Price);
                 _ = Portfolio.TryAddOrEditData(
@@ -205,7 +211,7 @@ namespace TradingSystem.PortfolioStrategies
         /// <inheritdoc/>
         public void UpdateData(DateTime day, IStockExchange exchange)
         {
-            foreach (var security in Portfolio.FundsThreadSafe)
+            foreach (var security in Portfolio.Funds)
             {
                 decimal value = exchange.GetValue(security.Names.ToTwoName(), day);
                 if (!value.Equals(decimal.MinValue))

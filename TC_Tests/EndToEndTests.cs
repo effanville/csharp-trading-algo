@@ -3,8 +3,9 @@ using System.IO;
 using System.IO.Abstractions.TestingHelpers;
 using System.Text;
 
-using Common.Console;
-using Common.Structure.Reporting;
+using Effanville.Common.Console;
+using Effanville.Common.Structure.DataStructures;
+using Effanville.Common.Structure.Reporting;
 
 using NUnit.Framework;
 
@@ -35,7 +36,8 @@ namespace TradingConsole.Tests
                 reports.AddErrorReport(severity, reportType, location, text);
                 fConsole.WriteLine($"({reportType}) {text}");
             }
-            fLogger = new LogReporter(reportAction, saveInternally: true);
+
+            fLogger = new LogReporter(reportAction, new SingleTaskQueue(), saveInternally: true);
         }
 
         [TearDown]

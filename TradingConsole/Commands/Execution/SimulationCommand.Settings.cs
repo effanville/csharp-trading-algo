@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.IO.Abstractions;
 using System.Linq;
 
-using Common.Console.Options;
+using Effanville.Common.Console.Options;
 
-using FinancialStructures.StockStructures.Statistics;
+using Effanville.FinancialStructures.Stocks.Statistics;
 
 using Newtonsoft.Json;
 

@@ -1,8 +1,8 @@
 ﻿using System;
 
-using Common.Structure.Reporting;
+using Effanville.Common.Structure.Reporting;
 
-using FinancialStructures.DataStructures;
+using Effanville.FinancialStructures.DataStructures;
 
 using TradingSystem.PriceSystem;
 

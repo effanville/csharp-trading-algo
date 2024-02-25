@@ -1,9 +1,9 @@
 ﻿using System;
 
-using Common.Structure.Reporting;
+using Effanville.Common.Structure.Reporting;
 
-using FinancialStructures.DataStructures;
-using FinancialStructures.StockStructures;
+using Effanville.FinancialStructures.DataStructures;
+using Effanville.FinancialStructures.Stocks;
 
 using TradingSystem.MarketEvolvers;
 using TradingSystem.Trading;

@@ -2,12 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 
-using Common.Structure.MathLibrary.ParameterEstimation;
-using Common.Structure.Reporting;
+using Effanville.Common.Structure.MathLibrary.ParameterEstimation;
+using Effanville.Common.Structure.Reporting;
 
-using FinancialStructures.DataStructures;
-using FinancialStructures.StockStructures;
-using FinancialStructures.StockStructures.Statistics;
+using Effanville.FinancialStructures.DataStructures;
+using Effanville.FinancialStructures.Stocks;
+using Effanville.FinancialStructures.Stocks.Statistics;
 
 using TradingSystem.MarketEvolvers;
 using TradingSystem.Trading;
@@ -64,9 +64,9 @@ namespace TradingSystem.Decisions.Implementation
             }
 
             var estimatorType = TypeHelpers.ConvertFrom(fSettings.DecisionSystemType);
-            if (!estimatorType.IsError())
+            if (!estimatorType.Success)
             {
-                EstimatorResult = Estimator.Fit(estimatorType.Value, X, Y);
+                EstimatorResult = Estimator.Fit(estimatorType.Data, X, Y);
             }
             else
             {

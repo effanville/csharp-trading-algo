@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 
-using Common.Structure.Reporting;
+using Effanville.Common.Structure.Reporting;
 
 namespace TradingSystem.Diagnostics
 {
@@ -47,10 +47,10 @@ namespace TradingSystem.Diagnostics
 
             if (timeSpan.TotalMinutes < 60)
             {
-                return $"{timeSpan.TotalMinutes}:{timeSpan.TotalSeconds}";
+                return $"{timeSpan.Minutes}:{timeSpan.Seconds}";
             }
 
-            return $"{timeSpan.TotalHours}:{timeSpan.TotalMinutes}:{timeSpan.TotalSeconds}";
+            return $"{timeSpan.Hours}:{timeSpan.Minutes}:{timeSpan.Seconds}";
         }
     }
 }

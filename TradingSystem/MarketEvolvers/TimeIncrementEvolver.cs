@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 
-using Common.Structure.Reporting;
+using Effanville.Common.Structure.Reporting;
 
-using FinancialStructures.Database;
-using FinancialStructures.Database.Extensions.Rates;
-using FinancialStructures.Database.Extensions.Values;
-using FinancialStructures.StockStructures;
+using Effanville.FinancialStructures.Database;
+using Effanville.FinancialStructures.Database.Extensions.Rates;
+using Effanville.FinancialStructures.Database.Extensions.Values;
+using Effanville.FinancialStructures.Stocks;
 
 using TradingSystem.Decisions;
 using TradingSystem.Diagnostics;

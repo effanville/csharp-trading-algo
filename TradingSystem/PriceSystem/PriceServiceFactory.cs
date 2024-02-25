@@ -1,6 +1,6 @@
 ﻿using System;
 
-using FinancialStructures.StockStructures;
+using Effanville.FinancialStructures.Stocks;
 
 using TradingSystem.PriceSystem.Implementation;
 

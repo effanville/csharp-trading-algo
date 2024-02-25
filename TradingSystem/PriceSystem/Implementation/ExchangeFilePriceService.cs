@@ -1,8 +1,8 @@
 ﻿using System;
 
-using FinancialStructures.NamingStructures;
-using FinancialStructures.StockStructures;
-using FinancialStructures.StockStructures.Implementation;
+using Effanville.FinancialStructures.NamingStructures;
+using Effanville.FinancialStructures.Stocks;
+using Effanville.FinancialStructures.Stocks.Implementation;
 
 using TradingSystem.ExchangeStructures;
 using TradingSystem.MarketEvolvers;

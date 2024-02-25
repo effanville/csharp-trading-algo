@@ -1,11 +1,13 @@
 ﻿using System;
 using System.IO;
+using System.IO.Abstractions;
 using System.IO.Abstractions.TestingHelpers;
 using System.Threading.Tasks;
 
-using Common.Structure.Reporting;
+using Effanville.Common.Structure.DataStructures;
+using Effanville.Common.Structure.Reporting;
 
-using FinancialStructures.StockStructures;
+using Effanville.FinancialStructures.Stocks;
 
 using NUnit.Framework;
 
@@ -24,11 +26,12 @@ internal class EventEvolverTests
     public void TestNewEvolver()
     {
         var fileSystem = new MockFileSystem();
-        string configureFile = File.ReadAllText(Path.Combine(TestConstants.ExampleFilesLocation, "example-database.xml"));
+        string configureFile =
+            File.ReadAllText(Path.Combine(TestConstants.ExampleFilesLocation, "example-database.xml"));
         string testFilePath = "c:/temp/exampleFile.xml";
         fileSystem.AddFile(testFilePath, configureFile);
 
-        var logger = new LogReporter(null, saveInternally: true);
+        var logger = new LogReporter(null, new SingleTaskQueue(), saveInternally: true);
         var stockExchange = StockExchangeFactory.Create(testFilePath, fileSystem, logger);
         DateTime startTime = new DateTime(2015, 1, 20);
         var settings = new EvolverSettings(startTime, new DateTime(2015, 1, 25), TimeSpan.FromMinutes(1));
@@ -52,8 +55,14 @@ internal class EventEvolverTests
             }
         }
 
+        if (!Directory.Exists("logs"))
+        {
+            Directory.CreateDirectory("logs");
+        }
+
+        logger.WriteReportsToFile($"logs\\{DateTime.Now:yyyy-MM-ddTHHmmss}{TestContext.CurrentContext.Test.Name}.log");
         var reports = logger.Reports;
         Assert.IsNotNull(reports);
-        Assert.AreEqual(56, reports.Count());
+        Assert.AreEqual(60, reports.Count());
     }
 }

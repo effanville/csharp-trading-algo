@@ -1,5 +1,5 @@
-﻿using FinancialStructures.NamingStructures;
-using FinancialStructures.DataStructures;
+﻿using Effanville.FinancialStructures.NamingStructures;
+using Effanville.FinancialStructures.DataStructures;
 using System;
 
 namespace TradingSystem.Trading
