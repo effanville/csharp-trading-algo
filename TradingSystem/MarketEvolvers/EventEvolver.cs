@@ -102,7 +102,7 @@ public sealed partial class EventEvolver
         ScheduleShutdown();
         _scheduler.ScheduleNewEvent(TimeUpdate, Clock.UtcNow().AddDays(1));
         _isInitialised = true;
-        _logger.Log(ReportType.Information, nameof(EventEvolver), "Inititalization complete");
+        _logger.Log(ReportType.Information, nameof(EventEvolver), "Initialization complete");
     }
 
     public void TimeUpdate()
@@ -156,8 +156,8 @@ public sealed partial class EventEvolver
 
             DateTime latestTime = PortfolioManager.Portfolio.LatestDate(Totals.All, null);
         var car = FinanceFunctions.CAR(new DailyValuation(earliestTime, startValue), new DailyValuation(latestTime, latestValue));
-        _logger.Log(ReportSeverity.Critical, ReportType.Information, "Ending", $"{time} total value {latestValue:C2}");
-        _logger.Log(ReportSeverity.Critical, ReportType.Information, "Ending", $"{time} total CAR {car}");
+        _logger.Log(ReportSeverity.Critical, ReportType.Information, "Ending", $"{time:yyyy-MM-ddTHH:mm:ss} total value {latestValue:C2}");
+        _logger.Log(ReportSeverity.Critical, ReportType.Information, "Ending", $"{time:yyyy-MM-ddTHH:mm:ss} total CAR {car}");
         IsActive = false;
     }
 }

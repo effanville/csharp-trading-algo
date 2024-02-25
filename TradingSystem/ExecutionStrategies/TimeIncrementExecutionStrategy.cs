@@ -54,7 +54,7 @@ public class TimeIncrementExecutionStrategy : IExecutionStrategy
 
     public void OnExchangeStatusChanged(object obj, ExchangeStatusChangedEventArgs eventArgs)
     {
-        _logger.Log(ReportType.Information, "ExchangeService", $"{_clock.UtcNow()} - Exchange session changed from {eventArgs.PreviousSession} to {eventArgs.NewSession}");
+        _logger.Log(ReportType.Information, "ExchangeService", $"{_clock.UtcNow():yyyy-MM-ddTHH:mm:ss} - Exchange session changed from {eventArgs.PreviousSession} to {eventArgs.NewSession}");
         var newSession = eventArgs.NewSession;
         if (newSession == ExchangeSession.Continuous)
         {
@@ -70,18 +70,18 @@ public class TimeIncrementExecutionStrategy : IExecutionStrategy
     {
         if (_tradeCollection == null)
         {
-            _logger.Log(ReportType.Information, "MarketOpen", $"{_clock.UtcNow()} - No Trades to enact");
+            _logger.Log(ReportType.Information, "MarketOpen", $"{_clock.UtcNow():yyyy-MM-ddTHH:mm:ss} - No Trades to enact");
             return;
         }
 
         foreach (Trade trade in _tradeCollection.GetSellDecisions())
         {
-            SubmitTradeEvent.Invoke(null, new TradeSubmittedEventArgs(trade));
+            SubmitTradeEvent?.Invoke(null, new TradeSubmittedEventArgs(trade));
         }
 
         foreach (Trade trade in _tradeCollection.GetBuyDecisions())
         {
-            SubmitTradeEvent.Invoke(null, new TradeSubmittedEventArgs(trade));
+            SubmitTradeEvent?.Invoke(null, new TradeSubmittedEventArgs(trade));
         }
 
         _tradeCollection = null;
