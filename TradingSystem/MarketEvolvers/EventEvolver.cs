@@ -12,6 +12,9 @@ using TradingSystem.Time;
 using TradingSystem.PortfolioStrategies;
 using System;
 using System.Threading.Tasks;
+
+using Effanville.Common.Structure.DataStructures;
+using Effanville.Common.Structure.MathLibrary.Finance;
 using Effanville.FinancialStructures.Database.Extensions.Values;
 using Effanville.FinancialStructures.Database.Extensions.Rates;
 
@@ -147,8 +150,14 @@ public sealed partial class EventEvolver
         _serviceManager.Shutdown();
         Result.Portfolio = PortfolioManager.Portfolio;
         DateTime time = Clock.UtcNow();
-        _logger.Log(ReportSeverity.Critical, ReportType.Information, "Ending", $"{time} total value {PortfolioManager.Portfolio.TotalValue(Totals.All):C2}");
-        _logger.Log(ReportSeverity.Critical, ReportType.Information, "Ending", $"{time} total CAR {PortfolioManager.Portfolio.TotalIRR(Totals.All)}");
+            var latestValue = PortfolioManager.Portfolio.TotalValue(Totals.All, time);
+            DateTime earliestTime = PortfolioManager.Portfolio.FirstValueDate(Totals.All, null);
+            var startValue = PortfolioManager.Portfolio.TotalValue(Totals.All, earliestTime);
+
+            DateTime latestTime = PortfolioManager.Portfolio.LatestDate(Totals.All, null);
+        var car = FinanceFunctions.CAR(new DailyValuation(earliestTime, startValue), new DailyValuation(latestTime, latestValue));
+        _logger.Log(ReportSeverity.Critical, ReportType.Information, "Ending", $"{time} total value {latestValue:C2}");
+        _logger.Log(ReportSeverity.Critical, ReportType.Information, "Ending", $"{time} total CAR {car}");
         IsActive = false;
     }
 }
