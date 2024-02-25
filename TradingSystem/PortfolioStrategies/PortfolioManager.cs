@@ -138,7 +138,8 @@ namespace TradingSystem.PortfolioStrategies
             else if (trade.BuySell == TradeType.Sell)
             {
                 // One can only sell if one already owns some of the security.
-                if (!Portfolio.Exists(Account.Security, trade.StockName))
+                var twoName = trade.StockName.ToTwoName();
+                if (!Portfolio.Exists(Account.Security, twoName))
                 {
                     return null;
                 }
