@@ -61,8 +61,8 @@ namespace TradingConsole.Commands.ExchangeCreation
         /// <inheritdoc/>
         public int Execute(IConsole console, IReportLogger logger, string[] args)
         {
-            var persistence = new XmlExchangePersistence();
-            var settings = new  XmlFilePersistenceOptions(fStockFilePathOption.Value, fFileSystem);
+            var persistence = new ExchangePersistence();
+            var settings = ExchangePersistence.CreateOptions(fStockFilePathOption.Value, fFileSystem);
             IStockExchange exchange = persistence.Load(settings, logger);
             exchange.Download(logger).Wait();
             persistence.Save(exchange, settings, logger);

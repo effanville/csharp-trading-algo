@@ -57,8 +57,8 @@ namespace TradingConsole.Commands.ExchangeCreation
             exchange.Configure(inputPath, fFileSystem, logger);
             string filePath = fFileSystem.Path.ChangeExtension(inputPath, "xml");
             
-            var persistence = new XmlExchangePersistence();
-            var settings = new  XmlFilePersistenceOptions(filePath, fFileSystem);
+            var persistence = new ExchangePersistence();
+            var settings = ExchangePersistence.CreateOptions(filePath, fFileSystem);
             persistence.Save(exchange, settings, logger);
             return 0;
         }
