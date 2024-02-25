@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.IO.Abstractions;
 using System.Xml.Serialization;
 
-using Common.Structure.Reporting;
+using Effanville.Common.Structure.Reporting;
 
-using FinancialStructures.StockStructures;
+using Effanville.FinancialStructures.Stocks;
 
 using Nager.Date;
 
@@ -104,7 +104,7 @@ public sealed class TradingExchange : IService
     {
         foreach (var stock in stockExchange.Stocks)
         {
-            string ticker = stock.Ticker;
+            string ticker = stock.Name.Ticker;
             StockInstrument stockInst = new StockInstrument(ticker, stock.Name);
             StockInstruments.Add(ticker, stockInst);
         }

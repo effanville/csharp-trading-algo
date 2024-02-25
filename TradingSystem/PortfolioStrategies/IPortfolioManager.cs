@@ -1,9 +1,9 @@
-﻿using FinancialStructures.Database;
-using FinancialStructures.DataStructures;
+﻿using Effanville.FinancialStructures.Database;
+using Effanville.FinancialStructures.DataStructures;
 using TradingSystem.PriceSystem;
 using TradingSystem.Trading;
 using System;
-using FinancialStructures.StockStructures;
+using Effanville.FinancialStructures.Stocks;
 
 namespace TradingSystem.PortfolioStrategies
 {

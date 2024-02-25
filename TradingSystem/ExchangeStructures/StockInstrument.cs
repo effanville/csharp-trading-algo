@@ -1,5 +1,5 @@
-﻿using FinancialStructures.NamingStructures;
-using FinancialStructures.StockStructures;
+﻿using Effanville.FinancialStructures.NamingStructures;
+using Effanville.FinancialStructures.Stocks;
 
 namespace TradingSystem.ExchangeStructures;
 
@@ -24,7 +24,7 @@ public sealed class StockInstrument
     }
 
     public StockInstrument(IStock stock)
-        : this(stock.Ticker, stock.Name)
+        : this(stock.Name.Ticker, stock.Name)
     {
     }
 }

@@ -1,9 +1,8 @@
 ﻿using System;
 using System.IO.Abstractions;
 
-using Common.Structure.Reporting;
-
-using FinancialStructures.StockStructures;
+using Effanville.Common.Structure.Reporting;
+using Effanville.FinancialStructures.Stocks;
 
 using TradingSystem.Diagnostics;
 using TradingSystem.Decisions;

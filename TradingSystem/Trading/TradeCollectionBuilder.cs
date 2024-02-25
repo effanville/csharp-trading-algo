@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 
-using Common.Structure.ReportWriting;
-
-using FinancialStructures.DataStructures;
-using FinancialStructures.NamingStructures;
+using Effanville.Common.Structure.ReportWriting;
+using Effanville.FinancialStructures.DataStructures;
+using Effanville.FinancialStructures.NamingStructures;
 
 namespace TradingSystem.Trading
 {

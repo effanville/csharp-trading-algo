@@ -1,5 +1,5 @@
-using Common.Structure.MathLibrary;
-using Common.Structure.MathLibrary.ParameterEstimation;
+using Effanville.Common.Structure.MathLibrary.ParameterEstimation;
+using Effanville.Common.Structure.Results;
 
 namespace TradingSystem.Decisions.Implementation
 {
@@ -16,7 +16,7 @@ namespace TradingSystem.Decisions.Implementation
                 case DecisionSystem.FiveDayStatsRidge:
                     return Estimator.Type.RidgeRegression;
                 default:
-                    return Result.ErrorResult<Estimator.Type>("Argument of of supported type.");
+                    return new ErrorResult<Estimator.Type>("Argument of of supported type.");
             }
         }
     }

@@ -1,4 +1,4 @@
-﻿using FinancialStructures.StockStructures.Statistics;
+﻿using Effanville.FinancialStructures.Stocks.Statistics;
 
 using System.Collections.Generic;
 

@@ -1,6 +1,6 @@
 ﻿using System;
 
-using Common.Structure.Reporting;
+using Effanville.Common.Structure.Reporting;
 
 using TradingSystem.ExchangeStructures;
 using TradingSystem.MarketEvolvers;

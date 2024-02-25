@@ -1,10 +1,10 @@
 using System;
 using System.Collections.Generic;
 
-using Common.Structure.Reporting;
+using Effanville.Common.Structure.Reporting;
 
-using FinancialStructures.StockStructures;
-using FinancialStructures.StockStructures.Statistics;
+using Effanville.FinancialStructures.Stocks;
+using Effanville.FinancialStructures.Stocks.Statistics;
 
 using TradingSystem.MarketEvolvers;
 using TradingSystem.Trading;

@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 
-using FinancialStructures.DataStructures;
-using FinancialStructures.NamingStructures;
+using Effanville.FinancialStructures.DataStructures;
+using Effanville.FinancialStructures.NamingStructures;
 
 namespace TradingSystem.Trading
 {

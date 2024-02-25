@@ -1,7 +1,7 @@
-﻿using Common.Structure.Reporting;
+﻿using Effanville.Common.Structure.Reporting;
 
-using FinancialStructures.Database;
-using FinancialStructures.StockStructures;
+using Effanville.FinancialStructures.Database;
+using Effanville.FinancialStructures.Stocks;
 
 using TradingSystem.Decisions;
 using TradingSystem.ExchangeStructures;
@@ -12,8 +12,8 @@ using TradingSystem.Time;
 using TradingSystem.PortfolioStrategies;
 using System;
 using System.Threading.Tasks;
-using FinancialStructures.Database.Extensions.Values;
-using FinancialStructures.Database.Extensions.Rates;
+using Effanville.FinancialStructures.Database.Extensions.Values;
+using Effanville.FinancialStructures.Database.Extensions.Rates;
 
 namespace TradingSystem.MarketEvolvers;
 

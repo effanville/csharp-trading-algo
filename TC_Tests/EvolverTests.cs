@@ -3,9 +3,9 @@ using System.IO;
 using System.IO.Abstractions.TestingHelpers;
 using System.Threading.Tasks;
 
-using Common.Structure.Reporting;
+using Effanville.Common.Structure.Reporting;
 
-using FinancialStructures.StockStructures;
+using Effanville.FinancialStructures.Stocks;
 
 using NUnit.Framework;
 

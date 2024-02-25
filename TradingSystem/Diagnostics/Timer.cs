@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 
-using Common.Structure.Reporting;
+using Effanville.Common.Structure.Reporting;
 
 namespace TradingSystem.Diagnostics
 {

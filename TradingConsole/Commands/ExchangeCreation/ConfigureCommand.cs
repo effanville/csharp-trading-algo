@@ -1,13 +1,14 @@
 ﻿using System.Collections.Generic;
 using System.IO.Abstractions;
 
-using Common.Console;
-using Common.Console.Commands;
-using Common.Console.Options;
-using Common.Structure.Reporting;
-
-using FinancialStructures.StockStructures;
-using FinancialStructures.StockStructures.Implementation;
+using Effanville.Common.Console;
+using Effanville.Common.Console.Commands;
+using Effanville.Common.Console.Options;
+using Effanville.Common.Structure.Reporting;
+using Effanville.FinancialStructures.Persistence;
+using Effanville.FinancialStructures.Stocks;
+using Effanville.FinancialStructures.Stocks.Implementation;
+using Effanville.FinancialStructures.Stocks.Persistence;
 
 namespace TradingConsole.Commands.ExchangeCreation
 {
@@ -55,7 +56,10 @@ namespace TradingConsole.Commands.ExchangeCreation
             string inputPath = fStockFilePathOption.Value;
             exchange.Configure(inputPath, fFileSystem, logger);
             string filePath = fFileSystem.Path.ChangeExtension(inputPath, "xml");
-            exchange.SaveStockExchange(filePath, fFileSystem, logger);
+            
+            var persistence = new XmlExchangePersistence();
+            var settings = new  XmlFilePersistenceOptions(filePath, fFileSystem);
+            persistence.Save(exchange, settings, logger);
             return 0;
         }
 

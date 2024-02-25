@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
 
-using FinancialStructures.StockStructures.Implementation;
+using Effanville.FinancialStructures.Stocks.Implementation;
 
 using NUnit.Framework;
 

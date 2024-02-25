@@ -3,8 +3,8 @@ using System.IO;
 using System.IO.Abstractions.TestingHelpers;
 using System.Text;
 
-using Common.Console;
-using Common.Structure.Reporting;
+using Effanville.Common.Console;
+using Effanville.Common.Structure.Reporting;
 
 using NUnit.Framework;
 

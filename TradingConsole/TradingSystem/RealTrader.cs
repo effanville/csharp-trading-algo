@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.IO.Abstractions;
 
-using Common.Structure.Reporting;
-
-using FinancialStructures.StockStructures;
+using Effanville.Common.Structure.Reporting;
+using Effanville.FinancialStructures.Persistence;
+using Effanville.FinancialStructures.Stocks;
 
 using TradingSystem.Decisions;
 using TradingSystem.Diagnostics;
@@ -79,8 +79,9 @@ namespace TradingConsole.TradingSystem
         public void Run(string portfolioFilePath)
         {
             PerformDailyTrades(DateTime.Today, fSimulatorSettings.Exchange, fPortfolioManager);
-
-            fPortfolioManager.Portfolio.SavePortfolio(portfolioFilePath, fFileSystem, ReportLogger);
+            var persistence = new PortfolioPersistence();
+            var settings = PortfolioPersistence.CreateOptions(portfolioFilePath, fFileSystem);
+            persistence.Save(fPortfolioManager.Portfolio, settings, ReportLogger);
         }
 
         private void PerformDailyTrades(DateTime time, IStockExchange exchange, IPortfolioManager portfolioManager)
