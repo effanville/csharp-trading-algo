@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace TradingSystem.MarketEvolvers
+﻿namespace Effanville.TradingStructures.Common
 {
     /// <summary>
     /// Settings required for a simulator to simulate.

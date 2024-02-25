@@ -1,6 +1,4 @@
-﻿using TradingSystem.MarketEvolvers;
-
-namespace TradingSystem;
+﻿namespace Effanville.TradingStructures.Common.Services;
 
 public interface IService
 {

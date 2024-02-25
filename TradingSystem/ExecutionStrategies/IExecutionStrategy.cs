@@ -1,5 +1,8 @@
 ﻿using System;
 
+using Effanville.TradingStructures.Common;
+using Effanville.TradingStructures.Common.Services;
+
 using TradingSystem.ExchangeStructures;
 using TradingSystem.PriceSystem;
 using TradingSystem.Time;

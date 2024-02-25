@@ -3,6 +3,7 @@
 using Effanville.FinancialStructures.NamingStructures;
 using Effanville.FinancialStructures.Stocks;
 using Effanville.FinancialStructures.Stocks.Implementation;
+using Effanville.TradingStructures.Common;
 
 using TradingSystem.ExchangeStructures;
 using TradingSystem.MarketEvolvers;

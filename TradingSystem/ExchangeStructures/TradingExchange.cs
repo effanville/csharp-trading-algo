@@ -6,6 +6,8 @@ using System.Xml.Serialization;
 using Effanville.Common.Structure.Reporting;
 
 using Effanville.FinancialStructures.Stocks;
+using Effanville.TradingStructures.Common;
+using Effanville.TradingStructures.Common.Services;
 
 using Nager.Date;
 

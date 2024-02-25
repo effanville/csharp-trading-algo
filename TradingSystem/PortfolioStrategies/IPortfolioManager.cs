@@ -4,6 +4,8 @@ using TradingSystem.PriceSystem;
 using TradingSystem.Trading;
 using System;
 using Effanville.FinancialStructures.Stocks;
+using Effanville.TradingStructures.Common;
+using Effanville.TradingStructures.Common.Services;
 
 namespace TradingSystem.PortfolioStrategies
 {

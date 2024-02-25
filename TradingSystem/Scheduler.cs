@@ -1,34 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Timers;
-using System.Threading.Tasks;
+
+using Effanville.TradingStructures.Common.Scheduling;
 
 using TradingSystem.Time;
 
 namespace TradingSystem
 {
-    public sealed class ScheduleEvent : IComparable<ScheduleEvent>
-    {
-        public Func<Task> TaskToRun;
-        public DateTime TimeToRun;
-
-        public ScheduleEvent(Action action, DateTime time)
-        {
-            TaskToRun = () => Task.Run(action);
-            TimeToRun = time;
-        }
-
-        public ScheduleEvent(Func<Task> task, DateTime time)
-        {
-            TaskToRun = task;
-            TimeToRun = time;
-        }
-
-        public int CompareTo(ScheduleEvent other) => TimeToRun.CompareTo(other.TimeToRun);
-        public override string ToString() => TimeToRun.ToString();
-    }
-
-    public class Scheduler
+    public class Scheduler : IScheduler
     {
         private readonly Timer _timer;
         private readonly IClock _internalClock;

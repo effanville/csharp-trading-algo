@@ -1,6 +1,7 @@
 ﻿using System;
 
 using Effanville.FinancialStructures.Stocks;
+using Effanville.TradingStructures.Common;
 
 using Nager.Date;
 

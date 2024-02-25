@@ -4,6 +4,7 @@ using System.Linq;
 using Effanville.Common.Structure.Reporting;
 
 using Effanville.FinancialStructures.Stocks;
+using Effanville.TradingStructures.Common;
 
 using TradingSystem.Decisions;
 using TradingSystem.ExchangeStructures;

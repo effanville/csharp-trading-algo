@@ -10,6 +10,7 @@
     <ProjectReference Include="..\FinancialStructures\src\FinancialStructures\FinancialStructures.csproj" />
       <ProjectReference Include="..\FinancialStructures\src\FinancialStructures.Stocks\FinancialStructures.Stocks.csproj" />
     <ProjectReference Include="..\FinancialStructures\Common\src\Common.Structure\Common.Structure.csproj" />
+    <ProjectReference Include="..\TradingStructures.Common\TradingStructures.Common.csproj" />
   </ItemGroup>
 
 	<ItemGroup>
@@ -17,4 +18,9 @@
 			<_Parameter1>TradingConsole.Tests</_Parameter1>
 		</AssemblyAttribute>
 	</ItemGroup>
+    <ItemGroup Condition="!$(MSBuildProjectFile.Contains('.Tests'))">
+        <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleToAttribute">
+            <_Parameter1>Effanville.TradingConsole.Tests</_Parameter1>
+        </AssemblyAttribute>
+    </ItemGroup>
 </Project>

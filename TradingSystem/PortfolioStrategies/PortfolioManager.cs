@@ -14,6 +14,7 @@ using System.IO.Abstractions;
 
 using Effanville.FinancialStructures.Database.Extensions.DataEdit;
 using Effanville.FinancialStructures.Persistence;
+using Effanville.TradingStructures.Common;
 
 using TradingSystem.MarketEvolvers;
 

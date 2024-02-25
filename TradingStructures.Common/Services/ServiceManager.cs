@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-using TradingSystem.MarketEvolvers;
-
-namespace TradingSystem;
+﻿namespace Effanville.TradingStructures.Common.Services;
 
 public sealed class ServiceManager : IService
 {
