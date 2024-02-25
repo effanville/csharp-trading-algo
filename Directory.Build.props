@@ -1,7 +1,7 @@
 <Project>
 
-  <PropertyGroup Condition="$([MSBuild]::IsOSPlatform('Windows'))">
-    <TargetFrameworks>net7.0-windows;net7.0</TargetFrameworks>
+  <PropertyGroup>
+    <TargetFrameworks>net7.0</TargetFrameworks>
     <RuntimeIdentifier>win-x64</RuntimeIdentifier>
     <Platforms>x64</Platforms>
   </PropertyGroup>
