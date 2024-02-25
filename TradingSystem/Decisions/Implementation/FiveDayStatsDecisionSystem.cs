@@ -62,7 +62,7 @@ namespace TradingSystem.Decisions.Implementation
             }
 
             var estimatorType = TypeHelpers.ConvertFrom(fSettings.DecisionSystemType);
-            if (!estimatorType.Success)
+            if (estimatorType.Success)
             {
                 EstimatorResult = Estimator.Fit(estimatorType.Data, X, Y);
             }
