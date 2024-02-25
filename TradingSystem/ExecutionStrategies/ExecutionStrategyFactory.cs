@@ -3,6 +3,7 @@
 using Effanville.Common.Structure.Reporting;
 
 using Effanville.FinancialStructures.Stocks;
+using Effanville.TradingStructures.Common.Time;
 
 using TradingSystem.Decisions;
 using TradingSystem.Time;

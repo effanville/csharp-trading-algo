@@ -2,6 +2,7 @@
 
 using Effanville.Common.Structure.Reporting;
 using Effanville.TradingStructures.Common;
+using Effanville.TradingStructures.Common.Time;
 
 using TradingSystem.ExchangeStructures;
 using TradingSystem.MarketEvolvers;

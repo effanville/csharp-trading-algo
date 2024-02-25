@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace TradingSystem.Time;
+namespace Effanville.TradingStructures.Common.Time;
 
 /// <summary>
 /// Event args for when a time increment has occurred.

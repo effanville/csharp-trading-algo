@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Timers;
 
+using Effanville.TradingStructures.Common.Time;
+
 namespace TradingSystem.Time;
 
 /// <summary>

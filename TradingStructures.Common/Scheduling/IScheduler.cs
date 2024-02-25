@@ -1,3 +1,5 @@
+using System;
+
 namespace Effanville.TradingStructures.Common.Scheduling;
 
 public interface IScheduler

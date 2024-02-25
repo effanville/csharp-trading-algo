@@ -1,4 +1,6 @@
-﻿namespace Effanville.TradingStructures.Common
+﻿using System;
+
+namespace Effanville.TradingStructures.Common
 {
     /// <summary>
     /// Settings required for a simulator to simulate.

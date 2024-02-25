@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace TradingSystem.Time;
+namespace Effanville.TradingStructures.Common.Time;
 
 /// <summary>
 /// An abstraction of a clock to enable retrieval of the current time

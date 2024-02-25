@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Timers;
 
 using Effanville.TradingStructures.Common.Scheduling;
+using Effanville.TradingStructures.Common.Time;
 
 using TradingSystem.Time;
 

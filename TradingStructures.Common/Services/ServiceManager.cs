@@ -1,4 +1,7 @@
-﻿namespace Effanville.TradingStructures.Common.Services;
+﻿using System;
+using System.Collections.Generic;
+
+namespace Effanville.TradingStructures.Common.Services;
 
 public sealed class ServiceManager : IService
 {

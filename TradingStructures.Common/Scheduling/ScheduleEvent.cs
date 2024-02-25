@@ -1,3 +1,6 @@
+using System;
+using System.Threading.Tasks;
+
 namespace Effanville.TradingStructures.Common.Scheduling;
 
 public sealed class ScheduleEvent : IComparable<ScheduleEvent>
