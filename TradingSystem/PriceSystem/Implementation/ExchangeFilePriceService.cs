@@ -4,8 +4,8 @@ using Effanville.FinancialStructures.NamingStructures;
 using Effanville.FinancialStructures.Stocks;
 using Effanville.FinancialStructures.Stocks.Implementation;
 using Effanville.TradingStructures.Common;
+using Effanville.TradingStructures.Exchanges;
 
-using TradingSystem.ExchangeStructures;
 using TradingSystem.MarketEvolvers;
 
 namespace TradingSystem.PriceSystem.Implementation

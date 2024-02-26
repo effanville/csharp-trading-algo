@@ -25,6 +25,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FinancialStructures.Stocks"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TradingStructures.Common", "TradingStructures.Common\TradingStructures.Common.csproj", "{DBD85914-E464-4FAF-997B-00B4EBC5F34E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TradingStructures.Exchanges", "TradingStructures.Exchanges\TradingStructures.Exchanges.csproj", "{5B5E4FF5-2C2A-4A65-B0D3-D808C1F4D25A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -63,6 +65,10 @@ Global
 		{DBD85914-E464-4FAF-997B-00B4EBC5F34E}.Debug|x64.Build.0 = Debug|x64
 		{DBD85914-E464-4FAF-997B-00B4EBC5F34E}.Release|x64.ActiveCfg = Release|x64
 		{DBD85914-E464-4FAF-997B-00B4EBC5F34E}.Release|x64.Build.0 = Release|x64
+		{5B5E4FF5-2C2A-4A65-B0D3-D808C1F4D25A}.Debug|x64.ActiveCfg = Debug|x64
+		{5B5E4FF5-2C2A-4A65-B0D3-D808C1F4D25A}.Debug|x64.Build.0 = Debug|x64
+		{5B5E4FF5-2C2A-4A65-B0D3-D808C1F4D25A}.Release|x64.ActiveCfg = Release|x64
+		{5B5E4FF5-2C2A-4A65-B0D3-D808C1F4D25A}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

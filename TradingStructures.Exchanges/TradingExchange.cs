@@ -1,28 +1,23 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO.Abstractions;
+﻿using System.IO.Abstractions;
 using System.Xml.Serialization;
 
 using Effanville.Common.Structure.Reporting;
-
 using Effanville.FinancialStructures.Stocks;
 using Effanville.TradingStructures.Common;
+using Effanville.TradingStructures.Common.Scheduling;
 using Effanville.TradingStructures.Common.Services;
 using Effanville.TradingStructures.Common.Time;
 
 using Nager.Date;
 
-using TradingSystem.MarketEvolvers;
-using TradingSystem.Time;
-
-namespace TradingSystem.ExchangeStructures;
+namespace Effanville.TradingStructures.Exchanges;
 
 /// <summary>
 /// Representation of a exchange and all instruments that are traded upon it.
 /// </summary>
 public sealed class TradingExchange : IService
 {
-    private readonly Scheduler _scheduler;
+    private readonly IScheduler _scheduler;
 
     public string Name
     {
@@ -56,13 +51,13 @@ public sealed class TradingExchange : IService
         StockInstruments = new Dictionary<string, StockInstrument>();
     }
 
-    public TradingExchange(Scheduler scheduler)
+    public TradingExchange(IScheduler scheduler)
     : this()
     {
         _scheduler = scheduler;
     }
 
-    public TradingExchange(Scheduler scheduler, IStockExchange stockExchange)
+    public TradingExchange(IScheduler scheduler, IStockExchange stockExchange)
         : this(scheduler)
     {
         Configure(stockExchange);
@@ -108,7 +103,7 @@ public sealed class TradingExchange : IService
         foreach (var stock in stockExchange.Stocks)
         {
             string ticker = stock.Name.Ticker;
-            StockInstrument stockInst = new StockInstrument(ticker, stock.Name);
+            StockInstrument stockInst = new StockInstrument(stock.Name);
             StockInstruments.Add(ticker, stockInst);
         }
     }

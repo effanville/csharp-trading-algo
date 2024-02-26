@@ -6,9 +6,9 @@ using Effanville.Common.Structure.Reporting;
 using Effanville.FinancialStructures.Stocks;
 using Effanville.TradingStructures.Common;
 using Effanville.TradingStructures.Common.Time;
+using Effanville.TradingStructures.Exchanges;
 
 using TradingSystem.Decisions;
-using TradingSystem.ExchangeStructures;
 using TradingSystem.MarketEvolvers;
 using TradingSystem.PriceSystem;
 using TradingSystem.Time;
@@ -51,7 +51,7 @@ public class TimeIncrementExecutionStrategy : IExecutionStrategy
     public void OnPriceUpdate(object obj, PriceUpdateEventArgs eventArgs)
     {
         _stockExchange.Stocks.First(stock => stock.Name.Equals(eventArgs.Instrument.Name)).AddValue(eventArgs.Candle);
-        _logger.Log(ReportType.Information, "PriceService", $"{_clock.UtcNow()} - Price for {eventArgs.Instrument.Ticker} has changed to {eventArgs.Price}");
+        _logger.Log(ReportType.Information, "PriceService", $"{_clock.UtcNow()} - Price for {eventArgs.Instrument.Name.Ticker} has changed to {eventArgs.Price}");
     }
 
     public void OnExchangeStatusChanged(object obj, ExchangeStatusChangedEventArgs eventArgs)

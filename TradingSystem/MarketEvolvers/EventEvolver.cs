@@ -4,7 +4,6 @@ using Effanville.FinancialStructures.Database;
 using Effanville.FinancialStructures.Stocks;
 
 using TradingSystem.Decisions;
-using TradingSystem.ExchangeStructures;
 using TradingSystem.ExecutionStrategies;
 using TradingSystem.PriceSystem;
 using TradingSystem.Trading;
@@ -20,6 +19,7 @@ using Effanville.FinancialStructures.Database.Extensions.Rates;
 using Effanville.TradingStructures.Common;
 using Effanville.TradingStructures.Common.Services;
 using Effanville.TradingStructures.Common.Time;
+using Effanville.TradingStructures.Exchanges;
 
 namespace TradingSystem.MarketEvolvers;
 

@@ -1,7 +1,7 @@
 ﻿using Effanville.FinancialStructures.NamingStructures;
 using Effanville.FinancialStructures.Stocks;
 
-namespace TradingSystem.ExchangeStructures;
+namespace Effanville.TradingStructures.Exchanges;
 
 /// <summary>
 /// Contains any static data about a stock, e.g. name, ticker.
@@ -10,21 +10,19 @@ namespace TradingSystem.ExchangeStructures;
 /// </summary>
 public sealed class StockInstrument
 {
-    public string Ticker;
-    public NameData Name;
-    public StockInstrument(string ticker, NameData name)
+    public NameData Name { get; private set; }
+    public StockInstrument(NameData name)
     {
-        Ticker = ticker;
         Name = name;
     }
 
     public StockInstrument(string ticker, string company, string name, string currency, string url)
-        : this(ticker, new NameData(company.Trim(), name.Trim(), currency.Trim(), url.Trim()))
+        : this(new NameData(company.Trim(), name.Trim(), currency.Trim(), url.Trim()){Ticker = ticker})
     {
     }
 
     public StockInstrument(IStock stock)
-        : this(stock.Name.Ticker, stock.Name)
+        : this(stock.Name)
     {
     }
 }

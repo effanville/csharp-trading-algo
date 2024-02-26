@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net7.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\FinancialStructures\src\FinancialStructures.Stocks\FinancialStructures.Stocks.csproj" />
+      <ProjectReference Include="..\FinancialStructures\src\FinancialStructures\FinancialStructures.csproj" />
+      <ProjectReference Include="..\TradingStructures.Common\TradingStructures.Common.csproj" />
+    </ItemGroup>
+
+</Project>

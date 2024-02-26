@@ -1,8 +1,7 @@
 ﻿using System;
 
 using Effanville.FinancialStructures.Stocks.Implementation;
-
-using TradingSystem.ExchangeStructures;
+using Effanville.TradingStructures.Exchanges;
 
 namespace TradingSystem.PriceSystem;
 

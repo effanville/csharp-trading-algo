@@ -3,8 +3,8 @@
 using Effanville.Common.Structure.Reporting;
 using Effanville.TradingStructures.Common;
 using Effanville.TradingStructures.Common.Time;
+using Effanville.TradingStructures.Exchanges;
 
-using TradingSystem.ExchangeStructures;
 using TradingSystem.MarketEvolvers;
 using TradingSystem.PriceSystem;
 using TradingSystem.Time;
@@ -39,7 +39,7 @@ namespace TradingSystem.ExecutionStrategies
 
         /// <inheritdoc/>
         public void OnPriceUpdate(object obj, PriceUpdateEventArgs eventArgs)
-            => _logger.Log(ReportType.Information, "PriceService", $"Price for {eventArgs.Instrument.Ticker} has changed to {eventArgs.Price} at time {_clock.UtcNow()}");
+            => _logger.Log(ReportType.Information, "PriceService", $"Price for {eventArgs.Instrument.Name.Ticker} has changed to {eventArgs.Price} at time {_clock.UtcNow()}");
 
         /// <inheritdoc/>
         public void OnExchangeStatusChanged(object obj, ExchangeStatusChangedEventArgs eventArgs)

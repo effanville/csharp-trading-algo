@@ -3,8 +3,8 @@
 using Effanville.TradingStructures.Common;
 using Effanville.TradingStructures.Common.Services;
 using Effanville.TradingStructures.Common.Time;
+using Effanville.TradingStructures.Exchanges;
 
-using TradingSystem.ExchangeStructures;
 using TradingSystem.PriceSystem;
 using TradingSystem.Time;
 using TradingSystem.Trading;

@@ -1,4 +1,4 @@
-﻿namespace TradingSystem.ExchangeStructures
+﻿namespace Effanville.TradingStructures.Exchanges
 {
     public enum ExchangeSession : byte
     {
