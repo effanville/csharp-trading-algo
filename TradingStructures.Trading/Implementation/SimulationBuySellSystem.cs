@@ -6,9 +6,7 @@ using Effanville.TradingStructures.Common;
 using Effanville.TradingStructures.Common.Trading;
 using Effanville.TradingStructures.Pricing;
 
-using TradingSystem.MarketEvolvers;
-
-namespace TradingSystem.Trading.Implementation
+namespace Effanville.TradingStructures.Trading.Implementation
 {
     /// <summary>
     /// Trading system for use in simulation systems.

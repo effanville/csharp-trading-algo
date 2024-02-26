@@ -1,4 +1,4 @@
-﻿namespace TradingSystem.Trading
+﻿namespace Effanville.TradingStructures.Trading
 {
     /// <summary>
     /// The type of the trade mechanism to use.

@@ -1,4 +1,4 @@
-﻿namespace TradingSystem.Trading
+﻿namespace Effanville.TradingStructures.Trading
 {
     /// <summary>
     /// Contains options for

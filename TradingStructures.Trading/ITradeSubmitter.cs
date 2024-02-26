@@ -1,14 +1,12 @@
 ﻿using System;
 
 using Effanville.Common.Structure.Reporting;
-
 using Effanville.FinancialStructures.DataStructures;
-using Effanville.TradingStructures.Common;
 using Effanville.TradingStructures.Common.Services;
 using Effanville.TradingStructures.Common.Trading;
 using Effanville.TradingStructures.Pricing;
 
-namespace TradingSystem.Trading
+namespace Effanville.TradingStructures.Trading
 {
     /// <summary>
     /// Mechanism to enact the buying and selling of stocks.

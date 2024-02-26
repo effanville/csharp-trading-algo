@@ -3,6 +3,7 @@
 using Effanville.Common.Structure.Reporting;
 using Effanville.TradingStructures.Common.Trading;
 using Effanville.TradingStructures.Pricing;
+using Effanville.TradingStructures.Trading;
 
 using TradingSystem.PortfolioStrategies;
 

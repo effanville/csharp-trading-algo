@@ -1,6 +1,6 @@
-﻿using TradingSystem.Trading.Implementation;
+﻿using Effanville.TradingStructures.Trading.Implementation;
 
-namespace TradingSystem.Trading
+namespace Effanville.TradingStructures.Trading
 {
     public static class TradeSubmitterFactory
     {

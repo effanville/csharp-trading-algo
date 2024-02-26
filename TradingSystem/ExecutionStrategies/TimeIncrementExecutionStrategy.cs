@@ -9,6 +9,7 @@ using Effanville.TradingStructures.Common.Time;
 using Effanville.TradingStructures.Common.Trading;
 using Effanville.TradingStructures.Exchanges;
 using Effanville.TradingStructures.Pricing;
+using Effanville.TradingStructures.Trading;
 
 using TradingSystem.Decisions;
 using TradingSystem.MarketEvolvers;
