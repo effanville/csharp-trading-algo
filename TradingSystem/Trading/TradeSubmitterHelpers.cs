@@ -1,6 +1,7 @@
 ﻿using System;
 
 using Effanville.Common.Structure.Reporting;
+using Effanville.TradingStructures.Common.Trading;
 using Effanville.TradingStructures.Pricing;
 
 using TradingSystem.PortfolioStrategies;

@@ -16,6 +16,7 @@ using Effanville.Common.Structure.MathLibrary.Finance;
 using Effanville.FinancialStructures.Database.Extensions.Values;
 using Effanville.FinancialStructures.Database.Extensions.Rates;
 using Effanville.TradingStructures.Common;
+using Effanville.TradingStructures.Common.Scheduling;
 using Effanville.TradingStructures.Common.Services;
 using Effanville.TradingStructures.Common.Time;
 using Effanville.TradingStructures.Exchanges;
@@ -32,7 +33,7 @@ public sealed partial class EventEvolver
     bool _isInitialised;
     readonly EvolverSettings _settings;
     readonly IReportLogger _logger;
-    readonly Scheduler _scheduler;
+    readonly IScheduler _scheduler;
     readonly ServiceManager _serviceManager = new ServiceManager();
     IPortfolioManager PortfolioManager => _serviceManager.GetService<IPortfolioManager>(nameof(IPortfolioManager));
     IPriceService PriceService => _serviceManager.GetService<IPriceService>(nameof(IPriceService));

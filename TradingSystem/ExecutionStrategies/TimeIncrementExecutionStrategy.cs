@@ -6,6 +6,7 @@ using Effanville.Common.Structure.Reporting;
 using Effanville.FinancialStructures.Stocks;
 using Effanville.TradingStructures.Common;
 using Effanville.TradingStructures.Common.Time;
+using Effanville.TradingStructures.Common.Trading;
 using Effanville.TradingStructures.Exchanges;
 using Effanville.TradingStructures.Pricing;
 

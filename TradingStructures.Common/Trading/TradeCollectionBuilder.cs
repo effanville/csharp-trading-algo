@@ -5,7 +5,7 @@ using Effanville.Common.Structure.ReportWriting;
 using Effanville.FinancialStructures.DataStructures;
 using Effanville.FinancialStructures.NamingStructures;
 
-namespace TradingSystem.Trading
+namespace Effanville.TradingStructures.Common.Trading
 {
     public sealed class TradeDictionaryBuilder
     {

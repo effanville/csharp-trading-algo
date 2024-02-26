@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace TradingSystem.Trading
+namespace Effanville.TradingStructures.Common.Trading
 {
     public sealed class TradeHistory
     {

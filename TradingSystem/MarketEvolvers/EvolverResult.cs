@@ -1,4 +1,5 @@
 ﻿using Effanville.FinancialStructures.Database;
+using Effanville.TradingStructures.Common.Trading;
 
 using TradingSystem.Trading;
 

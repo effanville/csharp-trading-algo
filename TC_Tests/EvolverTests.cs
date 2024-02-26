@@ -11,6 +11,7 @@ using Effanville.FinancialStructures.Database.Extensions.Values;
 using Effanville.FinancialStructures.Stocks;
 using Effanville.TradingStructures.Common;
 using Effanville.TradingStructures.Common.Diagnostics;
+using Effanville.TradingStructures.Common.Trading;
 
 using NUnit.Framework;
 
@@ -18,7 +19,6 @@ using TradingSystem.Decisions;
 using TradingSystem.ExecutionStrategies;
 using TradingSystem.MarketEvolvers;
 using TradingSystem.PortfolioStrategies;
-using TradingSystem.Trading;
 
 namespace TradingConsole.Tests;
 

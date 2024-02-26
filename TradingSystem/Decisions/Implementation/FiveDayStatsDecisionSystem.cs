@@ -7,6 +7,7 @@ using Effanville.Common.Structure.Reporting;
 
 using Effanville.FinancialStructures.DataStructures;
 using Effanville.FinancialStructures.Stocks;
+using Effanville.TradingStructures.Common.Trading;
 
 using TradingSystem.MarketEvolvers;
 using TradingSystem.Trading;

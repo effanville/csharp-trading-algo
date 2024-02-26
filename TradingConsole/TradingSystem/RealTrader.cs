@@ -6,6 +6,7 @@ using Effanville.Common.Structure.Reporting;
 using Effanville.FinancialStructures.Persistence;
 using Effanville.FinancialStructures.Stocks;
 using Effanville.TradingStructures.Common.Diagnostics;
+using Effanville.TradingStructures.Common.Trading;
 using Effanville.TradingStructures.Pricing;
 
 using TradingSystem.Decisions;

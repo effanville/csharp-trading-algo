@@ -3,6 +3,7 @@
 using Effanville.Common.Structure.Reporting;
 using Effanville.FinancialStructures.DataStructures;
 using Effanville.TradingStructures.Common;
+using Effanville.TradingStructures.Common.Trading;
 using Effanville.TradingStructures.Pricing;
 
 using TradingSystem.MarketEvolvers;

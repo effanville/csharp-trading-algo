@@ -1,4 +1,6 @@
-﻿namespace TradingSystem.Trading;
+﻿using Effanville.TradingStructures.Common.Trading;
+
+namespace TradingSystem.Trading;
 
 /// <summary>
 /// EventArgs for submitting a new trade to be enacted.

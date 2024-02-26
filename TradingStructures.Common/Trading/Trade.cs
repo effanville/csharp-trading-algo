@@ -1,8 +1,9 @@
-﻿using Effanville.FinancialStructures.NamingStructures;
-using Effanville.FinancialStructures.DataStructures;
-using System;
+﻿using System;
 
-namespace TradingSystem.Trading
+using Effanville.FinancialStructures.DataStructures;
+using Effanville.FinancialStructures.NamingStructures;
+
+namespace Effanville.TradingStructures.Common.Trading
 {
     /// <summary>
     /// A trade of an instrument.

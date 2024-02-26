@@ -29,6 +29,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TradingStructures.Exchanges
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TradingStructures.Pricing", "TradingStructures.Pricing\TradingStructures.Pricing.csproj", "{55EBC5A4-0F17-4633-AC9E-77BA49C36000}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TradingStructures.ExecutionStrategies", "TradingStructures.ExecutionStrategies\TradingStructures.ExecutionStrategies.csproj", "{A058E278-4CC8-4494-95ED-1DD449C15FB0}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -75,6 +77,10 @@ Global
 		{55EBC5A4-0F17-4633-AC9E-77BA49C36000}.Debug|x64.Build.0 = Debug|x64
 		{55EBC5A4-0F17-4633-AC9E-77BA49C36000}.Release|x64.ActiveCfg = Release|x64
 		{55EBC5A4-0F17-4633-AC9E-77BA49C36000}.Release|x64.Build.0 = Release|x64
+		{A058E278-4CC8-4494-95ED-1DD449C15FB0}.Debug|x64.ActiveCfg = Debug|x64
+		{A058E278-4CC8-4494-95ED-1DD449C15FB0}.Debug|x64.Build.0 = Debug|x64
+		{A058E278-4CC8-4494-95ED-1DD449C15FB0}.Release|x64.ActiveCfg = Release|x64
+		{A058E278-4CC8-4494-95ED-1DD449C15FB0}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

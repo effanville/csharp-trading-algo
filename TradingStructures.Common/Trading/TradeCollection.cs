@@ -5,7 +5,7 @@ using System.Linq;
 using Effanville.FinancialStructures.DataStructures;
 using Effanville.FinancialStructures.NamingStructures;
 
-namespace TradingSystem.Trading
+namespace Effanville.TradingStructures.Common.Trading
 {
     public sealed class TradeCollection : IEquatable<TradeCollection>
     {
