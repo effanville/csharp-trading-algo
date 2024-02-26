@@ -10,12 +10,11 @@ using Effanville.FinancialStructures.Database;
 using Effanville.FinancialStructures.Database.Extensions.Values;
 using Effanville.FinancialStructures.Stocks;
 using Effanville.TradingStructures.Common;
+using Effanville.TradingStructures.Common.Diagnostics;
 
 using NUnit.Framework;
 
 using TradingSystem.Decisions;
-
-using TradingSystem.Diagnostics;
 using TradingSystem.ExecutionStrategies;
 using TradingSystem.MarketEvolvers;
 using TradingSystem.PortfolioStrategies;

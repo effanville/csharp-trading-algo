@@ -5,9 +5,9 @@ using System.IO.Abstractions;
 using Effanville.Common.Structure.Reporting;
 using Effanville.FinancialStructures.Persistence;
 using Effanville.FinancialStructures.Stocks;
+using Effanville.TradingStructures.Common.Diagnostics;
 
 using TradingSystem.Decisions;
-using TradingSystem.Diagnostics;
 using TradingSystem.MarketEvolvers;
 using TradingSystem.PortfolioStrategies;
 using TradingSystem.PriceSystem;

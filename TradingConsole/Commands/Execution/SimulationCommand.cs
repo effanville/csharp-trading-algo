@@ -7,11 +7,11 @@ using Effanville.Common.Console.Commands;
 using Effanville.Common.Console.Options;
 using Effanville.Common.Structure.Reporting;
 using Effanville.FinancialStructures.Stocks.Statistics;
+using Effanville.TradingStructures.Common.Diagnostics;
 
 using TradingConsole.TradingSystem;
 
 using TradingSystem.Decisions;
-using TradingSystem.Diagnostics;
 using TradingSystem.PortfolioStrategies;
 using TradingSystem.Trading;
 

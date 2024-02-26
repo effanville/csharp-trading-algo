@@ -3,7 +3,7 @@ using System.Diagnostics;
 
 using Effanville.Common.Structure.Reporting;
 
-namespace TradingSystem.Diagnostics
+namespace Effanville.TradingStructures.Common.Diagnostics
 {
     /// <summary>
     /// Enables timing of operations. Timing starts upon creation and

@@ -7,10 +7,10 @@ using Effanville.FinancialStructures.Database;
 using Effanville.FinancialStructures.Database.Extensions.Rates;
 using Effanville.FinancialStructures.Database.Extensions.Values;
 using Effanville.FinancialStructures.Stocks;
+using Effanville.TradingStructures.Common.Diagnostics;
 using Effanville.TradingStructures.Common.Time;
 
 using TradingSystem.Decisions;
-using TradingSystem.Diagnostics;
 using TradingSystem.PortfolioStrategies;
 using TradingSystem.PriceSystem;
 using TradingSystem.Time;
