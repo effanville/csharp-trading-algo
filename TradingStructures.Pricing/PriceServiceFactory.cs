@@ -1,14 +1,14 @@
 ﻿using System;
 
 using Effanville.FinancialStructures.Stocks;
+using Effanville.TradingStructures.Common.Scheduling;
+using Effanville.TradingStructures.Pricing.Implementation;
 
-using TradingSystem.PriceSystem.Implementation;
-
-namespace TradingSystem.PriceSystem
+namespace Effanville.TradingStructures.Pricing
 {
     public static class PriceServiceFactory
     {
-        public static IPriceService Create(PriceType priceType, PriceCalculationSettings settings, IStockExchange exchange, Scheduler scheduler)
+        public static IPriceService Create(PriceType priceType, PriceCalculationSettings settings, IStockExchange exchange, IScheduler scheduler)
         {
             return priceType switch
             {

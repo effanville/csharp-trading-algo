@@ -6,11 +6,11 @@ using Effanville.Common.Structure.Reporting;
 using Effanville.FinancialStructures.Persistence;
 using Effanville.FinancialStructures.Stocks;
 using Effanville.TradingStructures.Common.Diagnostics;
+using Effanville.TradingStructures.Pricing;
 
 using TradingSystem.Decisions;
 using TradingSystem.MarketEvolvers;
 using TradingSystem.PortfolioStrategies;
-using TradingSystem.PriceSystem;
 using TradingSystem.Trading;
 
 namespace TradingConsole.TradingSystem

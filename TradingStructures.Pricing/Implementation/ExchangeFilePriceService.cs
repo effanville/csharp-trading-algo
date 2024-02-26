@@ -4,25 +4,25 @@ using Effanville.FinancialStructures.NamingStructures;
 using Effanville.FinancialStructures.Stocks;
 using Effanville.FinancialStructures.Stocks.Implementation;
 using Effanville.TradingStructures.Common;
+using Effanville.TradingStructures.Common.Scheduling;
 using Effanville.TradingStructures.Exchanges;
 
-using TradingSystem.MarketEvolvers;
-
-namespace TradingSystem.PriceSystem.Implementation
+namespace Effanville.TradingStructures.Pricing.Implementation
 {
-    public sealed class RandomWobblePriceCalculator : IPriceService
+    /// <summary>
+    /// Price service where the price data is retrieved from a file.
+    /// </summary>
+    public sealed class ExchangeFilePriceService : IPriceService
     {
-        private readonly PriceCalculationSettings _settings;
+        private readonly IScheduler _scheduler;
         private readonly IStockExchange _stockExchange;
-        private readonly Scheduler _scheduler;
 
         public string Name => throw new NotImplementedException();
 
         public event EventHandler<PriceUpdateEventArgs> PriceChanged;
 
-        public RandomWobblePriceCalculator(PriceCalculationSettings settings, IStockExchange stockExchange, Scheduler scheduler)
+        public ExchangeFilePriceService(IStockExchange stockExchange, IScheduler scheduler)
         {
-            _settings = settings;
             _stockExchange = stockExchange;
             _scheduler = scheduler;
         }
@@ -51,6 +51,7 @@ namespace TradingSystem.PriceSystem.Implementation
 
         public void Restart() => throw new NotImplementedException();
         public void Shutdown() { }
+
         private void RaisePriceChanged(object obj, PriceUpdateEventArgs args)
         {
             EventHandler<PriceUpdateEventArgs> handler = PriceChanged;
@@ -66,28 +67,12 @@ namespace TradingSystem.PriceSystem.Implementation
 
         public StockDay GetCandle(DateTime startTime, DateTime endTime, TwoName name) => _stockExchange.GetCandle(name, startTime);
 
-        public decimal GetAskPrice(DateTime time, string ticker)
-            => ModifyPrice(_stockExchange.GetValue(ticker, time, StockDataStream.Open), _settings);
+        public decimal GetBidPrice(DateTime time, string ticker) => _stockExchange.GetValue(ticker, time);
 
-        public decimal GetAskPrice(DateTime time, TwoName stock)
-            => ModifyPrice(_stockExchange.GetValue(stock, time, StockDataStream.Open), _settings);
+        public decimal GetAskPrice(DateTime time, string ticker) => _stockExchange.GetValue(ticker, time);
 
-        public decimal GetBidPrice(DateTime time, string ticker)
-            => ModifyPrice(_stockExchange.GetValue(ticker, time, StockDataStream.Open), _settings);
+        public decimal GetBidPrice(DateTime time, TwoName name) => _stockExchange.GetValue(name, time);
 
-        public decimal GetBidPrice(DateTime time, TwoName stock)
-            => ModifyPrice(_stockExchange.GetValue(stock, time, StockDataStream.Open), _settings);
-
-        private static decimal ModifyPrice(decimal price, PriceCalculationSettings settings)
-        {
-            // we modify the price we buy at from the opening price, to simulate market movement.
-            decimal upDown = settings.RandomNumbers.Next(0, 100) > 100 * settings.UpTickProbability ? 1.0m : -1.0m;
-            decimal valueModifier = 1.0m + Convert.ToDecimal(settings.UpTickSize) * upDown;
-            if (price == decimal.MinValue)
-            {
-                return decimal.MinValue;
-            }
-            return price * valueModifier;
-        }
+        public decimal GetAskPrice(DateTime time, TwoName name) => _stockExchange.GetValue(name, time);
     }
 }

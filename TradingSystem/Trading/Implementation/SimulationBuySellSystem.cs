@@ -3,9 +3,9 @@
 using Effanville.Common.Structure.Reporting;
 using Effanville.FinancialStructures.DataStructures;
 using Effanville.TradingStructures.Common;
+using Effanville.TradingStructures.Pricing;
 
 using TradingSystem.MarketEvolvers;
-using TradingSystem.PriceSystem;
 
 namespace TradingSystem.Trading.Implementation
 {

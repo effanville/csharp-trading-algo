@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace TradingSystem.PriceSystem
+namespace Effanville.TradingStructures.Pricing
 {
     /// <summary>
     /// Settings for the BuySell system.

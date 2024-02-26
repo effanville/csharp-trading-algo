@@ -1,9 +1,9 @@
 ﻿using System;
 
 using Effanville.Common.Structure.Reporting;
+using Effanville.TradingStructures.Pricing;
 
 using TradingSystem.PortfolioStrategies;
-using TradingSystem.PriceSystem;
 
 namespace TradingSystem.Trading
 {

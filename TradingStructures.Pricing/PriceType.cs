@@ -1,4 +1,4 @@
-﻿namespace TradingSystem.PriceSystem
+﻿namespace Effanville.TradingStructures.Pricing
 {
     public enum PriceType : byte
     {

@@ -9,10 +9,10 @@ using Effanville.FinancialStructures.Database.Extensions.Values;
 using Effanville.FinancialStructures.Stocks;
 using Effanville.TradingStructures.Common.Diagnostics;
 using Effanville.TradingStructures.Common.Time;
+using Effanville.TradingStructures.Pricing;
 
 using TradingSystem.Decisions;
 using TradingSystem.PortfolioStrategies;
-using TradingSystem.PriceSystem;
 using TradingSystem.Time;
 using TradingSystem.Trading;
 

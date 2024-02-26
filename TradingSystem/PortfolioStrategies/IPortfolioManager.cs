@@ -1,11 +1,12 @@
 ﻿using Effanville.FinancialStructures.Database;
 using Effanville.FinancialStructures.DataStructures;
-using TradingSystem.PriceSystem;
+
 using TradingSystem.Trading;
 using System;
 using Effanville.FinancialStructures.Stocks;
 using Effanville.TradingStructures.Common;
 using Effanville.TradingStructures.Common.Services;
+using Effanville.TradingStructures.Pricing;
 
 namespace TradingSystem.PortfolioStrategies
 {

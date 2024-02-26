@@ -12,6 +12,7 @@
     <ProjectReference Include="..\FinancialStructures\Common\src\Common.Structure\Common.Structure.csproj" />
     <ProjectReference Include="..\TradingStructures.Common\TradingStructures.Common.csproj" />
     <ProjectReference Include="..\TradingStructures.Exchanges\TradingStructures.Exchanges.csproj" />
+    <ProjectReference Include="..\TradingStructures.Pricing\TradingStructures.Pricing.csproj" />
   </ItemGroup>
 
 	<ItemGroup>
@@ -23,8 +24,5 @@
         <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleToAttribute">
             <_Parameter1>Effanville.TradingConsole.Tests</_Parameter1>
         </AssemblyAttribute>
-    </ItemGroup>
-    <ItemGroup>
-      <Folder Include="ExchangeStructures\" />
     </ItemGroup>
 </Project>

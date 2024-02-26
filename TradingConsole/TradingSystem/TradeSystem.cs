@@ -4,10 +4,10 @@ using System.IO.Abstractions;
 using Effanville.Common.Structure.Reporting;
 using Effanville.FinancialStructures.Stocks;
 using Effanville.TradingStructures.Common.Diagnostics;
+using Effanville.TradingStructures.Pricing;
 
 using TradingSystem.Decisions;
 using TradingSystem.Trading;
-using TradingSystem.PriceSystem;
 using TradingSystem.PortfolioStrategies;
 using TradingSystem.MarketEvolvers;
 

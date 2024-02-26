@@ -3,7 +3,7 @@
 using Effanville.FinancialStructures.Stocks.Implementation;
 using Effanville.TradingStructures.Exchanges;
 
-namespace TradingSystem.PriceSystem;
+namespace Effanville.TradingStructures.Pricing;
 
 /// <summary>
 /// Event args for events when a price has been updated.

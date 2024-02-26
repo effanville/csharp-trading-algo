@@ -2,10 +2,9 @@
 
 using Effanville.FinancialStructures.NamingStructures;
 using Effanville.FinancialStructures.Stocks.Implementation;
-using Effanville.TradingStructures.Common;
 using Effanville.TradingStructures.Common.Services;
 
-namespace TradingSystem.PriceSystem
+namespace Effanville.TradingStructures.Pricing
 {
     /// <summary>
     /// Represents a service for detailing querying of price and

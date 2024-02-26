@@ -5,8 +5,7 @@ using Effanville.Common.Structure.Reporting;
 using Effanville.FinancialStructures.DataStructures;
 using Effanville.TradingStructures.Common;
 using Effanville.TradingStructures.Common.Services;
-
-using TradingSystem.PriceSystem;
+using Effanville.TradingStructures.Pricing;
 
 namespace TradingSystem.Trading
 {

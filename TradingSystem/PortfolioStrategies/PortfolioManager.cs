@@ -1,6 +1,6 @@
 ﻿using Effanville.FinancialStructures.Database;
 using Effanville.FinancialStructures.DataStructures;
-using TradingSystem.PriceSystem;
+
 using TradingSystem.Trading;
 using System;
 using Effanville.Common.Structure.DataStructures;
@@ -15,6 +15,7 @@ using System.IO.Abstractions;
 using Effanville.FinancialStructures.Database.Extensions.DataEdit;
 using Effanville.FinancialStructures.Persistence;
 using Effanville.TradingStructures.Common;
+using Effanville.TradingStructures.Pricing;
 
 using TradingSystem.MarketEvolvers;
 
