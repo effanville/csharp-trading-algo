@@ -34,7 +34,7 @@ namespace TradingSystem.Decisions.Implementation
             InnerSystem = new ArbitraryStatsDecisionSystem(newSettings);
         }
 
-        public void Calibrate(TimeIncrementEvolverSettings settings, IReportLogger logger)
+        public void Calibrate(DecisionSystemSettings settings, IReportLogger logger)
         {
             InnerSystem.Calibrate(settings, logger);
         }

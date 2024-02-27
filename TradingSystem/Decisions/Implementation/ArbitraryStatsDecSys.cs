@@ -41,7 +41,7 @@ namespace TradingSystem.Decisions.Implementation
         }
 
         /// <inheritdoc/>
-        public void Calibrate(TimeIncrementEvolverSettings settings, IReportLogger logger)
+        public void Calibrate(DecisionSystemSettings settings, IReportLogger logger)
         {
             DateTime burnInLength = settings.BurnInEnd;
 
@@ -49,11 +49,11 @@ namespace TradingSystem.Decisions.Implementation
             int numberEntries = ((burnInLength - settings.StartTime).Days - 5) * 5 / 7;
             int numberStatistics = fStockStatistics.Count;
 
-            double[,] X = new double[settings.Exchange.Stocks.Count * numberEntries, numberStatistics];
-            double[] Y = new double[settings.Exchange.Stocks.Count * numberEntries];
+            double[,] X = new double[settings.NumberStocks * numberEntries, numberStatistics];
+            double[] Y = new double[settings.NumberStocks * numberEntries];
             for (int entryIndex = 0; entryIndex < numberEntries; entryIndex++)
             {
-                for (int stockIndex = 0; stockIndex < settings.Exchange.Stocks.Count; stockIndex++)
+                for (int stockIndex = 0; stockIndex < settings.NumberStocks; stockIndex++)
                 {
                     for (int statisticIndex = 0; statisticIndex < numberStatistics; statisticIndex++)
                     {

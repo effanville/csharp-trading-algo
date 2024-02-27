@@ -2,13 +2,18 @@
 
     <PropertyGroup>
         <TargetFramework>net7.0</TargetFramework>
-        <ImplicitUsings>enable</ImplicitUsings>
-        <Nullable>enable</Nullable>
+        <RootNamespace>Effanville.TradingStructures.Strategies</RootNamespace>
     </PropertyGroup>
 
     <ItemGroup>
       <ProjectReference Include="..\TradingStructures.Common\TradingStructures.Common.csproj" />
       <ProjectReference Include="..\TradingStructures.Pricing\TradingStructures.Pricing.csproj" />
+      <ProjectReference Include="..\TradingStructures.Trading\TradingStructures.Trading.csproj" />
+    </ItemGroup>
+
+
+    <ItemGroup>
+      <Folder Include="Decision\" />
     </ItemGroup>
 
 </Project>

@@ -2,7 +2,7 @@
 
 using Effanville.FinancialStructures.NamingStructures;
 
-namespace TradingSystem.PortfolioStrategies
+namespace Effanville.TradingStructures.Strategies.Portfolio
 {
     /// <summary>
     /// Settings for constructing the start portfolio.

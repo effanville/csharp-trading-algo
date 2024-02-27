@@ -8,6 +8,7 @@ using Effanville.FinancialStructures.Stocks;
 using Effanville.TradingStructures.Common.Diagnostics;
 using Effanville.TradingStructures.Common.Trading;
 using Effanville.TradingStructures.Pricing;
+using Effanville.TradingStructures.Strategies.Portfolio;
 using Effanville.TradingStructures.Trading;
 
 using TradingSystem.Decisions;
@@ -66,7 +67,12 @@ namespace TradingConsole.TradingSystem
                 using (new Timer(reportLogger, "Calibrating"))
                 {
                     DecisionSystem = DecisionSystemFactory.Create(decisionParameters);
-                    DecisionSystem.Calibrate(fSimulatorSettings, ReportLogger);
+                    var decisionSystemSettings = new DecisionSystemSettings(
+                        fSimulatorSettings.StartTime,
+                        fSimulatorSettings.BurnInEnd,
+                        fSimulatorSettings.Exchange.Stocks.Count,
+                        fSimulatorSettings.Exchange);
+                    DecisionSystem.Calibrate(decisionSystemSettings, ReportLogger);
                 }
 
                 BuySellSystem = TradeSubmitterFactory.Create(buySellType, TradeMechanismSettings.Default());

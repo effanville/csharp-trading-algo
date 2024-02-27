@@ -11,6 +11,7 @@ using Effanville.FinancialStructures.Database.Extensions.Values;
 using Effanville.FinancialStructures.Stocks;
 using Effanville.TradingStructures.Common;
 using Effanville.TradingStructures.Common.Diagnostics;
+using Effanville.TradingStructures.Strategies.Portfolio;
 using Effanville.TradingStructures.Common.Trading;
 
 using NUnit.Framework;

@@ -36,7 +36,12 @@ namespace TradingSystem.Decisions
         public static IDecisionSystem CreateAndCalibrate(Settings settings, TimeIncrementEvolverSettings simulatorSettings, IReportLogger logger)
         {
             var decisionSystem = Create(settings);
-            decisionSystem.Calibrate(simulatorSettings, logger);
+            var decisionSettings = new DecisionSystemSettings(
+                simulatorSettings.StartTime,
+                simulatorSettings.BurnInEnd,
+                simulatorSettings.Exchange.Stocks.Count,
+                simulatorSettings.Exchange);
+            decisionSystem.Calibrate(decisionSettings, logger);
             if (settings.IsBurnInRequired())
             {
                 simulatorSettings.DoesntRequireBurnIn();

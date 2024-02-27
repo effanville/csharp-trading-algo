@@ -17,6 +17,7 @@ using Effanville.FinancialStructures.Persistence;
 using Effanville.TradingStructures.Common;
 using Effanville.TradingStructures.Common.Trading;
 using Effanville.TradingStructures.Pricing;
+using Effanville.TradingStructures.Strategies.Portfolio;
 
 using TradingSystem.MarketEvolvers;
 

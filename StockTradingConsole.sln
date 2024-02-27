@@ -29,7 +29,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TradingStructures.Exchanges
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TradingStructures.Pricing", "TradingStructures.Pricing\TradingStructures.Pricing.csproj", "{55EBC5A4-0F17-4633-AC9E-77BA49C36000}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TradingStructures.ExecutionStrategies", "TradingStructures.ExecutionStrategies\TradingStructures.ExecutionStrategies.csproj", "{A058E278-4CC8-4494-95ED-1DD449C15FB0}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TradingStructures.Strategies.Interfaces", "TradingStructures.Strategies.Interfaces\TradingStructures.Strategies.Interfaces.csproj", "{A058E278-4CC8-4494-95ED-1DD449C15FB0}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TradingStructures.Trading", "TradingStructures.Trading\TradingStructures.Trading.csproj", "{127A20FF-E9CD-4D9F-84C2-151902AC267C}"
 EndProject

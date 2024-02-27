@@ -6,6 +6,7 @@ using System.Linq;
 using Effanville.Common.Console.Options;
 
 using Effanville.FinancialStructures.Stocks.Statistics;
+using Effanville.TradingStructures.Strategies.Portfolio;
 using Effanville.TradingStructures.Trading;
 
 using Newtonsoft.Json;

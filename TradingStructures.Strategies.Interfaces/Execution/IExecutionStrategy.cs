@@ -6,9 +6,7 @@ using Effanville.TradingStructures.Exchanges;
 using Effanville.TradingStructures.Pricing;
 using Effanville.TradingStructures.Trading;
 
-using TradingSystem.Trading;
-
-namespace TradingSystem.ExecutionStrategies;
+namespace Effanville.TradingStructures.Strategies.Execution;
 
 /// <summary>
 /// Contains all necessary methods for the execution of a stock market trading strategy

@@ -1,4 +1,4 @@
-﻿namespace TradingSystem.PortfolioStrategies
+﻿namespace Effanville.TradingStructures.Strategies.Portfolio
 {
     /// <summary>
     /// Contains options for

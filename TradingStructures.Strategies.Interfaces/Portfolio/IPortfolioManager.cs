@@ -1,13 +1,13 @@
-﻿using Effanville.FinancialStructures.Database;
-using Effanville.FinancialStructures.DataStructures;
+﻿using System;
 
-using System;
+using Effanville.FinancialStructures.Database;
+using Effanville.FinancialStructures.DataStructures;
 using Effanville.FinancialStructures.Stocks;
 using Effanville.TradingStructures.Common.Services;
 using Effanville.TradingStructures.Common.Trading;
 using Effanville.TradingStructures.Pricing;
 
-namespace TradingSystem.PortfolioStrategies
+namespace Effanville.TradingStructures.Strategies.Portfolio
 {
     /// <summary>
     /// An interface dealing with the construction of a portfolio. For example
