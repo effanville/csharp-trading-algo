@@ -12,7 +12,6 @@ using Effanville.TradingStructures.Trading;
 using Newtonsoft.Json;
 
 using TradingSystem.Decisions;
-using TradingSystem.PortfolioStrategies;
 using TradingSystem.Trading;
 
 namespace TradingConsole.Commands.Execution

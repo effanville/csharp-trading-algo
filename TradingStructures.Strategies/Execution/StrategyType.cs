@@ -1,4 +1,4 @@
-﻿namespace TradingSystem.ExecutionStrategies;
+﻿namespace Effanville.TradingStructures.Strategies.Execution;
 
 public enum StrategyType : byte
 {

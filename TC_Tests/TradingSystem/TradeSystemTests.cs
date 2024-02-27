@@ -18,7 +18,6 @@ using NUnit.Framework;
 using TradingConsole.TradingSystem;
 
 using TradingSystem.Decisions;
-using TradingSystem.PortfolioStrategies;
 using TradingSystem.Trading;
 
 namespace TradingConsole.Tests.TradingSystem

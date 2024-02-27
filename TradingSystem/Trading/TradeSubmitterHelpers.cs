@@ -6,8 +6,6 @@ using Effanville.TradingStructures.Pricing;
 using Effanville.TradingStructures.Strategies.Portfolio;
 using Effanville.TradingStructures.Trading;
 
-using TradingSystem.PortfolioStrategies;
-
 namespace TradingSystem.Trading
 {
     public static class TradeSubmitterHelpers

@@ -4,10 +4,9 @@ using Effanville.FinancialStructures.Database;
 using Effanville.FinancialStructures.Stocks;
 
 using TradingSystem.Decisions;
-using TradingSystem.ExecutionStrategies;
 using TradingSystem.Trading;
 using TradingSystem.Time;
-using TradingSystem.PortfolioStrategies;
+
 using System;
 using System.Threading.Tasks;
 

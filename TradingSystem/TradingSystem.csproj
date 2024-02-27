@@ -14,6 +14,7 @@
     <ProjectReference Include="..\TradingStructures.Exchanges\TradingStructures.Exchanges.csproj" />
     <ProjectReference Include="..\TradingStructures.Pricing\TradingStructures.Pricing.csproj" />
     <ProjectReference Include="..\TradingStructures.Strategies.Interfaces\TradingStructures.Strategies.Interfaces.csproj" />
+    <ProjectReference Include="..\TradingStructures.Strategies\TradingStructures.Strategies.csproj" />
     <ProjectReference Include="..\TradingStructures.Trading\TradingStructures.Trading.csproj" />
   </ItemGroup>
 

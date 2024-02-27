@@ -16,7 +16,6 @@ using Effanville.TradingStructures.Strategies.Portfolio;
 using Effanville.TradingStructures.Trading;
 
 using TradingSystem.Decisions;
-using TradingSystem.PortfolioStrategies;
 using TradingSystem.Time;
 using TradingSystem.Trading;
 

@@ -1,27 +1,22 @@
-﻿using Effanville.FinancialStructures.Database;
-using Effanville.FinancialStructures.DataStructures;
-
-using TradingSystem.Trading;
-using System;
-using Effanville.Common.Structure.DataStructures;
-using Effanville.FinancialStructures.Database.Extensions.Values;
-using Effanville.Common.Structure.Reporting;
-using Effanville.FinancialStructures.NamingStructures;
+﻿using System;
 using System.Collections.Generic;
-using Effanville.FinancialStructures.FinanceStructures;
-using Effanville.FinancialStructures.Stocks;
 using System.IO.Abstractions;
 
+using Effanville.Common.Structure.DataStructures;
+using Effanville.Common.Structure.Reporting;
+using Effanville.FinancialStructures.Database;
 using Effanville.FinancialStructures.Database.Extensions.DataEdit;
+using Effanville.FinancialStructures.Database.Extensions.Values;
+using Effanville.FinancialStructures.DataStructures;
+using Effanville.FinancialStructures.FinanceStructures;
+using Effanville.FinancialStructures.NamingStructures;
 using Effanville.FinancialStructures.Persistence;
+using Effanville.FinancialStructures.Stocks;
 using Effanville.TradingStructures.Common;
 using Effanville.TradingStructures.Common.Trading;
 using Effanville.TradingStructures.Pricing;
-using Effanville.TradingStructures.Strategies.Portfolio;
 
-using TradingSystem.MarketEvolvers;
-
-namespace TradingSystem.PortfolioStrategies
+namespace Effanville.TradingStructures.Strategies.Portfolio
 {
     /// <summary>
     /// A basic manager for a portfolio, that just deals with how much money to spend on 

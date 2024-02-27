@@ -2,7 +2,6 @@
 using System.Linq;
 
 using Effanville.Common.Structure.Reporting;
-
 using Effanville.FinancialStructures.Stocks;
 using Effanville.TradingStructures.Common;
 using Effanville.TradingStructures.Common.Time;
@@ -10,12 +9,9 @@ using Effanville.TradingStructures.Common.Trading;
 using Effanville.TradingStructures.Exchanges;
 using Effanville.TradingStructures.Pricing;
 using Effanville.TradingStructures.Strategies.Decision;
-using Effanville.TradingStructures.Strategies.Execution;
 using Effanville.TradingStructures.Trading;
 
-using TradingSystem.Decisions;
-
-namespace TradingSystem.ExecutionStrategies;
+namespace Effanville.TradingStructures.Strategies.Execution;
 
 public class TimeIncrementExecutionStrategy : IExecutionStrategy
 {

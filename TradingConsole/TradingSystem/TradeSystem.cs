@@ -10,7 +10,6 @@ using Effanville.TradingStructures.Strategies.Portfolio;
 using Effanville.TradingStructures.Trading;
 
 using TradingSystem.Decisions;
-using TradingSystem.PortfolioStrategies;
 using TradingSystem.MarketEvolvers;
 
 namespace TradingConsole.TradingSystem

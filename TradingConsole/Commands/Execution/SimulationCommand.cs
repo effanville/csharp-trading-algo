@@ -14,7 +14,6 @@ using Effanville.TradingStructures.Trading;
 using TradingConsole.TradingSystem;
 
 using TradingSystem.Decisions;
-using TradingSystem.PortfolioStrategies;
 using TradingSystem.Trading;
 
 namespace TradingConsole.Commands.Execution
