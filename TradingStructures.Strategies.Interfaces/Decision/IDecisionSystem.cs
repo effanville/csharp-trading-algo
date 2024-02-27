@@ -1,13 +1,10 @@
 ﻿using System;
 
 using Effanville.Common.Structure.Reporting;
-
 using Effanville.FinancialStructures.Stocks;
 using Effanville.TradingStructures.Common.Trading;
 
-using TradingSystem.MarketEvolvers;
-
-namespace TradingSystem.Decisions
+namespace Effanville.TradingStructures.Strategies.Decision
 {
     /// <summary>
     /// Interface for the system by which one decides at what point to buy and sell stocks.

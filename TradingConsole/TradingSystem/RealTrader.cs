@@ -8,6 +8,7 @@ using Effanville.FinancialStructures.Stocks;
 using Effanville.TradingStructures.Common.Diagnostics;
 using Effanville.TradingStructures.Common.Trading;
 using Effanville.TradingStructures.Pricing;
+using Effanville.TradingStructures.Strategies.Decision;
 using Effanville.TradingStructures.Strategies.Portfolio;
 using Effanville.TradingStructures.Trading;
 

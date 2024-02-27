@@ -1,4 +1,5 @@
 ﻿using Effanville.Common.Structure.Reporting;
+using Effanville.TradingStructures.Strategies.Decision;
 
 using TradingSystem.Decisions.Implementation;
 using TradingSystem.MarketEvolvers;

@@ -2,7 +2,7 @@ using System;
 
 using Effanville.FinancialStructures.Stocks;
 
-namespace TradingSystem.Decisions;
+namespace Effanville.TradingStructures.Strategies.Decision;
 
 public class DecisionSystemSettings
 {        

@@ -4,6 +4,7 @@ using Effanville.Common.Structure.Reporting;
 
 using Effanville.FinancialStructures.Stocks;
 using Effanville.TradingStructures.Common.Time;
+using Effanville.TradingStructures.Strategies.Decision;
 using Effanville.TradingStructures.Strategies.Execution;
 
 using TradingSystem.Decisions;

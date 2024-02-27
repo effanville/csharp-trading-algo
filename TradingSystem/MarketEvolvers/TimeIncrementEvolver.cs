@@ -11,6 +11,7 @@ using Effanville.TradingStructures.Common.Diagnostics;
 using Effanville.TradingStructures.Common.Time;
 using Effanville.TradingStructures.Common.Trading;
 using Effanville.TradingStructures.Pricing;
+using Effanville.TradingStructures.Strategies.Decision;
 using Effanville.TradingStructures.Strategies.Portfolio;
 using Effanville.TradingStructures.Trading;
 

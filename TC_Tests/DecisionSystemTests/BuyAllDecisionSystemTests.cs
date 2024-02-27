@@ -3,6 +3,7 @@ using System.Linq;
 
 using Effanville.FinancialStructures.Stocks.Implementation;
 using Effanville.TradingStructures.Common.Trading;
+using Effanville.TradingStructures.Strategies.Decision;
 
 using NUnit.Framework;
 
