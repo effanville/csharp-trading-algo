@@ -15,8 +15,6 @@ using Effanville.TradingStructures.Strategies.Decision;
 using Effanville.TradingStructures.Strategies.Portfolio;
 using Effanville.TradingStructures.Trading;
 
-using TradingSystem.Decisions;
-using TradingSystem.Time;
 using TradingSystem.Trading;
 
 namespace TradingSystem.MarketEvolvers

@@ -1,16 +1,11 @@
 ﻿using System;
 
 using Effanville.Common.Structure.Reporting;
-
 using Effanville.FinancialStructures.DataStructures;
 using Effanville.FinancialStructures.Stocks;
 using Effanville.TradingStructures.Common.Trading;
-using Effanville.TradingStructures.Strategies.Decision;
 
-using TradingSystem.MarketEvolvers;
-using TradingSystem.Trading;
-
-namespace TradingSystem.Decisions.Implementation
+namespace Effanville.TradingStructures.Strategies.Decision.Implementation
 {
     /// <summary>
     /// Decision system which at any time reports to buy every stock held in the exchange.

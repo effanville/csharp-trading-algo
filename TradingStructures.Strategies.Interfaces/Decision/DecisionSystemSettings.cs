@@ -25,4 +25,6 @@ public class DecisionSystemSettings
         NumberStocks = numberStocks;
         Exchange = exchange;
     }
+    
+    public void DoesntRequireBurnIn() => BurnInEnd = StartTime;
 }

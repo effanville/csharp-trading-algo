@@ -3,7 +3,6 @@
 using Effanville.FinancialStructures.Database;
 using Effanville.FinancialStructures.Stocks;
 
-using TradingSystem.Decisions;
 using TradingSystem.Trading;
 using TradingSystem.Time;
 
@@ -13,7 +12,6 @@ using System.Threading.Tasks;
 using Effanville.Common.Structure.DataStructures;
 using Effanville.Common.Structure.MathLibrary.Finance;
 using Effanville.FinancialStructures.Database.Extensions.Values;
-using Effanville.FinancialStructures.Database.Extensions.Rates;
 using Effanville.TradingStructures.Common;
 using Effanville.TradingStructures.Common.Scheduling;
 using Effanville.TradingStructures.Common.Services;

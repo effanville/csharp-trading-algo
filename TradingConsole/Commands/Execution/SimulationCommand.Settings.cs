@@ -6,13 +6,13 @@ using System.Linq;
 using Effanville.Common.Console.Options;
 
 using Effanville.FinancialStructures.Stocks.Statistics;
+using Effanville.TradingStructures.Strategies.Decision;
 using Effanville.TradingStructures.Strategies.Portfolio;
 using Effanville.TradingStructures.Trading;
 
 using Newtonsoft.Json;
 
-using TradingSystem.Decisions;
-using TradingSystem.Trading;
+using DecisionSystemFactory = Effanville.TradingStructures.Strategies.Decision.DecisionSystemFactory;
 
 namespace TradingConsole.Commands.Execution
 {

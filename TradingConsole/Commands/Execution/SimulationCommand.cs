@@ -8,13 +8,11 @@ using Effanville.Common.Console.Options;
 using Effanville.Common.Structure.Reporting;
 using Effanville.FinancialStructures.Stocks.Statistics;
 using Effanville.TradingStructures.Common.Diagnostics;
+using Effanville.TradingStructures.Strategies.Decision;
 using Effanville.TradingStructures.Strategies.Portfolio;
 using Effanville.TradingStructures.Trading;
 
 using TradingConsole.TradingSystem;
-
-using TradingSystem.Decisions;
-using TradingSystem.Trading;
 
 namespace TradingConsole.Commands.Execution
 {

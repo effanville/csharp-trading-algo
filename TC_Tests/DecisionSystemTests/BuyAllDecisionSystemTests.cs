@@ -4,12 +4,9 @@ using System.Linq;
 using Effanville.FinancialStructures.Stocks.Implementation;
 using Effanville.TradingStructures.Common.Trading;
 using Effanville.TradingStructures.Strategies.Decision;
+using Effanville.TradingStructures.Strategies.Decision.Implementation;
 
 using NUnit.Framework;
-
-using TradingSystem.Decisions;
-using TradingSystem.Decisions.Implementation;
-using TradingSystem.Trading;
 
 namespace TradingConsole.Tests.DecisionSystemTests
 {

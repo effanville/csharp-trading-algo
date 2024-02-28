@@ -1,7 +1,7 @@
 using Effanville.Common.Structure.MathLibrary.ParameterEstimation;
 using Effanville.Common.Structure.Results;
 
-namespace TradingSystem.Decisions.Implementation
+namespace Effanville.TradingStructures.Strategies.Decision.Implementation
 {
     internal static class TypeHelpers
     {

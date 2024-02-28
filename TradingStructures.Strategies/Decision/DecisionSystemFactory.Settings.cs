@@ -1,8 +1,9 @@
-﻿using Effanville.FinancialStructures.Stocks.Statistics;
+﻿using System.Collections.Generic;
 
-using System.Collections.Generic;
+using Effanville.FinancialStructures.Stocks.Statistics;
+using Effanville.TradingStructures.Strategies.Decision;
 
-namespace TradingSystem.Decisions
+namespace Effanville.TradingStructures.Strategies.Decision
 {
     public static partial class DecisionSystemFactory
     {

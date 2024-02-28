@@ -4,79 +4,76 @@ using System.Linq;
 
 using Effanville.Common.Structure.MathLibrary.ParameterEstimation;
 using Effanville.Common.Structure.Reporting;
-
 using Effanville.FinancialStructures.DataStructures;
 using Effanville.FinancialStructures.Stocks;
+using Effanville.FinancialStructures.Stocks.Statistics;
 using Effanville.TradingStructures.Common.Trading;
-using Effanville.TradingStructures.Strategies.Decision;
 
-using TradingSystem.MarketEvolvers;
-using TradingSystem.Trading;
-
-namespace TradingSystem.Decisions.Implementation
+namespace Effanville.TradingStructures.Strategies.Decision.Implementation
 {
     /// <summary>
-    /// Decision system based upon the 5 previous stock days prices.
+    /// A decision system consisting of arbitrary statistics. It has a least
+    /// squares regression estimator to obtain the best fit to these
+    /// statistics.
     /// </summary>
-    internal sealed class FiveDayStatsDecisionSystem : IDecisionSystem
+    internal sealed class ArbitraryStatsDecisionSystem : IDecisionSystem
     {
         private readonly DecisionSystemFactory.Settings fSettings;
+        private readonly IReadOnlyList<IStockStatistic> fStockStatistics;
         private Estimator.Result EstimatorResult;
 
         /// <summary>
-        /// Construct and instance.
+        /// Construct an instance.
         /// </summary>
-        public FiveDayStatsDecisionSystem(DecisionSystemFactory.Settings settings)
+        public ArbitraryStatsDecisionSystem(DecisionSystemFactory.Settings decisionParameters)
         {
-            fSettings = settings;
+            List<IStockStatistic> stockStatistics = new List<IStockStatistic>();
+            foreach (StockStatisticType statistic in decisionParameters.Statistics)
+            {
+                stockStatistics.Add(StockStatisticFactory.Create(statistic));
+            }
+            fSettings = decisionParameters;
+            fStockStatistics = stockStatistics;
         }
 
-        /// <inheritdoc />
+        /// <inheritdoc/>
         public void Calibrate(DecisionSystemSettings settings, IReportLogger logger)
         {
             DateTime burnInLength = settings.BurnInEnd;
+
+            int delayTime = fStockStatistics.Max(stock => stock.BurnInTime) + 2;
             int numberEntries = ((burnInLength - settings.StartTime).Days - 5) * 5 / 7;
-            int numberStatistics = 5;
+            int numberStatistics = fStockStatistics.Count;
 
             double[,] X = new double[settings.NumberStocks * numberEntries, numberStatistics];
             double[] Y = new double[settings.NumberStocks * numberEntries];
-            for (int i = 0; i < numberEntries; i++)
+            for (int entryIndex = 0; entryIndex < numberEntries; entryIndex++)
             {
                 for (int stockIndex = 0; stockIndex < settings.NumberStocks; stockIndex++)
                 {
-                    List<double> values = settings.Exchange.Stocks[stockIndex].Values(settings.StartTime.AddDays(i), 0, numberStatistics + fSettings.DayAfterPredictor, StockDataStream.Open).Select(value => Convert.ToDouble(value)).ToList();
-                    for (int j = 0; j < numberStatistics; j++)
+                    for (int statisticIndex = 0; statisticIndex < numberStatistics; statisticIndex++)
                     {
-                        if (values[j].Equals(double.NaN))
-                        {
-                            values[j] = values[j + 1];
-                        }
-                        X[i + stockIndex, j] = values[j] / values[0];
+                        X[entryIndex * settings.Exchange.Stocks.Count + stockIndex, statisticIndex] = fStockStatistics[statisticIndex].Calculate(settings.StartTime.AddDays(delayTime + entryIndex), settings.Exchange.Stocks[stockIndex]);
                     }
 
-                    if (values.Last().Equals(double.NaN))
-                    {
-                        values[values.Count - 1] = values[values.Count - 2];
-                    }
-
-                    Y[i + stockIndex] = values.Last() / values[0];
+                    Y[entryIndex * settings.Exchange.Stocks.Count + stockIndex] = Convert.ToDouble(settings.Exchange.Stocks[stockIndex].Values(burnInLength.AddDays(delayTime + entryIndex), 0, fSettings.DayAfterPredictor, StockDataStream.Open).Last() / 100m);
                 }
             }
 
             var estimatorType = TypeHelpers.ConvertFrom(fSettings.DecisionSystemType);
-            if (estimatorType.Success)
+            if (!estimatorType.Success)
             {
                 EstimatorResult = Estimator.Fit(estimatorType.Data, X, Y);
             }
             else
             {
-                _ = logger.Log(ReportSeverity.Critical, ReportType.Error, ReportLocation.Unknown, $"Created FiveDayStats system without five day stats type.");
+                _ = logger.Log(ReportSeverity.Critical, ReportType.Error, ReportLocation.Unknown, $"Created ArbitraryStats system without correct type.");
             }
 
             _ = logger.Log(ReportSeverity.Critical, ReportType.Warning, ReportLocation.Unknown, $"Estimator Weights are {string.Join(",", EstimatorResult.Estimator)}");
         }
 
-        /// <inheritdoc />
+        /// <inheritdoc/>
         public TradeCollection Decide(DateTime day, IStockExchange stockExchange, IReportLogger logger)
         {
             var decisions = new TradeCollection(day, day);
@@ -84,12 +81,6 @@ namespace TradingSystem.Decisions.Implementation
             {
                 TradeType decision = TradeType.Unknown;
                 double[] values = stock.Values(day, 5, 0, StockDataStream.Open).Select(value => Convert.ToDouble(value)).ToArray();
-                double normaliseFactor = values[0];
-                for (int valueIndex = 0; valueIndex < values.Length; valueIndex++)
-                {
-                    values[valueIndex] /= normaliseFactor;
-                }
-
                 double value = EstimatorResult.Evaluate(values);
 
                 if (value > fSettings.BuyThreshold)
@@ -101,12 +92,9 @@ namespace TradingSystem.Decisions.Implementation
                     decision = TradeType.Sell;
                 }
 
-                _ = logger?.Log(ReportSeverity.Detailed, ReportType.Information, ReportLocation.Execution, $"{stock.Name} - value {value} - decision {decision}.");
-
                 decisions.Add(stock.Name, decision);
             }
 
-            _ = logger?.Log(ReportSeverity.Detailed, ReportType.Information, ReportLocation.Execution, $"Decisions: {decisions}");
             return decisions;
         }
     }

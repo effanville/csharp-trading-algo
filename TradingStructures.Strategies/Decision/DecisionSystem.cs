@@ -1,4 +1,4 @@
-﻿namespace TradingSystem.Decisions
+﻿namespace Effanville.TradingStructures.Strategies.Decision
 {
     /// <summary>
     /// The type of the decision system to be used.

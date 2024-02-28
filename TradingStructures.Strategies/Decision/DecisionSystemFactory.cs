@@ -1,10 +1,8 @@
 ﻿using Effanville.Common.Structure.Reporting;
 using Effanville.TradingStructures.Strategies.Decision;
+using Effanville.TradingStructures.Strategies.Decision.Implementation;
 
-using TradingSystem.Decisions.Implementation;
-using TradingSystem.MarketEvolvers;
-
-namespace TradingSystem.Decisions
+namespace Effanville.TradingStructures.Strategies.Decision
 {
     /// <summary>
     /// Factory for creating a decision system.
@@ -34,18 +32,13 @@ namespace TradingSystem.Decisions
             }
         }
 
-        public static IDecisionSystem CreateAndCalibrate(Settings settings, TimeIncrementEvolverSettings simulatorSettings, IReportLogger logger)
+        public static IDecisionSystem CreateAndCalibrate(DecisionSystemFactory.Settings settings, DecisionSystemSettings decisionSettings, IReportLogger logger)
         {
             var decisionSystem = Create(settings);
-            var decisionSettings = new DecisionSystemSettings(
-                simulatorSettings.StartTime,
-                simulatorSettings.BurnInEnd,
-                simulatorSettings.Exchange.Stocks.Count,
-                simulatorSettings.Exchange);
             decisionSystem.Calibrate(decisionSettings, logger);
             if (settings.IsBurnInRequired())
             {
-                simulatorSettings.DoesntRequireBurnIn();
+                decisionSettings.DoesntRequireBurnIn();
             }
 
             return decisionSystem;

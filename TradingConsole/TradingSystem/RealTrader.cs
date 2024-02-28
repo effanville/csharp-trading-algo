@@ -12,9 +12,10 @@ using Effanville.TradingStructures.Strategies.Decision;
 using Effanville.TradingStructures.Strategies.Portfolio;
 using Effanville.TradingStructures.Trading;
 
-using TradingSystem.Decisions;
 using TradingSystem.MarketEvolvers;
 using TradingSystem.Trading;
+
+using DecisionSystemFactory = Effanville.TradingStructures.Strategies.Decision.DecisionSystemFactory;
 
 namespace TradingConsole.TradingSystem
 {

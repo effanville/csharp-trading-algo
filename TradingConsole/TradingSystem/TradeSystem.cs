@@ -9,8 +9,9 @@ using Effanville.TradingStructures.Strategies.Decision;
 using Effanville.TradingStructures.Strategies.Portfolio;
 using Effanville.TradingStructures.Trading;
 
-using TradingSystem.Decisions;
 using TradingSystem.MarketEvolvers;
+
+using DecisionSystemFactory = Effanville.TradingStructures.Strategies.Decision.DecisionSystemFactory;
 
 namespace TradingConsole.TradingSystem
 {
@@ -72,7 +73,16 @@ namespace TradingConsole.TradingSystem
 
                 using (new Timer(reportLogger, "Calibrating"))
                 {
-                    decisionSystem = DecisionSystemFactory.CreateAndCalibrate(decisionParameters, simulatorSettings, reportLogger);
+                    var decisionSettings = new DecisionSystemSettings(
+                        simulatorSettings.StartTime,
+                        simulatorSettings.BurnInEnd,
+                        simulatorSettings.Exchange.Stocks.Count,
+                        simulatorSettings.Exchange);
+                    decisionSystem = DecisionSystemFactory.CreateAndCalibrate(decisionParameters, decisionSettings, reportLogger);
+                    if (decisionSettings.BurnInEnd == decisionSettings.StartTime)
+                    {
+                        simulatorSettings.DoesntRequireBurnIn();
+                    }
                 }
 
                 tradeMechanism = TradeSubmitterFactory.Create(buySellType, traderOptions);
