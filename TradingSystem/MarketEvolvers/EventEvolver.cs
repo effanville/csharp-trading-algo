@@ -74,7 +74,7 @@ public sealed partial class EventEvolver
     {
         _settings = settings;
         _logger = logger;
-        Clock = new SimulationClock(settings.StartTime);
+        Clock = new SimulationEventBasedClock(settings.StartTime);
         _scheduler = new Scheduler(Clock);
 
         var tradingExchange = new TradingExchange(_scheduler, exchange);

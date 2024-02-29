@@ -6,6 +6,8 @@ namespace TradingSystem.Time;
 
 public sealed class RealTimeClock : IClock
 {
+    public DateTime NextEventTime { get; set; }
+    
     public RealTimeClock()
     {
     }
