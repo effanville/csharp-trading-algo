@@ -165,7 +165,7 @@ namespace Effanville.TradingStructures.Strategies.Portfolio
                 return false;
             }
 
-            if (!Portfolio.Exists(Account.Security, trade.StockName))
+            if (!Portfolio.Exists(Account.Security, trade.StockName.ToTwoName()))
             {
                 _ = Portfolio.TryAdd(Account.Security, new NameData(trade.StockName.Company, trade.StockName.Name, trade.StockName.Currency, trade.StockName.Url, new HashSet<string>()), _logger);
             }
