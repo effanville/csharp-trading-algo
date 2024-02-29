@@ -66,8 +66,8 @@ public sealed class TradingExchange : IService
 
     public void Initialize(EvolverSettings settings)
     {
-        DateTime time = settings.StartTime;
-        while (time < settings.EndTime)
+        DateTime time = settings.StartTime.Date;
+        while (settings.StartTime <= time && time < settings.EndTime)
         {
             InitialiseDayEvents(time);
             time = time.AddDays(1);
@@ -80,10 +80,10 @@ public sealed class TradingExchange : IService
         {
             _scheduler.ScheduleNewEvent(
                 () => RaiseExchangeStatusChanged(null, new ExchangeStatusChangedEventArgs(ExchangeSession.Closed, ExchangeSession.Continuous)),
-                new DateTime(time.Year, time.Month, time.Day, ExchangeOpen.Hour, ExchangeOpen.Minute, ExchangeOpen.Second));
+                time.Date.Add(ExchangeOpen.ToTimeSpan()));
             _scheduler.ScheduleNewEvent(
                 () => RaiseExchangeStatusChanged(null, new ExchangeStatusChangedEventArgs(ExchangeSession.Continuous, ExchangeSession.Closed)),
-                new DateTime(time.Year, time.Month, time.Day, ExchangeClose.Hour, ExchangeClose.Minute, ExchangeClose.Second));
+                time.Date.Add(ExchangeClose.ToTimeSpan()));
         }
     }
     public void Restart() => throw new NotImplementedException();
