@@ -176,7 +176,7 @@ namespace Effanville.TradingStructures.Strategies.Portfolio
             decimal afterTradeCashValue = cashAvailable - trade.BuySell.Sign() * tradeConfirmation.TotalCost;
             var value = new DailyValuation(time, afterTradeCashValue);
             _ = Portfolio.TryAddOrEditData(Account.BankAccount, StartSettings.DefaultBankAccName, value, value, reportLogger: null);
-            _logger.Log(ReportSeverity.Critical, ReportType.Warning, ReportLocation.Execution.ToString(), $"Date {time} bought {trade.StockName} Cost {tradeConfirmation.TotalCost:C2} price");
+            _logger.Log(ReportSeverity.Critical, ReportType.Warning, "Execution", $"Date {time:yyyy-MM-ddTHH:mm:ss} bought {trade.StockName} Cost {tradeConfirmation.TotalCost:C2} price");
             return true;
         }
 

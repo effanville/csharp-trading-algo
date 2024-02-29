@@ -48,7 +48,7 @@ public class TimeIncrementExecutionStrategy : IExecutionStrategy
     public void OnPriceUpdate(object obj, PriceUpdateEventArgs eventArgs)
     {
         _stockExchange.Stocks.First(stock => stock.Name.Equals(eventArgs.Instrument.Name)).AddValue(eventArgs.Candle);
-        _logger.Log(ReportType.Information, "PriceService", $"{_clock.UtcNow()} - Price for {eventArgs.Instrument.Name.Ticker} has changed to {eventArgs.Price}");
+        _logger.Log(ReportType.Information, "PriceService", $"{_clock.UtcNow():yyyy-MM-ddTHH:mm:ss} - Price for {eventArgs.Instrument.Name.Ticker} has changed to {eventArgs.Price}");
     }
 
     public void OnExchangeStatusChanged(object obj, ExchangeStatusChangedEventArgs eventArgs)

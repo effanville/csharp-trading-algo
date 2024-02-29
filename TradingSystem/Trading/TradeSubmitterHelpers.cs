@@ -23,22 +23,22 @@ namespace TradingSystem.Trading
             Trade validatedTrade = portfolioManager.ValidateTrade(time, trade, priceService);
             if (validatedTrade == null)
             {
-                logger.Log(ReportType.Information, "Trading", $"{time} - Trade {trade} was not valid.");
+                logger.Log(ReportType.Information, "Trading", $"{time:yyyy-MM-ddTHH:mm:ss} - Trade {trade} was not valid.");
                 return;
             }
 
             decimal availableFunds = portfolioManager.AvailableFunds(time);
             if (availableFunds <= 0.0m)
             {
-                logger.Log(ReportType.Information, "Trading", $"{time} - No available funds.");
+                logger.Log(ReportType.Information, "Trading", $"{time:yyyy-MM-ddTHH:mm:ss} - No available funds.");
                 return;
             }
 
             var tradeConfirmation = tradeSubmitter.Trade(time, validatedTrade, priceService, availableFunds, logger);
             if (tradeConfirmation != null)
             {
+                logger.Log(ReportType.Information, "Trading", $"{time:yyyy-MM-ddTHH:mm:ss} - Confirm trade '{tradeConfirmation}' reported and added.");
                 _ = portfolioManager.AddTrade(time, trade, tradeConfirmation);
-                logger.Log(ReportType.Information, "Trading", $"{time} - Confirm trade '{tradeConfirmation}' reported and added.");
                 tradeHistory.Add(time, validatedTrade);
             }
             decisionHistory.Add(time, trade);

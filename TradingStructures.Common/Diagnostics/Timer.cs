@@ -47,7 +47,7 @@ namespace Effanville.TradingStructures.Common.Diagnostics
 
             if (timeSpan.TotalMinutes < 60)
             {
-                return $"{timeSpan.Minutes}:{timeSpan.Seconds}";
+                return $"{timeSpan.Minutes}:{timeSpan.Seconds:F2}";
             }
 
             return $"{timeSpan.Hours}:{timeSpan.Minutes}:{timeSpan.Seconds}";
