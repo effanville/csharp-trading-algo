@@ -22,6 +22,7 @@ using Effanville.TradingStructures.Strategies.Decision;
 using Effanville.TradingStructures.Strategies.Execution;
 using Effanville.TradingStructures.Strategies.Portfolio;
 using Effanville.TradingStructures.Trading;
+using Effanville.TradingSystem.Trading;
 
 namespace TradingSystem.MarketEvolvers;
 
@@ -41,6 +42,7 @@ public sealed partial class EventEvolver
     TradingExchange Exchange => _serviceManager.GetService<TradingExchange>(nameof(TradingExchange));
     ITradeSubmitter TradeSubmitter => _serviceManager.GetService<ITradeSubmitter>(nameof(ITradeSubmitter));
     IExecutionStrategy ExecutionStrategy => _serviceManager.GetService<IExecutionStrategy>(nameof(IExecutionStrategy));
+    IOrderListener OrderListener => _serviceManager.GetService<IOrderListener>(nameof(IOrderListener));
 
     /// <summary>
     /// Contains the timing mechanism in the evolver.
@@ -91,6 +93,9 @@ public sealed partial class EventEvolver
         _serviceManager.RegisterService(nameof(IExecutionStrategy), executionStrategy);
 
         _serviceManager.RegisterService(nameof(IPortfolioManager), portfolioManager);
+        
+        var orderListener = new OrderListener(Clock, null, priceService, portfolioManager, tradeSubmitter, Result, _logger);
+        _serviceManager.RegisterService(nameof(IOrderListener), orderListener);
     }
 
     /// <summary>
@@ -100,7 +105,7 @@ public sealed partial class EventEvolver
     {
         _serviceManager.Initialize(_settings);
 
-        ExecutionStrategy.SubmitTradeEvent += OnTradeRequested;
+        ExecutionStrategy.SubmitTradeEvent += OrderListener.OnTradeRequested;
         Exchange.ExchangeStatusChanged += ExecutionStrategy.OnExchangeStatusChanged;
         PriceService.PriceChanged += ExecutionStrategy.OnPriceUpdate;
         PriceService.PriceChanged += PortfolioManager.OnPriceUpdate;
@@ -117,18 +122,7 @@ public sealed partial class EventEvolver
         _ = Task.Run(() => PortfolioManager.ReportStatus(time));
         _scheduler.ScheduleNewEvent(TimeUpdate, time.AddDays(1));
     }
-
-    private void OnTradeRequested(object obj, TradeSubmittedEventArgs eventArgs)
-        => TradeSubmitterHelpers.SubmitAndReportTrade(
-            Clock.UtcNow(),
-            eventArgs.RequestedTrade,
-            PriceService,
-            PortfolioManager,
-            TradeSubmitter,
-            Result.Trades,
-            Result.Decisions,
-            _logger);
-
+    
     private void ScheduleShutdown() => _scheduler.ScheduleNewEvent(Shutdown, _settings.EndTime);
 
     /// <summary>
