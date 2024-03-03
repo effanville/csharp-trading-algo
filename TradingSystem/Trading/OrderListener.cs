@@ -7,7 +7,6 @@ using Effanville.TradingStructures.Trading;
 
 using TradingSystem.MarketEvolvers;
 using TradingSystem.Simulation;
-using TradingSystem.Trading;
 
 namespace Effanville.TradingSystem.Trading;
 
@@ -54,13 +53,17 @@ public class OrderListener : IOrderListener
     }
 
     public void OnTradeRequested(object obj, TradeSubmittedEventArgs eventArgs)
-        => TradeSubmitterHelpers.SubmitAndReportTrade(
-            _clock.UtcNow(),
-            eventArgs.RequestedTrade,
-            _priceService,
-            _portfolioManager,
-            _tradeSubmitter,
-            _result.Trades,
-            _result.Decisions,
-            _logger);
+    {
+        var time = _clock.UtcNow();
+        var trade = eventArgs.RequestedTrade;
+        decimal availableFunds = _portfolioManager.AvailableFunds(time);
+        var tradeConfirmation = _tradeSubmitter.Trade(time, trade, _priceService, availableFunds, _logger);
+        if (tradeConfirmation != null)
+        {
+            _logger.Log(ReportType.Information, "Trading", $"{time:yyyy-MM-ddTHH:mm:ss} - Confirm trade '{tradeConfirmation}' reported and added.");
+            _ = _portfolioManager.AddTrade(time, trade, tradeConfirmation);
+            _result.Trades.Add(time, trade);
+        }
+        _result.Decisions.Add(time, trade);
+    }
 }

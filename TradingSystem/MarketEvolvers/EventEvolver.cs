@@ -72,7 +72,7 @@ public sealed class EventEvolver
 
         IStockExchange baseStockExchange = StockExchangeFactory.Create(exchange, DateTime.MinValue);
         var executionStrategy = ExecutionStrategyFactory.Create(strategyType, _clock, logger, baseStockExchange, decisionSystem);
-        var strategy = new Strategy(decisionSystem, executionStrategy, portfolioManager, _clock, _logger);
+        var strategy = new Strategy(decisionSystem, executionStrategy, portfolioManager, priceService, _clock, _logger);
         _serviceManager.RegisterService(nameof(IStrategy), strategy);
         
         var tradeSubmitter = TradeSubmitterFactory.Create(TradeSubmitterType.SellAllThenBuy, TradeMechanismSettings.Default());
@@ -86,11 +86,9 @@ public sealed class EventEvolver
     public void Initialise()
     {
         _serviceManager.Initialize(_settings);
-        IExecutionStrategy executionStrategy = Strategy.ExecutionStrategy;
-        executionStrategy.SubmitTradeEvent += OrderListener.OnTradeRequested;
-        Exchange.ExchangeStatusChanged += executionStrategy.OnExchangeStatusChanged;
-        PriceService.PriceChanged += executionStrategy.OnPriceUpdate;
-        PriceService.PriceChanged += Strategy.PortfolioManager.OnPriceUpdate;
+        Strategy.SubmitTradeEvent += OrderListener.OnTradeRequested;
+        Exchange.ExchangeStatusChanged += Strategy.OnExchangeStatusChanged;
+        PriceService.PriceChanged += Strategy.OnPriceUpdate;
         ScheduleShutdown();
         _scheduler.ScheduleNewEvent(TimeUpdate, _clock.UtcNow().AddDays(1));
         _isInitialised = true;
