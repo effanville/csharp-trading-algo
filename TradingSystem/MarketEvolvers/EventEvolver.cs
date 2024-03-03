@@ -35,6 +35,7 @@ public sealed class EventEvolver
     readonly ServiceManager _serviceManager = new ServiceManager();
     IPriceService PriceService => _serviceManager.GetService<IPriceService>(nameof(IPriceService));
     TradingExchange Exchange => _serviceManager.GetService<TradingExchange>(nameof(TradingExchange));
+    private IMarketExchange SimulationExchange => _serviceManager.GetService<IMarketExchange>(nameof(IMarketExchange));
     IOrderListener OrderListener => _serviceManager.GetService<IOrderListener>(nameof(IOrderListener));
     private IStrategy Strategy => _serviceManager.GetService<IStrategy>(nameof(IStrategy));
 
@@ -75,8 +76,9 @@ public sealed class EventEvolver
         var strategy = new Strategy(decisionSystem, executionStrategy, portfolioManager, priceService, _clock, _logger);
         _serviceManager.RegisterService(nameof(IStrategy), strategy);
         
-        var tradeSubmitter = TradeSubmitterFactory.Create(TradeSubmitterType.SellAllThenBuy, TradeMechanismSettings.Default());
-        var orderListener = new OrderListener(_clock, null, priceService, portfolioManager, tradeSubmitter, Result, _logger);
+        var simulationExchange = new SimulationExchange(TradeMechanismSettings.Default(), priceService, _clock, _logger);
+        _serviceManager.RegisterService(nameof(IMarketExchange), simulationExchange);
+        var orderListener = new OrderListener(_clock, portfolioManager, Result, _logger);
         _serviceManager.RegisterService(nameof(IOrderListener), orderListener);
     }
 
@@ -89,6 +91,9 @@ public sealed class EventEvolver
         Strategy.SubmitTradeEvent += OrderListener.OnTradeRequested;
         Exchange.ExchangeStatusChanged += Strategy.OnExchangeStatusChanged;
         PriceService.PriceChanged += Strategy.OnPriceUpdate;
+
+        OrderListener.SubmitTrade += SimulationExchange.OnTradeRequested;
+        SimulationExchange.TradeCompleted += OrderListener.OnTradeConfirmed;
         ScheduleShutdown();
         _scheduler.ScheduleNewEvent(TimeUpdate, _clock.UtcNow().AddDays(1));
         _isInitialised = true;

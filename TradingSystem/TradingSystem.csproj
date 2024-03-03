@@ -28,4 +28,7 @@
             <_Parameter1>Effanville.TradingConsole.Tests</_Parameter1>
         </AssemblyAttribute>
     </ItemGroup>
+    <ItemGroup>
+      <Folder Include="Simulation\" />
+    </ItemGroup>
 </Project>

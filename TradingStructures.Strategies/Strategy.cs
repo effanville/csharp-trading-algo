@@ -75,6 +75,7 @@ public class Strategy : IStrategy
             return;
         }
 
+        e.AvailableFunds = availableFunds;
         e.RequestedTrade = validatedTrade;
         SubmitTradeEvent?.Invoke(sender, e);
     }
