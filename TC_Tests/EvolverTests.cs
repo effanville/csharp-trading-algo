@@ -40,12 +40,12 @@ internal class EventEvolverTests
         yield return new TestCaseData(
             DateTime.SpecifyKind(new DateTime(2015, 1, 20), DateTimeKind.Utc),
             new DateTime(2015, 1, 25),
-            60,
+            58,
             20366.116277008056754m,
             6,
             6,
             0,
-            trades);
+            trades).SetName("TwoDayEvolutionTest");
     }
     
     [TestCaseSource(nameof(NewEvolverTestData))]
@@ -115,7 +115,7 @@ internal class EventEvolverTests
             Assert.That(actualTrades.TotalSellTrades, Is.EqualTo(expectedSellTrades));
             if (expectedTrades.Count > 0)
             {
-                //CollectionAssert.AreEquivalent(expectedTrades, actualTrades.DailyTrades);
+                CollectionAssert.AreEquivalent(expectedTrades, actualTrades.DailyTrades);
             }
         });
     }
