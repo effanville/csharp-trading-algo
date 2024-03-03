@@ -45,7 +45,32 @@ internal class EventEvolverTests
             6,
             6,
             0,
-            trades).SetName("TwoDayEvolutionTest");
+            trades).SetName("TwoDayEvolutionTest");        
+        tradeString = @"|StartDate|EndDate|StockName|TradeType|NumberShares|
+|-|-|-|-|-|
+|2015-02-03T08:00:00|2015-02-03T08:00:00|-Barclays|Buy|21|
+|2015-02-03T08:00:00|2015-02-03T08:00:00|stuff-Dunelm|Buy|4|
+|2015-02-04T08:00:00|2015-02-04T08:00:00|-Barclays|Buy|11|
+|2015-02-04T08:00:00|2015-02-04T08:00:00|stuff-Dunelm|Buy|2|
+|2015-02-05T08:00:00|2015-02-05T08:00:00|-Barclays|Buy|7|
+|2015-02-05T08:00:00|2015-02-05T08:00:00|stuff-Dunelm|Buy|1|
+|2015-02-06T08:00:00|2015-02-06T08:00:00|-Barclays|Buy|4|
+|2015-02-09T08:00:00|2015-02-09T08:00:00|-Barclays|Buy|3|
+|2015-02-10T08:00:00|2015-02-10T08:00:00|-Barclays|Buy|2|
+|2015-02-11T08:00:00|2015-02-11T08:00:00|-Barclays|Buy|2|
+|2015-02-12T08:00:00|2015-02-12T08:00:00|-Barclays|Buy|1|
+|2015-02-13T08:00:00|2015-02-13T08:00:00|-Barclays|Buy|1|
+|2015-02-16T08:00:00|2015-02-16T08:00:00|-Barclays|Buy|1|";
+        trades = new TradeDictionaryBuilder().BuildFromString(tradeString);
+        yield return new TestCaseData(
+            DateTime.SpecifyKind(new DateTime(2015, 2, 1), DateTimeKind.Utc),
+            new DateTime(2015, 3, 1),
+            257,
+            20825.4242126464855912m,
+            13,
+            13,
+            0,
+            trades).SetName("OneMonthEvolutionTest");
     }
     
     [TestCaseSource(nameof(NewEvolverTestData))]
@@ -105,6 +130,7 @@ internal class EventEvolverTests
         Assert.That(reports, Is.Not.Null);
 
         var actualTrades = evolver.Result.Trades;
+        string mdTable = actualTrades.ConvertToTable();
         decimal finalValue = evolver.Result.Portfolio.TotalValue(Totals.All);
         Assert.Multiple(() =>
         {
