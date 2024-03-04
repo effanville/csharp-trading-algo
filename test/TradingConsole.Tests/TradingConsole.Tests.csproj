@@ -16,10 +16,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\TradingConsole\TradingConsole.csproj" />
-    <ProjectReference Include="..\TradingSystem\TradingSystem.csproj" />
-    <ProjectReference Include="..\FinancialStructures\src\FinancialStructures\FinancialStructures.csproj" />
-    <ProjectReference Include="..\FinancialStructures\Common\src\Common.Structure\Common.Structure.csproj" />
+    <ProjectReference Include="..\..\src\TradingConsole\TradingConsole.csproj" />
+    <ProjectReference Include="..\..\src\TradingSystem\TradingSystem.csproj" />
+    <ProjectReference Include="..\..\FinancialStructures\src\FinancialStructures\FinancialStructures.csproj" />
+    <ProjectReference Include="..\..\FinancialStructures\Common\src\Common.Structure\Common.Structure.csproj" />
   </ItemGroup>
 
   <ItemGroup>
