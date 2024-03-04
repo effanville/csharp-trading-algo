@@ -70,9 +70,7 @@ public sealed class EventEvolver
 
         var priceService = PriceServiceFactory.Create(PriceType.RandomWobble, PriceCalculationSettings.Default(), exchange, _scheduler);
         _serviceManager.RegisterService(nameof(IPriceService), priceService);
-
-        IStockExchange baseStockExchange = StockExchangeFactory.Create(exchange, DateTime.MinValue);
-        var executionStrategy = ExecutionStrategyFactory.Create(strategyType, _clock, logger, baseStockExchange, decisionSystem);
+        var executionStrategy = ExecutionStrategyFactory.Create(strategyType, _clock, logger, exchange, decisionSystem);
         var strategy = new Strategy(decisionSystem, executionStrategy, portfolioManager, priceService, _clock, _logger);
         _serviceManager.RegisterService(nameof(IStrategy), strategy);
         
