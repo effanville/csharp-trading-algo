@@ -1,6 +1,5 @@
 ﻿using Effanville.FinancialStructures.Database;
-
-using TradingSystem.Trading;
+using Effanville.TradingStructures.Common.Trading;
 
 namespace TradingSystem.MarketEvolvers
 {

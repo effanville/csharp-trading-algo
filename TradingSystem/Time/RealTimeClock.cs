@@ -1,9 +1,13 @@
 ﻿using System;
 
+using Effanville.TradingStructures.Common.Time;
+
 namespace TradingSystem.Time;
 
 public sealed class RealTimeClock : IClock
 {
+    public DateTime NextEventTime { get; set; }
+    
     public RealTimeClock()
     {
     }

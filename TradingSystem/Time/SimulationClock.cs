@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Timers;
 
+using Effanville.TradingStructures.Common.Time;
+
 namespace TradingSystem.Time;
 
 /// <summary>
@@ -13,6 +15,7 @@ public sealed class SimulationClock : IClock
     private readonly long _increment;
     private readonly Timer _timer;
 
+    public DateTime NextEventTime { get; set; }
     /// <summary>
     /// Construct an instance
     /// </summary>

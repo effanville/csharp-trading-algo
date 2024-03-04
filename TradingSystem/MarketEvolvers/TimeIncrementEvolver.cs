@@ -7,12 +7,14 @@ using Effanville.FinancialStructures.Database;
 using Effanville.FinancialStructures.Database.Extensions.Rates;
 using Effanville.FinancialStructures.Database.Extensions.Values;
 using Effanville.FinancialStructures.Stocks;
+using Effanville.TradingStructures.Common.Diagnostics;
+using Effanville.TradingStructures.Common.Time;
+using Effanville.TradingStructures.Common.Trading;
+using Effanville.TradingStructures.Pricing;
+using Effanville.TradingStructures.Strategies.Decision;
+using Effanville.TradingStructures.Strategies.Portfolio;
+using Effanville.TradingStructures.Trading;
 
-using TradingSystem.Decisions;
-using TradingSystem.Diagnostics;
-using TradingSystem.PortfolioStrategies;
-using TradingSystem.PriceSystem;
-using TradingSystem.Time;
 using TradingSystem.Trading;
 
 namespace TradingSystem.MarketEvolvers
@@ -44,7 +46,7 @@ namespace TradingSystem.MarketEvolvers
             IPriceService priceService,
             IPortfolioManager portfolioManager,
             IDecisionSystem decisionSystem,
-            ITradeSubmitter tradeSubmitter,
+            IMarketExchange tradeSubmitter,
             Action<string> startReportCallback,
             Action<DateTime, string> reportCallback,
             Action<string> endReportCallback,

@@ -1,34 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Timers;
 using System.Threading.Tasks;
+using System.Timers;
 
-using TradingSystem.Time;
+using Effanville.TradingStructures.Common.Scheduling;
+using Effanville.TradingStructures.Common.Time;
 
 namespace TradingSystem
 {
-    public sealed class ScheduleEvent : IComparable<ScheduleEvent>
-    {
-        public Func<Task> TaskToRun;
-        public DateTime TimeToRun;
-
-        public ScheduleEvent(Action action, DateTime time)
-        {
-            TaskToRun = () => Task.Run(action);
-            TimeToRun = time;
-        }
-
-        public ScheduleEvent(Func<Task> task, DateTime time)
-        {
-            TaskToRun = task;
-            TimeToRun = time;
-        }
-
-        public int CompareTo(ScheduleEvent other) => TimeToRun.CompareTo(other.TimeToRun);
-        public override string ToString() => TimeToRun.ToString();
-    }
-
-    public class Scheduler
+    public class Scheduler : IScheduler
     {
         private readonly Timer _timer;
         private readonly IClock _internalClock;
@@ -43,18 +23,33 @@ namespace TradingSystem
             _timer.Elapsed += OnTimedEvent;
         }
 
-        private void OnTimedEvent(object source, ElapsedEventArgs e)
+        private async void OnTimedEvent(object source, ElapsedEventArgs e)
         {
             //_timer.Stop();
             var currentTime = _internalClock.UtcNow();
+            var tasksToRun = new List<Func<Task>>();
             lock (_listLock)
             {
                 ScheduleEvent scheduleEvent = _actionsToRun.Count > 0 ? _actionsToRun.Peek() : null;
                 while (scheduleEvent != null && scheduleEvent.TimeToRun <= currentTime)
                 {
                     scheduleEvent = _actionsToRun.Dequeue();
-                    _ = scheduleEvent.TaskToRun();
+                    tasksToRun.Add(scheduleEvent.TaskToRun);
                     scheduleEvent = _actionsToRun.Count > 0 ? _actionsToRun.Peek() : null;
+                }
+            }
+
+            foreach (var task in tasksToRun)
+            {
+                await task();
+            }
+
+            lock (_listLock)
+            {                
+                ScheduleEvent nextEvent = _actionsToRun.Count > 0 ? _actionsToRun.Peek() : null;
+                if (nextEvent != null)
+                {
+                    _internalClock.NextEventTime = nextEvent.TimeToRun;
                 }
             }
 
@@ -67,7 +62,7 @@ namespace TradingSystem
         {
             lock (_listLock)
             {
-                _actionsToRun.Enqueue(new ScheduleEvent(actionToSchedule, timeToSchedule), timeToSchedule);
+                _actionsToRun.Enqueue(new ScheduleEvent(actionToSchedule, timeToSchedule.ToUniversalTime()), timeToSchedule.ToUniversalTime());
             }
         }
 

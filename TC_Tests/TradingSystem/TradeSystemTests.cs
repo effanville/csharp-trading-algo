@@ -9,14 +9,16 @@ using Effanville.Common.Structure.Reporting;
 using Effanville.FinancialStructures.Database;
 using Effanville.FinancialStructures.Database.Extensions.Values;
 using Effanville.FinancialStructures.Stocks.Statistics;
+using Effanville.TradingStructures.Common.Trading;
+using Effanville.TradingStructures.Strategies.Decision;
+using Effanville.TradingStructures.Strategies.Portfolio;
+using Effanville.TradingStructures.Trading;
 
 using NUnit.Framework;
 
 using TradingConsole.TradingSystem;
 
-using TradingSystem.Decisions;
-using TradingSystem.PortfolioStrategies;
-using TradingSystem.Trading;
+using DecisionSystemFactory = Effanville.TradingStructures.Strategies.Decision.DecisionSystemFactory;
 
 namespace TradingConsole.Tests.TradingSystem
 {
@@ -420,7 +422,6 @@ $@"|StartDate|EndDate|StockName|TradeType|NumberShares|
                 PortfolioConstructionSettings.Default(),
                 decisionParameters,
                 TradeMechanismSettings.Default(),
-                TradeSubmitterType.SellAllThenBuy,
                 fileSystem,
                 logger);
             var portfolio = output.Portfolio;

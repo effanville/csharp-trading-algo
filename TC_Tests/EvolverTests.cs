@@ -9,16 +9,18 @@ using Effanville.Common.Structure.Reporting;
 using Effanville.FinancialStructures.Database;
 using Effanville.FinancialStructures.Database.Extensions.Values;
 using Effanville.FinancialStructures.Stocks;
+using Effanville.TradingStructures.Common;
+using Effanville.TradingStructures.Common.Diagnostics;
+using Effanville.TradingStructures.Strategies.Decision;
+using Effanville.TradingStructures.Strategies.Execution;
+using Effanville.TradingStructures.Strategies.Portfolio;
+using Effanville.TradingStructures.Common.Trading;
 
 using NUnit.Framework;
 
-using TradingSystem.Decisions;
-
-using TradingSystem.Diagnostics;
-using TradingSystem.ExecutionStrategies;
 using TradingSystem.MarketEvolvers;
-using TradingSystem.PortfolioStrategies;
-using TradingSystem.Trading;
+
+using DecisionSystemFactory = Effanville.TradingStructures.Strategies.Decision.DecisionSystemFactory;
 
 namespace TradingConsole.Tests;
 
@@ -38,12 +40,37 @@ internal class EventEvolverTests
         yield return new TestCaseData(
             DateTime.SpecifyKind(new DateTime(2015, 1, 20), DateTimeKind.Utc),
             new DateTime(2015, 1, 25),
-            60,
+            58,
             20366.116277008056754m,
             6,
             6,
             0,
-            trades);
+            trades).SetName("TwoDayEvolutionTest");        
+        tradeString = @"|StartDate|EndDate|StockName|TradeType|NumberShares|
+|-|-|-|-|-|
+|2015-02-03T08:00:00|2015-02-03T08:00:00|-Barclays|Buy|21|
+|2015-02-03T08:00:00|2015-02-03T08:00:00|stuff-Dunelm|Buy|4|
+|2015-02-04T08:00:00|2015-02-04T08:00:00|-Barclays|Buy|11|
+|2015-02-04T08:00:00|2015-02-04T08:00:00|stuff-Dunelm|Buy|2|
+|2015-02-05T08:00:00|2015-02-05T08:00:00|-Barclays|Buy|7|
+|2015-02-05T08:00:00|2015-02-05T08:00:00|stuff-Dunelm|Buy|1|
+|2015-02-06T08:00:00|2015-02-06T08:00:00|-Barclays|Buy|4|
+|2015-02-09T08:00:00|2015-02-09T08:00:00|-Barclays|Buy|3|
+|2015-02-10T08:00:00|2015-02-10T08:00:00|-Barclays|Buy|2|
+|2015-02-11T08:00:00|2015-02-11T08:00:00|-Barclays|Buy|2|
+|2015-02-12T08:00:00|2015-02-12T08:00:00|-Barclays|Buy|1|
+|2015-02-13T08:00:00|2015-02-13T08:00:00|-Barclays|Buy|1|
+|2015-02-16T08:00:00|2015-02-16T08:00:00|-Barclays|Buy|1|";
+        trades = new TradeDictionaryBuilder().BuildFromString(tradeString);
+        yield return new TestCaseData(
+            DateTime.SpecifyKind(new DateTime(2015, 2, 1), DateTimeKind.Utc),
+            new DateTime(2015, 3, 1),
+            257,
+            20825.4242126464855912m,
+            13,
+            13,
+            0,
+            trades).SetName("OneMonthEvolutionTest");
     }
     
     [TestCaseSource(nameof(NewEvolverTestData))]
@@ -103,6 +130,7 @@ internal class EventEvolverTests
         Assert.That(reports, Is.Not.Null);
 
         var actualTrades = evolver.Result.Trades;
+        string mdTable = actualTrades.ConvertToTable();
         decimal finalValue = evolver.Result.Portfolio.TotalValue(Totals.All);
         Assert.Multiple(() =>
         {
@@ -113,7 +141,7 @@ internal class EventEvolverTests
             Assert.That(actualTrades.TotalSellTrades, Is.EqualTo(expectedSellTrades));
             if (expectedTrades.Count > 0)
             {
-                //CollectionAssert.AreEquivalent(expectedTrades, actualTrades.DailyTrades);
+                CollectionAssert.AreEquivalent(expectedTrades, actualTrades.DailyTrades);
             }
         });
     }

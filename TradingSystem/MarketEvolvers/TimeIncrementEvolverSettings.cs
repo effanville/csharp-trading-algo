@@ -1,6 +1,7 @@
 ﻿using System;
 
 using Effanville.FinancialStructures.Stocks;
+using Effanville.TradingStructures.Common;
 
 using Nager.Date;
 
@@ -43,8 +44,6 @@ namespace TradingSystem.MarketEvolvers
             EnsureStartDatesConsistent();
         }
 
-        public void DoesntRequireBurnIn() => BurnInEnd = StartTime;
-
         /// <summary>
         /// Ensures that the start and end times can be used based on the exchange provided.
         /// </summary>
@@ -62,6 +61,8 @@ namespace TradingSystem.MarketEvolvers
             }
 
             BurnInEnd = StartTime + EvolutionIncrement * (long)((EndTime - StartTime) / (2 * EvolutionIncrement));
-        }
+        }        
+        
+        public void DoesntRequireBurnIn() => BurnInEnd = StartTime;
     }
 }
