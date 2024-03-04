@@ -15,7 +15,7 @@ namespace TradingSystem.Trading
             Trade trade,
             IPriceService priceService,
             IPortfolioManager portfolioManager,
-            ITradeSubmitter tradeSubmitter,
+            IMarketExchange tradeSubmitter,
             TradeHistory tradeHistory,
             TradeHistory decisionHistory,
             IReportLogger logger)

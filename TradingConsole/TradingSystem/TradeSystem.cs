@@ -8,6 +8,7 @@ using Effanville.TradingStructures.Pricing;
 using Effanville.TradingStructures.Strategies.Decision;
 using Effanville.TradingStructures.Strategies.Portfolio;
 using Effanville.TradingStructures.Trading;
+using Effanville.TradingStructures.Trading.Implementation;
 
 using TradingSystem.MarketEvolvers;
 
@@ -44,7 +45,6 @@ namespace TradingConsole.TradingSystem
             PortfolioConstructionSettings constructionSettings,
             DecisionSystemFactory.Settings decisionParameters,
             TradeMechanismSettings traderOptions,
-            TradeSubmitterType buySellType,
             IFileSystem fileSystem,
             IReportLogger reportLogger)
         {
@@ -52,7 +52,7 @@ namespace TradingConsole.TradingSystem
             TimeIncrementEvolverSettings simulatorSettings;
             IPortfolioManager portfolioManager;
             IDecisionSystem decisionSystem;
-            ITradeSubmitter tradeMechanism;
+            IMarketExchange tradeMechanism;
 
             using (new Timer(reportLogger, "Setup"))
             {
@@ -85,7 +85,7 @@ namespace TradingConsole.TradingSystem
                     }
                 }
 
-                tradeMechanism = TradeSubmitterFactory.Create(buySellType, traderOptions);
+                tradeMechanism = new SimulationExchange(traderOptions, reportLogger);
 
                 using (new Timer(reportLogger, "Loading Portfolio"))
                 {

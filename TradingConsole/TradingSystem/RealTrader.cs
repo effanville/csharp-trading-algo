@@ -11,6 +11,7 @@ using Effanville.TradingStructures.Pricing;
 using Effanville.TradingStructures.Strategies.Decision;
 using Effanville.TradingStructures.Strategies.Portfolio;
 using Effanville.TradingStructures.Trading;
+using Effanville.TradingStructures.Trading.Implementation;
 
 using TradingSystem.MarketEvolvers;
 using TradingSystem.Trading;
@@ -22,7 +23,7 @@ namespace TradingConsole.TradingSystem
     internal partial class RealTrader
     {
         private readonly IDecisionSystem DecisionSystem;
-        private readonly ITradeSubmitter BuySellSystem;
+        private readonly IMarketExchange BuySellSystem;
         private readonly TradeMechanismSettings fTradeMechanismSettings;
         private readonly TimeIncrementEvolverSettings fSimulatorSettings;
         private readonly IPortfolioManager fPortfolioManager;
@@ -44,7 +45,6 @@ namespace TradingConsole.TradingSystem
             PortfolioStartSettings startSettings,
             PortfolioConstructionSettings constructionSettings,
             DecisionSystemFactory.Settings decisionParameters,
-            TradeSubmitterType buySellType,
             IFileSystem fileSystem,
             IReportLogger reportLogger)
         {
@@ -76,7 +76,7 @@ namespace TradingConsole.TradingSystem
                     DecisionSystem.Calibrate(decisionSystemSettings, ReportLogger);
                 }
 
-                BuySellSystem = TradeSubmitterFactory.Create(buySellType, TradeMechanismSettings.Default());
+                BuySellSystem = new SimulationExchange(TradeMechanismSettings.Default(), reportLogger);
 
                 using (new Timer(reportLogger, "Loading Portfolio"))
                 {

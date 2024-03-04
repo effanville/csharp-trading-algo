@@ -13,7 +13,7 @@ public class TradeCompletedEventArgs
     /// <summary>
     /// The trade that is requested.
     /// </summary>
-    public Trade RequestedTrade { get; set; }
+    public Trade RequestedTrade { get; }
     
     public SecurityTrade ConfirmedTrade { get; }
     public TradeCompletedEventArgs(Trade requestedTrade, SecurityTrade confirmedTrade, bool tradeSuccessful)

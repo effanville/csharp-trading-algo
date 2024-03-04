@@ -422,7 +422,6 @@ $@"|StartDate|EndDate|StockName|TradeType|NumberShares|
                 PortfolioConstructionSettings.Default(),
                 decisionParameters,
                 TradeMechanismSettings.Default(),
-                TradeSubmitterType.SellAllThenBuy,
                 fileSystem,
                 logger);
             var portfolio = output.Portfolio;

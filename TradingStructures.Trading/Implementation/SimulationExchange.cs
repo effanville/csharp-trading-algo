@@ -3,33 +3,64 @@
 using Effanville.Common.Structure.Reporting;
 using Effanville.FinancialStructures.DataStructures;
 using Effanville.TradingStructures.Common;
+using Effanville.TradingStructures.Common.Services;
+using Effanville.TradingStructures.Common.Time;
 using Effanville.TradingStructures.Common.Trading;
 using Effanville.TradingStructures.Pricing;
 
 namespace Effanville.TradingStructures.Trading.Implementation
 {
-    /// <summary>
-    /// Trading system for use in simulation systems.
-    /// </summary>
-    internal class SimulationBuySellSystem : ITradeSubmitter
+    public class SimulationExchange : IMarketExchange, IService
     {
-        /// <inheritdoc/>
+        private readonly IClock _clock;
+        private readonly IPriceService _priceService;
+        private readonly IReportLogger _logger;
+
+        public string Name => nameof(SimulationExchange);
         public TradeMechanismSettings Settings { get; }
 
-        public string Name => nameof(SimulationBuySellSystem);
-
-        /// <summary>
-        /// Create an instance.
-        /// </summary>
-        internal SimulationBuySellSystem(TradeMechanismSettings settings)
+        public SimulationExchange(
+            TradeMechanismSettings settings,
+            IReportLogger logger)
         {
             Settings = settings;
+            _logger = logger;
+        }
+        
+        public SimulationExchange(
+            TradeMechanismSettings settings, 
+            IPriceService priceService, 
+            IClock clock, 
+            IReportLogger logger)
+        {
+            Settings = settings;
+            _priceService = priceService;
+            _clock = clock;
+            _logger = logger;
         }
 
         public void Initialize(EvolverSettings settings) { }
-        public void Restart() => throw new NotImplementedException();
-        public void Shutdown() { }
 
+        public void Restart() { }
+
+        public void Shutdown() { }
+        public void OnTradeRequested(object obj, TradeSubmittedEventArgs eventArgs)
+        {
+            DateTime time = _clock.UtcNow();
+            Trade trade = eventArgs.RequestedTrade;
+            var validatedTrade = Trade(time, trade, _priceService, eventArgs.AvailableFunds, _logger);
+            if (validatedTrade != null)
+            {
+                TradeCompleted?.Invoke(null, new TradeCompletedEventArgs(trade, validatedTrade, true));
+                return;
+            }
+                
+            TradeCompleted?.Invoke(null, new TradeCompletedEventArgs(trade, null, false));
+        }
+
+        public event EventHandler<TradeCompletedEventArgs> TradeCompleted;
+        
+        
         /// <inheritdoc/>
         public SecurityTrade Trade(
             DateTime time,

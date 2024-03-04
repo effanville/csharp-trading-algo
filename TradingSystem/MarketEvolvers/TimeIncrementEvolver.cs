@@ -46,7 +46,7 @@ namespace TradingSystem.MarketEvolvers
             IPriceService priceService,
             IPortfolioManager portfolioManager,
             IDecisionSystem decisionSystem,
-            ITradeSubmitter tradeSubmitter,
+            IMarketExchange tradeSubmitter,
             Action<string> startReportCallback,
             Action<DateTime, string> reportCallback,
             Action<string> endReportCallback,
