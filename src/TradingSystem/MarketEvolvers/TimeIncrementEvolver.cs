@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 
 using Effanville.Common.Structure.Reporting;
-
 using Effanville.FinancialStructures.Database;
 using Effanville.FinancialStructures.Database.Extensions.Rates;
 using Effanville.FinancialStructures.Database.Extensions.Values;
@@ -14,10 +13,9 @@ using Effanville.TradingStructures.Pricing;
 using Effanville.TradingStructures.Strategies.Decision;
 using Effanville.TradingStructures.Strategies.Portfolio;
 using Effanville.TradingStructures.Trading;
+using Effanville.TradingSystem.Trading;
 
-using TradingSystem.Trading;
-
-namespace TradingSystem.MarketEvolvers
+namespace Effanville.TradingSystem.MarketEvolvers
 {
     /// <summary>
     /// Provides the logic for simulating the evolution in time

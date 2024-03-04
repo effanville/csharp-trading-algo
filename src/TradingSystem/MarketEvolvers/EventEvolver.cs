@@ -1,11 +1,5 @@
 ﻿using Effanville.Common.Structure.Reporting;
-
 using Effanville.FinancialStructures.Stocks;
-
-using TradingSystem.Time;
-
-using System;
-
 using Effanville.TradingStructures.Common;
 using Effanville.TradingStructures.Common.Scheduling;
 using Effanville.TradingStructures.Common.Services;
@@ -18,9 +12,10 @@ using Effanville.TradingStructures.Strategies.Execution;
 using Effanville.TradingStructures.Strategies.Portfolio;
 using Effanville.TradingStructures.Trading;
 using Effanville.TradingStructures.Trading.Implementation;
+using Effanville.TradingSystem.Time;
 using Effanville.TradingSystem.Trading;
 
-namespace TradingSystem.MarketEvolvers;
+namespace Effanville.TradingSystem.MarketEvolvers;
 
 /// <summary>
 /// An evolver for a Stock market that is based on events being raised. Either

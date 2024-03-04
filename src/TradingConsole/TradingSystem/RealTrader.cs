@@ -12,9 +12,8 @@ using Effanville.TradingStructures.Strategies.Decision;
 using Effanville.TradingStructures.Strategies.Portfolio;
 using Effanville.TradingStructures.Trading;
 using Effanville.TradingStructures.Trading.Implementation;
-
-using TradingSystem.MarketEvolvers;
-using TradingSystem.Trading;
+using Effanville.TradingSystem.MarketEvolvers;
+using Effanville.TradingSystem.Trading;
 
 using DecisionSystemFactory = Effanville.TradingStructures.Strategies.Decision.DecisionSystemFactory;
 

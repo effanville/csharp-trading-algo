@@ -5,8 +5,7 @@ using Effanville.TradingStructures.Common;
 using Effanville.TradingStructures.Common.Time;
 using Effanville.TradingStructures.Strategies.Portfolio;
 using Effanville.TradingStructures.Trading;
-
-using TradingSystem.MarketEvolvers;
+using Effanville.TradingSystem.MarketEvolvers;
 
 namespace Effanville.TradingSystem.Trading;
 

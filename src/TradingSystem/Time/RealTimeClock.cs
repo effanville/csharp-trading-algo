@@ -2,15 +2,11 @@
 
 using Effanville.TradingStructures.Common.Time;
 
-namespace TradingSystem.Time;
+namespace Effanville.TradingSystem.Time;
 
 public sealed class RealTimeClock : IClock
 {
     public DateTime NextEventTime { get; set; }
-    
-    public RealTimeClock()
-    {
-    }
 
     /// <inheritdoc/>
     public DateTime Now() => DateTime.Now;

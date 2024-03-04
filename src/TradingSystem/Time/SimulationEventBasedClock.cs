@@ -2,7 +2,7 @@
 
 using Effanville.TradingStructures.Common.Time;
 
-namespace TradingSystem.Time;
+namespace Effanville.TradingSystem.Time;
 
 /// <summary>
 /// Implementation of a <see cref="IClock"/> for simulation purposes.

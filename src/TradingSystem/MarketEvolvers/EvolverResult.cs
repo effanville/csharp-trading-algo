@@ -1,7 +1,7 @@
 ﻿using Effanville.FinancialStructures.Database;
 using Effanville.TradingStructures.Common.Trading;
 
-namespace TradingSystem.MarketEvolvers
+namespace Effanville.TradingSystem.MarketEvolvers
 {
     /// <summary>
     /// The result of a market evolver.

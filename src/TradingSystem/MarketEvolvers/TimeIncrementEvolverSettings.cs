@@ -5,7 +5,7 @@ using Effanville.TradingStructures.Common;
 
 using Nager.Date;
 
-namespace TradingSystem.MarketEvolvers
+namespace Effanville.TradingSystem.MarketEvolvers
 {
     /// <summary>
     /// Settings required for a simulator to simulate.

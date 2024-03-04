@@ -6,7 +6,7 @@ using System.Timers;
 using Effanville.TradingStructures.Common.Scheduling;
 using Effanville.TradingStructures.Common.Time;
 
-namespace TradingSystem
+namespace Effanville.TradingSystem
 {
     public class Scheduler : IScheduler
     {

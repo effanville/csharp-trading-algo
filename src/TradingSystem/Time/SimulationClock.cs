@@ -3,14 +3,14 @@ using System.Timers;
 
 using Effanville.TradingStructures.Common.Time;
 
-namespace TradingSystem.Time;
+namespace Effanville.TradingSystem.Time;
 
 /// <summary>
 /// Implementation of a <see cref="IClock"/> for simulation purposes.
 /// </summary>
 public sealed class SimulationClock : IClock
 {
-    private bool _started = false;
+    private bool _started;
     private long _ticks;
     private readonly long _increment;
     private readonly Timer _timer;

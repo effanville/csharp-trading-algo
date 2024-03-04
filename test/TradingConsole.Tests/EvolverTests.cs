@@ -15,10 +15,9 @@ using Effanville.TradingStructures.Strategies.Decision;
 using Effanville.TradingStructures.Strategies.Execution;
 using Effanville.TradingStructures.Strategies.Portfolio;
 using Effanville.TradingStructures.Common.Trading;
+using Effanville.TradingSystem.MarketEvolvers;
 
 using NUnit.Framework;
-
-using TradingSystem.MarketEvolvers;
 
 using DecisionSystemFactory = Effanville.TradingStructures.Strategies.Decision.DecisionSystemFactory;
 
