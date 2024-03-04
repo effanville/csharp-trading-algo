@@ -9,7 +9,7 @@ using Effanville.TradingStructures.Exchanges;
 
 namespace Effanville.TradingStructures.Pricing.Implementation
 {
-    public sealed class RandomWobblePriceCalculator : IPriceService
+    internal sealed class RandomWobblePriceCalculator : IPriceService
     {
         private readonly PriceCalculationSettings _settings;
         private readonly IStockExchange _stockExchange;

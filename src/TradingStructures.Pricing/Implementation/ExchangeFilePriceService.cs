@@ -12,7 +12,7 @@ namespace Effanville.TradingStructures.Pricing.Implementation
     /// <summary>
     /// Price service where the price data is retrieved from a file.
     /// </summary>
-    public sealed class ExchangeFilePriceService : IPriceService
+    internal sealed class ExchangeFilePriceService : IPriceService
     {
         private readonly IScheduler _scheduler;
         private readonly IStockExchange _stockExchange;
