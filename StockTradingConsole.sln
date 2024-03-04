@@ -35,6 +35,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TradingStructures.Trading",
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TradingStructures.Strategies", "src\TradingStructures.Strategies\TradingStructures.Strategies.csproj", "{530E9F54-D2BA-4415-8272-0DB83C2FA67E}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Common", "Common", "{38FE277F-E8C0-425A-939E-0FB39EB961F2}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "FinancialStructures", "FinancialStructures", "{C1A1509D-BB98-4A26-BD09-39BC329C9F26}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -99,5 +103,11 @@ Global
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {9F80B630-AFD0-4550-8D30-18500F204B0F}
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{22BEF8BB-0C66-4E25-9CEA-5F0F35B434C2} = {38FE277F-E8C0-425A-939E-0FB39EB961F2}
+		{2A4968F6-F545-4439-A698-D1CD2E9874E3} = {38FE277F-E8C0-425A-939E-0FB39EB961F2}
+		{780A1A86-BAFF-4840-A6B1-6E28CD508AF3} = {C1A1509D-BB98-4A26-BD09-39BC329C9F26}
+		{1EEDD44D-1DBB-4FCE-80A3-A2ACECF59BDE} = {C1A1509D-BB98-4A26-BD09-39BC329C9F26}
 	EndGlobalSection
 EndGlobal
