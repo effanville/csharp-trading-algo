@@ -36,7 +36,7 @@ namespace Effanville.TradingStructures.Strategies.Execution
 
         /// <inheritdoc/>
         public void OnPriceUpdate(object obj, PriceUpdateEventArgs eventArgs)
-            => _logger.Log(ReportType.Information, "PriceService", $"Price for {eventArgs.Instrument.Name.Ticker} has changed to {eventArgs.Price} at time {_clock.UtcNow()}");
+            => _logger.Log(ReportType.Information, "PriceService", $"Price for {eventArgs.Instrument.Ticker} has changed to {eventArgs.Price} at time {_clock.UtcNow()}");
 
         /// <inheritdoc/>
         public void OnExchangeStatusChanged(object obj, ExchangeStatusChangedEventArgs eventArgs)

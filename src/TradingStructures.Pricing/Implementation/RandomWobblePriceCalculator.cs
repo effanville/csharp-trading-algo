@@ -36,12 +36,12 @@ namespace Effanville.TradingStructures.Pricing.Implementation
                 {
                     if (valuation.Start > startTime && valuation.Start < endTime)
                     {
-                        var updateArgs = new PriceUpdateEventArgs(valuation.Start, new StockInstrument(stock), valuation.Open, valuation.CopyAsOpenOnly());
+                        var updateArgs = new PriceUpdateEventArgs(valuation.Start, stock.Name, valuation.Open, valuation.CopyAsOpenOnly());
                         _scheduler.ScheduleNewEvent(() => RaisePriceChanged(null, updateArgs), valuation.Start);
                     }
                     if (valuation.Start > startTime && valuation.End < endTime)
                     {
-                        var updateArgs = new PriceUpdateEventArgs(valuation.End, new StockInstrument(stock), valuation.Close, valuation);
+                        var updateArgs = new PriceUpdateEventArgs(valuation.End, stock.Name, valuation.Close, valuation);
                         _scheduler.ScheduleNewEvent(() => RaisePriceChanged(null, updateArgs), valuation.End);
                     }
                 }

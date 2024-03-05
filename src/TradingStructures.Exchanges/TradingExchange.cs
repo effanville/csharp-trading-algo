@@ -2,6 +2,7 @@
 using System.Xml.Serialization;
 
 using Effanville.Common.Structure.Reporting;
+using Effanville.FinancialStructures.NamingStructures;
 using Effanville.FinancialStructures.Stocks;
 using Effanville.TradingStructures.Common;
 using Effanville.TradingStructures.Common.Scheduling;
@@ -39,7 +40,7 @@ public sealed class TradingExchange : IService
     } = CountryCode.GB;
 
     [XmlIgnore]
-    public Dictionary<string, StockInstrument> StockInstruments;
+    public Dictionary<string, NameData> StockInstruments;
 
     public static TimeOnly ExchangeOpen => new TimeOnly(8, 0, 0);
     public static TimeOnly ExchangeClose => new TimeOnly(16, 30, 0);
@@ -48,7 +49,7 @@ public sealed class TradingExchange : IService
 
     public TradingExchange()
     {
-        StockInstruments = new Dictionary<string, StockInstrument>();
+        StockInstruments = new Dictionary<string, NameData>();
     }
 
     public TradingExchange(IScheduler scheduler)
@@ -103,8 +104,7 @@ public sealed class TradingExchange : IService
         foreach (var stock in stockExchange.Stocks)
         {
             string ticker = stock.Name.Ticker;
-            StockInstrument stockInst = new StockInstrument(stock.Name);
-            StockInstruments.Add(ticker, stockInst);
+            StockInstruments.Add(ticker, stock.Name);
         }
     }
 
@@ -143,7 +143,11 @@ public sealed class TradingExchange : IService
             return;
         }
 
-        StockInstrument stock = new StockInstrument(parameters[0], parameters[1], parameters[2], parameters[3], parameters[4]);
+        NameData stock =
+            new NameData(parameters[1].Trim(), parameters[2].Trim(), parameters[3].Trim(), parameters[4].Trim())
+            {
+                Ticker = parameters[0]
+            };
         StockInstruments.Add(parameters[0], stock);
     }
 }

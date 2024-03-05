@@ -1,7 +1,7 @@
 ﻿using System;
 
+using Effanville.FinancialStructures.NamingStructures;
 using Effanville.FinancialStructures.Stocks.Implementation;
-using Effanville.TradingStructures.Exchanges;
 
 namespace Effanville.TradingStructures.Pricing;
 
@@ -10,7 +10,7 @@ namespace Effanville.TradingStructures.Pricing;
 /// </summary>
 public class PriceUpdateEventArgs : EventArgs
 {
-    public StockInstrument Instrument
+    public NameData Instrument
     {
         get;
     }
@@ -29,7 +29,7 @@ public class PriceUpdateEventArgs : EventArgs
         get;
     }
 
-    public PriceUpdateEventArgs(DateTime time, StockInstrument instrument, decimal price, StockDay candle)
+    public PriceUpdateEventArgs(DateTime time, NameData instrument, decimal price, StockDay candle)
     {
         Time = time;
         Instrument = instrument;

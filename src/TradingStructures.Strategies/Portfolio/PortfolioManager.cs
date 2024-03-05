@@ -184,7 +184,7 @@ namespace Effanville.TradingStructures.Strategies.Portfolio
 
         public void OnPriceUpdate(object obj, PriceUpdateEventArgs eventArgs)
         {
-            NameData updateName = eventArgs.Instrument.Name;
+            NameData updateName = eventArgs.Instrument;
             if (updateName != null && Portfolio.Exists(Account.Security, updateName.ToTwoName()))
             {
                 var valuation = new DailyValuation(eventArgs.Time, eventArgs.Price);
