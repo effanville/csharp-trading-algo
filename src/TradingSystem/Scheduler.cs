@@ -14,6 +14,7 @@ namespace Effanville.TradingSystem
         private readonly IClock _internalClock;
         private readonly object _listLock = new object();
         private readonly PriorityQueue<ScheduleEvent, DateTime> _actionsToRun;
+        private bool _currentlyExecuting = false;
 
         public Scheduler(IClock clock, int timerDelay = 50)
         {
@@ -25,7 +26,13 @@ namespace Effanville.TradingSystem
 
         private async void OnTimedEvent(object source, ElapsedEventArgs e)
         {
-            //_timer.Stop();
+            if (_currentlyExecuting)
+            {
+                return;
+            }
+
+            _currentlyExecuting = true;
+            _timer.Stop();
             var currentTime = _internalClock.UtcNow();
             var tasksToRun = new List<Func<Task>>();
             lock (_listLock)
@@ -53,7 +60,8 @@ namespace Effanville.TradingSystem
                 }
             }
 
-            //_timer.Start();
+            _currentlyExecuting = false;
+            _timer.Start();
         }
 
         public void Start() => _timer.Start();

@@ -10,7 +10,7 @@ public sealed class ScheduleEvent : IComparable<ScheduleEvent>
 
     public ScheduleEvent(Action action, DateTime time)
     {
-        TaskToRun = () => Task.Run(action);
+        TaskToRun = async () => await Task.Run(action);
         TimeToRun = time;
     }
 
