@@ -41,6 +41,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "FinancialStructures", "Fina
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TradingStructures.Strategies.Tests", "test\TradingStructures.Strategies.Tests\TradingStructures.Strategies.Tests.csproj", "{658F66F1-3686-41D7-96AD-18303CFE5D9F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TradingSystem.Tests", "test\TradingSystem.Tests\TradingSystem.Tests.csproj", "{C443E370-4458-43CC-83EF-B6822E56CD9E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Unit.Tests.Common", "Unit.Tests.Common\Unit.Tests.Common.csproj", "{4BF33A4F-979F-4DF3-9078-91CB8A77FDB0}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -103,6 +107,14 @@ Global
 		{658F66F1-3686-41D7-96AD-18303CFE5D9F}.Debug|x64.Build.0 = Debug|x64
 		{658F66F1-3686-41D7-96AD-18303CFE5D9F}.Release|x64.ActiveCfg = Release|x64
 		{658F66F1-3686-41D7-96AD-18303CFE5D9F}.Release|x64.Build.0 = Release|x64
+		{C443E370-4458-43CC-83EF-B6822E56CD9E}.Debug|x64.ActiveCfg = Debug|x64
+		{C443E370-4458-43CC-83EF-B6822E56CD9E}.Debug|x64.Build.0 = Debug|x64
+		{C443E370-4458-43CC-83EF-B6822E56CD9E}.Release|x64.ActiveCfg = Release|x64
+		{C443E370-4458-43CC-83EF-B6822E56CD9E}.Release|x64.Build.0 = Release|x64
+		{4BF33A4F-979F-4DF3-9078-91CB8A77FDB0}.Debug|x64.ActiveCfg = Debug|x64
+		{4BF33A4F-979F-4DF3-9078-91CB8A77FDB0}.Debug|x64.Build.0 = Debug|x64
+		{4BF33A4F-979F-4DF3-9078-91CB8A77FDB0}.Release|x64.ActiveCfg = Release|x64
+		{4BF33A4F-979F-4DF3-9078-91CB8A77FDB0}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

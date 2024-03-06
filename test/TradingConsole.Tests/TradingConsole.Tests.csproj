@@ -20,6 +20,7 @@
     <ProjectReference Include="..\..\src\TradingSystem\TradingSystem.csproj" />
     <ProjectReference Include="..\..\FinancialStructures\src\FinancialStructures\FinancialStructures.csproj" />
     <ProjectReference Include="..\..\FinancialStructures\Common\src\Common.Structure\Common.Structure.csproj" />
+    <ProjectReference Include="..\..\Unit.Tests.Common\Unit.Tests.Common.csproj" />
   </ItemGroup>
 
   <ItemGroup>

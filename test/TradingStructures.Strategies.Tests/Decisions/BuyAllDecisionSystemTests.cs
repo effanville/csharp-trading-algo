@@ -8,7 +8,7 @@ using Effanville.TradingStructures.Strategies.Decision.Implementation;
 
 using NUnit.Framework;
 
-namespace TradingConsole.Tests.DecisionSystemTests
+namespace Effanville.TradingStructures.Strategies.Tests.Decisions
 {
     internal class BuyAllDecisionSystemTests
     {

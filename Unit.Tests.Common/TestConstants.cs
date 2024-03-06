@@ -2,7 +2,7 @@
 
 namespace TradingConsole.Tests
 {
-    internal sealed class TestConstants
+    public sealed class TestConstants
     {
         public static readonly string CurrentPath = AppDomain.CurrentDomain.SetupInformation.ApplicationBase;
 
