@@ -1,4 +1,6 @@
-﻿namespace Effanville.TradingStructures.Exchanges;
+﻿using System;
+
+namespace Effanville.TradingStructures.Exchanges;
 
 /// <summary>
 /// EventArgs for when an Exchange changes status.

@@ -103,8 +103,8 @@ public class Strategy : IStrategy
 
     public void OnTimeIncrementUpdate(object obj, TimeIncrementEventArgs eventArgs)
     {
-        var task = Task.Run(() => ExecutionStrategy.OnTimeIncrementUpdate(obj, eventArgs));
-        task.ContinueWith(_ => PortfolioManager.ReportStatus(eventArgs.Time));
+        ExecutionStrategy.OnTimeIncrementUpdate(obj, eventArgs);
+        PortfolioManager.ReportStatus(eventArgs.Time);
     }
 
     public void OnExchangeStatusChanged(object obj, ExchangeStatusChangedEventArgs eventArgs) 

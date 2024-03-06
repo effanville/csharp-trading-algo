@@ -5,7 +5,6 @@ using Effanville.FinancialStructures.Stocks;
 using Effanville.FinancialStructures.Stocks.Implementation;
 using Effanville.TradingStructures.Common;
 using Effanville.TradingStructures.Common.Scheduling;
-using Effanville.TradingStructures.Exchanges;
 
 namespace Effanville.TradingStructures.Pricing.Implementation
 {

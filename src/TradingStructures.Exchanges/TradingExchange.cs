@@ -1,4 +1,6 @@
-﻿using System.IO.Abstractions;
+﻿using System;
+using System.Collections.Generic;
+using System.IO.Abstractions;
 using System.Xml.Serialization;
 
 using Effanville.Common.Structure.Reporting;
@@ -87,7 +89,8 @@ public sealed class TradingExchange : IService
                 time.Date.Add(ExchangeClose.ToTimeSpan()));
         }
     }
-    public void Restart() => throw new NotImplementedException();
+
+    public void Restart() { }
     public void Shutdown() { }
 
     private void RaiseExchangeStatusChanged(object obj, ExchangeStatusChangedEventArgs eventArgs)
