@@ -9,11 +9,8 @@ using Effanville.TradingStructures.Strategies.Decision;
 using Effanville.TradingStructures.Strategies.Portfolio;
 using Effanville.TradingStructures.Trading;
 using Effanville.TradingStructures.Trading.Implementation;
-using Effanville.TradingSystem.MarketEvolvers;
 
-using DecisionSystemFactory = Effanville.TradingStructures.Strategies.Decision.DecisionSystemFactory;
-
-namespace TradingConsole.TradingSystem
+namespace Effanville.TradingSystem.MarketEvolvers
 {
     /// <summary>
     /// Contains the logic for the creation of user specified options for a simulation of
