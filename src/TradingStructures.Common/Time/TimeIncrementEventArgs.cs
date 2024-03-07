@@ -9,10 +9,9 @@ public class TimeIncrementEventArgs : EventArgs
 {
     public DateTime Time
     {
-        get; set;
+        get;
     }
     public TimeIncrementEventArgs(DateTime time)
-        : base()
     {
         Time = time;
     }

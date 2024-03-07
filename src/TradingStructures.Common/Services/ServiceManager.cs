@@ -5,7 +5,7 @@ namespace Effanville.TradingStructures.Common.Services;
 
 public sealed class ServiceManager : IService
 {
-    private Dictionary<string, IService> _registeredServices = new Dictionary<string, IService>();
+    private readonly Dictionary<string, IService> _registeredServices = new Dictionary<string, IService>();
 
     public string Name => nameof(ServiceManager);
 
@@ -19,10 +19,7 @@ public sealed class ServiceManager : IService
 
     public bool RegisterService(string name, IService service) => _registeredServices.TryAdd(name, service);
 
-    public T GetService<T>(string name) where T : class
-    {
-        return _registeredServices[name] as T;
-    }
+    public T GetService<T>(string name) where T : class => _registeredServices[name] as T;
 
     public void Restart() => throw new NotImplementedException();
 

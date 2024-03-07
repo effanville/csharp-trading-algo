@@ -9,20 +9,11 @@ namespace Effanville.TradingStructures.Common.Trading
 {
     public sealed class TradeCollection : IEquatable<TradeCollection>
     {
-        public DateTime Start
-        {
-            get; set;
-        }
+        public DateTime Start { get; }
 
-        public DateTime End
-        {
-            get; set;
-        }
+        public DateTime End { get; }
 
-        public List<Trade> Trades
-        {
-            get; set;
-        }
+        public List<Trade> Trades { get; }
 
         public int NumberBuys => GetBuyDecisions().Count;
 
@@ -48,8 +39,8 @@ namespace Effanville.TradingStructures.Common.Trading
             Trades = trades;
         }
 
-        public void Add(NameData stock, TradeType buySell, decimal numberShares = 0m)
-            => Trades.Add(new Trade(stock, buySell, numberShares));
+        public void Add(NameData stock, TradeType buySell, decimal numberShares = 0m, decimal? limitPrice = null)
+            => Trades.Add(new Trade(stock, buySell, numberShares, limitPrice));
 
         public List<Trade> GetBuyDecisions() => GetDecisions(TradeType.Buy);
 
@@ -87,6 +78,11 @@ namespace Effanville.TradingStructures.Common.Trading
         }
         public bool Equals(TradeCollection collection)
         {
+            if (collection == null)
+            {
+                return false;
+            }
+
             bool startEqual = Start == collection.Start;
             bool endEqual = End == collection.End;
             bool tradesEqual = Trades.SequenceEqual(collection.Trades);

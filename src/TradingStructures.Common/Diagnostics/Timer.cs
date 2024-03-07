@@ -11,15 +11,15 @@ namespace Effanville.TradingStructures.Common.Diagnostics
     /// </summary>
     public sealed class Timer : IDisposable
     {
-        private readonly Stopwatch fWatch;
-        private readonly IReportLogger fLogger;
-        private readonly string fOperation;
+        private readonly Stopwatch _watch;
+        private readonly IReportLogger _logger;
+        private readonly string _operation;
         public Timer(IReportLogger logger, string operation)
         {
-            fWatch = new Stopwatch();
-            fLogger = logger;
-            fOperation = operation;
-            fWatch.Start();
+            _watch = new Stopwatch();
+            _logger = logger;
+            _operation = operation;
+            _watch.Start();
         }
 
         /// <summary>
@@ -29,8 +29,8 @@ namespace Effanville.TradingStructures.Common.Diagnostics
         /// </summary>
         public void Dispose()
         {
-            fWatch.Stop();
-            _ = fLogger.Log(ReportSeverity.Critical, ReportType.Warning, ReportLocation.Execution, $"{fOperation}: Time took {TimeSpanFriendlyString(fWatch.Elapsed)}");
+            _watch.Stop();
+            _ = _logger.Log(ReportSeverity.Critical, ReportType.Warning, ReportLocation.Execution, $"{_operation}: Time took {TimeSpanFriendlyString(_watch.Elapsed)}");
         }
 
         private static string TimeSpanFriendlyString(TimeSpan timeSpan)

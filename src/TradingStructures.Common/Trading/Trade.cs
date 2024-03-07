@@ -13,29 +13,16 @@ namespace Effanville.TradingStructures.Common.Trading
         /// <summary>
         /// The name data of the stock.
         /// </summary>
-        public NameData StockName
-        {
-            get;
-        }
+        public NameData StockName { get; }
 
         /// <summary>
         /// The decision.
         /// </summary>
-        public TradeType BuySell
-        {
-            get;
-        }
+        public TradeType BuySell { get; }
 
-        public decimal NumberShares
-        {
-            get;
-            set;
-        }
+        public decimal NumberShares { get; }
 
-        public decimal LimitPrice
-        {
-            get;
-        }
+        public decimal LimitPrice { get; }
 
         /// <summary>
         /// Construct an instance.
@@ -49,11 +36,15 @@ namespace Effanville.TradingStructures.Common.Trading
         /// <summary>
         /// Construct an instance.
         /// </summary>
-        public Trade(NameData stock, TradeType buySell, decimal numShares)
+        public Trade(NameData stock, TradeType buySell, decimal numShares, decimal? limitPrice)
         {
             StockName = stock;
             BuySell = buySell;
             NumberShares = numShares;
+            if (limitPrice.HasValue)
+            {
+                LimitPrice = limitPrice.Value;
+            }
         }
 
         /// <inheritdoc/>
@@ -75,10 +66,15 @@ namespace Effanville.TradingStructures.Common.Trading
 
         public bool Equals(Trade other)
         {
+            if (other == null)
+            {
+                return false;
+            }
+
             return StockName.IsEqualTo(other.StockName)
-                        && BuySell == other.BuySell
-                        && NumberShares == other.NumberShares
-                        && LimitPrice == other.LimitPrice;
+                   && BuySell == other.BuySell
+                   && NumberShares == other.NumberShares
+                   && LimitPrice == other.LimitPrice;
         }
 
         public override int GetHashCode() => HashCode.Combine(StockName, BuySell, NumberShares, LimitPrice);

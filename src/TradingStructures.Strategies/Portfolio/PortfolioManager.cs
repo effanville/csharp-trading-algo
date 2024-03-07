@@ -132,7 +132,7 @@ namespace Effanville.TradingStructures.Strategies.Portfolio
                     return null;
                 }
 
-                return new Trade(trade.StockName, trade.BuySell, numShares);
+                return new Trade(trade.StockName, trade.BuySell, numShares, null);
             }
             else if (trade.BuySell == TradeType.Sell)
             {
@@ -151,7 +151,7 @@ namespace Effanville.TradingStructures.Strategies.Portfolio
                     return null;
                 }
 
-                return new Trade(trade.StockName, trade.BuySell, numShares);
+                return new Trade(trade.StockName, trade.BuySell, numShares, null);
             }
 
             return null;

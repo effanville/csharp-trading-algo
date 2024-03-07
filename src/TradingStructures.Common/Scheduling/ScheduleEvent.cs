@@ -1,11 +1,12 @@
 using System;
+using System.Globalization;
 using System.Threading.Tasks;
 
 namespace Effanville.TradingStructures.Common.Scheduling;
 
 public sealed class ScheduleEvent : IComparable<ScheduleEvent>
 {
-    public Func<Task> TaskToRun;
+    public readonly Func<Task> TaskToRun;
     public DateTime TimeToRun;
 
     public ScheduleEvent(Action action, DateTime time)
@@ -21,5 +22,5 @@ public sealed class ScheduleEvent : IComparable<ScheduleEvent>
     }
 
     public int CompareTo(ScheduleEvent other) => TimeToRun.CompareTo(other.TimeToRun);
-    public override string ToString() => TimeToRun.ToString();
+    public override string ToString() => TimeToRun.ToString(CultureInfo.InvariantCulture);
 }
