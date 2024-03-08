@@ -7,15 +7,9 @@ namespace Effanville.TradingStructures.Exchanges;
 /// </summary>
 public sealed class ExchangeStatusChangedEventArgs : EventArgs
 {
-    public ExchangeSession PreviousSession
-    {
-        get;
-    }
+    public ExchangeSession PreviousSession { get; }
 
-    public ExchangeSession NewSession
-    {
-        get;
-    }
+    public ExchangeSession NewSession { get; }
 
     public ExchangeStatusChangedEventArgs(ExchangeSession previous, ExchangeSession newSession)
     {
