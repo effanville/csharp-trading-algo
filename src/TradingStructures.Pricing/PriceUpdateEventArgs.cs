@@ -10,24 +10,12 @@ namespace Effanville.TradingStructures.Pricing;
 /// </summary>
 public class PriceUpdateEventArgs : EventArgs
 {
-    public NameData Instrument
-    {
-        get;
-    }
+    public NameData Instrument { get; }
 
-    public DateTime Time
-    {
-        get;
-    }
-    public decimal Price
-    {
-        get;
-    }
+    public DateTime Time { get; }
+    public decimal Price { get; }
 
-    public StockDay Candle
-    {
-        get;
-    }
+    public StockDay Candle { get; }
 
     public PriceUpdateEventArgs(DateTime time, NameData instrument, decimal price, StockDay candle)
     {

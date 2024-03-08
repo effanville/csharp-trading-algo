@@ -14,9 +14,9 @@ namespace Effanville.TradingStructures.Pricing.Implementation
         private readonly IStockExchange _stockExchange;
         private readonly IScheduler _scheduler;
 
-        public string Name => throw new NotImplementedException();
+        public string Name => nameof(RandomWobblePriceCalculator);
 
-        public event EventHandler<PriceUpdateEventArgs> PriceChanged;
+        public event EventHandler<PriceUpdateEventArgs>? PriceChanged;
 
         public RandomWobblePriceCalculator(PriceCalculationSettings settings, IStockExchange stockExchange, IScheduler scheduler)
         {
@@ -47,16 +47,9 @@ namespace Effanville.TradingStructures.Pricing.Implementation
             }
         }
 
-        public void Restart() => throw new NotImplementedException();
+        public void Restart() { }
         public void Shutdown() { }
-        private void RaisePriceChanged(object obj, PriceUpdateEventArgs args)
-        {
-            EventHandler<PriceUpdateEventArgs> handler = PriceChanged;
-            if (handler != null)
-            {
-                handler?.Invoke(obj, args);
-            }
-        }
+        private void RaisePriceChanged(object? obj, PriceUpdateEventArgs args) => PriceChanged?.Invoke(obj, args);
 
         public decimal GetPrice(DateTime time, string ticker) => _stockExchange.GetValue(ticker, time);
 

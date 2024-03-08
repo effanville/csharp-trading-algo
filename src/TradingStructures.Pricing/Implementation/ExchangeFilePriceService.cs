@@ -16,9 +16,9 @@ namespace Effanville.TradingStructures.Pricing.Implementation
         private readonly IScheduler _scheduler;
         private readonly IStockExchange _stockExchange;
 
-        public string Name => throw new NotImplementedException();
+        public string Name => nameof(ExchangeFilePriceService);
 
-        public event EventHandler<PriceUpdateEventArgs> PriceChanged;
+        public event EventHandler<PriceUpdateEventArgs>? PriceChanged;
 
         public ExchangeFilePriceService(IStockExchange stockExchange, IScheduler scheduler)
         {
@@ -48,17 +48,10 @@ namespace Effanville.TradingStructures.Pricing.Implementation
             }
         }
 
-        public void Restart() => throw new NotImplementedException();
+        public void Restart() { }
         public void Shutdown() { }
 
-        private void RaisePriceChanged(object obj, PriceUpdateEventArgs args)
-        {
-            EventHandler<PriceUpdateEventArgs> handler = PriceChanged;
-            if (handler != null)
-            {
-                handler?.Invoke(obj, args);
-            }
-        }
+        private void RaisePriceChanged(object? obj, PriceUpdateEventArgs args) => PriceChanged?.Invoke(obj, args);
 
         public decimal GetPrice(DateTime time, string ticker) => _stockExchange.GetValue(ticker, time);
 

@@ -11,28 +11,17 @@ namespace Effanville.TradingStructures.Pricing
         /// <summary>
         /// Contains a random number generator for required points.
         /// </summary>
-        public Random RandomNumbers
-        {
-            get;
-        } = new Random(12345);
+        public Random RandomNumbers { get; } = new Random(12345);
 
         /// <summary>
         /// The probability that a stock will have gone up from the opening price.
         /// </summary>
-        public double UpTickProbability
-        {
-            get;
-            set;
-        }
+        public double UpTickProbability { get; }
 
         /// <summary>
         /// The relative size that a stock will have increased from the opening price.
         /// </summary>
-        public double UpTickSize
-        {
-            get;
-            set;
-        }
+        public double UpTickSize { get; }
 
         /// <summary>
         /// Construct an instance.
@@ -45,9 +34,6 @@ namespace Effanville.TradingStructures.Pricing
             UpTickSize = upTickSize;
         }
 
-        public static PriceCalculationSettings Default()
-        {
-            return new PriceCalculationSettings(0.5, 0.01);
-        }
+        public static PriceCalculationSettings Default() => new(0.5, 0.01);
     }
 }
