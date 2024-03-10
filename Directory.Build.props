@@ -24,7 +24,6 @@
     <None Include="..\.editorconfig" Link=".editorconfig" />
   </ItemGroup>
 
-
   <ItemGroup Condition="$(MSBuildProjectFile.Contains('.Tests'))">
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.5.0"/>
     <PackageReference Include="NUnit" Version="3.13.3"/>

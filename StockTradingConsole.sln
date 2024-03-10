@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.1.32210.238
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TradingConsole", "TradingConsole\TradingConsole.csproj", "{D9B73324-0AD9-4395-9152-200FCF5F29CB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TradingConsole", "src\TradingConsole\TradingConsole.csproj", "{D9B73324-0AD9-4395-9152-200FCF5F29CB}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{56DDC8A0-ED45-4B0D-BC0D-5B8B4EE2A22F}"
 	ProjectSection(SolutionItems) = preProject
@@ -11,9 +11,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		Directory.Build.props = Directory.Build.props
 	EndProjectSection
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TradingConsole.Tests", "TC_Tests\TradingConsole.Tests.csproj", "{EEDE1C6B-B7C5-40E5-9AB1-B9F39ADD3BB3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TradingConsole.Tests", "test\TradingConsole.Tests\TradingConsole.Tests.csproj", "{EEDE1C6B-B7C5-40E5-9AB1-B9F39ADD3BB3}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TradingSystem", "TradingSystem\TradingSystem.csproj", "{28CC78D8-F5ED-4785-AB1F-7F5D0E2FEBAB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TradingSystem", "src\TradingSystem\TradingSystem.csproj", "{28CC78D8-F5ED-4785-AB1F-7F5D0E2FEBAB}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FinancialStructures", "FinancialStructures\src\FinancialStructures\FinancialStructures.csproj", "{780A1A86-BAFF-4840-A6B1-6E28CD508AF3}"
 EndProject
@@ -23,17 +23,27 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Common.Console", "Financial
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FinancialStructures.Stocks", "FinancialStructures\src\FinancialStructures.Stocks\FinancialStructures.Stocks.csproj", "{1EEDD44D-1DBB-4FCE-80A3-A2ACECF59BDE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TradingStructures.Common", "TradingStructures.Common\TradingStructures.Common.csproj", "{DBD85914-E464-4FAF-997B-00B4EBC5F34E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TradingStructures.Common", "src\TradingStructures.Common\TradingStructures.Common.csproj", "{DBD85914-E464-4FAF-997B-00B4EBC5F34E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TradingStructures.Exchanges", "TradingStructures.Exchanges\TradingStructures.Exchanges.csproj", "{5B5E4FF5-2C2A-4A65-B0D3-D808C1F4D25A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TradingStructures.Exchanges", "src\TradingStructures.Exchanges\TradingStructures.Exchanges.csproj", "{5B5E4FF5-2C2A-4A65-B0D3-D808C1F4D25A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TradingStructures.Pricing", "TradingStructures.Pricing\TradingStructures.Pricing.csproj", "{55EBC5A4-0F17-4633-AC9E-77BA49C36000}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TradingStructures.Pricing", "src\TradingStructures.Pricing\TradingStructures.Pricing.csproj", "{55EBC5A4-0F17-4633-AC9E-77BA49C36000}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TradingStructures.Strategies.Interfaces", "TradingStructures.Strategies.Interfaces\TradingStructures.Strategies.Interfaces.csproj", "{A058E278-4CC8-4494-95ED-1DD449C15FB0}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TradingStructures.Strategies.Interfaces", "src\TradingStructures.Strategies.Interfaces\TradingStructures.Strategies.Interfaces.csproj", "{A058E278-4CC8-4494-95ED-1DD449C15FB0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TradingStructures.Trading", "TradingStructures.Trading\TradingStructures.Trading.csproj", "{127A20FF-E9CD-4D9F-84C2-151902AC267C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TradingStructures.Trading", "src\TradingStructures.Trading\TradingStructures.Trading.csproj", "{127A20FF-E9CD-4D9F-84C2-151902AC267C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TradingStructures.Strategies", "TradingStructures.Strategies\TradingStructures.Strategies.csproj", "{530E9F54-D2BA-4415-8272-0DB83C2FA67E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TradingStructures.Strategies", "src\TradingStructures.Strategies\TradingStructures.Strategies.csproj", "{530E9F54-D2BA-4415-8272-0DB83C2FA67E}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Common", "Common", "{38FE277F-E8C0-425A-939E-0FB39EB961F2}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "FinancialStructures", "FinancialStructures", "{C1A1509D-BB98-4A26-BD09-39BC329C9F26}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TradingStructures.Strategies.Tests", "test\TradingStructures.Strategies.Tests\TradingStructures.Strategies.Tests.csproj", "{658F66F1-3686-41D7-96AD-18303CFE5D9F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TradingSystem.Tests", "test\TradingSystem.Tests\TradingSystem.Tests.csproj", "{C443E370-4458-43CC-83EF-B6822E56CD9E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Unit.Tests.Common", "Unit.Tests.Common\Unit.Tests.Common.csproj", "{4BF33A4F-979F-4DF3-9078-91CB8A77FDB0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -93,11 +103,29 @@ Global
 		{530E9F54-D2BA-4415-8272-0DB83C2FA67E}.Debug|x64.Build.0 = Debug|x64
 		{530E9F54-D2BA-4415-8272-0DB83C2FA67E}.Release|x64.ActiveCfg = Release|x64
 		{530E9F54-D2BA-4415-8272-0DB83C2FA67E}.Release|x64.Build.0 = Release|x64
+		{658F66F1-3686-41D7-96AD-18303CFE5D9F}.Debug|x64.ActiveCfg = Debug|x64
+		{658F66F1-3686-41D7-96AD-18303CFE5D9F}.Debug|x64.Build.0 = Debug|x64
+		{658F66F1-3686-41D7-96AD-18303CFE5D9F}.Release|x64.ActiveCfg = Release|x64
+		{658F66F1-3686-41D7-96AD-18303CFE5D9F}.Release|x64.Build.0 = Release|x64
+		{C443E370-4458-43CC-83EF-B6822E56CD9E}.Debug|x64.ActiveCfg = Debug|x64
+		{C443E370-4458-43CC-83EF-B6822E56CD9E}.Debug|x64.Build.0 = Debug|x64
+		{C443E370-4458-43CC-83EF-B6822E56CD9E}.Release|x64.ActiveCfg = Release|x64
+		{C443E370-4458-43CC-83EF-B6822E56CD9E}.Release|x64.Build.0 = Release|x64
+		{4BF33A4F-979F-4DF3-9078-91CB8A77FDB0}.Debug|x64.ActiveCfg = Debug|x64
+		{4BF33A4F-979F-4DF3-9078-91CB8A77FDB0}.Debug|x64.Build.0 = Debug|x64
+		{4BF33A4F-979F-4DF3-9078-91CB8A77FDB0}.Release|x64.ActiveCfg = Release|x64
+		{4BF33A4F-979F-4DF3-9078-91CB8A77FDB0}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {9F80B630-AFD0-4550-8D30-18500F204B0F}
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{22BEF8BB-0C66-4E25-9CEA-5F0F35B434C2} = {38FE277F-E8C0-425A-939E-0FB39EB961F2}
+		{2A4968F6-F545-4439-A698-D1CD2E9874E3} = {38FE277F-E8C0-425A-939E-0FB39EB961F2}
+		{780A1A86-BAFF-4840-A6B1-6E28CD508AF3} = {C1A1509D-BB98-4A26-BD09-39BC329C9F26}
+		{1EEDD44D-1DBB-4FCE-80A3-A2ACECF59BDE} = {C1A1509D-BB98-4A26-BD09-39BC329C9F26}
 	EndGlobalSection
 EndGlobal
