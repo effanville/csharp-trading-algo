@@ -35,9 +35,12 @@ namespace Effanville.TradingSystem.MarketEvolvers
         /// <param name="simulatorSettings">Contains the exchange and the dates for start and end of the simulation.</param>
         /// <param name="priceService">The method to determine the price to buy or sell at.</param>
         /// <param name="portfolioManager">The portfolio manager which deals with portfolio updates.</param>
-        /// <param name="enactTrades">The mechanim by which trades are decided and enacted.</param>
-        /// <param name="callbacks">Any reporting callbacks used.</param>
         /// <param name="logger">A logger reporting information.</param>
+        /// <param name="decisionSystem">The mechanism to decide what to purchase.</param>
+        /// <param name="tradeSubmitter">The mechanism to submit trades.</param>
+        /// <param name="startReportCallback">Reporting callback at the start of the simulation.</param>
+        /// <param name="reportCallback">Reporting callback during simulation</param>
+        /// <param name="endReportCallback">The reporting method at the end of the simulation</param>;
         /// <returns>A result of the end of the simulation.</returns>
         public static EvolverResult Simulate(
             TimeIncrementEvolverSettings simulatorSettings,
@@ -76,36 +79,38 @@ namespace Effanville.TradingSystem.MarketEvolvers
                     }
 
                     // Decide which stocks to buy, sell or do nothing with.
-                    TradeCollection decisions = decisionSystem.Decide(time, exchange, logger: null);
+                    TradeCollection? decisions = decisionSystem.Decide(time, exchange, logger: null);
 
-                    // Exact the buy/Sell decisions.
-                    List<Trade> sellDecisions = decisions.GetSellDecisions();
-                    var trades = new TradeCollection(time, time);
-                    foreach (Trade sell in sellDecisions)
+                    if (decisions != null)
                     {
-                        TradeSubmitterHelpers.SubmitAndReportTrade(
-                            time,
-                            sell,
-                            priceService,
-                            portfolioManager,
-                            tradeSubmitter,
-                            tradeRecord,
-                            decisionRecord,
-                            logger);
-                    }
+                        // Exact the buy/Sell decisions.
+                        List<Trade> sellDecisions = decisions.GetSellDecisions();
+                        foreach (Trade sell in sellDecisions)
+                        {
+                            TradeSubmitterHelpers.SubmitAndReportTrade(
+                                time,
+                                sell,
+                                priceService,
+                                portfolioManager,
+                                tradeSubmitter,
+                                tradeRecord,
+                                decisionRecord,
+                                logger);
+                        }
 
-                    List<Trade> buyDecisions = decisions.GetBuyDecisions();
-                    foreach (Trade buy in buyDecisions)
-                    {
-                        TradeSubmitterHelpers.SubmitAndReportTrade(
-                            time,
-                            buy,
-                            priceService,
-                            portfolioManager,
-                            tradeSubmitter,
-                            tradeRecord,
-                            decisionRecord,
-                            logger);
+                        List<Trade> buyDecisions = decisions.GetBuyDecisions();
+                        foreach (Trade buy in buyDecisions)
+                        {
+                            TradeSubmitterHelpers.SubmitAndReportTrade(
+                                time,
+                                buy,
+                                priceService,
+                                portfolioManager,
+                                tradeSubmitter,
+                                tradeRecord,
+                                decisionRecord,
+                                logger);
+                        }
                     }
 
                     // Update the Stock exchange for the recent time period.
@@ -120,8 +125,10 @@ namespace Effanville.TradingSystem.MarketEvolvers
                     // update the portfolio values for the new data.
                     portfolioManager.UpdateData(time, exchange);
 
-                    var totalValue = portfolioManager.Portfolio.TotalValue(Totals.All);
-                    reportCallback(time, $"Date: {time}. TotalVal: {totalValue:C2}. TotalCash: {portfolioManager.Portfolio.TotalValue(Totals.BankAccount):C2}");
+                    decimal totalValue = portfolioManager.Portfolio.TotalValue(Totals.All);
+                    reportCallback(
+                        time,
+                        $"Date: {time}. TotalVal: {totalValue:C2}. TotalCash: {portfolioManager.Portfolio.TotalValue(Totals.BankAccount):C2}");
 
                     time += (simulatorSettings.EvolutionIncrement - time.TimeOfDay);
                 }

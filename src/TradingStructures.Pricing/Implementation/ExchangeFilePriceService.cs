@@ -13,14 +13,14 @@ namespace Effanville.TradingStructures.Pricing.Implementation
     /// </summary>
     internal sealed class ExchangeFilePriceService : IPriceService
     {
-        private readonly IScheduler _scheduler;
+        private readonly IScheduler? _scheduler;
         private readonly IStockExchange _stockExchange;
 
         public string Name => nameof(ExchangeFilePriceService);
 
         public event EventHandler<PriceUpdateEventArgs>? PriceChanged;
 
-        public ExchangeFilePriceService(IStockExchange stockExchange, IScheduler scheduler)
+        public ExchangeFilePriceService(IStockExchange stockExchange, IScheduler? scheduler)
         {
             _stockExchange = stockExchange;
             _scheduler = scheduler;
@@ -28,6 +28,10 @@ namespace Effanville.TradingStructures.Pricing.Implementation
 
         public void Initialize(EvolverSettings settings)
         {
+            if (_scheduler == null)
+            {
+                return;
+            }
             var startTime = settings.StartTime;
             var endTime = settings.EndTime;
             foreach (var stock in _stockExchange.Stocks)

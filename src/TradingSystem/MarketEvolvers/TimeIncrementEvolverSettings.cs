@@ -33,7 +33,6 @@ namespace Effanville.TradingSystem.MarketEvolvers
         public IStockExchange Exchange
         {
             get;
-            private set;
         }
 
         public TimeIncrementEvolverSettings(DateTime startTime, DateTime endTime, TimeSpan evolutionIncrement, IStockExchange exchange, CountryCode countryCode = CountryCode.GB)

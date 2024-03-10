@@ -143,9 +143,9 @@ namespace Effanville.TradingStructures.Strategies.Portfolio
                     return null;
                 }
 
-                _ = Portfolio.TryGetAccount(Account.Security, trade.StockName, out var desired);
-                ISecurity security = desired as ISecurity;
-                decimal numShares = security.Shares.ValueOnOrBefore(time)?.Value ?? 0.0m;
+                _ = Portfolio.TryGetAccount(Account.Security, trade.StockName, out IValueList? desired);
+                ISecurity? security = desired as ISecurity;
+                decimal numShares = security?.Shares.ValueOnOrBefore(time)?.Value ?? 0.0m;
                 if (numShares <= 0)
                 {
                     return null;
@@ -182,10 +182,10 @@ namespace Effanville.TradingStructures.Strategies.Portfolio
 
         public decimal AvailableFunds(DateTime time) => Portfolio.TotalValue(Totals.BankAccount, time);
 
-        public void OnPriceUpdate(object obj, PriceUpdateEventArgs eventArgs)
+        public void OnPriceUpdate(object? obj, PriceUpdateEventArgs eventArgs)
         {
             NameData updateName = eventArgs.Instrument;
-            if (updateName != null && Portfolio.Exists(Account.Security, updateName.ToTwoName()))
+            if (Portfolio.Exists(Account.Security, updateName.ToTwoName()))
             {
                 var valuation = new DailyValuation(eventArgs.Time, eventArgs.Price);
                 _ = Portfolio.TryAddOrEditData(

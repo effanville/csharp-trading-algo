@@ -21,15 +21,15 @@ public interface IExecutionStrategy : IService
     /// <summary>
     /// Event that fires every short time period for checking strategy.
     /// </summary>
-    void OnTimeIncrementUpdate(object obj, TimeIncrementEventArgs eventArgs);
+    void OnTimeIncrementUpdate(object? obj, TimeIncrementEventArgs eventArgs);
 
     /// <summary>
     /// Event that is called at the point of the status of an exchange changing.
     /// </summary>
-    void OnExchangeStatusChanged(object obj, ExchangeStatusChangedEventArgs eventArgs);
+    void OnExchangeStatusChanged(object? obj, ExchangeStatusChangedEventArgs eventArgs);
 
     /// <summary>
     /// Event that is called at the point of a price change occurring.
     /// </summary>
-    void OnPriceUpdate(object obj, PriceUpdateEventArgs eventArgs);
+    void OnPriceUpdate(object? obj, PriceUpdateEventArgs eventArgs);
 }

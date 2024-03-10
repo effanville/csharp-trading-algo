@@ -8,7 +8,7 @@ namespace Effanville.TradingStructures.Pricing
 {
     public static class PriceServiceFactory
     {
-        public static IPriceService Create(PriceType priceType, PriceCalculationSettings settings, IStockExchange exchange, IScheduler scheduler)
+        public static IPriceService Create(PriceType priceType, PriceCalculationSettings settings, IStockExchange exchange, IScheduler? scheduler)
             => priceType switch
             {
                 PriceType.ExchangeFile => new ExchangeFilePriceService(exchange, scheduler),

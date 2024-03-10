@@ -40,15 +40,15 @@ public class TimeIncrementExecutionStrategy : IExecutionStrategy
 
     public void Restart() { }
 
-    public void OnTimeIncrementUpdate(object obj, TimeIncrementEventArgs eventArgs) { }
+    public void OnTimeIncrementUpdate(object? obj, TimeIncrementEventArgs eventArgs) { }
 
-    public void OnPriceUpdate(object obj, PriceUpdateEventArgs eventArgs)
+    public void OnPriceUpdate(object? obj, PriceUpdateEventArgs eventArgs)
     {
         _stockExchange.Stocks.First(stock => stock.Name.Equals(eventArgs.Instrument)).AddValue(eventArgs.Candle);
         _logger.Log(ReportType.Information, "PriceService", $"{_clock.UtcNow():yyyy-MM-ddTHH:mm:ss} - Price for {eventArgs.Instrument.Ticker} has changed to {eventArgs.Price}");
     }
 
-    public void OnExchangeStatusChanged(object obj, ExchangeStatusChangedEventArgs eventArgs)
+    public void OnExchangeStatusChanged(object? obj, ExchangeStatusChangedEventArgs eventArgs)
     {
         _logger.Log(ReportType.Information, "ExchangeService", $"{_clock.UtcNow():yyyy-MM-ddTHH:mm:ss} - Exchange session changed from {eventArgs.PreviousSession} to {eventArgs.NewSession}");
         var newSession = eventArgs.NewSession;
@@ -87,8 +87,7 @@ public class TimeIncrementExecutionStrategy : IExecutionStrategy
     {
         // Decide which stocks to buy, sell or do nothing with.
         var time = _clock.UtcNow();
-        TradeCollection requestedTrades = _decisionSystem.Decide(time, _stockExchange, _logger);
-        _tradeCollection = requestedTrades;
+        _tradeCollection  = _decisionSystem.Decide(time, _stockExchange, _logger);
     }
 
     public void Shutdown() { }

@@ -100,16 +100,16 @@ public class Strategy : IStrategy
         _logger.Log(ReportSeverity.Critical, ReportType.Information, "Ending", $"{time:yyyy-MM-ddTHH:mm:ss} total CAR {car}");
     }
 
-    public void OnTimeIncrementUpdate(object obj, TimeIncrementEventArgs eventArgs)
+    public void OnTimeIncrementUpdate(object? obj, TimeIncrementEventArgs eventArgs)
     {
         ExecutionStrategy.OnTimeIncrementUpdate(obj, eventArgs);
         PortfolioManager.ReportStatus(eventArgs.Time);
     }
 
-    public void OnExchangeStatusChanged(object obj, ExchangeStatusChangedEventArgs eventArgs) 
+    public void OnExchangeStatusChanged(object? obj, ExchangeStatusChangedEventArgs eventArgs) 
         => ExecutionStrategy.OnExchangeStatusChanged(obj, eventArgs);
 
-    public void OnPriceUpdate(object obj, PriceUpdateEventArgs eventArgs)
+    public void OnPriceUpdate(object? obj, PriceUpdateEventArgs eventArgs)
     {
         ExecutionStrategy.OnPriceUpdate(obj, eventArgs);
         PortfolioManager.OnPriceUpdate(obj, eventArgs);

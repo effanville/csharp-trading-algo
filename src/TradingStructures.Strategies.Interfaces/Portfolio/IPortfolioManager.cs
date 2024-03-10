@@ -66,7 +66,7 @@ namespace Effanville.TradingStructures.Strategies.Portfolio
         /// <summary>
         /// Method that is called at the point of a price change occurring.
         /// </summary>
-        void OnPriceUpdate(object obj, PriceUpdateEventArgs eventArgs);
+        void OnPriceUpdate(object? obj, PriceUpdateEventArgs eventArgs);
 
         /// <summary>
         /// Report the status of the portfolio at the time specified.

@@ -12,13 +12,13 @@ namespace Effanville.TradingStructures.Pricing.Implementation
     {
         private readonly PriceCalculationSettings _settings;
         private readonly IStockExchange _stockExchange;
-        private readonly IScheduler _scheduler;
+        private readonly IScheduler? _scheduler;
 
         public string Name => nameof(RandomWobblePriceCalculator);
 
         public event EventHandler<PriceUpdateEventArgs>? PriceChanged;
 
-        public RandomWobblePriceCalculator(PriceCalculationSettings settings, IStockExchange stockExchange, IScheduler scheduler)
+        public RandomWobblePriceCalculator(PriceCalculationSettings settings, IStockExchange stockExchange, IScheduler? scheduler)
         {
             _settings = settings;
             _stockExchange = stockExchange;
@@ -27,6 +27,11 @@ namespace Effanville.TradingStructures.Pricing.Implementation
 
         public void Initialize(EvolverSettings settings)
         {
+            if (_scheduler == null)
+            {
+                return;
+            }
+
             var startTime = settings.StartTime;
             var endTime = settings.EndTime;
             foreach (var stock in _stockExchange.Stocks)

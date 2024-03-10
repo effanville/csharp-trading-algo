@@ -20,7 +20,7 @@ namespace Effanville.TradingSystem.Trading
             TradeHistory decisionHistory,
             IReportLogger logger)
         {
-            Trade validatedTrade = portfolioManager.ValidateTrade(time, trade, priceService);
+            Trade? validatedTrade = portfolioManager.ValidateTrade(time, trade, priceService);
             if (validatedTrade == null)
             {
                 logger.Log(ReportType.Information, "Trading", $"{time:yyyy-MM-ddTHH:mm:ss} - Trade {trade} was not valid.");

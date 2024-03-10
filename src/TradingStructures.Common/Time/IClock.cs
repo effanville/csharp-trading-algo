@@ -32,4 +32,9 @@ public interface IClock
     /// Start the clock running
     /// </summary>
     void Start();
+    
+    /// <summary>
+    /// Stop the clock from running
+    /// </summary>
+    void Stop();
 }

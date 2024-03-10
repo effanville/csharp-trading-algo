@@ -16,7 +16,7 @@ namespace Effanville.TradingSystem.MarketEvolvers
     /// Contains the logic for the creation of user specified options for a simulation of
     /// a stock market trading algorithm.
     /// </summary>
-    public static partial class TradeSystem
+    public static class TradeSystem
     {
         /// <summary>
         /// Performs the setup of user specified inputs to the simulation.
@@ -26,9 +26,9 @@ namespace Effanville.TradingSystem.MarketEvolvers
         /// <param name="endTime">End time of the simulation</param>
         /// <param name="evolutionIncrement">The gap between trade times.</param>
         /// <param name="startSettings">The settings for the starting portfolio.</param>
+        /// <param name="constructionSettings">The settings detailing how to construct the portfolio.</param>
         /// <param name="decisionParameters">Parameters to specify the decision system.</param>
         /// <param name="traderOptions">The settings for how a trader should trade.</param>
-        /// <param name="buySellType">The type of the system used to buy and sell.</param>
         /// <param name="fileSystem">The file system to use.</param>
         /// <param name="reportLogger">A logging mechanism</param>
         /// <returns>The final portfolio, and the records of the decisions and trades.</returns>

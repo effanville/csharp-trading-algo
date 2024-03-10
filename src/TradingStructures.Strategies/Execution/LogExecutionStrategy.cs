@@ -31,15 +31,15 @@ namespace Effanville.TradingStructures.Strategies.Execution
         public void Restart() { }
 
         /// <inheritdoc/>
-        public void OnTimeIncrementUpdate(object obj, TimeIncrementEventArgs eventArgs)
+        public void OnTimeIncrementUpdate(object? obj, TimeIncrementEventArgs eventArgs)
             => _logger.Log(ReportType.Information, "TimeUpdate", $"TimeIncrement occurred. Time now is {eventArgs.Time.ToUniversalTime()}");
 
         /// <inheritdoc/>
-        public void OnPriceUpdate(object obj, PriceUpdateEventArgs eventArgs)
+        public void OnPriceUpdate(object? obj, PriceUpdateEventArgs eventArgs)
             => _logger.Log(ReportType.Information, "PriceService", $"Price for {eventArgs.Instrument.Ticker} has changed to {eventArgs.Price} at time {_clock.UtcNow()}");
 
         /// <inheritdoc/>
-        public void OnExchangeStatusChanged(object obj, ExchangeStatusChangedEventArgs eventArgs)
+        public void OnExchangeStatusChanged(object? obj, ExchangeStatusChangedEventArgs eventArgs)
             => _logger.Log(ReportType.Information, "ExchangeService", $"Exchange session changed from {eventArgs.PreviousSession} to {eventArgs.NewSession} at time {_clock.UtcNow()}");
 
         /// <inheritdoc/>

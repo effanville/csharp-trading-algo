@@ -22,7 +22,8 @@ public sealed class RealTimeClock : IClock
     }
 
     /// <inheritdoc/>
-    public void Start()
-    {
-    }
+    public void Start() { }
+    
+    /// <inheritdoc/>
+    public void Stop() { }
 }

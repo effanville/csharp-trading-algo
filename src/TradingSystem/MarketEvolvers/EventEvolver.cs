@@ -94,7 +94,7 @@ public sealed class EventEvolver
         _logger.Log(ReportType.Information, nameof(EventEvolver), "Initialization complete");
     }
 
-    public void TimeUpdate()
+    private void TimeUpdate()
     {
         var time = _clock.UtcNow();
         Strategy.OnTimeIncrementUpdate(null, new TimeIncrementEventArgs(time));
@@ -121,8 +121,9 @@ public sealed class EventEvolver
     /// <summary>
     /// End everything from running and record the results.
     /// </summary>
-    public void Shutdown()
+    private void Shutdown()
     {
+        _clock.Stop();
         _scheduler.Stop();
         _serviceManager.Shutdown();
         Result.Portfolio = Strategy.PortfolioManager.Portfolio;

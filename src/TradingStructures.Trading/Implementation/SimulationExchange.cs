@@ -46,7 +46,7 @@ namespace Effanville.TradingStructures.Trading.Implementation
         public void Restart() { }
 
         public void Shutdown() { }
-        public void OnTradeRequested(object obj, TradeSubmittedEventArgs eventArgs)
+        public void OnTradeRequested(object? obj, TradeSubmittedEventArgs eventArgs)
         {
             if (_clock == null)
             {

@@ -18,7 +18,7 @@ public class OrderListener : IOrderListener
 
     public string Name => nameof(OrderListener);
 
-    public event EventHandler<TradeSubmittedEventArgs> SubmitTrade; 
+    public event EventHandler<TradeSubmittedEventArgs>? SubmitTrade; 
 
     public OrderListener(
         IClock clock,
@@ -44,10 +44,10 @@ public class OrderListener : IOrderListener
     {
     }
 
-    public void OnTradeRequested(object obj, TradeSubmittedEventArgs eventArgs) 
+    public void OnTradeRequested(object? obj, TradeSubmittedEventArgs eventArgs) 
         => SubmitTrade?.Invoke(null,eventArgs);
 
-    public void OnTradeConfirmed(object obj, TradeCompletedEventArgs eventArgs)
+    public void OnTradeConfirmed(object? obj, TradeCompletedEventArgs eventArgs)
     {
         var time = _clock.UtcNow();
         if (eventArgs.TradeSuccessful)

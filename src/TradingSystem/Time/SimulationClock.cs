@@ -27,7 +27,7 @@ public sealed class SimulationClock : IClock
         _timer.Elapsed += OnTimedEvent;
     }
 
-    private void OnTimedEvent(object source, ElapsedEventArgs e) => _ticks += _increment;
+    private void OnTimedEvent(object? source, ElapsedEventArgs e) => _ticks += _increment;
 
     /// <inheritdoc/>
     public DateTime Now() => new DateTime(_ticks, DateTimeKind.Local);
@@ -45,5 +45,12 @@ public sealed class SimulationClock : IClock
     {
         _started = true;
         _timer.Enabled = true;
+    }
+
+    /// <inheritdoc/>
+    public void Stop()
+    {
+        _started = false;
+        _timer.Enabled = false;
     }
 }

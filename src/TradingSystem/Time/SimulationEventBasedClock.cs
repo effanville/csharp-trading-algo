@@ -36,4 +36,7 @@ public sealed class SimulationEventBasedClock : IClock
 
     /// <inheritdoc/>
     public void Start() { }
+    
+    /// <inheritdoc/>
+    public void Stop() { }
 }
