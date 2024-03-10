@@ -5,7 +5,7 @@ namespace Effanville.TradingStructures.Trading;
 /// <summary>
 /// EventArgs for submitting a new trade to be enacted.
 /// </summary>
-public class TradeSubmittedEventArgs
+public sealed class TradeSubmittedEventArgs
 {
     public decimal AvailableFunds { get; set; }
     
@@ -18,6 +18,7 @@ public class TradeSubmittedEventArgs
     {
         RequestedTrade = requestedTrade;
     }
+    
     public TradeSubmittedEventArgs(Trade requestedTrade, decimal availableFunds)
     {
         RequestedTrade = requestedTrade;

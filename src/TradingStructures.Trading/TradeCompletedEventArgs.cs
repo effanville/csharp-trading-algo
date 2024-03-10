@@ -15,8 +15,8 @@ public class TradeCompletedEventArgs
     /// </summary>
     public Trade RequestedTrade { get; }
     
-    public SecurityTrade ConfirmedTrade { get; }
-    public TradeCompletedEventArgs(Trade requestedTrade, SecurityTrade confirmedTrade, bool tradeSuccessful)
+    public SecurityTrade? ConfirmedTrade { get; }
+    public TradeCompletedEventArgs(Trade requestedTrade, SecurityTrade? confirmedTrade, bool tradeSuccessful)
     {
         RequestedTrade = requestedTrade;
         ConfirmedTrade = confirmedTrade;

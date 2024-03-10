@@ -11,12 +11,12 @@ public interface IMarketExchange
 {
     void OnTradeRequested(object obj, TradeSubmittedEventArgs eventArgs);
 
-    event EventHandler<TradeCompletedEventArgs> TradeCompleted;
+    event EventHandler<TradeCompletedEventArgs>? TradeCompleted;
     
     /// <summary>
     /// Enact a trade which was submitted at a given time.
     /// </summary>
-    SecurityTrade Trade(
+    SecurityTrade? Trade(
         DateTime time,
         Trade trade,
         IPriceService priceService,
