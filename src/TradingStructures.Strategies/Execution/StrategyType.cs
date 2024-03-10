@@ -8,7 +8,7 @@ public enum StrategyType : byte
     LogExecution,
 
     /// <summary>
-    /// Mimicks the manner in which a Time increment evolver over a day would work.
+    /// Mimics the manner in which a Time increment evolver over a day would work.
     /// </summary>
     TimeIncrementExecution
 }

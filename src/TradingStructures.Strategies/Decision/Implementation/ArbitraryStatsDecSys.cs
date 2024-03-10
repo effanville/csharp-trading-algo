@@ -18,9 +18,9 @@ namespace Effanville.TradingStructures.Strategies.Decision.Implementation
     /// </summary>
     internal sealed class ArbitraryStatsDecisionSystem : IDecisionSystem
     {
-        private readonly DecisionSystemFactory.Settings fSettings;
-        private readonly IReadOnlyList<IStockStatistic> fStockStatistics;
-        private Estimator.Result EstimatorResult;
+        private readonly DecisionSystemFactory.Settings _settings;
+        private readonly IReadOnlyList<IStockStatistic> _stockStatistics;
+        private Estimator.Result? _estimatorResult;
 
         /// <summary>
         /// Construct an instance.
@@ -28,12 +28,13 @@ namespace Effanville.TradingStructures.Strategies.Decision.Implementation
         public ArbitraryStatsDecisionSystem(DecisionSystemFactory.Settings decisionParameters)
         {
             List<IStockStatistic> stockStatistics = new List<IStockStatistic>();
-            foreach (StockStatisticType statistic in decisionParameters.Statistics)
+            if (decisionParameters.Statistics != null)
             {
-                stockStatistics.Add(StockStatisticFactory.Create(statistic));
+                stockStatistics.AddRange(decisionParameters.Statistics.Select(StockStatisticFactory.Create));
             }
-            fSettings = decisionParameters;
-            fStockStatistics = stockStatistics;
+
+            _settings = decisionParameters;
+            _stockStatistics = stockStatistics;
         }
 
         /// <inheritdoc/>
@@ -41,53 +42,70 @@ namespace Effanville.TradingStructures.Strategies.Decision.Implementation
         {
             DateTime burnInLength = settings.BurnInEnd;
 
-            int delayTime = fStockStatistics.Max(stock => stock.BurnInTime) + 2;
+            int delayTime = _stockStatistics.Max(stock => stock.BurnInTime) + 2;
             int numberEntries = ((burnInLength - settings.StartTime).Days - 5) * 5 / 7;
-            int numberStatistics = fStockStatistics.Count;
+            int numberStatistics = _stockStatistics.Count;
 
-            double[,] X = new double[settings.NumberStocks * numberEntries, numberStatistics];
-            double[] Y = new double[settings.NumberStocks * numberEntries];
+            double[,] fitData = new double[settings.NumberStocks * numberEntries, numberStatistics];
+            double[] fitValues = new double[settings.NumberStocks * numberEntries];
             for (int entryIndex = 0; entryIndex < numberEntries; entryIndex++)
             {
                 for (int stockIndex = 0; stockIndex < settings.NumberStocks; stockIndex++)
                 {
                     for (int statisticIndex = 0; statisticIndex < numberStatistics; statisticIndex++)
                     {
-                        X[entryIndex * settings.Exchange.Stocks.Count + stockIndex, statisticIndex] = fStockStatistics[statisticIndex].Calculate(settings.StartTime.AddDays(delayTime + entryIndex), settings.Exchange.Stocks[stockIndex]);
+                        fitData[entryIndex * settings.Exchange.Stocks.Count + stockIndex, statisticIndex] =
+                            _stockStatistics[statisticIndex]
+                                .Calculate(
+                                    settings.StartTime.AddDays(delayTime + entryIndex),
+                                    settings.Exchange.Stocks[stockIndex]);
                     }
 
-                    Y[entryIndex * settings.Exchange.Stocks.Count + stockIndex] = Convert.ToDouble(settings.Exchange.Stocks[stockIndex].Values(burnInLength.AddDays(delayTime + entryIndex), 0, fSettings.DayAfterPredictor, StockDataStream.Open).Last() / 100m);
+                    fitValues[entryIndex * settings.Exchange.Stocks.Count + stockIndex] = Convert.ToDouble(
+                        settings.Exchange.Stocks[stockIndex].Values(burnInLength.AddDays(delayTime + entryIndex), 0,
+                            _settings.DayAfterPredictor, StockDataStream.Open).Last() / 100m);
                 }
             }
 
-            var estimatorType = TypeHelpers.ConvertFrom(fSettings.DecisionSystemType);
+            var estimatorType = TypeHelpers.ConvertFrom(_settings.DecisionSystemType);
             if (!estimatorType.Success)
             {
-                EstimatorResult = Estimator.Fit(estimatorType.Data, X, Y);
-            }
-            else
-            {
-                _ = logger.Log(ReportSeverity.Critical, ReportType.Error, ReportLocation.Unknown, $"Created ArbitraryStats system without correct type.");
+                _estimatorResult = Estimator.Fit(estimatorType.Data, fitData, fitValues);
+                _ = logger.Log(ReportSeverity.Critical, ReportType.Warning, ReportLocation.Unknown,
+                    $"Estimator Weights are {string.Join(",", _estimatorResult.Estimator)}");
+                return;
             }
 
-            _ = logger.Log(ReportSeverity.Critical, ReportType.Warning, ReportLocation.Unknown, $"Estimator Weights are {string.Join(",", EstimatorResult.Estimator)}");
+            _ = logger.Log(ReportSeverity.Critical, ReportType.Error, ReportLocation.Unknown,
+                $"Created ArbitraryStats system without correct type.");
         }
 
         /// <inheritdoc/>
-        public TradeCollection Decide(DateTime day, IStockExchange stockExchange, IReportLogger logger)
+        public TradeCollection? Decide(DateTime day, IStockExchange stockExchange, IReportLogger logger)
         {
+            if (_estimatorResult == null)
+            {
+                return null;
+            }
+
             var decisions = new TradeCollection(day, day);
             foreach (IStock stock in stockExchange.Stocks)
             {
                 TradeType decision = TradeType.Unknown;
-                double[] values = stock.Values(day, 5, 0, StockDataStream.Open).Select(value => Convert.ToDouble(value)).ToArray();
-                double value = EstimatorResult.Evaluate(values);
+                double[] values = stock.Values(
+                        day,
+                        5,
+                        0,
+                        StockDataStream.Open)
+                    .Select(Convert.ToDouble)
+                    .ToArray();
+                double value = _estimatorResult.Evaluate(values);
 
-                if (value > fSettings.BuyThreshold)
+                if (value > _settings.BuyThreshold)
                 {
                     decision = TradeType.Buy;
                 }
-                else if (value < fSettings.SellThreshold)
+                else if (value < _settings.SellThreshold)
                 {
                     decision = TradeType.Sell;
                 }

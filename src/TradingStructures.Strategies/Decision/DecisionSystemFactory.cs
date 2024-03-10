@@ -1,5 +1,4 @@
 ﻿using Effanville.Common.Structure.Reporting;
-using Effanville.TradingStructures.Strategies.Decision;
 using Effanville.TradingStructures.Strategies.Decision.Implementation;
 
 namespace Effanville.TradingStructures.Strategies.Decision
@@ -32,7 +31,7 @@ namespace Effanville.TradingStructures.Strategies.Decision
             }
         }
 
-        public static IDecisionSystem CreateAndCalibrate(DecisionSystemFactory.Settings settings, DecisionSystemSettings decisionSettings, IReportLogger logger)
+        public static IDecisionSystem CreateAndCalibrate(Settings settings, DecisionSystemSettings decisionSettings, IReportLogger logger)
         {
             var decisionSystem = Create(settings);
             decisionSystem.Calibrate(decisionSettings, logger);

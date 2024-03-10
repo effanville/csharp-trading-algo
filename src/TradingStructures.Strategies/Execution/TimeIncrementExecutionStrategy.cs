@@ -15,12 +15,12 @@ namespace Effanville.TradingStructures.Strategies.Execution;
 
 public class TimeIncrementExecutionStrategy : IExecutionStrategy
 {
-    public event EventHandler<TradeSubmittedEventArgs> SubmitTradeEvent;
+    public event EventHandler<TradeSubmittedEventArgs>? SubmitTradeEvent;
     private readonly IReportLogger _logger;
     private readonly IClock _clock;
     private readonly IStockExchange _stockExchange;
     private readonly IDecisionSystem _decisionSystem;
-    private TradeCollection _tradeCollection;
+    private TradeCollection? _tradeCollection;
 
     public string Name => nameof(TimeIncrementExecutionStrategy);
 
@@ -36,14 +36,11 @@ public class TimeIncrementExecutionStrategy : IExecutionStrategy
         _decisionSystem = decisionSystem;
     }
 
-    public void Initialize(EvolverSettings settings)
-    {
-    }
+    public void Initialize(EvolverSettings settings) { }
 
-    public void Restart() => throw new NotImplementedException();
-    public void OnTimeIncrementUpdate(object obj, TimeIncrementEventArgs eventArgs)
-    {
-    }
+    public void Restart() { }
+
+    public void OnTimeIncrementUpdate(object obj, TimeIncrementEventArgs eventArgs) { }
 
     public void OnPriceUpdate(object obj, PriceUpdateEventArgs eventArgs)
     {
@@ -94,7 +91,5 @@ public class TimeIncrementExecutionStrategy : IExecutionStrategy
         _tradeCollection = requestedTrades;
     }
 
-    public void Shutdown()
-    {
-    }
+    public void Shutdown() { }
 }

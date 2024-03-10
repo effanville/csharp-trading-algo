@@ -10,7 +10,7 @@ namespace Effanville.TradingStructures.Strategies.Decision.Implementation
 {
     internal sealed class NewFiveDayStatsDecisionSystem : IDecisionSystem
     {
-        private readonly ArbitraryStatsDecisionSystem InnerSystem;
+        private readonly ArbitraryStatsDecisionSystem _innerSystem;
 
         public NewFiveDayStatsDecisionSystem(DecisionSystemFactory.Settings settings)
         {
@@ -27,17 +27,13 @@ namespace Effanville.TradingStructures.Strategies.Decision.Implementation
                 settings.BuyThreshold,
                 settings.SellThreshold,
                 settings.DayAfterPredictor);
-            InnerSystem = new ArbitraryStatsDecisionSystem(newSettings);
+            _innerSystem = new ArbitraryStatsDecisionSystem(newSettings);
         }
 
         public void Calibrate(DecisionSystemSettings settings, IReportLogger logger)
-        {
-            InnerSystem.Calibrate(settings, logger);
-        }
+            => _innerSystem.Calibrate(settings, logger);
 
-        public TradeCollection Decide(DateTime day, IStockExchange stockExchange, IReportLogger logger)
-        {
-            return InnerSystem.Decide(day, stockExchange, logger);
-        }
+        public TradeCollection? Decide(DateTime day, IStockExchange stockExchange, IReportLogger logger)
+            => _innerSystem.Decide(day, stockExchange, logger);
     }
 }

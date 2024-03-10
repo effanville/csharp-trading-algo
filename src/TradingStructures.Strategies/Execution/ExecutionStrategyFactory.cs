@@ -14,13 +14,11 @@ public static class ExecutionStrategyFactory
         IClock clock,
         IReportLogger logger,
         IStockExchange stockExchange,
-        IDecisionSystem decisionSystem)
-    {
-        return strategyType switch
+        IDecisionSystem decisionSystem) 
+        => strategyType switch
         {
             StrategyType.LogExecution => new LogExecutionStrategy(clock, logger),
             StrategyType.TimeIncrementExecution => new TimeIncrementExecutionStrategy(clock, logger, stockExchange, decisionSystem),
             _ => throw new ArgumentOutOfRangeException($"StrategyType {strategyType} invalid."),
         };
-    }
 }

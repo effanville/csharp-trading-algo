@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 
 using Effanville.FinancialStructures.Stocks.Statistics;
-using Effanville.TradingStructures.Strategies.Decision;
 
 namespace Effanville.TradingStructures.Strategies.Decision
 {
@@ -14,7 +13,7 @@ namespace Effanville.TradingStructures.Strategies.Decision
                 get;
             }
 
-            public IReadOnlyList<StockStatisticType> Statistics
+            public IReadOnlyList<StockStatisticType>? Statistics
             {
                 get;
             }

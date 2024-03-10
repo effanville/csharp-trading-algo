@@ -21,6 +21,6 @@ namespace Effanville.TradingStructures.Strategies.Decision
         /// <summary>
         /// The process by which a decision on each stock in the exchange is made.
         /// </summary>
-        TradeCollection Decide(DateTime day, IStockExchange stockExchange, IReportLogger logger);
+        TradeCollection? Decide(DateTime day, IStockExchange stockExchange, IReportLogger logger);
     }
 }

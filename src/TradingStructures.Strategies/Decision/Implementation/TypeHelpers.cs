@@ -5,19 +5,13 @@ namespace Effanville.TradingStructures.Strategies.Decision.Implementation
 {
     internal static class TypeHelpers
     {
-        internal static Result<Estimator.Type> ConvertFrom(DecisionSystem system)
-        {
-            switch (system)
+        internal static Result<Estimator.Type> ConvertFrom(DecisionSystem system) 
+            => system switch
             {
-                case DecisionSystem.FiveDayStatsLeastSquares:
-                    return Estimator.Type.LeastSquares;
-                case DecisionSystem.FiveDayStatsLasso:
-                    return Estimator.Type.LassoRegression;
-                case DecisionSystem.FiveDayStatsRidge:
-                    return Estimator.Type.RidgeRegression;
-                default:
-                    return new ErrorResult<Estimator.Type>("Argument of of supported type.");
-            }
-        }
+                DecisionSystem.FiveDayStatsLeastSquares => Estimator.Type.LeastSquares,
+                DecisionSystem.FiveDayStatsLasso => Estimator.Type.LassoRegression,
+                DecisionSystem.FiveDayStatsRidge => Estimator.Type.RidgeRegression,
+                _ => new ErrorResult<Estimator.Type>("Argument of of supported type.")
+            };
     }
 }

@@ -1,5 +1,4 @@
 using System;
-using System.Threading.Tasks;
 
 using Effanville.Common.Structure.DataStructures;
 using Effanville.Common.Structure.MathLibrary.Finance;
@@ -28,7 +27,7 @@ public class Strategy : IStrategy
     /// <summary>
     /// Event to subscribe to for the dealing with Trades created.
     /// </summary>
-    public event EventHandler<TradeSubmittedEventArgs> SubmitTradeEvent;
+    public event EventHandler<TradeSubmittedEventArgs>? SubmitTradeEvent;
     public IDecisionSystem DecisionSystem { get; }
     public IExecutionStrategy ExecutionStrategy { get; }
     public IPortfolioManager PortfolioManager { get; }
@@ -57,11 +56,11 @@ public class Strategy : IStrategy
         PortfolioManager.Initialize(settings);
     }
 
-    private void ExecutionStrategyOnSubmitTradeEvent(object sender, TradeSubmittedEventArgs e)
+    private void ExecutionStrategyOnSubmitTradeEvent(object? sender, TradeSubmittedEventArgs e)
     {
         var time = _clock.UtcNow();
         var trade = e.RequestedTrade;
-        Trade validatedTrade = PortfolioManager.ValidateTrade(time, trade, _priceService);
+        Trade? validatedTrade = PortfolioManager.ValidateTrade(time, trade, _priceService);
         if (validatedTrade == null)
         {
             _logger.Log(ReportType.Information, "Trading", $"{time:yyyy-MM-ddTHH:mm:ss} - Trade {trade} was not valid.");

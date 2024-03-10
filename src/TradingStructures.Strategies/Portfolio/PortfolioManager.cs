@@ -102,7 +102,7 @@ namespace Effanville.TradingStructures.Strategies.Portfolio
         }
 
         /// <inheritdoc/>
-        public Trade ValidateTrade(DateTime time, Trade trade, IPriceService priceService)
+        public Trade? ValidateTrade(DateTime time, Trade trade, IPriceService priceService)
         {
             if (trade.BuySell == TradeType.Buy)
             {
@@ -158,7 +158,7 @@ namespace Effanville.TradingStructures.Strategies.Portfolio
         }
 
         /// <inheritdoc/>
-        public bool AddTrade(DateTime time, Trade trade, SecurityTrade tradeConfirmation)
+        public bool AddTrade(DateTime time, Trade trade, SecurityTrade? tradeConfirmation)
         {
             if (tradeConfirmation == null)
             {

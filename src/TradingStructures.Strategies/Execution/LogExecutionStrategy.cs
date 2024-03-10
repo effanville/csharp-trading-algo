@@ -11,11 +11,11 @@ namespace Effanville.TradingStructures.Strategies.Execution
 {
     public class LogExecutionStrategy : IExecutionStrategy
     {
-        public event EventHandler<TradeSubmittedEventArgs> SubmitTradeEvent;
+        public event EventHandler<TradeSubmittedEventArgs>? SubmitTradeEvent;
         private readonly IReportLogger _logger;
         private readonly IClock _clock;
 
-        public string Name => throw new NotImplementedException();
+        public string Name => nameof(LogExecutionStrategy);
 
         public LogExecutionStrategy(IClock clock, IReportLogger logger)
         {
@@ -28,7 +28,7 @@ namespace Effanville.TradingStructures.Strategies.Execution
         {
         }
 
-        public void Restart() => throw new NotImplementedException();
+        public void Restart() { }
 
         /// <inheritdoc/>
         public void OnTimeIncrementUpdate(object obj, TimeIncrementEventArgs eventArgs)
