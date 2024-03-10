@@ -1,12 +1,7 @@
 <Project>
 
-  <PropertyGroup Condition="$([MSBuild]::IsOSPlatform('OSX'))">
-	<TargetFrameworks>net6.0</TargetFrameworks>	    
-    <Platforms>x64;AnyCPU</Platforms>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="$([MSBuild]::IsOSPlatform('Windows'))">
-    <TargetFrameworks>net6.0-windows</TargetFrameworks>
+  <PropertyGroup>
+    <TargetFrameworks>net7.0</TargetFrameworks>
     <RuntimeIdentifier>win-x64</RuntimeIdentifier>
     <Platforms>x64</Platforms>
   </PropertyGroup>
@@ -19,20 +14,32 @@
   </PropertyGroup>
 
   <PropertyGroup>
+    <RootNamespace>Effanville.$(MSBuildProjectName)</RootNamespace>
+    <AssemblyName>Effanville.$(MSBuildProjectName)</AssemblyName>
     <Deterministic>false</Deterministic>
     <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)'=='Debug'">
-    <OutputPath>..\bin\Debug\</OutputPath>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)'=='Release'">
-    <OutputPath>..\bin\Release</OutputPath>
   </PropertyGroup>
 
   <ItemGroup>
     <None Include="..\.editorconfig" Link=".editorconfig" />
   </ItemGroup>
 
+  <ItemGroup Condition="$(MSBuildProjectFile.Contains('.Tests'))">
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.5.0"/>
+    <PackageReference Include="NUnit" Version="3.13.3"/>
+    <PackageReference Include="NUnit3TestAdapter" Version="4.2.1">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="NUnit.Analyzers" Version="3.6.1"/>
+    <PackageReference Include="coverlet.collector" Version="3.2.0">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+  </ItemGroup>
+  <ItemGroup Condition="!$(MSBuildProjectFile.Contains('.Tests'))">
+    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleToAttribute">
+      <_Parameter1>$(AssemblyName).Tests</_Parameter1>
+    </AssemblyAttribute>
+  </ItemGroup>
 </Project>

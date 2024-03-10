@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <Nullable>enable</Nullable>
+        <RootNamespace>Effanville.TradingStructures.Strategies</RootNamespace>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\TradingStructures.Common\TradingStructures.Common.csproj" />
+      <ProjectReference Include="..\TradingStructures.Exchanges\TradingStructures.Exchanges.csproj" />
+      <ProjectReference Include="..\TradingStructures.Pricing\TradingStructures.Pricing.csproj" />
+      <ProjectReference Include="..\TradingStructures.Trading\TradingStructures.Trading.csproj" />
+    </ItemGroup>
+
+
+
+</Project>

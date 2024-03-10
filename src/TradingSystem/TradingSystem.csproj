@@ -1,0 +1,33 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Nager.Date" Version="1.30.0"/>
+    <PackageReference Include="System.IO.Abstractions" Version="17.2.3"/>
+    <PackageReference Include="System.Net.Http" Version="4.3.4"/>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\FinancialStructures\src\FinancialStructures\FinancialStructures.csproj"/>
+    <ProjectReference Include="..\..\FinancialStructures\src\FinancialStructures.Stocks\FinancialStructures.Stocks.csproj"/>
+    <ProjectReference Include="..\..\FinancialStructures\Common\src\Common.Structure\Common.Structure.csproj"/>
+    <ProjectReference Include="..\TradingStructures.Common\TradingStructures.Common.csproj"/>
+    <ProjectReference Include="..\TradingStructures.Exchanges\TradingStructures.Exchanges.csproj"/>
+    <ProjectReference Include="..\TradingStructures.Pricing\TradingStructures.Pricing.csproj"/>
+    <ProjectReference Include="..\TradingStructures.Strategies.Interfaces\TradingStructures.Strategies.Interfaces.csproj"/>
+    <ProjectReference Include="..\TradingStructures.Strategies\TradingStructures.Strategies.csproj"/>
+    <ProjectReference Include="..\TradingStructures.Trading\TradingStructures.Trading.csproj"/>
+  </ItemGroup>
+
+  <ItemGroup>
+    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleToAttribute">
+      <_Parameter1>TradingConsole.Tests</_Parameter1>
+    </AssemblyAttribute>
+  </ItemGroup>
+  <ItemGroup Condition="!$(MSBuildProjectFile.Contains('.Tests'))">
+    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleToAttribute">
+      <_Parameter1>Effanville.TradingConsole.Tests</_Parameter1>
+    </AssemblyAttribute>
+  </ItemGroup>
+</Project>
