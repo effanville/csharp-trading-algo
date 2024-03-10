@@ -3,13 +3,11 @@ using System.Linq;
 
 using Effanville.Common.Console.Options;
 
-namespace TradingConsole.Commands.Execution
+namespace Effanville.TradingConsole.Commands.Execution
 {
     public static class CommandOptionExtensions
     {
-        public static CommandOption<T> GetOption<T>(this IList<CommandOption> options, string optionName)
-        {
-            return options.FirstOrDefault(option => option.Name == optionName) as CommandOption<T>;
-        }
+        public static CommandOption<T>? GetOption<T>(this IEnumerable<CommandOption> options, string optionName) 
+            => options.FirstOrDefault(option => option.Name == optionName) as CommandOption<T>;
     }
 }

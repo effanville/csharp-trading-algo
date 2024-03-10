@@ -6,6 +6,7 @@ using System.Text;
 using Effanville.Common.Console;
 using Effanville.Common.Structure.DataStructures;
 using Effanville.Common.Structure.Reporting;
+using Effanville.TradingConsole;
 
 using NUnit.Framework;
 

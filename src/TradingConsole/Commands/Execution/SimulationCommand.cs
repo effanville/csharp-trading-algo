@@ -12,7 +12,7 @@ using Effanville.TradingStructures.Strategies.Decision;
 using Effanville.TradingStructures.Strategies.Portfolio;
 using Effanville.TradingSystem.MarketEvolvers;
 
-namespace TradingConsole.Commands.Execution
+namespace Effanville.TradingConsole.Commands.Execution
 {
     /// <summary>
     /// Command pertaining to running a simulation of the stock market for
@@ -20,7 +20,7 @@ namespace TradingConsole.Commands.Execution
     /// </summary>
     internal sealed partial class SimulationCommand : ICommand
     {
-        private readonly IFileSystem fFileSystem;
+        private readonly IFileSystem _fileSystem;
 
         private const string StartDateName = "start";
         private const string EndDateName = "end";
@@ -36,22 +36,16 @@ namespace TradingConsole.Commands.Execution
         public string Name => "simulate";
 
         /// <inheritdoc/>
-        public IList<CommandOption> Options
-        {
-            get;
-        } = new List<CommandOption>();
+        public IList<CommandOption> Options { get; } = new List<CommandOption>();
         /// <inheritdoc/>
-        public IList<ICommand> SubCommands
-        {
-            get;
-        } = new List<ICommand>();
+        public IList<ICommand> SubCommands { get; } = new List<ICommand>();
 
         /// <summary>
         /// Construct an instance.
         /// </summary>
         public SimulationCommand(IFileSystem fileSystem)
         {
-            fFileSystem = fileSystem;
+            _fileSystem = fileSystem;
 
             Options.Add(new CommandOption<string>("jsonSettingsPath", "The path to the json file containing the options for this execution."));
 
@@ -78,34 +72,35 @@ namespace TradingConsole.Commands.Execution
         public bool Validate(IConsole console, string[] args) => Validate(console, null, args);
 
         /// <inheritdoc/>
-        public bool Validate(IConsole console, IReportLogger logger, string[] args) => CommandExtensions.Validate(this, args, console, logger);
+        public bool Validate(IConsole console, IReportLogger? logger, string[] args)
+            => this.Validate(args, console, logger);
 
         /// <inheritdoc/>
-        public int Execute(IConsole console, string[] args = null) => Execute(console, null, args);
+        public int Execute(IConsole console, string[] args) => Execute(console, null, args);
 
         /// <inheritdoc/>
-        public int Execute(IConsole console, IReportLogger logger, string[] args)
+        public int Execute(IConsole console, IReportLogger? logger, string[] args)
         {
             using (new Timer(logger, "TotalTime"))
             {
-                var settings = Settings.CreateSettings(Options, fFileSystem);
+                Settings? settings = Settings.CreateSettings(Options, _fileSystem);
+                if (settings == null)
+                {
+                    return 1;
+                }
+
                 console.WriteLine(settings.StockFilePath);
-                var output = TradeSystem.SetupAndSimulate(
+                EvolverResult output = TradeSystem.SetupAndSimulate(
                     settings.StockFilePath,
                     settings.StartTime,
                     settings.EndTime,
                     settings.EvolutionIncrement,
                     settings.PortfolioSettings,
-                    PortfolioConstructionSettings.Default(),
+                    settings.PortfolioConstructionSettings,
                     settings.DecisionSystemSettings,
                     settings.TradeMechanismSettings,
-                    fFileSystem,
+                    _fileSystem,
                     logger);
-
-                if (output.Portfolio == null)
-                {
-                    return 1;
-                }
 
                 return 0;
             }

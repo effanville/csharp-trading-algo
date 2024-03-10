@@ -5,34 +5,26 @@ using System.IO.Abstractions;
 using Effanville.Common.Console;
 using Effanville.Common.Console.Commands;
 using Effanville.Common.Structure.Reporting;
+using Effanville.TradingConsole.Commands.ExchangeCreation;
 
-using TradingConsole.Commands.ExchangeCreation;
-using TradingConsole.Commands.Execution;
+using SimulationCommand = Effanville.TradingConsole.Commands.Execution.SimulationCommand;
 
-namespace TradingConsole
+namespace Effanville.TradingConsole
 {
-    internal class Program
+    internal static class Program
     {
         internal static int Main(string[] args)
         {
             var fileSystem = new FileSystem();
 
-            // Create the Console to write output.
-            void writeLine(string text) => Console.WriteLine(text);
-            void writeError(string text)
-            {
-                var color = Console.ForegroundColor;
-                Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine($"[{DateTime.Now:yyyyMMdd-hh:mm:ss}]: {text}");
-                Console.ForegroundColor = color;
-            }
-            IConsole console = new ConsoleInstance(writeError, writeLine);
+            IConsole console = new ConsoleInstance(WriteError, WriteLine);
 
             // Create the logger.
-            var reports = new ErrorReports();
-            void reportAction(ReportSeverity severity, ReportType reportType, string location, string text)
+            IReportLogger logger = new LogReporter(ReportAction, saveInternally: true);
+            return InternalMain(args, fileSystem, console, logger);
+
+            void ReportAction(ReportSeverity severity, ReportType reportType, string location, string text)
             {
-                reports.AddErrorReport(severity, reportType, location, text);
                 var color = Console.ForegroundColor;
                 Console.ForegroundColor = reportType == ReportType.Error
                     ? ConsoleColor.Red
@@ -43,8 +35,17 @@ namespace TradingConsole
 
                 Console.ForegroundColor = color;
             }
-            IReportLogger logger = new LogReporter(reportAction);
-            return InternalMain(args, fileSystem, console, logger);
+
+            void WriteError(string text)
+            {
+                var color = Console.ForegroundColor;
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine($"[{DateTime.Now:yyyyMMdd-hh:mm:ss}]: {text}");
+                Console.ForegroundColor = color;
+            }
+
+            // Create the Console to write output.
+            void WriteLine(string text) => Console.WriteLine(text);
         }
 
         internal static int InternalMain(string[] args, IFileSystem fileSystem, IConsole console, IReportLogger logger)

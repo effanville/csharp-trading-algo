@@ -6,7 +6,7 @@ using Effanville.Common.Console.Commands;
 using Effanville.Common.Console.Options;
 using Effanville.Common.Structure.Reporting;
 
-namespace TradingConsole.Commands.ExchangeCreation
+namespace Effanville.TradingConsole.Commands.ExchangeCreation
 {
     /// <summary>
     /// Command that controls the downloading of stock data.
@@ -44,12 +44,14 @@ namespace TradingConsole.Commands.ExchangeCreation
         public int Execute(IConsole console, string[] args) => Execute(console, null, args);
 
         /// <inheritdoc/>
-        public int Execute(IConsole console, IReportLogger logger, string[] args) => CommandExtensions.Execute(this, console, logger, args);
+        public int Execute(IConsole console, IReportLogger? logger, string[] args) 
+            => CommandExtensions.Execute(this, console, logger, args);
 
         /// <inheritdoc/>
         public bool Validate(IConsole console, string[] args) => Validate(console, null, args);
 
         /// <inheritdoc/>
-        public bool Validate(IConsole console, IReportLogger logger, string[] args) => CommandExtensions.Validate(this, args, console, logger);
+        public bool Validate(IConsole console, IReportLogger? logger, string[] args) 
+            => this.Validate(args, console, logger);
     }
 }

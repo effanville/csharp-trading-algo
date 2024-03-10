@@ -35,7 +35,7 @@ namespace Effanville.TradingStructures.Strategies.Decision
 
             public Settings(
                 DecisionSystem decisionSystemType,
-                IReadOnlyList<StockStatisticType> statistics,
+                IReadOnlyList<StockStatisticType>? statistics,
                 double buyThreshold,
                 double sellThreshold,
                 int dayAfterPredictor)
