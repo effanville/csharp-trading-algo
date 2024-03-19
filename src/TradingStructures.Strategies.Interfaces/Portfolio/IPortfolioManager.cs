@@ -51,7 +51,7 @@ namespace Effanville.TradingStructures.Strategies.Portfolio
         /// Validate that the following trade is suitable, and potentially alter
         /// the trade output.
         /// </summary>
-        Trade? ValidateTrade(DateTime time, Trade trade, IPriceService priceService);
+        Trade? ValidateTrade(DateTime time, Trade trade, IPriceService? priceService);
 
         /// <summary>
         /// Return the amount of money available to trade.

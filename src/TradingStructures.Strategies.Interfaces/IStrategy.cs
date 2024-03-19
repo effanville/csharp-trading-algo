@@ -20,6 +20,16 @@ public interface IStrategy : IService
     public IDecisionSystem DecisionSystem { get; }
     public IExecutionStrategy ExecutionStrategy {get;}
     public IPortfolioManager PortfolioManager { get; }
+
+    /// <summary>
+    /// Register the Clock for the strategy.
+    /// </summary>
+    void RegisterClock(IClock clock);
+    
+    /// <summary>
+    /// Register the priceService for the strategy.
+    /// </summary>
+    void RegisterPriceService(IPriceService priceService);
     
     /// <summary>
     /// Event that fires every short time period for checking strategy.

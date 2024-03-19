@@ -1,4 +1,6 @@
-﻿using Effanville.TradingStructures.Common.Trading;
+﻿using System;
+
+using Effanville.TradingStructures.Common.Trading;
 
 namespace Effanville.TradingStructures.Trading;
 
@@ -7,6 +9,7 @@ namespace Effanville.TradingStructures.Trading;
 /// </summary>
 public sealed class TradeSubmittedEventArgs
 {
+    public DateTime Time { get; set; }
     public decimal AvailableFunds { get; set; }
     
     /// <summary>

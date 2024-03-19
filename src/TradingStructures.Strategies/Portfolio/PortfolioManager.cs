@@ -102,12 +102,12 @@ namespace Effanville.TradingStructures.Strategies.Portfolio
         }
 
         /// <inheritdoc/>
-        public Trade? ValidateTrade(DateTime time, Trade trade, IPriceService priceService)
+        public Trade? ValidateTrade(DateTime time, Trade trade, IPriceService? priceService)
         {
             if (trade.BuySell == TradeType.Buy)
             {
                 // If not enough money to buy then exit.
-                decimal priceToBuy = priceService.GetAskPrice(time, trade.StockName);
+                decimal priceToBuy = priceService?.GetAskPrice(time, trade.StockName) ?? decimal.MinValue;
                 if (priceToBuy.Equals(decimal.MinValue))
                 {
                     return null;

@@ -11,14 +11,13 @@ public static class ExecutionStrategyFactory
 {
     public static IExecutionStrategy Create(
         StrategyType strategyType,
-        IClock clock,
         IReportLogger logger,
         IStockExchange stockExchange,
         IDecisionSystem decisionSystem) 
         => strategyType switch
         {
-            StrategyType.LogExecution => new LogExecutionStrategy(clock, logger),
-            StrategyType.TimeIncrementExecution => new TimeIncrementExecutionStrategy(clock, logger, stockExchange, decisionSystem),
+            StrategyType.LogExecution => new LogExecutionStrategy(logger),
+            StrategyType.TimeIncrementExecution => new TimeIncrementExecutionStrategy(logger, stockExchange, decisionSystem),
             _ => throw new ArgumentOutOfRangeException($"StrategyType {strategyType} invalid."),
         };
 }

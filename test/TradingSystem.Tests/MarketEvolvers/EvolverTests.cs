@@ -15,6 +15,7 @@ using Effanville.TradingStructures.Strategies.Decision;
 using Effanville.TradingStructures.Strategies.Execution;
 using Effanville.TradingStructures.Strategies.Portfolio;
 using Effanville.TradingStructures.Common.Trading;
+using Effanville.TradingStructures.Strategies;
 using Effanville.TradingSystem.MarketEvolvers;
 
 using NUnit.Framework;
@@ -102,12 +103,13 @@ internal class EventEvolverTests
         var startSettings = new PortfolioStartSettings("", startTime, 20000m);
         var constructionSettings = PortfolioConstructionSettings.Default();
         var portfolioManager = PortfolioManager.LoadFromFile(fileSystem, startSettings, constructionSettings, logger);
+        var decisionSystem = DecisionSystemFactory.Create(new DecisionSystemFactory.Settings(DecisionSystem.BuyAll));
+        var executionStrategy = ExecutionStrategyFactory.Create(StrategyType.TimeIncrementExecution, logger, stockExchange, decisionSystem);
+        var strategy = new Strategy(decisionSystem, executionStrategy, portfolioManager, logger);
         var evolver = new EventEvolver(
             settings,
             stockExchange,
-            portfolioManager,
-            StrategyType.TimeIncrementExecution,
-            DecisionSystemFactory.Create(new DecisionSystemFactory.Settings(DecisionSystem.BuyAll)),
+            strategy,
             logger);
         using (new Timer(logger, "Execution"))
         {

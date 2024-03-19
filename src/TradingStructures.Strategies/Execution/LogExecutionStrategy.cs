@@ -13,13 +13,12 @@ namespace Effanville.TradingStructures.Strategies.Execution
     {
         public event EventHandler<TradeSubmittedEventArgs>? SubmitTradeEvent;
         private readonly IReportLogger _logger;
-        private readonly IClock _clock;
+        private IClock? _clock;
 
         public string Name => nameof(LogExecutionStrategy);
 
-        public LogExecutionStrategy(IClock clock, IReportLogger logger)
+        public LogExecutionStrategy(IReportLogger logger)
         {
-            _clock = clock;
             _logger = logger;
         }
 
@@ -36,11 +35,11 @@ namespace Effanville.TradingStructures.Strategies.Execution
 
         /// <inheritdoc/>
         public void OnPriceUpdate(object? obj, PriceUpdateEventArgs eventArgs)
-            => _logger.Log(ReportType.Information, "PriceService", $"Price for {eventArgs.Instrument.Ticker} has changed to {eventArgs.Price} at time {_clock.UtcNow()}");
+            => _logger.Log(ReportType.Information, "PriceService", $"Price for {eventArgs.Instrument.Ticker} has changed to {eventArgs.Price} at time {eventArgs.Time}, actual time  {_clock?.UtcNow()}");
 
         /// <inheritdoc/>
         public void OnExchangeStatusChanged(object? obj, ExchangeStatusChangedEventArgs eventArgs)
-            => _logger.Log(ReportType.Information, "ExchangeService", $"Exchange session changed from {eventArgs.PreviousSession} to {eventArgs.NewSession} at time {_clock.UtcNow()}");
+            => _logger.Log(ReportType.Information, "ExchangeService", $"Exchange session changed from {eventArgs.PreviousSession} to {eventArgs.NewSession} at time {eventArgs.Time}, actual time {_clock?.UtcNow()}");
 
         /// <inheritdoc/>
         public void Shutdown()

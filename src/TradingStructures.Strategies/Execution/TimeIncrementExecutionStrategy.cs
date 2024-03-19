@@ -17,7 +17,6 @@ public class TimeIncrementExecutionStrategy : IExecutionStrategy
 {
     public event EventHandler<TradeSubmittedEventArgs>? SubmitTradeEvent;
     private readonly IReportLogger _logger;
-    private readonly IClock _clock;
     private readonly IStockExchange _stockExchange;
     private readonly IDecisionSystem _decisionSystem;
     private TradeCollection? _tradeCollection;
@@ -25,12 +24,10 @@ public class TimeIncrementExecutionStrategy : IExecutionStrategy
     public string Name => nameof(TimeIncrementExecutionStrategy);
 
     public TimeIncrementExecutionStrategy(
-        IClock clock,
         IReportLogger logger,
         IStockExchange stockExchange,
         IDecisionSystem decisionSystem)
     {
-        _clock = clock;
         _logger = logger;
         _stockExchange = stockExchange;
         _decisionSystem = decisionSystem;
@@ -45,28 +42,28 @@ public class TimeIncrementExecutionStrategy : IExecutionStrategy
     public void OnPriceUpdate(object? obj, PriceUpdateEventArgs eventArgs)
     {
         _stockExchange.Stocks.First(stock => stock.Name.Equals(eventArgs.Instrument)).AddValue(eventArgs.Candle);
-        _logger.Log(ReportType.Information, "PriceService", $"{_clock.UtcNow():yyyy-MM-ddTHH:mm:ss} - Price for {eventArgs.Instrument.Ticker} has changed to {eventArgs.Price}");
+        _logger.Log(ReportType.Information, "PriceService", $"{eventArgs.Time:yyyy-MM-ddTHH:mm:ss} - Price for {eventArgs.Instrument.Ticker} has changed to {eventArgs.Price}");
     }
 
     public void OnExchangeStatusChanged(object? obj, ExchangeStatusChangedEventArgs eventArgs)
     {
-        _logger.Log(ReportType.Information, "ExchangeService", $"{_clock.UtcNow():yyyy-MM-ddTHH:mm:ss} - Exchange session changed from {eventArgs.PreviousSession} to {eventArgs.NewSession}");
+        _logger.Log(ReportType.Information, "ExchangeService", $"{eventArgs.Time:yyyy-MM-ddTHH:mm:ss} - Exchange session changed from {eventArgs.PreviousSession} to {eventArgs.NewSession}");
         var newSession = eventArgs.NewSession;
         if (newSession == ExchangeSession.Continuous)
         {
-            MarketOpen();
+            MarketOpen(eventArgs.Time);
         }
         else if (newSession == ExchangeSession.Closed)
         {
-            MarketClose();
+            MarketClose(eventArgs.Time);
         }
     }
 
-    private void MarketOpen()
+    private void MarketOpen(DateTime time)
     {
         if (_tradeCollection == null)
         {
-            _logger.Log(ReportType.Information, "MarketOpen", $"{_clock.UtcNow():yyyy-MM-ddTHH:mm:ss} - No Trades to enact");
+            _logger.Log(ReportType.Information, "MarketOpen", $"{time:yyyy-MM-ddTHH:mm:ss} - No Trades to enact");
             return;
         }
 
@@ -83,12 +80,9 @@ public class TimeIncrementExecutionStrategy : IExecutionStrategy
         _tradeCollection = null;
     }
 
-    private void MarketClose()
-    {
+    private void MarketClose(DateTime time) =>
         // Decide which stocks to buy, sell or do nothing with.
-        var time = _clock.UtcNow();
         _tradeCollection  = _decisionSystem.Decide(time, _stockExchange, _logger);
-    }
 
     public void Shutdown() { }
 }

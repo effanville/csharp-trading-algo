@@ -58,12 +58,14 @@ public sealed class TradingExchange : IService
             return;
         }
 
+        DateTime exchangeOpen = time.Date.Add(ExchangeOpen.ToTimeSpan());
+        DateTime exchangeClose = time.Date.Add(ExchangeClose.ToTimeSpan());
         _scheduler.ScheduleNewEvent(
-            () => RaiseExchangeStatusChanged(null, new ExchangeStatusChangedEventArgs(ExchangeSession.Closed, ExchangeSession.Continuous)),
-            time.Date.Add(ExchangeOpen.ToTimeSpan()));
+            () => RaiseExchangeStatusChanged(null, new ExchangeStatusChangedEventArgs(exchangeOpen, ExchangeSession.Closed, ExchangeSession.Continuous)),
+            exchangeOpen);
         _scheduler.ScheduleNewEvent(
-            () => RaiseExchangeStatusChanged(null, new ExchangeStatusChangedEventArgs(ExchangeSession.Continuous, ExchangeSession.Closed)),
-            time.Date.Add(ExchangeClose.ToTimeSpan()));
+            () => RaiseExchangeStatusChanged(null, new ExchangeStatusChangedEventArgs(exchangeClose, ExchangeSession.Continuous, ExchangeSession.Closed)),
+            exchangeClose);
     }
 
     public void Restart() { }

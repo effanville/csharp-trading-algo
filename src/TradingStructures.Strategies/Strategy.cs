@@ -19,8 +19,8 @@ namespace Effanville.TradingStructures.Strategies;
 
 public class Strategy : IStrategy
 {
-    private readonly IPriceService _priceService;
-    private readonly IClock _clock;
+    private IPriceService? _priceService;
+    private IClock? _clock;
     private readonly IReportLogger _logger;
     public string Name => nameof(Strategy);
     
@@ -36,17 +36,17 @@ public class Strategy : IStrategy
         IDecisionSystem decisionSystem, 
         IExecutionStrategy executionStrategy,
         IPortfolioManager portfolioManager,
-        IPriceService priceService,
-        IClock clock,
         IReportLogger logger)
     {
-        _priceService = priceService;
-        _clock = clock;
         _logger = logger;
         DecisionSystem = decisionSystem;
         ExecutionStrategy = executionStrategy;
         PortfolioManager = portfolioManager;
     }
+
+    public void RegisterClock(IClock clock) => _clock = clock;
+
+    public void RegisterPriceService(IPriceService priceService) => _priceService = priceService;
 
     public void Initialize(EvolverSettings settings)
     
@@ -58,16 +58,17 @@ public class Strategy : IStrategy
 
     private void ExecutionStrategyOnSubmitTradeEvent(object? sender, TradeSubmittedEventArgs e)
     {
-        var time = _clock.UtcNow();
+        DateTime time = _clock?.UtcNow() ??  default;
+        e.Time = time;
         var trade = e.RequestedTrade;
-        Trade? validatedTrade = PortfolioManager.ValidateTrade(time, trade, _priceService);
+        Trade? validatedTrade = PortfolioManager.ValidateTrade(e.Time, trade, _priceService);
         if (validatedTrade == null)
         {
             _logger.Log(ReportType.Information, "Trading", $"{time:yyyy-MM-ddTHH:mm:ss} - Trade {trade} was not valid.");
             return;
         }
 
-        decimal availableFunds = PortfolioManager.AvailableFunds(time);
+        decimal availableFunds = PortfolioManager.AvailableFunds(e.Time);
         if (availableFunds <= 0.0m)
         {
             _logger.Log(ReportType.Information, "Trading", $"{time:yyyy-MM-ddTHH:mm:ss} - No available funds.");
@@ -89,7 +90,7 @@ public class Strategy : IStrategy
     {
         ExecutionStrategy.Shutdown();
         PortfolioManager.Shutdown();
-        DateTime time = _clock.UtcNow();
+        DateTime time = _clock?.UtcNow() ?? default;
         decimal latestValue = PortfolioManager.Portfolio.TotalValue(Totals.All, time);
         DateTime earliestTime = PortfolioManager.Portfolio.FirstValueDate(Totals.All);
         decimal startValue = PortfolioManager.Portfolio.TotalValue(Totals.All, earliestTime);

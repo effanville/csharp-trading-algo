@@ -7,9 +7,6 @@ using Effanville.TradingStructures.Common.Time;
 using Effanville.TradingStructures.Exchanges;
 using Effanville.TradingStructures.Pricing;
 using Effanville.TradingStructures.Strategies;
-using Effanville.TradingStructures.Strategies.Decision;
-using Effanville.TradingStructures.Strategies.Execution;
-using Effanville.TradingStructures.Strategies.Portfolio;
 using Effanville.TradingStructures.Trading;
 using Effanville.TradingStructures.Trading.Implementation;
 using Effanville.TradingSystem.Time;
@@ -45,15 +42,13 @@ public sealed class EventEvolver
 
     public EvolverResult Result
     {
-        get; private set;
-    } = new EvolverResult();
+        get;
+    } = new ();
 
     public EventEvolver(
         EvolverSettings settings,
         IStockExchange exchange,
-        IPortfolioManager portfolioManager,
-        StrategyType strategyType,
-        IDecisionSystem decisionSystem,
+        IStrategy strategy,
         IReportLogger logger)
     {
         _settings = settings;
@@ -66,13 +61,13 @@ public sealed class EventEvolver
 
         var priceService = PriceServiceFactory.Create(PriceType.RandomWobble, PriceCalculationSettings.Default(), exchange, _scheduler);
         _serviceManager.RegisterService(nameof(IPriceService), priceService);
-        var executionStrategy = ExecutionStrategyFactory.Create(strategyType, _clock, logger, exchange, decisionSystem);
-        var strategy = new Strategy(decisionSystem, executionStrategy, portfolioManager, priceService, _clock, _logger);
         _serviceManager.RegisterService(nameof(IStrategy), strategy);
+        strategy.RegisterClock(_clock);
+        strategy.RegisterPriceService(priceService);
         
         var simulationExchange = new SimulationExchange(TradeMechanismSettings.Default(), priceService, _clock, _logger);
         _serviceManager.RegisterService(nameof(IMarketExchange), simulationExchange);
-        var orderListener = new OrderListener(_clock, portfolioManager, Result, _logger);
+        var orderListener = new OrderListener(_clock, strategy.PortfolioManager, Result, _logger);
         _serviceManager.RegisterService(nameof(IOrderListener), orderListener);
     }
 
