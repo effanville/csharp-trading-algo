@@ -10,17 +10,21 @@ namespace Effanville.TradingSystem
 {
     public class Scheduler : IScheduler
     {
-        private readonly Timer _timer;
+        private readonly Timer? _timer;
         private readonly IClock _internalClock;
         private readonly object _listLock = new object();
         private readonly PriorityQueue<ScheduleEvent, DateTime> _actionsToRun = new PriorityQueue<ScheduleEvent, DateTime>();
         private bool _currentlyExecuting;
+        private bool _isRunning;
 
-        public Scheduler(IClock clock, int timerDelay = 50)
+        public Scheduler(IClock clock, int timerDelay = -1)
         {
             _internalClock = clock;
-            _timer = new Timer(timerDelay);
-            _timer.Elapsed += OnTimedEvent;
+            if (timerDelay > 0)
+            {
+                _timer = new Timer(timerDelay);
+                _timer.Elapsed += OnTimedEvent;
+            }
         }
 
         private async void OnTimedEvent(object? source, ElapsedEventArgs e)
@@ -31,7 +35,15 @@ namespace Effanville.TradingSystem
             }
 
             _currentlyExecuting = true;
-            _timer.Stop();
+            _timer?.Stop();
+            await ProcessEvents();
+
+            _currentlyExecuting = false;
+            _timer?.Start();
+        }
+
+        private async Task ProcessEvents()
+        {
             var currentTime = _internalClock.UtcNow();
             var tasksToRun = new List<Func<Task>>();
             lock (_listLock)
@@ -58,12 +70,30 @@ namespace Effanville.TradingSystem
                     _internalClock.NextEventTime = nextEvent.TimeToRun;
                 }
             }
-
-            _currentlyExecuting = false;
-            _timer.Start();
         }
 
-        public void Start() => _timer.Start();
+        public void Start()
+        {
+            _isRunning = true;
+            if(_timer != null)
+            {
+                _timer.Start();
+            }
+            else
+            {
+                EventBasedUpdate();
+            }
+        }
+
+        private async Task EventBasedUpdate()
+        {
+            while (_isRunning)
+            {
+                _currentlyExecuting = true;
+                await ProcessEvents();
+                _currentlyExecuting = false;
+            }
+        }
 
         public void ScheduleNewEvent(Action actionToSchedule, DateTime timeToSchedule)
         {
@@ -73,6 +103,10 @@ namespace Effanville.TradingSystem
             }
         }
 
-        public void Stop() => _timer.Stop();
+        public void Stop()
+        {
+            _isRunning = false;
+            _timer?.Stop();
+        }
     }
 }
