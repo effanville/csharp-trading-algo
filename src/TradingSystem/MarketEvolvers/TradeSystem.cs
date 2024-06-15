@@ -1,14 +1,14 @@
 ﻿using System;
 using System.IO.Abstractions;
+using System.Threading.Tasks;
 
 using Effanville.Common.Structure.Reporting;
 using Effanville.FinancialStructures.Stocks;
 using Effanville.TradingStructures.Common.Diagnostics;
-using Effanville.TradingStructures.Pricing;
+using Effanville.TradingStructures.Strategies;
 using Effanville.TradingStructures.Strategies.Decision;
+using Effanville.TradingStructures.Strategies.Execution;
 using Effanville.TradingStructures.Strategies.Portfolio;
-using Effanville.TradingStructures.Trading;
-using Effanville.TradingStructures.Trading.Implementation;
 
 namespace Effanville.TradingSystem.MarketEvolvers
 {
@@ -28,7 +28,6 @@ namespace Effanville.TradingSystem.MarketEvolvers
         /// <param name="startSettings">The settings for the starting portfolio.</param>
         /// <param name="constructionSettings">The settings detailing how to construct the portfolio.</param>
         /// <param name="decisionParameters">Parameters to specify the decision system.</param>
-        /// <param name="traderOptions">The settings for how a trader should trade.</param>
         /// <param name="fileSystem">The file system to use.</param>
         /// <param name="reportLogger">A logging mechanism</param>
         /// <returns>The final portfolio, and the records of the decisions and trades.</returns>
@@ -40,18 +39,16 @@ namespace Effanville.TradingSystem.MarketEvolvers
             PortfolioStartSettings startSettings,
             PortfolioConstructionSettings constructionSettings,
             DecisionSystemFactory.Settings decisionParameters,
-            TradeMechanismSettings traderOptions,
             IFileSystem fileSystem,
             IReportLogger reportLogger)
         {
-            IStockExchange exchange;
             TimeIncrementEvolverSettings simulatorSettings;
             IPortfolioManager portfolioManager;
             IDecisionSystem decisionSystem;
-            IMarketExchange tradeMechanism;
 
             using (new Timer(reportLogger, "Setup"))
             {
+                IStockExchange exchange;
                 using (new Timer(reportLogger, "Loading Exchange"))
                 {
                     exchange = StockExchangeFactory.Create(stockFilePath, fileSystem, reportLogger);
@@ -70,8 +67,8 @@ namespace Effanville.TradingSystem.MarketEvolvers
                 using (new Timer(reportLogger, "Calibrating"))
                 {
                     var decisionSettings = new DecisionSystemSettings(
+                        simulatorSettings.BurnInStart,
                         simulatorSettings.StartTime,
-                        simulatorSettings.BurnInEnd,
                         simulatorSettings.Exchange.Stocks.Count,
                         simulatorSettings.Exchange);
                     decisionSystem = DecisionSystemFactory.CreateAndCalibrate(decisionParameters, decisionSettings, reportLogger);
@@ -81,38 +78,26 @@ namespace Effanville.TradingSystem.MarketEvolvers
                     }
                 }
 
-                tradeMechanism = new SimulationExchange(traderOptions, reportLogger);
-
                 using (new Timer(reportLogger, "Loading Portfolio"))
                 {
                     portfolioManager = PortfolioManager.LoadFromFile(fileSystem, startSettings, constructionSettings, reportLogger);
                 }
             }
-
-            var randomWobblePriceCalculator = PriceServiceFactory.Create(PriceType.RandomWobble, PriceCalculationSettings.Default(), exchange, null);
-
-            void FirstOfTheMonthReport(DateTime time, string message)
+            
+            var executionStrategy = ExecutionStrategyFactory.Create(StrategyType.TimeIncrementExecution, reportLogger, simulatorSettings.Exchange, decisionSystem);
+            var strategy = new Strategy(decisionSystem, executionStrategy, portfolioManager, reportLogger);
+            var evolver = new EventEvolver(simulatorSettings, simulatorSettings.Exchange, strategy, reportLogger);
+            
+            using (new Timer(reportLogger, "Execution"))
             {
-                if (time.Day == 1)
+                evolver.Initialise();
+                evolver.Start();
+                while (evolver.IsActive)
                 {
-                    _ = reportLogger.Log(ReportSeverity.Critical, ReportType.Warning, ReportLocation.DatabaseAccess, message);
+                    _ = Task.Delay(100);
                 }
             }
-
-            void startEndReportCallback(string message)
-            {
-                _ = reportLogger.Log(ReportSeverity.Critical, ReportType.Warning, ReportLocation.DatabaseAccess, message);
-            }
-
-            return TimeIncrementEvolver.Simulate(simulatorSettings,
-                randomWobblePriceCalculator,
-                portfolioManager,
-                decisionSystem,
-                tradeMechanism,
-                startEndReportCallback,
-                FirstOfTheMonthReport,
-                startEndReportCallback,
-                reportLogger);
+            return evolver.Result;
         }
     }
 }
