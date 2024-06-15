@@ -38,7 +38,7 @@ namespace Effanville.TradingStructures.Strategies.Decision.Implementation
         }
 
         /// <inheritdoc/>
-        public void Calibrate(DecisionSystemSettings settings, IReportLogger logger)
+        public void Calibrate(DecisionSystemSettings settings, IReportLogger? logger)
         {
             DateTime burnInLength = settings.BurnInEnd;
 
@@ -71,17 +71,17 @@ namespace Effanville.TradingStructures.Strategies.Decision.Implementation
             if (!estimatorType.Success)
             {
                 _estimatorResult = Estimator.Fit(estimatorType.Data, fitData, fitValues);
-                _ = logger.Log(ReportSeverity.Critical, ReportType.Warning, ReportLocation.Unknown,
+                _ = logger?.Log(ReportSeverity.Critical, ReportType.Warning, ReportLocation.Unknown,
                     $"Estimator Weights are {string.Join(",", _estimatorResult.Estimator)}");
                 return;
             }
 
-            _ = logger.Log(ReportSeverity.Critical, ReportType.Error, ReportLocation.Unknown,
+            _ = logger?.Log(ReportSeverity.Critical, ReportType.Error, ReportLocation.Unknown,
                 $"Created ArbitraryStats system without correct type.");
         }
 
         /// <inheritdoc/>
-        public TradeCollection? Decide(DateTime day, IStockExchange stockExchange, IReportLogger logger)
+        public TradeCollection? Decide(DateTime day, IStockExchange stockExchange, IReportLogger? logger)
         {
             if (_estimatorResult == null)
             {
@@ -109,10 +109,14 @@ namespace Effanville.TradingStructures.Strategies.Decision.Implementation
                 {
                     decision = TradeType.Sell;
                 }
+                _ = logger?.Log(ReportSeverity.Detailed, ReportType.Information, ReportLocation.Execution,
+                    $"Stock={stock.Name}, Inputs=[{string.Join(",",values)}], Output={value}, Decision={decision}.");
 
                 decisions.Add(stock.Name, decision);
             }
 
+            _ = logger?.Log(ReportSeverity.Detailed, ReportType.Information, ReportLocation.Execution,
+                $"Decisions: {decisions}");
             return decisions;
         }
     }

@@ -20,12 +20,12 @@ namespace Effanville.TradingStructures.Strategies.Decision.Implementation
         }
 
         /// <inheritdoc />
-        public void Calibrate(DecisionSystemSettings settings, IReportLogger logger)
+        public void Calibrate(DecisionSystemSettings settings, IReportLogger? logger)
         {
         }
 
         /// <inheritdoc />
-        public TradeCollection Decide(DateTime day, IStockExchange stockExchange, IReportLogger logger)
+        public TradeCollection Decide(DateTime day, IStockExchange stockExchange, IReportLogger? logger)
         {
             var decisions = new TradeCollection(day, day);
             foreach (IStock stock in stockExchange.Stocks)
@@ -33,6 +33,8 @@ namespace Effanville.TradingStructures.Strategies.Decision.Implementation
                 decisions.Add(stock.Name, TradeType.Buy);
             }
 
+            _ = logger?.Log(ReportSeverity.Detailed, ReportType.Information, ReportLocation.Execution,
+                $"Decisions: {decisions}");
             return decisions;
         }
     }

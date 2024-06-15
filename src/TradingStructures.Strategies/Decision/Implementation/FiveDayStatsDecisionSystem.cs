@@ -116,13 +116,13 @@ namespace Effanville.TradingStructures.Strategies.Decision.Implementation
                 }
 
                 _ = logger?.Log(ReportSeverity.Detailed, ReportType.Information, ReportLocation.Execution,
-                    $"{stock.Name} - value {value} - decision {decision}.");
+                    $"Stock={stock.Name}, Inputs=[{string.Join(",",values)}], Output={value}, Decision={decision}.");
 
                 decisions.Add(stock.Name, decision);
             }
 
             _ = logger?.Log(ReportSeverity.Detailed, ReportType.Information, ReportLocation.Execution,
-                $"Decisions: {decisions}");
+                $"Decisions={decisions}");
             return decisions;
         }
     }

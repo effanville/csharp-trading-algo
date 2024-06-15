@@ -42,20 +42,20 @@ public class TimeIncrementExecutionStrategy : IExecutionStrategy
     public void OnPriceUpdate(object? obj, PriceUpdateEventArgs eventArgs)
     {
         _stockExchange.Stocks.First(stock => stock.Name.Equals(eventArgs.Instrument)).AddValue(eventArgs.Candle);
-        _logger.Log(ReportType.Information, "PriceService", $"{eventArgs.Time:yyyy-MM-ddTHH:mm:ss} - Price for {eventArgs.Instrument.Ticker} has changed to {eventArgs.Price}");
+        _logger.Log(ReportType.Information, "PriceService", $"Update. Stock={eventArgs.Instrument.Ticker}, Time={eventArgs.Time:yyyy-MM-ddTHH:mm:ss}, Price={eventArgs.Price}");
     }
 
     public void OnExchangeStatusChanged(object? obj, ExchangeStatusChangedEventArgs eventArgs)
     {
-        _logger.Log(ReportType.Information, "ExchangeService", $"{eventArgs.Time:yyyy-MM-ddTHH:mm:ss} - Exchange session changed from {eventArgs.PreviousSession} to {eventArgs.NewSession}");
+        _logger.Log(ReportType.Information, "ExchangeService", $"SessionChange. Time={eventArgs.Time:yyyy-MM-ddTHH:mm:ss}, Old={eventArgs.PreviousSession}, New={eventArgs.NewSession}");
         var newSession = eventArgs.NewSession;
         if (newSession == ExchangeSession.Continuous)
         {
+            MarketClose(eventArgs.Time);
             MarketOpen(eventArgs.Time);
         }
         else if (newSession == ExchangeSession.Closed)
         {
-            MarketClose(eventArgs.Time);
         }
     }
 

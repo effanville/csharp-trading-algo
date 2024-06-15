@@ -47,7 +47,7 @@ namespace Effanville.TradingStructures.Common.Trading
         public List<Trade> GetSellDecisions() => GetDecisions(TradeType.Sell);
 
         public override string ToString()
-            => $"Buys: {string.Join(",", GetBuyDecisions().Select(dec => dec.StockName))}. Sells:  {string.Join(",", GetSellDecisions().Select(dec => dec.StockName))}";
+            => $"[{nameof(TradeCollection)}. Buys=[{string.Join(",", GetBuyDecisions().Select(dec => dec.StockName))}], Sells=[{string.Join(",", GetSellDecisions().Select(dec => dec.StockName))}]]";
 
         private List<Trade> GetDecisions(TradeType buySell)
         {

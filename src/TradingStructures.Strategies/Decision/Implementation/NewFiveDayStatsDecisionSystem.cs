@@ -30,10 +30,10 @@ namespace Effanville.TradingStructures.Strategies.Decision.Implementation
             _innerSystem = new ArbitraryStatsDecisionSystem(newSettings);
         }
 
-        public void Calibrate(DecisionSystemSettings settings, IReportLogger logger)
+        public void Calibrate(DecisionSystemSettings settings, IReportLogger? logger)
             => _innerSystem.Calibrate(settings, logger);
 
-        public TradeCollection? Decide(DateTime day, IStockExchange stockExchange, IReportLogger logger)
+        public TradeCollection? Decide(DateTime day, IStockExchange stockExchange, IReportLogger? logger)
             => _innerSystem.Decide(day, stockExchange, logger);
     }
 }
