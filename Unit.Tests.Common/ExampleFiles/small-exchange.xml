@@ -2,10 +2,11 @@
 <StockExchange xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
   <Stocks>
     <Stock>
-      <Ticker>RIO</Ticker>
       <Name>
+      <Ticker>RIO.L</Ticker>
         <Company>RioTinto</Company>
         <Name />
+      <Ticker>RIO.L</Ticker>
         <Url>https://uk.finance.yahoo.com/quote/RIO.L</Url>
         <Currency />
         <Sectors />
@@ -1278,10 +1279,11 @@
       </Valuations>
     </Stock>
     <Stock>
-      <Ticker>BP</Ticker>
+      <Ticker>BP.L</Ticker>
       <Name>
         <Company>BP</Company>
         <Name />
+      <Ticker>BP.L</Ticker>
         <Url>https://uk.finance.yahoo.com/quote/BP.L</Url>
         <Currency />
         <Sectors />
@@ -2554,10 +2556,11 @@
       </Valuations>
     </Stock>
     <Stock>
-      <Ticker>BARC</Ticker>
+      <Ticker>BARC.L</Ticker>
       <Name>
         <Company>Barclays</Company>
         <Name />
+      <Ticker>BARC.L</Ticker>
         <Url>https://uk.finance.yahoo.com/quote/BARC.L</Url>
         <Currency />
         <Sectors />
@@ -3830,10 +3833,11 @@
       </Valuations>
     </Stock>
     <Stock>
-      <Ticker>DNLM</Ticker>
+      <Ticker>DNLM.L</Ticker>
       <Name>
         <Company>Dunelm</Company>
         <Name />
+      <Ticker>DNLM.L</Ticker>
         <Url>https://uk.finance.yahoo.com/quote/DNLM.L</Url>
         <Currency />
         <Sectors />
@@ -5110,6 +5114,7 @@
       <Name>
         <Company>Glencore</Company>
         <Name />
+      <Ticker>GLEN.L</Ticker>
         <Url>https://uk.finance.yahoo.com/quote/GLEN.L</Url>
         <Currency />
         <Sectors />
@@ -6386,6 +6391,7 @@
       <Name>
         <Company>Associated British Foods</Company>
         <Name />
+      <Ticker>ABF.L</Ticker>
         <Url>https://uk.finance.yahoo.com/quote/ABF.L</Url>
         <Currency />
         <Sectors />
@@ -7662,6 +7668,7 @@
       <Name>
         <Company>Tesco</Company>
         <Name />
+      <Ticker>TSCO.L</Ticker>
         <Url>https://uk.finance.yahoo.com/quote/TSCO.L</Url>
         <Currency />
         <Sectors />
@@ -8938,6 +8945,7 @@
       <Name>
         <Company>Johnson Matthew</Company>
         <Name />
+        <Ticker>JMAT.L</Ticker>
         <Url>https://uk.finance.yahoo.com/quote/JMAT.L</Url>
         <Currency />
         <Sectors />
@@ -10214,6 +10222,7 @@
       <Ticker>III</Ticker>
       <Name>
         <Company>3I</Company>
+      <Ticker>III.L</Ticker>
         <Name />
         <Url>https://uk.finance.yahoo.com/quote/III.L</Url>
         <Currency />
@@ -11491,6 +11500,7 @@
       <Name>
         <Company>Prudential</Company>
         <Name />
+      <Ticker>PRU.L</Ticker>
         <Url>https://uk.finance.yahoo.com/quote/PRU.L</Url>
         <Currency />
         <Sectors />
