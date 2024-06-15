@@ -43,29 +43,41 @@ public sealed class TradingExchange : IService
 
     public void Initialize(EvolverSettings settings)
     {
-        DateTime time = settings.StartTime.Date;
-        while (settings.StartTime <= time && time < settings.EndTime)
+        DateTime time = settings.StartTime;
+        while (settings.StartTime.Date <= time && time < settings.EndTime)
         {
             InitialiseDayEvents(time);
+            time = time.Date;
             time = time.AddDays(1);
         }
     }
 
     private void InitialiseDayEvents(DateTime time)
     {
+        DateTime exchangeClose = time.Date.Add(ExchangeClose.ToTimeSpan());
+
+        if (time < exchangeClose)
+        {
+            _scheduler.ScheduleNewEvent(
+                () => RaiseExchangeStatusChanged(null,
+                    new ExchangeStatusChangedEventArgs(exchangeClose, ExchangeSession.Continuous,
+                        ExchangeSession.Closed)),
+                exchangeClose);
+        }
         if (!DateHelpers.IsCalcTimeValid(time, CountryDateCode))
         {
             return;
         }
 
         DateTime exchangeOpen = time.Date.Add(ExchangeOpen.ToTimeSpan());
-        DateTime exchangeClose = time.Date.Add(ExchangeClose.ToTimeSpan());
-        _scheduler.ScheduleNewEvent(
-            () => RaiseExchangeStatusChanged(null, new ExchangeStatusChangedEventArgs(exchangeOpen, ExchangeSession.Closed, ExchangeSession.Continuous)),
-            exchangeOpen);
-        _scheduler.ScheduleNewEvent(
-            () => RaiseExchangeStatusChanged(null, new ExchangeStatusChangedEventArgs(exchangeClose, ExchangeSession.Continuous, ExchangeSession.Closed)),
-            exchangeClose);
+        if (time < exchangeOpen)
+        {
+            _scheduler.ScheduleNewEvent(
+                () => RaiseExchangeStatusChanged(null,
+                    new ExchangeStatusChangedEventArgs(exchangeOpen, ExchangeSession.Closed,
+                        ExchangeSession.Continuous)),
+                exchangeOpen);
+        }
     }
 
     public void Restart() { }
