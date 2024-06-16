@@ -27,7 +27,7 @@ public sealed class EventEvolver
     readonly IScheduler _scheduler;
     readonly ServiceManager _serviceManager = new ServiceManager();
     IPriceService PriceService => _serviceManager.GetService<IPriceService>(nameof(IPriceService));
-    TradingExchange Exchange => _serviceManager.GetService<TradingExchange>(nameof(TradingExchange));
+    ITradingExchange Exchange => _serviceManager.GetService<TradingExchange>(nameof(TradingExchange));
     private IMarketExchange SimulationExchange => _serviceManager.GetService<IMarketExchange>(nameof(IMarketExchange));
     IOrderListener OrderListener => _serviceManager.GetService<IOrderListener>(nameof(IOrderListener));
     private IStrategy Strategy => _serviceManager.GetService<IStrategy>(nameof(IStrategy));
@@ -57,7 +57,7 @@ public sealed class EventEvolver
         _scheduler = new Scheduler(_clock);
 
         var tradingExchange = new TradingExchange(_scheduler, exchange);
-        _serviceManager.RegisterService(nameof(TradingExchange), tradingExchange);
+        _serviceManager.RegisterService(nameof(ITradingExchange), tradingExchange);
 
         var priceService = PriceServiceFactory.Create(PriceType.RandomWobble, PriceCalculationSettings.Default(), exchange, _scheduler);
         _serviceManager.RegisterService(nameof(IPriceService), priceService);

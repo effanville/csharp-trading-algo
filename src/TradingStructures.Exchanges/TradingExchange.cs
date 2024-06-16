@@ -6,7 +6,6 @@ using Effanville.FinancialStructures.NamingStructures;
 using Effanville.FinancialStructures.Stocks;
 using Effanville.TradingStructures.Common;
 using Effanville.TradingStructures.Common.Scheduling;
-using Effanville.TradingStructures.Common.Services;
 using Effanville.TradingStructures.Common.Time;
 
 using Nager.Date;
@@ -16,7 +15,7 @@ namespace Effanville.TradingStructures.Exchanges;
 /// <summary>
 /// Representation of a exchange and all instruments that are traded upon it.
 /// </summary>
-public sealed class TradingExchange : IService
+public sealed class TradingExchange : ITradingExchange
 {
     private readonly IScheduler _scheduler;
 
