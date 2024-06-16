@@ -17,7 +17,8 @@ public static class ExecutionStrategyFactory
         => strategyType switch
         {
             StrategyType.LogExecution => new LogExecutionStrategy(logger),
-            StrategyType.TimeIncrementExecution => new TimeIncrementExecutionStrategy(logger, stockExchange, decisionSystem),
+            StrategyType.ExchangeOpen => new ExchangeOpenCalcExecutionStrategy(logger, stockExchange, decisionSystem),
+            StrategyType.ExchangeEvent => new ExchangeEventExecutionStrategy(logger, stockExchange, decisionSystem),
             _ => throw new ArgumentOutOfRangeException($"StrategyType {strategyType} invalid."),
         };
 }

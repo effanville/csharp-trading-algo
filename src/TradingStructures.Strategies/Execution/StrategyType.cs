@@ -8,7 +8,12 @@ public enum StrategyType : byte
     LogExecution,
 
     /// <summary>
-    /// Mimics the manner in which a Time increment evolver over a day would work.
+    /// All calculation behaviour is carried out upon exchange open.
     /// </summary>
-    TimeIncrementExecution
+    ExchangeOpen,
+    
+    /// <summary>
+    /// All calculation behaviour is carried out in an exchange event.
+    /// </summary>
+    ExchangeEvent
 }

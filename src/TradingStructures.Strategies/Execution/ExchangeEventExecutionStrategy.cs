@@ -13,7 +13,7 @@ using Effanville.TradingStructures.Trading;
 
 namespace Effanville.TradingStructures.Strategies.Execution;
 
-public class TimeIncrementExecutionStrategy : IExecutionStrategy
+public class ExchangeEventExecutionStrategy : IExecutionStrategy
 {
     public event EventHandler<TradeSubmittedEventArgs>? SubmitTradeEvent;
     private readonly IReportLogger _logger;
@@ -21,9 +21,9 @@ public class TimeIncrementExecutionStrategy : IExecutionStrategy
     private readonly IDecisionSystem _decisionSystem;
     private TradeCollection? _tradeCollection;
 
-    public string Name => nameof(TimeIncrementExecutionStrategy);
+    public string Name => nameof(ExchangeEventExecutionStrategy);
 
-    public TimeIncrementExecutionStrategy(
+    public ExchangeEventExecutionStrategy(
         IReportLogger logger,
         IStockExchange stockExchange,
         IDecisionSystem decisionSystem)
@@ -51,11 +51,11 @@ public class TimeIncrementExecutionStrategy : IExecutionStrategy
         var newSession = eventArgs.NewSession;
         if (newSession == ExchangeSession.Continuous)
         {
-            MarketClose(eventArgs.Time);
             MarketOpen(eventArgs.Time);
         }
         else if (newSession == ExchangeSession.Closed)
         {
+            MarketClose(eventArgs.Time);
         }
     }
 

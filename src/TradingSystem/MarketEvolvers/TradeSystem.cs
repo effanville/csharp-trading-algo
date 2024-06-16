@@ -83,8 +83,8 @@ namespace Effanville.TradingSystem.MarketEvolvers
                     portfolioManager = PortfolioManager.LoadFromFile(fileSystem, startSettings, constructionSettings, reportLogger);
                 }
             }
-            
-            var executionStrategy = ExecutionStrategyFactory.Create(StrategyType.TimeIncrementExecution, reportLogger, simulatorSettings.Exchange, decisionSystem);
+
+            var executionStrategy = ExecutionStrategyFactory.Create(StrategyType.ExchangeOpen, reportLogger, simulatorSettings.Exchange, decisionSystem);
             var strategy = new Strategy(decisionSystem, executionStrategy, portfolioManager, reportLogger);
             var evolver = new EventEvolver(simulatorSettings, simulatorSettings.Exchange, strategy, reportLogger);
             

@@ -110,7 +110,7 @@ internal class EventEvolverTests
         var constructionSettings = PortfolioConstructionSettings.Default();
         var portfolioManager = PortfolioManager.LoadFromFile(fileSystem, startSettings, constructionSettings, logger);
         var decisionSystem = DecisionSystemFactory.Create(new DecisionSystemFactory.Settings(DecisionSystem.BuyAll));
-        var executionStrategy = ExecutionStrategyFactory.Create(StrategyType.TimeIncrementExecution, logger, stockExchange, decisionSystem);
+        var executionStrategy = ExecutionStrategyFactory.Create(StrategyType.ExchangeOpen, logger, stockExchange, decisionSystem);
         var strategy = new Strategy(decisionSystem, executionStrategy, portfolioManager, logger);
         var evolver = new EventEvolver(
             settings,
