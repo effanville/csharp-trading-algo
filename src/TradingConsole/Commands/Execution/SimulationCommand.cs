@@ -9,8 +9,10 @@ using Effanville.Common.Structure.Reporting;
 using Effanville.FinancialStructures.Stocks.Statistics;
 using Effanville.TradingStructures.Common.Diagnostics;
 using Effanville.TradingStructures.Strategies.Decision;
-using Effanville.TradingStructures.Strategies.Portfolio;
 using Effanville.TradingSystem.MarketEvolvers;
+
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 
 namespace Effanville.TradingConsole.Commands.Execution
 {
@@ -18,9 +20,11 @@ namespace Effanville.TradingConsole.Commands.Execution
     /// Command pertaining to running a simulation of the stock market for
     /// a specific decision system.
     /// </summary>
-    internal sealed partial class SimulationCommand : ICommand
+    public sealed partial class SimulationCommand : ICommand
     {
         private readonly IFileSystem _fileSystem;
+        private readonly ILogger _logger;
+        private readonly IReportLogger _reportLogger;
 
         private const string StartDateName = "start";
         private const string EndDateName = "end";
@@ -43,9 +47,11 @@ namespace Effanville.TradingConsole.Commands.Execution
         /// <summary>
         /// Construct an instance.
         /// </summary>
-        public SimulationCommand(IFileSystem fileSystem)
+        public SimulationCommand(IFileSystem fileSystem, ILogger<SimulationCommand> logger, IReportLogger reportLogger)
         {
             _fileSystem = fileSystem;
+            _logger = logger;
+            _reportLogger = reportLogger;
 
             Options.Add(new CommandOption<string>("jsonSettingsPath", "The path to the json file containing the options for this execution."));
 
@@ -66,22 +72,14 @@ namespace Effanville.TradingConsole.Commands.Execution
         }
 
         /// <inheritdoc/>
-        public void WriteHelp(IConsole console) => CommandExtensions.WriteHelp(this, console);
+        public void WriteHelp(IConsole console) => this.WriteHelp(console, _logger);
 
         /// <inheritdoc/>
-        public bool Validate(IConsole console, string[] args) => Validate(console, null, args);
-
-        /// <inheritdoc/>
-        public bool Validate(IConsole console, IReportLogger? logger, string[] args)
-            => this.Validate(args, console, logger);
-
-        /// <inheritdoc/>
-        public int Execute(IConsole console, string[] args) => Execute(console, null, args);
-
-        /// <inheritdoc/>
-        public int Execute(IConsole console, IReportLogger? logger, string[] args)
+        public bool Validate(IConsole console, IConfiguration config) => this.Validate(config, console, _logger);
+        
+        public int Execute(IConsole console, IConfiguration config)
         {
-            using (new Timer(logger, "TotalTime"))
+            using (new Timer(_reportLogger, "TotalTime"))
             {
                 Settings? settings = Settings.CreateSettings(Options, _fileSystem);
                 if (settings == null)
@@ -98,9 +96,8 @@ namespace Effanville.TradingConsole.Commands.Execution
                     settings.PortfolioSettings,
                     settings.PortfolioConstructionSettings,
                     settings.DecisionSystemSettings,
-                    settings.TradeMechanismSettings,
                     _fileSystem,
-                    logger);
+                    _reportLogger);
 
                 return 0;
             }

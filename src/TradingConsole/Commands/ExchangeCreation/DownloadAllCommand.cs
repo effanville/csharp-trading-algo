@@ -9,14 +9,19 @@ using Effanville.Common.Structure.Reporting;
 using Effanville.FinancialStructures.Stocks;
 using Effanville.FinancialStructures.Stocks.Persistence;
 
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
+
 namespace Effanville.TradingConsole.Commands.ExchangeCreation
 {
     /// <summary>
     /// Contains logic for the download of stock data.
     /// </summary>
-    internal sealed class DownloadAllCommand : ICommand
+    public sealed class DownloadAllCommand : ICommand
     {
         private readonly IFileSystem _fileSystem;
+        private readonly ILogger _logger;
+        private readonly IReportLogger _reportLogger;
         private readonly CommandOption<string> _stockFilePathOption;
         private readonly CommandOption<DateTime> _startDateOption;
         private readonly CommandOption<DateTime> _endDateOption;
@@ -33,9 +38,11 @@ namespace Effanville.TradingConsole.Commands.ExchangeCreation
         /// <summary>
         /// Default constructor.
         /// </summary>
-        public DownloadAllCommand(IFileSystem fileSystem)
+        public DownloadAllCommand(IFileSystem fileSystem, ILogger<DownloadAllCommand> logger, IReportLogger reportLogger)
         {
             _fileSystem = fileSystem;
+            _logger = logger;
+            _reportLogger = reportLogger;
             _stockFilePathOption = new CommandOption<string>("stockFilePath", "FilePath to the stock database to add data to.");
             Options.Add(_stockFilePathOption);
 
@@ -47,27 +54,19 @@ namespace Effanville.TradingConsole.Commands.ExchangeCreation
         }
 
         /// <inheritdoc/>
-        public void WriteHelp(IConsole console) => CommandExtensions.WriteHelp(this, console);
+        public void WriteHelp(IConsole console) => this.WriteHelp(console, _logger);
 
         /// <inheritdoc/>
-        public bool Validate(IConsole console, string[] args) => Validate(console, null, args);
+        public bool Validate(IConsole console, IConfiguration config) => this.Validate(config, console, _logger);
 
         /// <inheritdoc/>
-        public bool Validate(IConsole console, IReportLogger? logger, string[] args) 
-            => this.Validate(args, console, logger);
-
-
-        /// <inheritdoc/>
-        public int Execute(IConsole console, string[] args) => Execute(console, null, args);
-
-        /// <inheritdoc/>
-        public int Execute(IConsole console, IReportLogger? logger, string[] args)
+        public int Execute(IConsole console, IConfiguration config)
         {
             var persistence = new ExchangePersistence();
             var settings = ExchangePersistence.CreateOptions(_stockFilePathOption.Value, _fileSystem);
-            IStockExchange exchange = persistence.Load(settings, logger);
-            exchange.Download(_startDateOption.Value, _endDateOption.Value, logger).Wait();
-            persistence.Save(exchange, settings, logger);
+            IStockExchange exchange = persistence.Load(settings, _reportLogger);
+            exchange.Download(_startDateOption.Value, _endDateOption.Value, _reportLogger).Wait();
+            persistence.Save(exchange, settings, _reportLogger);
             return 0;
         }
     }

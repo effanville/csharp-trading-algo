@@ -6,13 +6,18 @@ using Effanville.Common.Console.Commands;
 using Effanville.Common.Console.Options;
 using Effanville.Common.Structure.Reporting;
 
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
+
 namespace Effanville.TradingConsole.Commands.ExchangeCreation
 {
     /// <summary>
     /// Command that controls the downloading of stock data.
     /// </summary>
-    internal sealed class DownloadCommand : ICommand
+    public sealed class DownloadCommand : ICommand
     {
+        private readonly ILogger _logger;
+        
         /// <inheritdoc/>
         public string Name => "download";
 
@@ -31,27 +36,25 @@ namespace Effanville.TradingConsole.Commands.ExchangeCreation
         /// <summary>
         /// Default Constructor.
         /// </summary>
-        public DownloadCommand(IFileSystem fileSystem)
+        public DownloadCommand(
+            IFileSystem fileSystem, 
+            ILogger<DownloadCommand> logger,
+            ILogger<DownloadAllCommand> downloadAllLogger,
+            ILogger<DownloadLatestCommand> downloadLatestLogger,
+            IReportLogger reportLogger)
         {
-            SubCommands.Add(new DownloadAllCommand(fileSystem));
-            SubCommands.Add(new DownloadLatestCommand(fileSystem));
+            _logger = logger;
+            SubCommands.Add(new DownloadAllCommand(fileSystem, downloadAllLogger, reportLogger));
+            SubCommands.Add(new DownloadLatestCommand(fileSystem, downloadLatestLogger, reportLogger));
         }
 
         /// <inheritdoc/>
-        public void WriteHelp(IConsole console) => CommandExtensions.WriteHelp(this, console);
+        public void WriteHelp(IConsole console) => this.WriteHelp(console, _logger);
 
         /// <inheritdoc/>
-        public int Execute(IConsole console, string[] args) => Execute(console, null, args);
+        public int Execute(IConsole console, IConfiguration config) => this.Execute(config, console, _logger);
 
         /// <inheritdoc/>
-        public int Execute(IConsole console, IReportLogger? logger, string[] args) 
-            => CommandExtensions.Execute(this, console, logger, args);
-
-        /// <inheritdoc/>
-        public bool Validate(IConsole console, string[] args) => Validate(console, null, args);
-
-        /// <inheritdoc/>
-        public bool Validate(IConsole console, IReportLogger? logger, string[] args) 
-            => this.Validate(args, console, logger);
+        public bool Validate(IConsole console, IConfiguration config) => this.Validate(config, console, _logger);
     }
 }

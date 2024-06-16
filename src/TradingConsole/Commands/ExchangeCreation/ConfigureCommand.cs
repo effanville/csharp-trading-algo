@@ -9,14 +9,19 @@ using Effanville.FinancialStructures.Stocks;
 using Effanville.FinancialStructures.Stocks.Implementation;
 using Effanville.FinancialStructures.Stocks.Persistence;
 
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
+
 namespace Effanville.TradingConsole.Commands.ExchangeCreation
 {
     /// <summary>
     /// Configures a stock exchange from a list of Stocks to include.
     /// </summary>
-    internal sealed class ConfigureCommand : ICommand
+    public sealed class ConfigureCommand : ICommand
     {
         private readonly IFileSystem _fileSystem;
+        private readonly ILogger _logger;
+        private readonly IReportLogger _reportLogger;
         private readonly CommandOption<string> _stockFilePathOption;
 
         /// <inheritdoc/>
@@ -31,38 +36,33 @@ namespace Effanville.TradingConsole.Commands.ExchangeCreation
         /// <summary>
         /// Default constructor.
         /// </summary>
-        public ConfigureCommand(IFileSystem fileSystem)
+        public ConfigureCommand(IFileSystem fileSystem, ILogger<ConfigureCommand> logger, IReportLogger reportLogger)
         {
             _fileSystem = fileSystem;
+            _logger = logger;
+            _reportLogger = reportLogger;
             _stockFilePathOption = new CommandOption<string>("stockFilePath", "FilePath to the stock database to add data to.", inputString => !string.IsNullOrWhiteSpace(inputString));
             Options.Add(_stockFilePathOption);
         }
 
         /// <inheritdoc/>
-        public void WriteHelp(IConsole console) => CommandExtensions.WriteHelp(this, console);
+        public void WriteHelp(IConsole console) => this.WriteHelp(console, _logger);
         
         /// <inheritdoc/>
-        public int Execute(IConsole console, string[] args) => Execute(console, null, args);
-
-        /// <inheritdoc/>
-        public int Execute(IConsole console, IReportLogger? logger, string[] args)
+        public int Execute(IConsole console, IConfiguration config)
         {
             IStockExchange exchange = new StockExchange();
             string inputPath = _stockFilePathOption.Value;
-            exchange.Configure(inputPath, _fileSystem, logger);
+            exchange.Configure(inputPath, _fileSystem, _reportLogger);
             string filePath = _fileSystem.Path.ChangeExtension(inputPath, "xml");
             
             var persistence = new ExchangePersistence();
             var settings = ExchangePersistence.CreateOptions(filePath, _fileSystem);
-            persistence.Save(exchange, settings, logger);
+            persistence.Save(exchange, settings, _reportLogger);
             return 0;
         }
 
         /// <inheritdoc/>
-        public bool Validate(IConsole console, string[] args) => Validate(console, null, args);
-
-        /// <inheritdoc/>
-        public bool Validate(IConsole console, IReportLogger? logger, string[] args) 
-            => this.Validate(args, console, logger);
+        public bool Validate(IConsole console, IConfiguration config) => this.Validate(config, console, _logger);
     }
 }

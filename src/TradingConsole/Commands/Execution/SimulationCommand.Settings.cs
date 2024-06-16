@@ -6,31 +6,28 @@ using Effanville.Common.Console.Options;
 using Effanville.FinancialStructures.Stocks.Statistics;
 using Effanville.TradingStructures.Strategies.Decision;
 using Effanville.TradingStructures.Strategies.Portfolio;
-using Effanville.TradingStructures.Trading;
 
 using Newtonsoft.Json;
 
 namespace Effanville.TradingConsole.Commands.Execution
 {
-    internal sealed partial class SimulationCommand
+    public sealed partial class SimulationCommand
     {
         public sealed class Settings
         {
-            public string StockFilePath { get; set; }
+            public string StockFilePath { get; private init; }
 
-            public DateTime StartTime { get; set; }
+            public DateTime StartTime { get; private set; }
 
-            public DateTime EndTime { get; set; }
+            public DateTime EndTime { get; private set; }
 
-            public TimeSpan EvolutionIncrement { get; set; }
+            public TimeSpan EvolutionIncrement { get; private set; }
 
-            public PortfolioStartSettings PortfolioSettings { get; set; }
+            public PortfolioStartSettings PortfolioSettings { get; private set; }
 
-            public PortfolioConstructionSettings PortfolioConstructionSettings { get; set; }
+            public PortfolioConstructionSettings PortfolioConstructionSettings { get; private set; }
 
-            public DecisionSystemFactory.Settings DecisionSystemSettings { get; set; }
-
-            public TradeMechanismSettings TradeMechanismSettings { get; set; }
+            public DecisionSystemFactory.Settings DecisionSystemSettings { get; private set; }
 
             private Settings() { }
 
@@ -51,8 +48,10 @@ namespace Effanville.TradingConsole.Commands.Execution
                 }
                 else
                 {
-                    Settings settings = new Settings();
-                    settings.StockFilePath = options.GetOption<string>(StockFilePathName)?.Value ?? string.Empty;
+                    Settings settings = new Settings
+                    {
+                        StockFilePath = options.GetOption<string>(StockFilePathName)?.Value ?? string.Empty
+                    };
                     CommandOption<DateTime>? startDate = options.GetOption<DateTime>(StartDateName);
                     settings.StartTime = startDate?.Value ?? new DateTime(2010,01, 01);
 
@@ -77,7 +76,6 @@ namespace Effanville.TradingConsole.Commands.Execution
                         1.05, 
                         1.0,
                         1);
-                    settings.TradeMechanismSettings = TradeMechanismSettings.Default();
                     settings.PortfolioConstructionSettings = new PortfolioConstructionSettings(fractionInvest?.Value ?? 0.25m);
                     return settings;
                 }
