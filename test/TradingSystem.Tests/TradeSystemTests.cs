@@ -417,7 +417,7 @@ $@"|StartDate|EndDate|StockName|TradeType|NumberShares|
             fileSystem.AddFile(testFilePath, configureFile);
 
             var logger = new LogReporter(null, new SingleTaskQueue(),  saveInternally: true);
-            var output = TradeSystem.SetupAndSimulate(
+            var output = TradingSystemRegistration.SetupAndRun(
                 testFilePath,
                 startTime,
                 endDate,

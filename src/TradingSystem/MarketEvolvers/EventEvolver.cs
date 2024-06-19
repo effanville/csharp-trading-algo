@@ -18,7 +18,7 @@ namespace Effanville.TradingSystem.MarketEvolvers;
 /// An evolver for a Stock market that is based on events being raised. Either
 /// Exchange change events or price changed events (or others).
 /// </summary>
-public sealed class EventEvolver
+public sealed class EventEvolver : IEventEvolver
 {
     bool _isInitialised;
     private readonly IClock _clock;
@@ -27,7 +27,7 @@ public sealed class EventEvolver
     readonly IScheduler _scheduler;
     readonly ServiceManager _serviceManager = new ServiceManager();
     IPriceService PriceService => _serviceManager.GetService<IPriceService>(nameof(IPriceService));
-    ITradingExchange Exchange => _serviceManager.GetService<TradingExchange>(nameof(TradingExchange));
+    ITradingExchange Exchange => _serviceManager.GetService<TradingExchange>(nameof(ITradingExchange));
     private IMarketExchange SimulationExchange => _serviceManager.GetService<IMarketExchange>(nameof(IMarketExchange));
     IOrderListener OrderListener => _serviceManager.GetService<IOrderListener>(nameof(IOrderListener));
     private IStrategy Strategy => _serviceManager.GetService<IStrategy>(nameof(IStrategy));
@@ -116,7 +116,7 @@ public sealed class EventEvolver
     /// <summary>
     /// End everything from running and record the results.
     /// </summary>
-    private void Shutdown()
+    public void Shutdown()
     {
         _clock.Stop();
         _scheduler.Stop();

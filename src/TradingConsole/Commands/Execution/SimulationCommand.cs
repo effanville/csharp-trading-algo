@@ -9,6 +9,7 @@ using Effanville.Common.Structure.Reporting;
 using Effanville.FinancialStructures.Stocks.Statistics;
 using Effanville.TradingStructures.Common.Diagnostics;
 using Effanville.TradingStructures.Strategies.Decision;
+using Effanville.TradingSystem;
 using Effanville.TradingSystem.MarketEvolvers;
 
 using Microsoft.Extensions.Configuration;
@@ -88,7 +89,7 @@ namespace Effanville.TradingConsole.Commands.Execution
                 }
 
                 console.WriteLine(settings.StockFilePath);
-                EvolverResult output = TradeSystem.SetupAndSimulate(
+                EvolverResult output = TradingSystemRegistration.SetupAndRun(
                     settings.StockFilePath,
                     settings.StartTime,
                     settings.EndTime,
