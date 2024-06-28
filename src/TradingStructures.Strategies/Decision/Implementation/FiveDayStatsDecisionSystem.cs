@@ -47,6 +47,14 @@ namespace Effanville.TradingStructures.Strategies.Decision.Implementation
                             StockDataStream.Open)
                         .Select(Convert.ToDouble)
                         .ToList();
+                    double normalisationConstant = 0.0;
+                    
+                    for (int j = 0; j < NumberStatistics; j++)
+                    {
+                        normalisationConstant += values[j];
+                    }
+
+                    normalisationConstant /= NumberStatistics;
                     for (int j = 0; j < NumberStatistics; j++)
                     {
                         if (values[j].Equals(double.NaN))
@@ -54,7 +62,7 @@ namespace Effanville.TradingStructures.Strategies.Decision.Implementation
                             values[j] = values[j + 1];
                         }
 
-                        fitData[i + stockIndex, j] = values[j] / values[0];
+                        fitData[i * settings.NumberStocks + stockIndex, j] = values[j] / normalisationConstant;
                     }
 
                     if (values.Last().Equals(double.NaN))
@@ -62,7 +70,7 @@ namespace Effanville.TradingStructures.Strategies.Decision.Implementation
                         values[values.Count - 1] = values[values.Count - 2];
                     }
 
-                    fitValues[i + stockIndex] = values.Last() / values[0];
+                    fitValues[i * settings.NumberStocks + stockIndex] = values.Last() / normalisationConstant;
                 }
             }
 
