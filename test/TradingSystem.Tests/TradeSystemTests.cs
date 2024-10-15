@@ -8,17 +8,15 @@ using Effanville.Common.Structure.Reporting;
 
 using Effanville.FinancialStructures.Database;
 using Effanville.FinancialStructures.Database.Extensions.Values;
+using Effanville.FinancialStructures.Stocks;
 using Effanville.FinancialStructures.Stocks.Statistics;
 using Effanville.TradingStructures.Common.Trading;
 using Effanville.TradingStructures.Strategies.Decision;
 using Effanville.TradingStructures.Strategies.Portfolio;
-using Effanville.TradingSystem.MarketEvolvers;
 
 using NUnit.Framework;
 
 using TradingConsole.Tests;
-
-using DecisionSystemFactory = Effanville.TradingStructures.Strategies.Decision.DecisionSystemFactory;
 
 namespace Effanville.TradingSystem.Tests
 {
@@ -390,13 +388,34 @@ $@"|StartDate|EndDate|StockName|TradeType|NumberShares|
                 65,
                 new Dictionary<DateTime, TradeCollection>())
                 .SetName("FiveDayStatsRidge-small-db-2016-2018-5 day later");
+            yield return new TestCaseData(
+                    "example-database.xml",
+                    DecisionSystem.ArbitraryStatsLeastSquares,
+                    new List<StockStatisticSettings>
+                    {
+                        new ("PreviousNDayValue", 1, StockDataStream.Open),
+                        new ("PreviousNDayValue", 2, StockDataStream.Open),
+                        new ("PreviousNDayValue", 3, StockDataStream.Open),
+                        new ("PreviousNDayValue", 4, StockDataStream.Open),
+                        new ("PreviousNDayValue", 5, StockDataStream.Open)
+                        
+                    }, 
+                    1, 1.1, 1.0,
+                    new DateTime(2016, 1, 4, 15, 0, 0, DateTimeKind.Utc),
+                    new DateTime(2018, 12, 12, 8, 0, 0, DateTimeKind.Utc),
+                    20182.8519476318365826m,
+                    16,
+                    12,
+                    4,
+                    trades)
+                .SetName("ArbitraryStatsLeastSquares-small-db-2016-2018-5 day later");
         }
 
         [TestCaseSource(nameof(TradeSystemCases))]
         public void RunTradeSystem(
             string databaseName,
             DecisionSystem decisions,
-            List<StockStatisticType> stockStatistics,
+            List<StockStatisticSettings> stockStatistics,
             int dayAfterPredictor,
             double buyThreshold,
             double sellThreshold,
@@ -410,7 +429,7 @@ $@"|StartDate|EndDate|StockName|TradeType|NumberShares|
         {
             decimal tol = 1e-2m;
             var portfolioStartSettings = new PortfolioStartSettings(null, startTime, 20000);
-            var decisionParameters = new DecisionSystemFactory.Settings(decisions, stockStatistics, buyThreshold, sellThreshold, dayAfterPredictor);
+            var decisionParameters = new DecisionSystemSetupSettings(decisions, stockStatistics, buyThreshold, sellThreshold, dayAfterPredictor);
             var fileSystem = new MockFileSystem();
             string configureFile = File.ReadAllText(Path.Combine(TestConstants.ExampleFilesLocation, databaseName));
             string testFilePath = "c:/temp/exampleFile.xml";
@@ -418,10 +437,10 @@ $@"|StartDate|EndDate|StockName|TradeType|NumberShares|
 
             var logger = new LogReporter(null, new SingleTaskQueue(),  saveInternally: true);
             var output = TradingSystemRegistration.SetupAndRun(
-                testFilePath,
+                new SimulationSettings(testFilePath,
                 startTime,
                 endDate,
-                TimeSpan.FromDays(1),
+                TimeSpan.FromDays(1)),
                 portfolioStartSettings,
                 PortfolioConstructionSettings.Default(),
                 decisionParameters,

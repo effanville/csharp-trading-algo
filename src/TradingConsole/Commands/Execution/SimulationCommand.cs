@@ -68,7 +68,7 @@ namespace Effanville.TradingConsole.Commands.Execution
 
             // Decision system options.
             Options.Add(new CommandOption<DecisionSystem>(DecisionSystemName, "The type of decision system to use."));
-            Options.Add(new CommandOption<List<StockStatisticType>>(DecisionSystemStatsName, ""));
+            Options.Add(new CommandOption<string>(DecisionSystemStatsName, ""));
             Options.Add(new CommandOption<decimal>(FractionInvestName, "The maximum fraction of available cash to put in any purchase."));
         }
 
@@ -90,10 +90,11 @@ namespace Effanville.TradingConsole.Commands.Execution
 
                 console.WriteLine(settings.StockFilePath);
                 EvolverResult output = TradingSystemRegistration.SetupAndRun(
-                    settings.StockFilePath,
-                    settings.StartTime,
-                    settings.EndTime,
-                    settings.EvolutionIncrement,
+                    new SimulationSettings(
+                        settings.StockFilePath,
+                        settings.StartTime,
+                        settings.EndTime,
+                        settings.EvolutionIncrement),
                     settings.PortfolioSettings,
                     settings.PortfolioConstructionSettings,
                     settings.DecisionSystemSettings,

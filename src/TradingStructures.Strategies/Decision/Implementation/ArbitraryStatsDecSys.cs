@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 
 using Effanville.Common.Structure.MathLibrary.ParameterEstimation;
 using Effanville.Common.Structure.Reporting;
@@ -18,19 +19,20 @@ namespace Effanville.TradingStructures.Strategies.Decision.Implementation
     /// </summary>
     internal sealed class ArbitraryStatsDecisionSystem : IDecisionSystem
     {
-        private readonly DecisionSystemFactory.Settings _settings;
+        private readonly DecisionSystemSetupSettings _settings;
         private readonly IReadOnlyList<IStockStatistic> _stockStatistics;
         private Estimator.Result? _estimatorResult;
 
         /// <summary>
         /// Construct an instance.
         /// </summary>
-        public ArbitraryStatsDecisionSystem(DecisionSystemFactory.Settings decisionParameters)
+        public ArbitraryStatsDecisionSystem(DecisionSystemSetupSettings decisionParameters)
         {
+            var factory = new StockStatisticFactory();
             List<IStockStatistic> stockStatistics = new List<IStockStatistic>();
-            if (decisionParameters.Statistics != null)
+            if (decisionParameters.StatisticSettings != null)
             {
-                stockStatistics.AddRange(decisionParameters.Statistics.Select(StockStatisticFactory.Create));
+                stockStatistics.AddRange(decisionParameters.StatisticSettings.Select(factory.Create));
             }
 
             _settings = decisionParameters;
@@ -61,16 +63,35 @@ namespace Effanville.TradingStructures.Strategies.Decision.Implementation
                                     settings.Exchange.Stocks[stockIndex]);
                     }
 
+                    var values = settings.Exchange.Stocks[stockIndex].Values(
+                        burnInLength.AddDays(delayTime + entryIndex), 
+                        delayTime,
+                        _settings.DayAfterPredictor,
+                        StockDataStream.Open);
                     fitValues[entryIndex * settings.Exchange.Stocks.Count + stockIndex] = Convert.ToDouble(
-                        settings.Exchange.Stocks[stockIndex].Values(burnInLength.AddDays(delayTime + entryIndex), 0,
-                            _settings.DayAfterPredictor, StockDataStream.Open).Last() / 100m);
+                        values.Last() / values.Take(delayTime).Average());
                 }
             }
 
             var estimatorType = TypeHelpers.ConvertFrom(_settings.DecisionSystemType);
-            if (!estimatorType.Success)
+            if (estimatorType.Success)
             {
                 _estimatorResult = Estimator.Fit(estimatorType.Data, fitData, fitValues);
+                _ = logger?.Log(ReportSeverity.Critical, ReportType.Error, ReportLocation.Unknown,
+                    $"FitData....... FitValue");
+                for (int i = 0; i < fitData.GetLength(0); i++)
+                {
+                    StringBuilder sb = new StringBuilder();
+                    for (int j = 0; j < fitData.GetLength(1); j++)
+                    {
+                        sb.Append(fitData[i, j] + ",");
+                    }
+
+                    sb.Append("  " + fitValues[i]);
+                    _ = logger?.Log(ReportSeverity.Critical, ReportType.Error, ReportLocation.Unknown,
+                        sb.ToString());
+                }
+
                 _ = logger?.Log(ReportSeverity.Critical, ReportType.Warning, ReportLocation.Unknown,
                     $"Estimator Weights are {string.Join(",", _estimatorResult.Estimator)}");
                 return;
@@ -99,6 +120,12 @@ namespace Effanville.TradingStructures.Strategies.Decision.Implementation
                         StockDataStream.Open)
                     .Select(Convert.ToDouble)
                     .ToArray();
+                
+                double normaliseFactor = values[0];
+                for (int valueIndex = 0; valueIndex < values.Length; valueIndex++)
+                {
+                    values[valueIndex] /= normaliseFactor;
+                }
                 double value = _estimatorResult.Evaluate(values);
 
                 if (value > _settings.BuyThreshold)

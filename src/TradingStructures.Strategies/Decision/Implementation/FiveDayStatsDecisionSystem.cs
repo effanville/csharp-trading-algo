@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 
 using Effanville.Common.Structure.MathLibrary.ParameterEstimation;
 using Effanville.Common.Structure.Reporting;
@@ -16,19 +17,19 @@ namespace Effanville.TradingStructures.Strategies.Decision.Implementation
     internal sealed class FiveDayStatsDecisionSystem : IDecisionSystem
     {
         private const int NumberStatistics = 5;
-        private readonly DecisionSystemFactory.Settings _settings;
+        private readonly DecisionSystemSetupSettings _settings;
         private Estimator.Result? _estimatorResult;
 
         /// <summary>
         /// Construct and instance.
         /// </summary>
-        public FiveDayStatsDecisionSystem(DecisionSystemFactory.Settings settings)
+        public FiveDayStatsDecisionSystem(DecisionSystemSetupSettings settings)
         {
             _settings = settings;
         }
 
         /// <inheritdoc />
-        public void Calibrate(DecisionSystemSettings settings, IReportLogger logger)
+        public void Calibrate(DecisionSystemSettings settings, IReportLogger? logger)
         {
             DateTime burnInLength = settings.BurnInEnd;
             int numberEntries = ((burnInLength - settings.StartTime).Days - 5) * 5 / 7;
@@ -78,17 +79,32 @@ namespace Effanville.TradingStructures.Strategies.Decision.Implementation
             if (estimatorType.Success)
             {
                 _estimatorResult = Estimator.Fit(estimatorType.Data, fitData, fitValues);
-                _ = logger.Log(ReportSeverity.Critical, ReportType.Warning, ReportLocation.Unknown,
+                _ = logger?.Log(ReportSeverity.Critical, ReportType.Error, ReportLocation.Unknown,
+                    $"FitData....... FitValue");
+                for (int i = 0; i < fitData.GetLength(0); i++)
+                {
+                    StringBuilder sb = new StringBuilder();
+                    for (int j = 0; j < fitData.GetLength(1); j++)
+                    {
+                        sb.Append(fitData[i, j] + ",");
+                    }
+
+                    sb.Append("  " + fitValues[i]);
+                    _ = logger?.Log(ReportSeverity.Critical, ReportType.Error, ReportLocation.Unknown,
+                        sb.ToString());
+                }
+                
+                _ = logger?.Log(ReportSeverity.Critical, ReportType.Warning, ReportLocation.Unknown,
                     $"Estimator Weights are {string.Join(",", _estimatorResult.Estimator)}");
                 return;
             }
 
-            _ = logger.Log(ReportSeverity.Critical, ReportType.Error, ReportLocation.Unknown,
+            _ = logger?.Log(ReportSeverity.Critical, ReportType.Error, ReportLocation.Unknown,
                 $"Created FiveDayStats system without five day stats type.");
         }
 
         /// <inheritdoc />
-        public TradeCollection? Decide(DateTime day, IStockExchange stockExchange, IReportLogger logger)
+        public TradeCollection? Decide(DateTime day, IStockExchange stockExchange, IReportLogger? logger)
         {
             if (_estimatorResult == null)
             {

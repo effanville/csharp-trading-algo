@@ -21,22 +21,16 @@ namespace Effanville.TradingSystem;
 public static class TradingSystemRegistration
 {
     public static EvolverResult SetupAndRun(
-        string stockFilePath,
-        DateTime startTime,
-        DateTime endTime,
-        TimeSpan evolutionIncrement,
+        SimulationSettings simulationSettings,
         PortfolioStartSettings startSettings,
         PortfolioConstructionSettings constructionSettings,
-        DecisionSystemFactory.Settings decisionParameters,
+        DecisionSystemSetupSettings decisionParameters,
         IFileSystem? fileSystem = null,
         IReportLogger? reportLogger = null)
     {
         var builder = new HostApplicationBuilder();
         builder.SetupSystem(
-            stockFilePath,
-            startTime,
-            endTime,
-            evolutionIncrement,
+            simulationSettings,
             startSettings,
             constructionSettings,
             decisionParameters,
@@ -65,13 +59,10 @@ public static class TradingSystemRegistration
 
     public static HostApplicationBuilder SetupSystem(
         this HostApplicationBuilder hostApplicationBuilder,
-        string stockFilePath,
-        DateTime startTime,
-        DateTime endTime,
-        TimeSpan evolutionIncrement,
+        SimulationSettings simulationSettings,
         PortfolioStartSettings startSettings,
         PortfolioConstructionSettings constructionSettings,
-        DecisionSystemFactory.Settings decisionParameters,
+        DecisionSystemSetupSettings decisionParameters,
         IFileSystem? fileSystem = null,
         IReportLogger? reportLogger = null)
     {
@@ -96,10 +87,7 @@ public static class TradingSystemRegistration
         }
 
         hostApplicationBuilder.Services.AddTradingSystem(
-            stockFilePath,
-            startTime,
-            endTime,
-            evolutionIncrement,
+            simulationSettings,
             startSettings,
             constructionSettings,
             decisionParameters);
@@ -108,24 +96,21 @@ public static class TradingSystemRegistration
 
     private static IServiceCollection AddTradingSystem(
         this IServiceCollection serviceCollection,
-        string stockFilePath,
-        DateTime startTime,
-        DateTime endTime,
-        TimeSpan evolutionIncrement,
+        SimulationSettings simulationSettings,
         PortfolioStartSettings startSettings,
         PortfolioConstructionSettings constructionSettings,
-        DecisionSystemFactory.Settings decisionParameters)
+        DecisionSystemSetupSettings decisionParameters)
     {
         serviceCollection.AddSingleton<IStockExchange>(
             x => CreateExchange(
-                stockFilePath,
+                simulationSettings.StockFilePath,
                 x.GetService<IFileSystem>(),
                 x.GetService<IReportLogger>()));
         serviceCollection.AddSingleton<TimeIncrementEvolverSettings>(
             x => new TimeIncrementEvolverSettings(
-                startTime,
-                endTime,
-                evolutionIncrement,
+                simulationSettings.StartTime,
+                simulationSettings.EndTime,
+                simulationSettings.EvolutionIncrement,
                 x.GetService<IStockExchange>()));
         serviceCollection.AddSingleton<EvolverSettings>(
             x => x.GetService<TimeIncrementEvolverSettings>());
@@ -155,7 +140,7 @@ public static class TradingSystemRegistration
 
     private static IDecisionSystem CreateDecisionSystem(
         TimeIncrementEvolverSettings simulatorSettings,
-        DecisionSystemFactory.Settings decisionParameters,
+        DecisionSystemSetupSettings decisionParameters,
         IReportLogger reportLogger)
     {
         using (new Timer(reportLogger, "Calibrating"))

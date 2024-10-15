@@ -6,9 +6,9 @@ namespace Effanville.TradingStructures.Strategies.Decision
     /// <summary>
     /// Factory for creating a decision system.
     /// </summary>
-    public static partial class DecisionSystemFactory
+    public static class DecisionSystemFactory
     {
-        public static IDecisionSystem Create(Settings settings)
+        public static IDecisionSystem Create(DecisionSystemSetupSettings settings)
         {
             switch (settings.DecisionSystemType)
             {
@@ -31,7 +31,7 @@ namespace Effanville.TradingStructures.Strategies.Decision
             }
         }
 
-        public static IDecisionSystem CreateAndCalibrate(Settings settings, DecisionSystemSettings decisionSettings, IReportLogger logger)
+        public static IDecisionSystem CreateAndCalibrate(DecisionSystemSetupSettings settings, DecisionSystemSettings decisionSettings, IReportLogger logger)
         {
             var decisionSystem = Create(settings);
             decisionSystem.Calibrate(decisionSettings, logger);

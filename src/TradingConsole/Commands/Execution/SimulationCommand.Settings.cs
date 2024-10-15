@@ -3,11 +3,10 @@ using System.Collections.Generic;
 using System.IO.Abstractions;
 
 using Effanville.Common.Console.Options;
-using Effanville.FinancialStructures.Stocks.Statistics;
 using Effanville.TradingStructures.Strategies.Decision;
 using Effanville.TradingStructures.Strategies.Portfolio;
 
-using Newtonsoft.Json;
+using System.Text.Json;
 
 namespace Effanville.TradingConsole.Commands.Execution
 {
@@ -27,7 +26,7 @@ namespace Effanville.TradingConsole.Commands.Execution
 
             public PortfolioConstructionSettings PortfolioConstructionSettings { get; private set; }
 
-            public DecisionSystemFactory.Settings DecisionSystemSettings { get; private set; }
+            public DecisionSystemSetupSettings DecisionSystemSettings { get; private set; }
 
             private Settings() { }
 
@@ -43,7 +42,7 @@ namespace Effanville.TradingConsole.Commands.Execution
                     }
                     
                     string jsonContents = fileSystem.File.ReadAllText(path);
-                    Settings? settings = JsonConvert.DeserializeObject<Settings>(jsonContents);
+                    Settings? settings = JsonSerializer.Deserialize<Settings>(jsonContents);
                     return settings;
                 }
                 else
@@ -61,21 +60,17 @@ namespace Effanville.TradingConsole.Commands.Execution
                     settings.EvolutionIncrement = gap?.Value ?? new TimeSpan(3000);
 
                     CommandOption<decimal>? fractionInvest = options.GetOption<decimal>(FractionInvestName);
-                    CommandOption<DecisionSystem>? decisionType = options.GetOption<DecisionSystem>(DecisionSystemName);
                     CommandOption<decimal>? startingCash = options.GetOption<decimal>(StartingCashName);
                     CommandOption<string>? portfolioFilePath = options.GetOption<string>(PortfolioFilePathName);
-                    CommandOption<List<StockStatisticType>>? decisionSystemStats = options.GetOption<List<StockStatisticType>>(DecisionSystemStatsName);
+                    CommandOption<string>? decisionSystemSettings = options.GetOption<string>(DecisionSystemStatsName);
+                    DecisionSystemSetupSettings? decisionSystemFactorySettings 
+                        = JsonSerializer.Deserialize<DecisionSystemSetupSettings>(decisionSystemSettings?.Value ?? "{}");
 
                     settings.PortfolioSettings = new PortfolioStartSettings(
                         portfolioFilePath?.Value ?? string.Empty, 
                         settings.StartTime,
                         startingCash?.Value ?? 20000m);
-                    settings.DecisionSystemSettings = new DecisionSystemFactory.Settings(
-                        decisionType?.Value ?? DecisionSystem.FiveDayStatsLeastSquares,
-                        decisionSystemStats?.Value, 
-                        1.05, 
-                        1.0,
-                        1);
+                    settings.DecisionSystemSettings = decisionSystemFactorySettings ?? new DecisionSystemSetupSettings(DecisionSystem.FiveDayStatsLeastSquares);
                     settings.PortfolioConstructionSettings = new PortfolioConstructionSettings(fractionInvest?.Value ?? 0.25m);
                     return settings;
                 }

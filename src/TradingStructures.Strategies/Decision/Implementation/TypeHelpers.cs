@@ -8,6 +8,7 @@ namespace Effanville.TradingStructures.Strategies.Decision.Implementation
         internal static Result<Estimator.Type> ConvertFrom(DecisionSystem system) 
             => system switch
             {
+                DecisionSystem.ArbitraryStatsLeastSquares => Estimator.Type.LeastSquares,
                 DecisionSystem.FiveDayStatsLeastSquares => Estimator.Type.LeastSquares,
                 DecisionSystem.FiveDayStatsLasso => Estimator.Type.LassoRegression,
                 DecisionSystem.FiveDayStatsRidge => Estimator.Type.RidgeRegression,

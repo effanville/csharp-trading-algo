@@ -12,17 +12,17 @@ namespace Effanville.TradingStructures.Strategies.Decision.Implementation
     {
         private readonly ArbitraryStatsDecisionSystem _innerSystem;
 
-        public NewFiveDayStatsDecisionSystem(DecisionSystemFactory.Settings settings)
+        public NewFiveDayStatsDecisionSystem(DecisionSystemSetupSettings settings)
         {
-            var newSettings = new DecisionSystemFactory.Settings(
+            var newSettings = new DecisionSystemSetupSettings(
                 settings.DecisionSystemType,
-                new List<StockStatisticType>()
+                new List<StockStatisticSettings>()
                 {
-                    StockStatisticType.PrevDayOpen,
-                    StockStatisticType.PrevTwoOpen,
-                    StockStatisticType.PrevThreeOpen,
-                    StockStatisticType.PrevFourOpen,
-                    StockStatisticType.PrevFiveOpen
+                    new StockStatisticSettings("PreviousDayOpen", 1, StockDataStream.Open),
+                    new StockStatisticSettings("PreviousNDayValue", 2, StockDataStream.Open),
+                    new StockStatisticSettings("PreviousNDayValue", 3, StockDataStream.Open),
+                    new StockStatisticSettings("PreviousNDayValue", 4, StockDataStream.Open),
+                    new StockStatisticSettings("PreviousNDayValue", 5, StockDataStream.Open)
                 },
                 settings.BuyThreshold,
                 settings.SellThreshold,

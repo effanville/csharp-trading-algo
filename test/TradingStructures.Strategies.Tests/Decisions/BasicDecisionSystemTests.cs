@@ -27,7 +27,7 @@ namespace Effanville.TradingStructures.Strategies.Tests.Decisions
 
             var logger = new LogReporter(null, new SingleTaskQueue(), saveInternally: true);
             var stockExchange = StockExchangeFactory.Create(testFilePath, fileSystem, logger);
-            var settings = new DecisionSystemFactory.Settings(
+            var settings = new DecisionSystemSetupSettings(
                 DecisionSystem.FiveDayStatsLeastSquares, 
                 null,
                 1.05, 
