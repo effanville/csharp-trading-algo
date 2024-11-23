@@ -9,6 +9,6 @@ namespace Effanville.TradingStructures.Common.Time
         public static bool IsCalcTimeValid(DateTime time, CountryCode countryCode)
             => (time.DayOfWeek != DayOfWeek.Saturday)
                && (time.DayOfWeek != DayOfWeek.Sunday)
-               && !DateSystem.IsPublicHoliday(time, countryCode);
+               && !HolidaySystem.IsPublicHoliday(time, countryCode);
     }
 }
