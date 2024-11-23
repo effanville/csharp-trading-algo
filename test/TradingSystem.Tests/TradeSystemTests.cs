@@ -95,10 +95,10 @@ namespace Effanville.TradingSystem.Tests
                 null, 1, 1.05, 1.0,
                 new DateTime(2015, 1, 4, 15, 0, 0, DateTimeKind.Utc),
                 new DateTime(2019, 12, 12, 8, 0, 0, DateTimeKind.Utc),
-                22735.32432571411139m,
-                96,
-                72,
-                24,
+                22528.7957264709473127m,
+                99,
+                74,
+                25,
                 new Dictionary<DateTime, TradeCollection>())
                 .SetName("FiveDayStatsLeastSquares-2015-2019");
             yield return new TestCaseData(
@@ -108,21 +108,21 @@ namespace Effanville.TradingSystem.Tests
                 new DateTime(2015, 1, 4, 15, 0, 0, DateTimeKind.Utc),
                 new DateTime(2019, 12, 12, 8, 0, 0, DateTimeKind.Utc),
                 20339.7689443969733093m,
-                199,
-                149,
-                50,
+                267,
+                201,
+                66,
                 new Dictionary<DateTime, TradeCollection>())
                 .SetName("FiveDayStatsLasso-2015-2019");
             yield return new TestCaseData(
                 "example-database.xml",
                 DecisionSystem.FiveDayStatsRidge,
                 null, 1, 1.05, 1.0,
-                new DateTime(2015, 1, 4, 15,  0, 0, DateTimeKind.Utc),
+                new DateTime(2015, 1, 4, 15, 0, 0, DateTimeKind.Utc),
                 new DateTime(2019, 12, 12, 8, 0, 0, DateTimeKind.Utc),
                 22431.0045445251465375m,
-                96,
-                72,
-                24,
+                99,
+                74,
+                25,
                 new Dictionary<DateTime, TradeCollection>())
                 .SetName("FiveDayStatsRidge-2015-2019");
             tradeString =
@@ -135,11 +135,13 @@ namespace Effanville.TradingSystem.Tests
 |2019-01-09T08:00:00|2019-01-09T08:00:00|stuff-Dunelm|Buy|4|
 |2019-01-10T08:00:00|2019-01-10T08:00:00|stuff-Dunelm|Buy|3|
 |2019-01-15T08:00:00|2019-01-15T08:00:00|stuff-Dunelm|Sell|19|
+|2019-02-20T08:00:00|2019-02-20T08:00:00|stuff-Dunelm|Buy|6|
+|2019-02-26T08:00:00|2019-02-26T08:00:00|stuff-Dunelm|Sell|6|
 |2019-10-15T08:00:00|2019-10-15T08:00:00|-Barclays|Buy|31|
-|2019-10-16T08:00:00|2019-10-16T08:00:00|-Barclays|Buy|23|
+|2019-10-16T08:00:00|2019-10-16T08:00:00|-Barclays|Buy|22|
 |2019-10-17T08:00:00|2019-10-17T08:00:00|stuff-Dunelm|Buy|3|
 |2019-10-24T08:00:00|2019-10-24T08:00:00|stuff-Dunelm|Sell|3|
-|2019-11-01T08:00:00|2019-11-01T08:00:00|-Barclays|Sell|54|
+|2019-11-01T08:00:00|2019-11-01T08:00:00|-Barclays|Sell|53|
 |2019-12-06T08:00:00|2019-12-06T08:00:00|stuff-Dunelm|Buy|5|
 |2019-12-09T08:00:00|2019-12-09T08:00:00|stuff-Dunelm|Buy|3|
 |2019-12-10T08:00:00|2019-12-10T08:00:00|stuff-Dunelm|Buy|2|
@@ -152,9 +154,9 @@ namespace Effanville.TradingSystem.Tests
                 new DateTime(2015, 1, 4, 15, 0, 0, DateTimeKind.Utc),
                 new DateTime(2019, 12, 12, 8, 0, 0, DateTimeKind.Utc),
                 20182.8519476318365826m,
-                16,
-                12,
-                4,
+                18,
+                13,
+                5,
                 trades)
                 .SetName("FiveDayStatsLeastSquares-2015-2019-hardBuy");
             yield return new TestCaseData(
@@ -164,9 +166,9 @@ namespace Effanville.TradingSystem.Tests
                 new DateTime(2015, 1, 4, 15, 0, 0, DateTimeKind.Utc),
                 new DateTime(2019, 12, 12, 8, 0, 0, DateTimeKind.Utc),
                 20182.8519476318365826m,
-                48,
-                34,
-                14,
+                78,
+                57,
+                21,
                 new Dictionary<DateTime, TradeCollection>())
                 .SetName("FiveDayStatsLasso-2015-2019-hardbuy");
             tradeString =
@@ -179,11 +181,13 @@ namespace Effanville.TradingSystem.Tests
 |2019-01-09T08:00:00|2019-01-09T08:00:00|stuff-Dunelm|Buy|4|
 |2019-01-10T08:00:00|2019-01-10T08:00:00|stuff-Dunelm|Buy|3|
 |2019-01-15T08:00:00|2019-01-15T08:00:00|stuff-Dunelm|Sell|19|
+|2019-02-20T08:00:00|2019-02-20T08:00:00|stuff-Dunelm|Buy|6|
+|2019-02-26T08:00:00|2019-02-26T08:00:00|stuff-Dunelm|Sell|6|
 |2019-10-15T08:00:00|2019-10-15T08:00:00|-Barclays|Buy|31|
-|2019-10-16T08:00:00|2019-10-16T08:00:00|-Barclays|Buy|23|
+|2019-10-16T08:00:00|2019-10-16T08:00:00|-Barclays|Buy|22|
 |2019-10-17T08:00:00|2019-10-17T08:00:00|stuff-Dunelm|Buy|3|
 |2019-10-24T08:00:00|2019-10-24T08:00:00|stuff-Dunelm|Sell|3|
-|2019-11-01T08:00:00|2019-11-01T08:00:00|-Barclays|Sell|54|
+|2019-11-01T08:00:00|2019-11-01T08:00:00|-Barclays|Sell|53|
 |2019-12-06T08:00:00|2019-12-06T08:00:00|stuff-Dunelm|Buy|5|
 |2019-12-09T08:00:00|2019-12-09T08:00:00|stuff-Dunelm|Buy|3|
 |2019-12-10T08:00:00|2019-12-10T08:00:00|stuff-Dunelm|Buy|2|
@@ -196,9 +200,9 @@ namespace Effanville.TradingSystem.Tests
                 new DateTime(2015, 1, 4, 15, 0, 0, DateTimeKind.Utc),
                 new DateTime(2019, 12, 12, 8, 0, 0, DateTimeKind.Utc),
                 20698.6897747802738038m,
-                16,
-                12,
-                4,
+                18,
+                13,
+                5,
                 trades)
                 .SetName("FiveDayStatsRidge-2015-2019-hardbuy");
 
@@ -209,8 +213,8 @@ namespace Effanville.TradingSystem.Tests
                 new DateTime(2016, 1, 4, 15, 0, 0, DateTimeKind.Utc),
                 new DateTime(2018, 12, 12, 8, 0, 0, DateTimeKind.Utc),
                 18747.796563110351293m,
-                43,
-                31,
+                44,
+                32,
                 12,
                 new Dictionary<DateTime, TradeCollection>())
                 .SetName("FiveDayStatsLeastSquares-2016-2018");
@@ -241,20 +245,24 @@ namespace Effanville.TradingSystem.Tests
                 new DateTime(2016, 1, 4, 15, 0, 0, DateTimeKind.Utc),
                 new DateTime(2018, 12, 12, 8, 0, 0, DateTimeKind.Utc),
                 18196.5226364135759164m,
-                81,
-                58,
-                23,
+                94,
+                69,
+                25,
                 new Dictionary<DateTime, TradeCollection>())
                 .SetName("FiveDayStatsLasso-2016-2018");
             tradeString =
 @$"|StartDate|EndDate|StockName|TradeType|NumberShares|
 |-|-|-|-|-|
+|2017-08-07T08:00:00|2017-08-07T08:00:00|stuff-Dunelm|Buy|7|
+|2017-08-10T08:00:00|2017-08-10T08:00:00|stuff-Dunelm|Sell|7|
 |2017-09-15T08:00:00|2017-09-15T08:00:00|stuff-Dunelm|Buy|7|
 |2017-09-18T08:00:00|2017-09-18T08:00:00|stuff-Dunelm|Buy|5|
 |2017-09-20T08:00:00|2017-09-20T08:00:00|stuff-Dunelm|Sell|12|
-|2018-09-14T08:00:00|2018-09-14T08:00:00|stuff-Dunelm|Buy|8|
+|2018-09-14T08:00:00|2018-09-14T08:00:00|stuff-Dunelm|Buy|9|
 |2018-09-17T08:00:00|2018-09-17T08:00:00|stuff-Dunelm|Buy|6|
-|2018-09-19T08:00:00|2018-09-19T08:00:00|stuff-Dunelm|Sell|14|
+|2018-09-19T08:00:00|2018-09-19T08:00:00|stuff-Dunelm|Sell|15|
+|2018-10-16T08:00:00|2018-10-16T08:00:00|stuff-Dunelm|Buy|8|
+|2018-10-22T08:00:00|2018-10-22T08:00:00|stuff-Dunelm|Sell|8|
 |2018-12-05T08:00:00|2018-12-05T08:00:00|stuff-Dunelm|Buy|8|
 |2018-12-06T08:00:00|2018-12-06T08:00:00|stuff-Dunelm|Buy|6|
 |2018-12-07T08:00:00|2018-12-07T08:00:00|stuff-Dunelm|Buy|4|
@@ -267,9 +275,9 @@ namespace Effanville.TradingSystem.Tests
                 new DateTime(2016, 1, 4, 15, 0, 0, DateTimeKind.Utc),
                 new DateTime(2018, 12, 12, 8, 0, 0, DateTimeKind.Utc),
                 19442.675m,
-                10,
-                7,
-                3,
+                14,
+                9,
+                5,
                 trades)
                 .SetName("FiveDayStatsLasso-2016-2018-hardbuy");
             yield return new TestCaseData(
@@ -279,8 +287,8 @@ namespace Effanville.TradingSystem.Tests
                 new DateTime(2016, 1, 4, 15, 0, 0, DateTimeKind.Utc),
                 new DateTime(2018, 12, 12, 8, 0, 0, DateTimeKind.Utc),
                 18747.796563110351293m,
-                43,
-                31,
+                44,
+                32,
                 12,
                 new Dictionary<DateTime, TradeCollection>())
                 .SetName("FiveDayStatsRidge-2016-2018");
@@ -334,7 +342,7 @@ $@"|StartDate|EndDate|StockName|TradeType|NumberShares|
                 "small-exchange.xml",
                 DecisionSystem.FiveDayStatsRidge,
                 null, 1, 1.1, 1.0,
-                new DateTime(2016, 1, 4, 15,  0, 0, DateTimeKind.Utc),
+                new DateTime(2016, 1, 4, 15, 0, 0, DateTimeKind.Utc),
                 new DateTime(2018, 12, 12, 8, 0, 0, DateTimeKind.Utc),
                 18762.1630072021498325m,
                 22,
