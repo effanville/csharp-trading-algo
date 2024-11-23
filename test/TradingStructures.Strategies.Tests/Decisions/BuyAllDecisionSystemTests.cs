@@ -22,11 +22,11 @@ namespace Effanville.TradingStructures.Strategies.Tests.Decisions
             IDecisionSystem decisionSystem = new BuyAllDecisionSystem();
             TradeCollection status = decisionSystem.Decide(DateTime.Today, exchange, logger: null);
 
-            Assert.AreEqual(1, status.GetBuyDecisions().Count);
-            Assert.AreEqual(0, status.GetSellDecisions().Count);
+            Assert.That(status.GetBuyDecisions().Count, Is.EqualTo(1));
+            Assert.That(status.GetSellDecisions().Count, Is.EqualTo(0));
 
             var name = status.GetBuyDecisions().Single().StockName;
-            Assert.AreEqual("MyCompany-MyName", name.ToString());
+            Assert.That(name.ToString(), Is.EqualTo("MyCompany-MyName"));
         }
     }
 }

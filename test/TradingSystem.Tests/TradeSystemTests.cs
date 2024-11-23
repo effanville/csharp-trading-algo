@@ -12,7 +12,6 @@ using Effanville.FinancialStructures.Stocks.Statistics;
 using Effanville.TradingStructures.Common.Trading;
 using Effanville.TradingStructures.Strategies.Decision;
 using Effanville.TradingStructures.Strategies.Portfolio;
-using Effanville.TradingSystem.MarketEvolvers;
 
 using NUnit.Framework;
 
@@ -409,7 +408,7 @@ $@"|StartDate|EndDate|StockName|TradeType|NumberShares|
             Dictionary<DateTime, TradeCollection> expectedTrades)
         {
             decimal tol = 1e-2m;
-            var portfolioStartSettings = new PortfolioStartSettings(null, startTime, 20000);
+            var portfolioStartSettings = new PortfolioStartSettings("", startTime, 20000);
             var decisionParameters = new DecisionSystemFactory.Settings(decisions, stockStatistics, buyThreshold, sellThreshold, dayAfterPredictor);
             var fileSystem = new MockFileSystem();
             string configureFile = File.ReadAllText(Path.Combine(TestConstants.ExampleFilesLocation, databaseName));
@@ -436,14 +435,14 @@ $@"|StartDate|EndDate|StockName|TradeType|NumberShares|
                 Assert.That(20000 - portfolio.TotalValue(Totals.All, startTime.AddDays(-1)), Is.LessThan(tol), "Start value not correct.");
                 decimal finalValue = portfolio.TotalValue(Totals.All, endDate);
                 Assert.That(expectedEndValue - finalValue, Is.LessThan(tol), $"End value not correct. Expected {expectedEndValue} but was {finalValue}");
-                Assert.AreEqual(expectedNumberTrades, trades.TotalTrades, "Number of trades wrong");
-                Assert.AreEqual(expectedBuyTrades, trades.TotalBuyTrades, "Number of buy trades wrong.");
-                Assert.AreEqual(expectedSellTrades, trades.TotalSellTrades, "Number of sell trades wrong.");
+                Assert.That(trades.TotalTrades, Is.EqualTo(expectedNumberTrades), "Number of trades wrong");
+                Assert.That(trades.TotalBuyTrades, Is.EqualTo(expectedBuyTrades), "Number of buy trades wrong.");
+                Assert.That(trades.TotalSellTrades, Is.EqualTo(expectedSellTrades), "Number of sell trades wrong.");
 
                 string mdTable = trades.ConvertToTable();
                 if (expectedTrades.Count > 0)
                 {
-                    CollectionAssert.AreEquivalent(expectedTrades, trades.DailyTrades);
+                    Assert.That(trades.DailyTrades, Is.EquivalentTo(expectedTrades));
                 }
             });
 

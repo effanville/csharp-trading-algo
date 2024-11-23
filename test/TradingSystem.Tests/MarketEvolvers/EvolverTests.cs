@@ -148,7 +148,7 @@ internal class EventEvolverTests
             Assert.That(actualTrades.TotalSellTrades, Is.EqualTo(expectedSellTrades));
             if (expectedTrades.Count > 0)
             {
-                CollectionAssert.AreEquivalent(expectedTrades, actualTrades.DailyTrades);
+                Assert.That(actualTrades.DailyTrades, Is.EquivalentTo(expectedTrades));
             }
         });
     }
