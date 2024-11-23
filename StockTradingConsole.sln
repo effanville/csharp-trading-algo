@@ -45,6 +45,18 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TradingSystem.Tests", "test
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Unit.Tests.Common", "Unit.Tests.Common\Unit.Tests.Common.csproj", "{4BF33A4F-979F-4DF3-9078-91CB8A77FDB0}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Common.Console.Tests", "FinancialStructures\Common\test\Common.Console.Tests\Common.Console.Tests.csproj", "{B04E2501-8AD1-4E28-8225-B55831546AFB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Common.Structure.Tests", "FinancialStructures\Common\test\Common.Structure.Tests\Common.Structure.Tests.csproj", "{BE210DAC-DA0C-4A2E-ADB5-A16ED3CD4522}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FinancialStructures.Tests", "FinancialStructures\test\FinancialStructures.Tests\FinancialStructures.Tests.csproj", "{1A7B8AA5-37F1-442A-B5CE-A4D1F3412141}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FinancialStructures.Stocks.Tests", "FinancialStructures\test\FinancialStructures.Stocks.Tests\FinancialStructures.Stocks.Tests.csproj", "{B2C992AC-F44B-44F5-80CC-6B9C83A97315}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Common.ReportWriting", "FinancialStructures\Common\src\Common.ReportWriting\Common.ReportWriting.csproj", "{EAE9AC99-D725-4507-A5F9-CD62276FD378}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Common.ReportWriting.Unit.Tests", "FinancialStructures\Common\test\Common.ReportWriting.Unit.Tests\Common.ReportWriting.Unit.Tests.csproj", "{DCA1BFDE-0103-475F-86FA-C481CE2BCF18}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -115,6 +127,30 @@ Global
 		{4BF33A4F-979F-4DF3-9078-91CB8A77FDB0}.Debug|x64.Build.0 = Debug|x64
 		{4BF33A4F-979F-4DF3-9078-91CB8A77FDB0}.Release|x64.ActiveCfg = Release|x64
 		{4BF33A4F-979F-4DF3-9078-91CB8A77FDB0}.Release|x64.Build.0 = Release|x64
+		{B04E2501-8AD1-4E28-8225-B55831546AFB}.Debug|x64.ActiveCfg = Debug|x64
+		{B04E2501-8AD1-4E28-8225-B55831546AFB}.Debug|x64.Build.0 = Debug|x64
+		{B04E2501-8AD1-4E28-8225-B55831546AFB}.Release|x64.ActiveCfg = Release|x64
+		{B04E2501-8AD1-4E28-8225-B55831546AFB}.Release|x64.Build.0 = Release|x64
+		{BE210DAC-DA0C-4A2E-ADB5-A16ED3CD4522}.Debug|x64.ActiveCfg = Debug|x64
+		{BE210DAC-DA0C-4A2E-ADB5-A16ED3CD4522}.Debug|x64.Build.0 = Debug|x64
+		{BE210DAC-DA0C-4A2E-ADB5-A16ED3CD4522}.Release|x64.ActiveCfg = Release|x64
+		{BE210DAC-DA0C-4A2E-ADB5-A16ED3CD4522}.Release|x64.Build.0 = Release|x64
+		{1A7B8AA5-37F1-442A-B5CE-A4D1F3412141}.Debug|x64.ActiveCfg = Debug|x64
+		{1A7B8AA5-37F1-442A-B5CE-A4D1F3412141}.Debug|x64.Build.0 = Debug|x64
+		{1A7B8AA5-37F1-442A-B5CE-A4D1F3412141}.Release|x64.ActiveCfg = Release|x64
+		{1A7B8AA5-37F1-442A-B5CE-A4D1F3412141}.Release|x64.Build.0 = Release|x64
+		{B2C992AC-F44B-44F5-80CC-6B9C83A97315}.Debug|x64.ActiveCfg = Debug|x64
+		{B2C992AC-F44B-44F5-80CC-6B9C83A97315}.Debug|x64.Build.0 = Debug|x64
+		{B2C992AC-F44B-44F5-80CC-6B9C83A97315}.Release|x64.ActiveCfg = Release|x64
+		{B2C992AC-F44B-44F5-80CC-6B9C83A97315}.Release|x64.Build.0 = Release|x64
+		{EAE9AC99-D725-4507-A5F9-CD62276FD378}.Debug|x64.ActiveCfg = Debug|x64
+		{EAE9AC99-D725-4507-A5F9-CD62276FD378}.Debug|x64.Build.0 = Debug|x64
+		{EAE9AC99-D725-4507-A5F9-CD62276FD378}.Release|x64.ActiveCfg = Release|x64
+		{EAE9AC99-D725-4507-A5F9-CD62276FD378}.Release|x64.Build.0 = Release|x64
+		{DCA1BFDE-0103-475F-86FA-C481CE2BCF18}.Debug|x64.ActiveCfg = Debug|x64
+		{DCA1BFDE-0103-475F-86FA-C481CE2BCF18}.Debug|x64.Build.0 = Debug|x64
+		{DCA1BFDE-0103-475F-86FA-C481CE2BCF18}.Release|x64.ActiveCfg = Release|x64
+		{DCA1BFDE-0103-475F-86FA-C481CE2BCF18}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -127,5 +163,11 @@ Global
 		{2A4968F6-F545-4439-A698-D1CD2E9874E3} = {38FE277F-E8C0-425A-939E-0FB39EB961F2}
 		{780A1A86-BAFF-4840-A6B1-6E28CD508AF3} = {C1A1509D-BB98-4A26-BD09-39BC329C9F26}
 		{1EEDD44D-1DBB-4FCE-80A3-A2ACECF59BDE} = {C1A1509D-BB98-4A26-BD09-39BC329C9F26}
+		{B04E2501-8AD1-4E28-8225-B55831546AFB} = {38FE277F-E8C0-425A-939E-0FB39EB961F2}
+		{BE210DAC-DA0C-4A2E-ADB5-A16ED3CD4522} = {38FE277F-E8C0-425A-939E-0FB39EB961F2}
+		{1A7B8AA5-37F1-442A-B5CE-A4D1F3412141} = {C1A1509D-BB98-4A26-BD09-39BC329C9F26}
+		{B2C992AC-F44B-44F5-80CC-6B9C83A97315} = {C1A1509D-BB98-4A26-BD09-39BC329C9F26}
+		{EAE9AC99-D725-4507-A5F9-CD62276FD378} = {38FE277F-E8C0-425A-939E-0FB39EB961F2}
+		{DCA1BFDE-0103-475F-86FA-C481CE2BCF18} = {38FE277F-E8C0-425A-939E-0FB39EB961F2}
 	EndGlobalSection
 EndGlobal

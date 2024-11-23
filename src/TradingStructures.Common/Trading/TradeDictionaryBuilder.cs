@@ -1,7 +1,8 @@
 using System;
 using System.Collections.Generic;
 
-using Effanville.Common.Structure.ReportWriting;
+using Effanville.Common.ReportWriting;
+using Effanville.Common.ReportWriting.Documents;
 using Effanville.FinancialStructures.DataStructures;
 using Effanville.FinancialStructures.NamingStructures;
 
