@@ -1,7 +1,5 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 using System.IO.Abstractions.TestingHelpers;
-using System.Text;
 
 using Effanville.Common.Console;
 using Effanville.Common.Structure.DataStructures;
@@ -33,7 +31,6 @@ namespace Effanville.TradingConsole.Tests
             mockFileSystem.AddFile(testFilePath, configureFile);
             string[] args = new[] { "configure", "--stockFilePath", testFilePath };
             
-            var consoleInstance = new ConsoleInstance(null, null);
             var reportLogger = new LogReporter(null, new SingleTaskQueue(), saveInternally: true);
             var mock = new Mock<ILogger<ConfigureCommand>>();
             ILogger<ConfigureCommand> logger = mock.Object;
@@ -43,11 +40,11 @@ namespace Effanville.TradingConsole.Tests
                 .AddEnvironmentVariables()
                 .Build();
             var statisticsCommand = new ConfigureCommand(mockFileSystem, logger, reportLogger);
-            bool isValidated = statisticsCommand.Validate(consoleInstance, config);
+            bool isValidated = statisticsCommand.Validate(config);
             
             Assert.That(isValidated, Is.True);
 
-            int executed = statisticsCommand.Execute(consoleInstance, config);
+            int executed = statisticsCommand.Execute(config);
             Assert.Multiple(() =>
             {
                 Assert.That(executed, Is.EqualTo(0));
@@ -68,7 +65,6 @@ namespace Effanville.TradingConsole.Tests
             mockFileSystem.AddFile(testFilePath, configureFile);
             string[] args = new[] { "download", "all", "--stockFilePath", testFilePath, "--start", "1/1/2010", "--end", "1/1/2023" };
             
-            var consoleInstance = new ConsoleInstance(null, null);
             var reportLogger = new LogReporter(null, new SingleTaskQueue(), saveInternally: true);
             var mock = new Mock<ILogger<DownloadAllCommand>>();
             ILogger<DownloadAllCommand> logger = mock.Object;
@@ -79,11 +75,11 @@ namespace Effanville.TradingConsole.Tests
                 .Build();
             var downloadAllCommand = new DownloadAllCommand(mockFileSystem, logger, reportLogger);
             
-            bool isValidated = downloadAllCommand.Validate(consoleInstance, config);
+            bool isValidated = downloadAllCommand.Validate(config);
             
             Assert.That(isValidated, Is.True);
 
-            int executed = downloadAllCommand.Execute(consoleInstance, config);
+            int executed = downloadAllCommand.Execute(config);
             Assert.Multiple(() =>
             {
                 Assert.That(executed, Is.EqualTo(0));
@@ -100,7 +96,6 @@ namespace Effanville.TradingConsole.Tests
             mockFileSystem.AddFile(testFilePath, configureFile);
 
             string[] args = new[] { "simulate", "--stockFilePath", testFilePath, "--start", "2015-01-05T08:00:00", "--end", "2019-12-12T08:00:00", "--startCash", "20000", "--decision", "BuyAll", "--invFrac", "0.25" };
-            var consoleInstance = new ConsoleInstance(null, null);
             var reportLogger = new LogReporter(null, new SingleTaskQueue(), saveInternally: true);
             var mock = new Mock<ILogger<SimulationCommand>>();
             ILogger<SimulationCommand> logger = mock.Object;
@@ -111,10 +106,10 @@ namespace Effanville.TradingConsole.Tests
                 .Build();
             var simulationCommand = new SimulationCommand(mockFileSystem, logger, reportLogger);
             
-            bool isValidated = simulationCommand.Validate(consoleInstance, config);
+            bool isValidated = simulationCommand.Validate(config);
             Assert.That(isValidated, Is.True);
 
-            int executed = simulationCommand.Execute(consoleInstance, config);
+            int executed = simulationCommand.Execute(config);
             Assert.Multiple(() =>
             {
                 Assert.That(executed, Is.EqualTo(0));
@@ -131,7 +126,6 @@ namespace Effanville.TradingConsole.Tests
             mockFileSystem.AddFile(testFilePath, configureFile);
 
             string[] args = new[] { "simulate", "--stockFilePath", testFilePath, "--start", "2015-01-05T08:00+00:00", "--end", "2019-12-12T08:00:00", "--startCash", "20000", "--invFrac", "1" };
-            var consoleInstance = new ConsoleInstance(null, null);
             var reportLogger = new LogReporter(null, new SingleTaskQueue(), saveInternally: true);
             var mock = new Mock<ILogger<SimulationCommand>>();
             ILogger<SimulationCommand> logger = mock.Object;
@@ -142,10 +136,10 @@ namespace Effanville.TradingConsole.Tests
                 .Build();
             var simulationCommand = new SimulationCommand(mockFileSystem, logger, reportLogger);
             
-            bool isValidated = simulationCommand.Validate(consoleInstance, config);
+            bool isValidated = simulationCommand.Validate(config);
             Assert.That(isValidated, Is.True);
             
-            int executed = simulationCommand.Execute(consoleInstance, config);
+            int executed = simulationCommand.Execute(config);
             Assert.Multiple(() =>
             {
                 Assert.That(executed, Is.EqualTo(0));

@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.IO.Abstractions;
 
-using Effanville.Common.Console;
 using Effanville.Common.Console.Commands;
 using Effanville.Common.Console.Options;
 using Effanville.Common.Structure.Reporting;
@@ -73,12 +72,12 @@ namespace Effanville.TradingConsole.Commands.Execution
         }
 
         /// <inheritdoc/>
-        public void WriteHelp(IConsole console) => this.WriteHelp(console, _logger);
+        public void WriteHelp() => this.WriteHelp(_logger);
 
         /// <inheritdoc/>
-        public bool Validate(IConsole console, IConfiguration config) => this.Validate(config, console, _logger);
+        public bool Validate(IConfiguration config) => this.Validate(config, _logger);
         
-        public int Execute(IConsole console, IConfiguration config)
+        public int Execute(IConfiguration config)
         {
             using (new Timer(_reportLogger, "TotalTime"))
             {
@@ -88,7 +87,7 @@ namespace Effanville.TradingConsole.Commands.Execution
                     return 1;
                 }
 
-                console.WriteLine(settings.StockFilePath);
+                _logger.Log(LogLevel.Information, settings.StockFilePath);
                 EvolverResult output = TradingSystemRegistration.SetupAndRun(
                     settings.StockFilePath,
                     settings.StartTime,

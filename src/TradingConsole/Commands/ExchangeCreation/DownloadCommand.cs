@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.IO.Abstractions;
 
-using Effanville.Common.Console;
 using Effanville.Common.Console.Commands;
 using Effanville.Common.Console.Options;
 using Effanville.Common.Structure.Reporting;
@@ -49,12 +48,12 @@ namespace Effanville.TradingConsole.Commands.ExchangeCreation
         }
 
         /// <inheritdoc/>
-        public void WriteHelp(IConsole console) => this.WriteHelp(console, _logger);
+        public void WriteHelp() => this.WriteHelp(_logger);
 
         /// <inheritdoc/>
-        public int Execute(IConsole console, IConfiguration config) => this.Execute(config, console, _logger);
+        public int Execute(IConfiguration config) => this.Execute(config, _logger);
 
         /// <inheritdoc/>
-        public bool Validate(IConsole console, IConfiguration config) => this.Validate(config, console, _logger);
+        public bool Validate(IConfiguration config) => this.Validate(config, _logger);
     }
 }

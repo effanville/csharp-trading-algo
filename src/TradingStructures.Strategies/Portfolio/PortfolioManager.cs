@@ -60,7 +60,7 @@ namespace Effanville.TradingStructures.Strategies.Portfolio
         {
             _logger = logger;
             Portfolio = portfolio;
-            StartPortfolio = portfolio.Copy();
+            StartPortfolio = (portfolio as FinancialStructures.Database.Implementation.Portfolio).Copy();
             StartSettings = startSettings;
             PortfolioConstructionSettings = constructionSettings;
         }
