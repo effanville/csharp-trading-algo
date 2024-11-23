@@ -1,7 +1,4 @@
 <Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup>
-    <Nullable>enable</Nullable>
-  </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="9.0.0" />
     <PackageReference Include="Nager.Date" Version="2.7.1"/>
@@ -21,13 +18,8 @@
     <ProjectReference Include="..\TradingStructures.Strategies\TradingStructures.Strategies.csproj"/>
     <ProjectReference Include="..\TradingStructures.Trading\TradingStructures.Trading.csproj"/>
   </ItemGroup>
-
+  
   <ItemGroup>
-    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleToAttribute">
-      <_Parameter1>TradingConsole.Tests</_Parameter1>
-    </AssemblyAttribute>
-  </ItemGroup>
-  <ItemGroup Condition="!$(MSBuildProjectFile.Contains('.Tests'))">
     <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleToAttribute">
       <_Parameter1>Effanville.TradingConsole.Tests</_Parameter1>
     </AssemblyAttribute>

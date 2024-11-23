@@ -1,9 +1,5 @@
 <Project Sdk="Microsoft.NET.Sdk">
-
-    <PropertyGroup>
-        <Nullable>enable</Nullable>
-    </PropertyGroup>
-
+    
     <ItemGroup>
       <ProjectReference Include="..\TradingStructures.Common\TradingStructures.Common.csproj" />
       <ProjectReference Include="..\TradingStructures.Pricing\TradingStructures.Pricing.csproj" />
