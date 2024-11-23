@@ -10,7 +10,7 @@ using Effanville.TradingConsole.Commands.Execution;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 
-using Moq;
+using NSubstitute;
 
 using NUnit.Framework;
 
@@ -32,8 +32,7 @@ namespace Effanville.TradingConsole.Tests
             string[] args = new[] { "configure", "--stockFilePath", testFilePath };
             
             var reportLogger = new LogReporter(null, new SingleTaskQueue(), saveInternally: true);
-            var mock = new Mock<ILogger<ConfigureCommand>>();
-            ILogger<ConfigureCommand> logger = mock.Object;
+            ILogger<ConfigureCommand> logger = Substitute.For<ILogger<ConfigureCommand>>();
             IConfiguration config = new ConfigurationBuilder()
                 .AddJsonFile("appsettings.json")
                 .AddCommandLine(new ConsoleCommandArgs(args).GetEffectiveArgs())
@@ -66,8 +65,8 @@ namespace Effanville.TradingConsole.Tests
             string[] args = new[] { "download", "all", "--stockFilePath", testFilePath, "--start", "1/1/2010", "--end", "1/1/2023" };
             
             var reportLogger = new LogReporter(null, new SingleTaskQueue(), saveInternally: true);
-            var mock = new Mock<ILogger<DownloadAllCommand>>();
-            ILogger<DownloadAllCommand> logger = mock.Object;
+            
+            ILogger<DownloadAllCommand> logger = Substitute.For<ILogger<DownloadAllCommand>>();
             IConfiguration config = new ConfigurationBuilder()
                 .AddJsonFile("appsettings.json")
                 .AddCommandLine(new ConsoleCommandArgs(args).GetEffectiveArgs())
@@ -97,8 +96,7 @@ namespace Effanville.TradingConsole.Tests
 
             string[] args = new[] { "simulate", "--stockFilePath", testFilePath, "--start", "2015-01-05T08:00:00", "--end", "2019-12-12T08:00:00", "--startCash", "20000", "--decision", "BuyAll", "--invFrac", "0.25" };
             var reportLogger = new LogReporter(null, new SingleTaskQueue(), saveInternally: true);
-            var mock = new Mock<ILogger<SimulationCommand>>();
-            ILogger<SimulationCommand> logger = mock.Object;
+            ILogger<SimulationCommand> logger = Substitute.For<ILogger<SimulationCommand>>();
             IConfiguration config = new ConfigurationBuilder()
                 .AddJsonFile("appsettings.json")
                 .AddCommandLine(new ConsoleCommandArgs(args).GetEffectiveArgs())
@@ -127,8 +125,7 @@ namespace Effanville.TradingConsole.Tests
 
             string[] args = new[] { "simulate", "--stockFilePath", testFilePath, "--start", "2015-01-05T08:00+00:00", "--end", "2019-12-12T08:00:00", "--startCash", "20000", "--invFrac", "1" };
             var reportLogger = new LogReporter(null, new SingleTaskQueue(), saveInternally: true);
-            var mock = new Mock<ILogger<SimulationCommand>>();
-            ILogger<SimulationCommand> logger = mock.Object;
+            ILogger<SimulationCommand> logger = Substitute.For<ILogger<SimulationCommand>>();
             IConfiguration config = new ConfigurationBuilder()
                 .AddJsonFile("appsettings.json")
                 .AddCommandLine(new ConsoleCommandArgs(args).GetEffectiveArgs())
