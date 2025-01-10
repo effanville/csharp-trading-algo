@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.IO.Abstractions.TestingHelpers;
+using System.Threading.Tasks;
 
 using Effanville.Common.Structure.DataStructures;
 using Effanville.Common.Structure.Reporting;
@@ -12,6 +13,9 @@ using Effanville.FinancialStructures.Stocks.Statistics;
 using Effanville.TradingStructures.Common.Trading;
 using Effanville.TradingStructures.Strategies.Decision;
 using Effanville.TradingStructures.Strategies.Portfolio;
+using Effanville.TradingSystem.DependencyInjection;
+
+using Microsoft.Extensions.Hosting;
 
 using NUnit.Framework;
 
@@ -400,7 +404,7 @@ $@"|StartDate|EndDate|StockName|TradeType|NumberShares|
         }
 
         [TestCaseSource(nameof(TradeSystemCases))]
-        public void RunTradeSystem(
+        public async Task RunTradeSystem(
             string databaseName,
             DecisionSystem decisions,
             List<StockStatisticType> stockStatistics,
@@ -408,7 +412,7 @@ $@"|StartDate|EndDate|StockName|TradeType|NumberShares|
             double buyThreshold,
             double sellThreshold,
             DateTime startTime,
-            DateTime endDate,
+            DateTime endTime,
             decimal expectedEndValue,
             int expectedNumberTrades,
             int expectedBuyTrades,
@@ -423,17 +427,21 @@ $@"|StartDate|EndDate|StockName|TradeType|NumberShares|
             string testFilePath = "c:/temp/exampleFile.xml";
             fileSystem.AddFile(testFilePath, configureFile);
 
-            var logger = new LogReporter(null, new SingleTaskQueue(),  saveInternally: true);
-            var output = TradingSystemRegistration.SetupAndRun(
+            var logger = new LogReporter(null, new SingleTaskQueue(), saveInternally: true);
+
+            var builder = new HostApplicationBuilder();
+            builder.Logging.RegisterLogging(logger);
+            builder.Services.RegisterTradingServices(
                 testFilePath,
                 startTime,
-                endDate,
+                endTime,
                 TimeSpan.FromDays(1),
                 portfolioStartSettings,
                 PortfolioConstructionSettings.Default(),
                 decisionParameters,
-                fileSystem,
-                logger);
+                fileSystem);
+            var host = builder.Build();
+            var output = await host.RunSystemAsync();
             var portfolio = output.Portfolio;
             var trades = output.Trades;
 
@@ -441,7 +449,7 @@ $@"|StartDate|EndDate|StockName|TradeType|NumberShares|
             Assert.Multiple(() =>
             {
                 Assert.That(20000 - portfolio.TotalValue(Totals.All, startTime.AddDays(-1)), Is.LessThan(tol), "Start value not correct.");
-                decimal finalValue = portfolio.TotalValue(Totals.All, endDate);
+                decimal finalValue = portfolio.TotalValue(Totals.All, endTime);
                 Assert.That(expectedEndValue - finalValue, Is.LessThan(tol), $"End value not correct. Expected {expectedEndValue} but was {finalValue}");
                 Assert.That(trades.TotalTrades, Is.EqualTo(expectedNumberTrades), "Number of trades wrong");
                 Assert.That(trades.TotalBuyTrades, Is.EqualTo(expectedBuyTrades), "Number of buy trades wrong.");

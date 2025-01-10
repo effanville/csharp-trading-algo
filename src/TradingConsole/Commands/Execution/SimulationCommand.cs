@@ -9,9 +9,11 @@ using Effanville.FinancialStructures.Stocks.Statistics;
 using Effanville.TradingStructures.Common.Diagnostics;
 using Effanville.TradingStructures.Strategies.Decision;
 using Effanville.TradingSystem;
+using Effanville.TradingSystem.DependencyInjection;
 using Effanville.TradingSystem.MarketEvolvers;
 
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
 namespace Effanville.TradingConsole.Commands.Execution
@@ -88,7 +90,10 @@ namespace Effanville.TradingConsole.Commands.Execution
                 }
 
                 _logger.Log(LogLevel.Information, settings.StockFilePath);
-                EvolverResult output = TradingSystemRegistration.SetupAndRun(
+                
+                var builder = new HostApplicationBuilder();
+                builder.Logging.RegisterLogging(_reportLogger);
+                builder.Services.RegisterTradingServices(
                     settings.StockFilePath,
                     settings.StartTime,
                     settings.EndTime,
@@ -96,8 +101,8 @@ namespace Effanville.TradingConsole.Commands.Execution
                     settings.PortfolioSettings,
                     settings.PortfolioConstructionSettings,
                     settings.DecisionSystemSettings,
-                    _fileSystem,
-                    _reportLogger);
+                    _fileSystem);
+                builder.Build().RunAsync();
 
                 return 0;
             }

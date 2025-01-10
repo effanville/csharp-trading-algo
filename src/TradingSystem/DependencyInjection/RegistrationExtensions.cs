@@ -16,97 +16,28 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
-namespace Effanville.TradingSystem;
+namespace Effanville.TradingSystem.DependencyInjection;
 
-public static class TradingSystemRegistration
+public static class RegistrationExtensions
 {
-    public static EvolverResult SetupAndRun(
-        string stockFilePath,
-        DateTime startTime,
-        DateTime endTime,
-        TimeSpan evolutionIncrement,
-        PortfolioStartSettings startSettings,
-        PortfolioConstructionSettings constructionSettings,
-        DecisionSystemFactory.Settings decisionParameters,
-        IFileSystem? fileSystem = null,
-        IReportLogger? reportLogger = null)
-    {
-        var builder = new HostApplicationBuilder();
-        builder.SetupSystem(
-            stockFilePath,
-            startTime,
-            endTime,
-            evolutionIncrement,
-            startSettings,
-            constructionSettings,
-            decisionParameters,
-            fileSystem,
-            reportLogger);
-        var host = builder.Build();
-        return RunSystem(
-            host.Services.GetService<IEventEvolver>(),
-            host.Services.GetService<IReportLogger>());
-    }
-
-    public static EvolverResult RunSystem(IEventEvolver evolver, IReportLogger reportLogger)
-    {
-        using (new Timer(reportLogger, "Execution"))
-        {
-            evolver.Initialise();
-            evolver.Start();
-            while (evolver.IsActive)
-            {
-                _ = Task.Delay(100);
-            }
-        }
-
-        return evolver.Result;
-    }
-
-    public static HostApplicationBuilder SetupSystem(
-        this HostApplicationBuilder hostApplicationBuilder,
-        string stockFilePath,
-        DateTime startTime,
-        DateTime endTime,
-        TimeSpan evolutionIncrement,
-        PortfolioStartSettings startSettings,
-        PortfolioConstructionSettings constructionSettings,
-        DecisionSystemFactory.Settings decisionParameters,
-        IFileSystem? fileSystem = null,
+    public static ILoggingBuilder RegisterLogging(
+        this ILoggingBuilder loggingBuilder,
         IReportLogger? reportLogger = null)
     {
         if (reportLogger == null)
         {
-            hostApplicationBuilder.Logging
+            loggingBuilder
                 .ClearProviders()
                 .AddReportLogger(config => config.MinimumLogLevel = ReportType.Information);
         }
         else
         {
-            hostApplicationBuilder.Logging.AddReportLogger(reportLogger);
+            loggingBuilder.AddReportLogger(reportLogger);
         }
-
-        if (fileSystem == null)
-        {
-            hostApplicationBuilder.Services.AddSingleton<IFileSystem, FileSystem>();
-        }
-        else
-        {
-            hostApplicationBuilder.Services.AddSingleton(fileSystem);
-        }
-
-        hostApplicationBuilder.Services.AddTradingSystem(
-            stockFilePath,
-            startTime,
-            endTime,
-            evolutionIncrement,
-            startSettings,
-            constructionSettings,
-            decisionParameters);
-        return hostApplicationBuilder;
+        return loggingBuilder;
     }
 
-    private static IServiceCollection AddTradingSystem(
+    public static IServiceCollection RegisterTradingServices(
         this IServiceCollection serviceCollection,
         string stockFilePath,
         DateTime startTime,
@@ -114,43 +45,71 @@ public static class TradingSystemRegistration
         TimeSpan evolutionIncrement,
         PortfolioStartSettings startSettings,
         PortfolioConstructionSettings constructionSettings,
-        DecisionSystemFactory.Settings decisionParameters)
+        DecisionSystemFactory.Settings decisionParameters,
+        IFileSystem? fileSystem = null)
     {
+        if (fileSystem == null)
+        {
+            serviceCollection.AddSingleton<IFileSystem, FileSystem>();
+        }
+        else
+        {
+            serviceCollection.AddSingleton(fileSystem);
+        }
+
         serviceCollection.AddSingleton<IStockExchange>(
             x => CreateExchange(
                 stockFilePath,
-                x.GetService<IFileSystem>(),
-                x.GetService<IReportLogger>()));
+                x.GetService<IFileSystem>()!,
+                x.GetService<IReportLogger>()!));
         serviceCollection.AddSingleton<TimeIncrementEvolverSettings>(
             x => new TimeIncrementEvolverSettings(
                 startTime,
                 endTime,
                 evolutionIncrement,
-                x.GetService<IStockExchange>()));
+                x.GetService<IStockExchange>()!));
         serviceCollection.AddSingleton<EvolverSettings>(
-            x => x.GetService<TimeIncrementEvolverSettings>());
+            x => x.GetService<TimeIncrementEvolverSettings>()!);
 
         serviceCollection.AddSingleton<IDecisionSystem>(
             x => CreateDecisionSystem(
-                x.GetService<TimeIncrementEvolverSettings>(),
+                x.GetService<TimeIncrementEvolverSettings>()!,
                 decisionParameters,
-                x.GetService<IReportLogger>()));
+                x.GetService<IReportLogger>()!));
 
         serviceCollection.AddSingleton<IPortfolioManager>(
             x => CreatePortfolioManager(
-                x.GetService<IFileSystem>(),
+                x.GetService<IFileSystem>()!,
                 startSettings,
                 constructionSettings,
-                x.GetService<IReportLogger>()));
+                x.GetService<IReportLogger>()!));
         serviceCollection.AddSingleton<IExecutionStrategy>(
             x => ExecutionStrategyFactory.Create(
                 StrategyType.ExchangeOpen,
-                x.GetService<IReportLogger>(),
-                x.GetService<IStockExchange>(),
-                x.GetService<IDecisionSystem>()));
+                x.GetService<IReportLogger>()!,
+                x.GetService<IStockExchange>()!,
+                x.GetService<IDecisionSystem>()!));
         serviceCollection.AddSingleton<IStrategy, Strategy>();
         serviceCollection.AddSingleton<IEventEvolver, EventEvolver>();
+        serviceCollection.AddHostedService<TradingSystemHostedService>();
         return serviceCollection;
+    }
+
+    public static async Task<EvolverResult> RunSystemAsync(this IHost host)
+    {
+        var reportLogger = host.Services.GetService<IReportLogger>();
+        var evolver = host.Services.GetService<IEventEvolver>();
+        using (new Timer(reportLogger, "Execution"))
+        {
+            evolver.Initialise();
+            evolver.Start();
+            while (evolver.IsActive)
+            {
+                await Task.Delay(100);
+            }
+        }
+
+        return evolver.Result;
     }
 
     private static IDecisionSystem CreateDecisionSystem(
@@ -182,7 +141,16 @@ public static class TradingSystemRegistration
     {
         using (new Timer(logger, "Loading Exchange"))
         {
-            return StockExchangeFactory.Create(filePath, fileSystem, logger);
+            var exchange = StockExchangeFactory.Create(filePath, fileSystem, logger);
+            foreach (var stock in exchange.Stocks)
+            {
+                foreach (var value in stock.Valuations)
+                {
+                    value.Start = DateTime.SpecifyKind(value.Start, DateTimeKind.Utc);
+                }
+            }
+
+            return exchange;
         }
     }
 

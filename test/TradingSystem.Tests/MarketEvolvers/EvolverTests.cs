@@ -8,21 +8,18 @@ using Effanville.Common.Structure.DataStructures;
 using Effanville.Common.Structure.Reporting;
 using Effanville.FinancialStructures.Database;
 using Effanville.FinancialStructures.Database.Extensions.Values;
-using Effanville.FinancialStructures.Stocks;
-using Effanville.TradingStructures.Common;
-using Effanville.TradingStructures.Common.Diagnostics;
 using Effanville.TradingStructures.Strategies.Decision;
-using Effanville.TradingStructures.Strategies.Execution;
 using Effanville.TradingStructures.Strategies.Portfolio;
 using Effanville.TradingStructures.Common.Trading;
-using Effanville.TradingStructures.Strategies;
-using Effanville.TradingSystem.MarketEvolvers;
 
 using NUnit.Framework;
 
 using TradingConsole.Tests;
 
 using DecisionSystemFactory = Effanville.TradingStructures.Strategies.Decision.DecisionSystemFactory;
+using Effanville.FinancialStructures.Stocks.Statistics;
+using Microsoft.Extensions.Hosting;
+using Effanville.TradingSystem.DependencyInjection;
 
 namespace Effanville.TradingSystem.Tests.MarketEvolvers;
 
@@ -43,14 +40,17 @@ internal class EventEvolverTests
 ";
         Dictionary<DateTime, TradeCollection> trades = new TradeDictionaryBuilder().BuildFromString(tradeString);
         yield return new TestCaseData(
+            "example-database.xml",
+            DecisionSystem.BuyAll,
+            null, 1, 1.05, 1.0,
             DateTime.SpecifyKind(new DateTime(2015, 1, 20), DateTimeKind.Utc),
             new DateTime(2015, 1, 25),
-            69,
+            72,
             20548.1268704223633478m,
             8,
             8,
             0,
-            trades).SetName("TwoDayEvolutionTest");        
+            trades).SetName("TwoDayEvolutionTest");
         tradeString = @"|StartDate|EndDate|StockName|TradeType|NumberShares|
 |-|-|-|-|-|
 |2015-02-02T08:00:00|2015-02-02T08:00:00|-Barclays|Buy|21|
@@ -69,76 +69,73 @@ internal class EventEvolverTests
 ";
         trades = new TradeDictionaryBuilder().BuildFromString(tradeString);
         yield return new TestCaseData(
+            "example-database.xml",
+            DecisionSystem.BuyAll,
+            null, 1, 1.05, 1.0,
             DateTime.SpecifyKind(new DateTime(2015, 2, 1), DateTimeKind.Utc),
             new DateTime(2015, 3, 1),
-            288,
+            291,
             20970.6086288452163838m,
             13,
             13,
             0,
             trades).SetName("OneMonthEvolutionTest");
     }
-    
+
     [TestCaseSource(nameof(NewEvolverTestData))]
-    public void TestNewEvolver(
-        DateTime startTime, 
-        DateTime endTime, 
-        int numberReports, 
+    public async Task TestNewEvolver(
+        string databaseName,
+        DecisionSystem decisions,
+        List<StockStatisticType> stockStatistics,
+        int dayAfterPredictor,
+        double buyThreshold,
+        double sellThreshold,
+        DateTime startTime,
+        DateTime endTime,
+        int numberReports,
         decimal expectedEndValue,
         int expectedNumberTrades,
         int expectedBuyTrades,
         int expectedSellTrades,
         Dictionary<DateTime, TradeCollection> expectedTrades)
     {
+        var startSettings = new PortfolioStartSettings("", startTime, 20000m);
+        var decisionParameters = new DecisionSystemFactory.Settings(decisions, stockStatistics, buyThreshold, sellThreshold, dayAfterPredictor);
+
         var fileSystem = new MockFileSystem();
         string configureFile =
-            File.ReadAllText(Path.Combine(TestConstants.ExampleFilesLocation, "example-database.xml"));
+            File.ReadAllText(Path.Combine(TestConstants.ExampleFilesLocation, databaseName));
         string testFilePath = "c:/temp/exampleFile.xml";
         fileSystem.AddFile(testFilePath, configureFile);
 
         var logger = new LogReporter(null, new SingleTaskQueue(), saveInternally: true);
-        var stockExchange = StockExchangeFactory.Create(testFilePath, fileSystem, logger);
-        foreach (var stock in stockExchange.Stocks)
-        {
-            foreach (var value in stock.Valuations)
-            {
-                value.Start = DateTime.SpecifyKind(value.Start, DateTimeKind.Utc);
-            }
-        }
-        var settings = new EvolverSettings(startTime, endTime, TimeSpan.FromMinutes(1));
-        var startSettings = new PortfolioStartSettings("", startTime, 20000m);
-        var constructionSettings = PortfolioConstructionSettings.Default();
-        var portfolioManager = PortfolioManager.LoadFromFile(fileSystem, startSettings, constructionSettings, logger);
-        var decisionSystem = DecisionSystemFactory.Create(new DecisionSystemFactory.Settings(DecisionSystem.BuyAll));
-        var executionStrategy = ExecutionStrategyFactory.Create(StrategyType.ExchangeOpen, logger, stockExchange, decisionSystem);
-        var strategy = new Strategy(decisionSystem, executionStrategy, portfolioManager, logger);
-        var evolver = new EventEvolver(
-            settings,
-            stockExchange,
-            strategy,
-            logger);
-        using (new Timer(logger, "Execution"))
-        {
-            evolver.Initialise();
-            evolver.Start();
-            while (evolver.IsActive)
-            {
-                _ = Task.Delay(100);
-            }
-        }
+
+        var builder = new HostApplicationBuilder();
+        _ = builder.Logging.RegisterLogging(logger);
+        _ = builder.Services.RegisterTradingServices(
+            testFilePath,
+            startTime,
+            endTime,
+            TimeSpan.FromMinutes(1),
+            startSettings,
+            PortfolioConstructionSettings.Default(),
+            decisionParameters,
+            fileSystem);
+        var host = builder.Build();
+        var result = await host.RunSystemAsync();
 
         if (!Directory.Exists("logs"))
         {
-            Directory.CreateDirectory("logs");
+            _ = Directory.CreateDirectory("logs");
         }
 
         logger.WriteReportsToFile($"logs\\{DateTime.Now:yyyy-MM-ddTHHmmss}{TestContext.CurrentContext.Test.Name}.log");
         var reports = logger.Reports;
         Assert.That(reports, Is.Not.Null);
 
-        var actualTrades = evolver.Result.Trades;
+        var actualTrades = result.Trades;
         string mdTable = actualTrades.ConvertToTable();
-        decimal finalValue = evolver.Result.Portfolio.TotalValue(Totals.All);
+        decimal finalValue = result.Portfolio.TotalValue(Totals.All);
         Assert.Multiple(() =>
         {
             Assert.That(reports.Count(), Is.EqualTo(numberReports));
