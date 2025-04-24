@@ -33,8 +33,7 @@ namespace Effanville.TradingStructures.Strategies.Decision.Implementation
                 decisions.Add(stock.Name, TradeType.Buy);
             }
 
-            _ = logger?.Log(ReportSeverity.Detailed, ReportType.Information, ReportLocation.Execution,
-                $"Decisions: {decisions}");
+            logger?.Info(nameof(BuyAllDecisionSystem), $"Decisions: {decisions}");
             return decisions;
         }
     }

@@ -84,18 +84,19 @@ namespace Effanville.TradingStructures.Strategies.Portfolio
 
         private static IPortfolio LoadStartPortfolio(PortfolioStartSettings settings, IFileSystem fileSystem, IReportLogger logger)
         {
-            var persistence = new PortfolioPersistence();
+            var persistence = new PortfolioPersistence(logger);
             IPortfolio portfolio;
             if (!string.IsNullOrWhiteSpace(settings.PortfolioFilePath))
             {
-                portfolio = persistence.Load(PortfolioPersistence.CreateOptions(settings.PortfolioFilePath, fileSystem), logger);
+                portfolio = persistence.Load(PortfolioPersistence.CreateOptions(settings.PortfolioFilePath, fileSystem, "1.0.0.0"));
             }
             else
             {
                 portfolio = PortfolioFactory.GenerateEmpty();
-                _ = portfolio.TryAdd(Account.BankAccount, new NameData(settings.DefaultBankAccName.Company, settings.DefaultBankAccName.Name), logger);
+                var res = portfolio.TryAdd(Account.BankAccount, new NameData(settings.DefaultBankAccName.Company, settings.DefaultBankAccName.Name));
+                logger.Info(nameof(PortfolioManager), res.ToString());
                 var data = new DailyValuation(settings.StartTime.AddDays(-1), settings.StartingCash);
-                _ = portfolio.TryAddOrEditData(Account.BankAccount, settings.DefaultBankAccName, data, data, logger);
+                _ = portfolio.TryAddOrEditData(Account.BankAccount, settings.DefaultBankAccName, data, data);
             }
 
             return portfolio;
@@ -167,7 +168,8 @@ namespace Effanville.TradingStructures.Strategies.Portfolio
 
             if (!Portfolio.Exists(Account.Security, trade.StockName.ToTwoName()))
             {
-                _ = Portfolio.TryAdd(Account.Security, new NameData(trade.StockName.Company, trade.StockName.Name, trade.StockName.Currency, trade.StockName.Url, new HashSet<string>()), _logger);
+                var result = Portfolio.TryAdd(Account.Security, new NameData(trade.StockName.Company, trade.StockName.Name, trade.StockName.Currency, trade.StockName.Url, new HashSet<string>()));
+                _logger.Info(nameof(PortfolioManager), result.ToString());
             }
             _ = Portfolio.TryAddOrEditTradeData(Account.Security, trade.StockName, tradeConfirmation, tradeConfirmation);
 
@@ -175,8 +177,8 @@ namespace Effanville.TradingStructures.Strategies.Portfolio
             decimal cashAvailable = Portfolio.TotalValue(Totals.BankAccount, time);
             decimal afterTradeCashValue = cashAvailable - trade.BuySell.Sign() * tradeConfirmation.TotalCost;
             var value = new DailyValuation(time, afterTradeCashValue);
-            _ = Portfolio.TryAddOrEditData(Account.BankAccount, StartSettings.DefaultBankAccName, value, value, reportLogger: null);
-            _logger.Log(ReportSeverity.Critical, ReportType.Warning, "Execution", $"Date {time:yyyy-MM-ddTHH:mm:ss} bought {trade.StockName} Cost {tradeConfirmation.TotalCost:C2} price");
+            _ = Portfolio.TryAddOrEditData(Account.BankAccount, StartSettings.DefaultBankAccName, value, value);
+            _logger.Warn("Execution", $"Date {time:yyyy-MM-ddTHH:mm:ss} bought {trade.StockName} Cost {tradeConfirmation.TotalCost:C2} price");
             return true;
         }
 
@@ -192,8 +194,7 @@ namespace Effanville.TradingStructures.Strategies.Portfolio
                     Account.Security,
                     updateName,
                     valuation,
-                    valuation,
-                    _logger);
+                    valuation);
             }
         }
 

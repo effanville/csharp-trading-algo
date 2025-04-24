@@ -4,6 +4,7 @@ using System.IO.Abstractions.TestingHelpers;
 using Effanville.Common.Console;
 using Effanville.Common.Structure.DataStructures;
 using Effanville.Common.Structure.Reporting;
+using Effanville.FinancialStructures.Stocks.Persistence;
 using Effanville.TradingConsole.Commands.ExchangeCreation;
 using Effanville.TradingConsole.Commands.Execution;
 
@@ -30,20 +31,21 @@ namespace Effanville.TradingConsole.Tests
             string testFilePath = "c:/temp/exampleFile.csv";
             mockFileSystem.AddFile(testFilePath, configureFile);
             string[] args = new[] { "configure", "--stockFilePath", testFilePath };
-            
+
             var reportLogger = new LogReporter(null, new SingleTaskQueue(), saveInternally: true);
+            var persistence = new ExchangePersistence(reportLogger);
             ILogger<ConfigureCommand> logger = Substitute.For<ILogger<ConfigureCommand>>();
             IConfiguration config = new ConfigurationBuilder()
                 .AddJsonFile("appsettings.json")
                 .AddCommandLine(new ConsoleCommandArgs(args).GetEffectiveArgs())
                 .AddEnvironmentVariables()
                 .Build();
-            var statisticsCommand = new ConfigureCommand(mockFileSystem, logger, reportLogger);
-            bool isValidated = statisticsCommand.Validate(config);
-            
+            var statisticsCommand = new ConfigureCommand(mockFileSystem, logger, reportLogger, config, persistence);
+            bool isValidated = statisticsCommand.Validate();
+
             Assert.That(isValidated, Is.True);
 
-            int executed = statisticsCommand.Execute(config);
+            int executed = statisticsCommand.Execute();
             Assert.Multiple(() =>
             {
                 Assert.That(executed, Is.EqualTo(0));
@@ -51,7 +53,7 @@ namespace Effanville.TradingConsole.Tests
                 var reports = reportLogger.Reports;
                 Assert.That(reports.Count(), Is.EqualTo(2));
                 Assert.That(reports[0].Message, Is.EqualTo("Configured StockExchange from file c:/temp/exampleFile.csv."));
-                Assert.That(reports[1].Message, Is.EqualTo("Saved StockExchange at c:/temp/exampleFile.xml"));
+                Assert.That(reports[1].Message, Is.EqualTo("Save. Saved StockExchange at c:/temp/exampleFile.xml"));
             });
         }
 
@@ -63,22 +65,23 @@ namespace Effanville.TradingConsole.Tests
             string testFilePath = "c:\\temp\\exampleFile.xml";
             mockFileSystem.AddFile(testFilePath, configureFile);
             string[] args = new[] { "download", "all", "--stockFilePath", testFilePath, "--start", "1/1/2010", "--end", "1/1/2023" };
-            
+
             var reportLogger = new LogReporter(null, new SingleTaskQueue(), saveInternally: true);
-            
+            var persistence = new ExchangePersistence(reportLogger);
+
             ILogger<DownloadAllCommand> logger = Substitute.For<ILogger<DownloadAllCommand>>();
             IConfiguration config = new ConfigurationBuilder()
                 .AddJsonFile("appsettings.json")
                 .AddCommandLine(new ConsoleCommandArgs(args).GetEffectiveArgs())
                 .AddEnvironmentVariables()
                 .Build();
-            var downloadAllCommand = new DownloadAllCommand(mockFileSystem, logger, reportLogger);
-            
-            bool isValidated = downloadAllCommand.Validate(config);
-            
+            var downloadAllCommand = new DownloadAllCommand(mockFileSystem, logger, reportLogger, config, persistence);
+
+            bool isValidated = downloadAllCommand.Validate();
+
             Assert.That(isValidated, Is.True);
 
-            int executed = downloadAllCommand.Execute(config);
+            int executed = downloadAllCommand.Execute();
             Assert.Multiple(() =>
             {
                 Assert.That(executed, Is.EqualTo(0));
@@ -102,12 +105,12 @@ namespace Effanville.TradingConsole.Tests
                 .AddCommandLine(new ConsoleCommandArgs(args).GetEffectiveArgs())
                 .AddEnvironmentVariables()
                 .Build();
-            var simulationCommand = new SimulationCommand(mockFileSystem, logger, reportLogger);
-            
-            bool isValidated = simulationCommand.Validate(config);
+            var simulationCommand = new SimulationCommand(mockFileSystem, logger, reportLogger, config);
+
+            bool isValidated = simulationCommand.Validate();
             Assert.That(isValidated, Is.True);
 
-            int executed = simulationCommand.Execute(config);
+            int executed = simulationCommand.Execute();
             Assert.Multiple(() =>
             {
                 Assert.That(executed, Is.EqualTo(0));
@@ -131,12 +134,12 @@ namespace Effanville.TradingConsole.Tests
                 .AddCommandLine(new ConsoleCommandArgs(args).GetEffectiveArgs())
                 .AddEnvironmentVariables()
                 .Build();
-            var simulationCommand = new SimulationCommand(mockFileSystem, logger, reportLogger);
-            
-            bool isValidated = simulationCommand.Validate(config);
+            var simulationCommand = new SimulationCommand(mockFileSystem, logger, reportLogger, config);
+
+            bool isValidated = simulationCommand.Validate();
             Assert.That(isValidated, Is.True);
-            
-            int executed = simulationCommand.Execute(config);
+
+            int executed = simulationCommand.Execute();
             Assert.Multiple(() =>
             {
                 Assert.That(executed, Is.EqualTo(0));

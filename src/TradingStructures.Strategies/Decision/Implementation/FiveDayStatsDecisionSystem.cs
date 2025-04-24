@@ -41,14 +41,14 @@ namespace Effanville.TradingStructures.Strategies.Decision.Implementation
                 {
                     List<double> values = settings.Exchange.Stocks[stockIndex]
                         .Values(
-                            settings.StartTime.AddDays(i), 
-                            0, 
+                            settings.StartTime.AddDays(i),
+                            0,
                             NumberStatistics + _settings.DayAfterPredictor,
                             StockDataStream.Open)
                         .Select(Convert.ToDouble)
                         .ToList();
                     double normalisationConstant = 0.0;
-                    
+
                     for (int j = 0; j < NumberStatistics; j++)
                     {
                         normalisationConstant += values[j];
@@ -78,13 +78,11 @@ namespace Effanville.TradingStructures.Strategies.Decision.Implementation
             if (estimatorType.Success)
             {
                 _estimatorResult = Estimator.Fit(estimatorType.Data, fitData, fitValues);
-                _ = logger.Log(ReportSeverity.Critical, ReportType.Warning, ReportLocation.Unknown,
-                    $"Estimator Weights are {string.Join(",", _estimatorResult.Estimator)}");
+                logger.Warn(nameof(FiveDayStatsDecisionSystem), $"Estimator Weights are {string.Join(",", _estimatorResult.Estimator)}");
                 return;
             }
 
-            _ = logger.Log(ReportSeverity.Critical, ReportType.Error, ReportLocation.Unknown,
-                $"Created FiveDayStats system without five day stats type.");
+            logger.Info(nameof(FiveDayStatsDecisionSystem), $"Created FiveDayStats system without five day stats type.");
         }
 
         /// <inheritdoc />
@@ -100,8 +98,8 @@ namespace Effanville.TradingStructures.Strategies.Decision.Implementation
             {
                 TradeType decision = TradeType.Unknown;
                 double[] values = stock.Values(
-                        day, 
-                        5, 
+                        day,
+                        5,
                         0,
                         StockDataStream.Open)
                     .Select(Convert.ToDouble)
@@ -123,14 +121,12 @@ namespace Effanville.TradingStructures.Strategies.Decision.Implementation
                     decision = TradeType.Sell;
                 }
 
-                _ = logger?.Log(ReportSeverity.Detailed, ReportType.Information, ReportLocation.Execution,
-                    $"Stock={stock.Name}, Inputs=[{string.Join(",",values)}], Output={value}, Decision={decision}.");
+                logger?.Info(nameof(FiveDayStatsDecisionSystem), $"Stock={stock.Name}, Inputs=[{string.Join(",", values)}], Output={value}, Decision={decision}.");
 
                 decisions.Add(stock.Name, decision);
             }
 
-            _ = logger?.Log(ReportSeverity.Detailed, ReportType.Information, ReportLocation.Execution,
-                $"Decisions={decisions}");
+            logger?.Info(nameof(FiveDayStatsDecisionSystem), $"Decisions={decisions}");
             return decisions;
         }
     }

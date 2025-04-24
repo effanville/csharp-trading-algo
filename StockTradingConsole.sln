@@ -38,6 +38,9 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Common", "Common", "{38FE277F-E8C0-425A-939E-0FB39EB961F2}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "FinancialStructures", "FinancialStructures", "{C1A1509D-BB98-4A26-BD09-39BC329C9F26}"
+	ProjectSection(SolutionItems) = preProject
+		FinancialStructures\Directory.Build.props = FinancialStructures\Directory.Build.props
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TradingStructures.Strategies.Tests", "test\TradingStructures.Strategies.Tests\TradingStructures.Strategies.Tests.csproj", "{658F66F1-3686-41D7-96AD-18303CFE5D9F}"
 EndProject

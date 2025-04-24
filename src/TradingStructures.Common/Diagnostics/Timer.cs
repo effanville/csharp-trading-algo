@@ -30,7 +30,7 @@ namespace Effanville.TradingStructures.Common.Diagnostics
         public void Dispose()
         {
             _watch.Stop();
-            _ = _logger.Log(ReportSeverity.Critical, ReportType.Warning, ReportLocation.Execution, $"{_operation}: Time took {TimeSpanFriendlyString(_watch.Elapsed)}");
+            _logger.Warn(nameof(Timer), $"{_operation}: Time took {TimeSpanFriendlyString(_watch.Elapsed)}");
         }
 
         private static string TimeSpanFriendlyString(TimeSpan timeSpan)

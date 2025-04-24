@@ -23,7 +23,7 @@ public class Strategy : IStrategy
     private IClock? _clock;
     private readonly IReportLogger _logger;
     public string Name => nameof(Strategy);
-    
+
     /// <summary>
     /// Event to subscribe to for the dealing with Trades created.
     /// </summary>
@@ -33,7 +33,7 @@ public class Strategy : IStrategy
     public IPortfolioManager PortfolioManager { get; }
 
     public Strategy(
-        IDecisionSystem decisionSystem, 
+        IDecisionSystem decisionSystem,
         IExecutionStrategy executionStrategy,
         IPortfolioManager portfolioManager,
         IReportLogger logger)
@@ -49,7 +49,7 @@ public class Strategy : IStrategy
     public void RegisterPriceService(IPriceService priceService) => _priceService = priceService;
 
     public void Initialize(EvolverSettings settings)
-    
+
     {
         ExecutionStrategy.Initialize(settings);
         ExecutionStrategy.SubmitTradeEvent += ExecutionStrategyOnSubmitTradeEvent;
@@ -58,7 +58,7 @@ public class Strategy : IStrategy
 
     private void ExecutionStrategyOnSubmitTradeEvent(object? sender, TradeSubmittedEventArgs e)
     {
-        DateTime time = _clock?.UtcNow() ??  default;
+        DateTime time = _clock?.UtcNow() ?? default;
         e.Time = time;
         var trade = e.RequestedTrade;
         Trade? validatedTrade = PortfolioManager.ValidateTrade(e.Time, trade, _priceService);
@@ -97,8 +97,8 @@ public class Strategy : IStrategy
 
         DateTime latestTime = PortfolioManager.Portfolio.LatestDate(Totals.All);
         double car = FinanceFunctions.CAR(new DailyValuation(earliestTime, startValue), new DailyValuation(latestTime, latestValue));
-        _logger.Log(ReportSeverity.Critical, ReportType.Information, "Ending", $"{time:yyyy-MM-ddTHH:mm:ss} total value {latestValue:C2}");
-        _logger.Log(ReportSeverity.Critical, ReportType.Information, "Ending", $"{time:yyyy-MM-ddTHH:mm:ss} total CAR {car}");
+        _logger.Info("Ending", $"{time:yyyy-MM-ddTHH:mm:ss} total value {latestValue:C2}");
+        _logger.Info("Ending", $"{time:yyyy-MM-ddTHH:mm:ss} total CAR {car}");
     }
 
     public void OnTimeIncrementUpdate(object? obj, TimeIncrementEventArgs eventArgs)
@@ -107,7 +107,7 @@ public class Strategy : IStrategy
         PortfolioManager.ReportStatus(eventArgs.Time);
     }
 
-    public void OnExchangeStatusChanged(object? obj, ExchangeStatusChangedEventArgs eventArgs) 
+    public void OnExchangeStatusChanged(object? obj, ExchangeStatusChangedEventArgs eventArgs)
         => ExecutionStrategy.OnExchangeStatusChanged(obj, eventArgs);
 
     public void OnPriceUpdate(object? obj, PriceUpdateEventArgs eventArgs)

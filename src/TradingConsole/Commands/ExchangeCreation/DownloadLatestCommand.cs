@@ -4,60 +4,68 @@ using System.IO.Abstractions;
 using Effanville.Common.Console.Commands;
 using Effanville.Common.Console.Options;
 using Effanville.Common.Structure.Reporting;
+using Effanville.FinancialStructures.Persistence;
 using Effanville.FinancialStructures.Stocks;
 using Effanville.FinancialStructures.Stocks.Persistence;
 
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 
-namespace Effanville.TradingConsole.Commands.ExchangeCreation
+namespace Effanville.TradingConsole.Commands.ExchangeCreation;
+
+/// <summary>
+/// Contains logic for the download of stock data.
+/// </summary>
+public sealed class DownloadLatestCommand : ICommand
 {
+    private readonly IFileSystem _fileSystem;
+    private readonly ILogger _logger;
+    private readonly IReportLogger _reportLogger;
+    private readonly IConfiguration _config;
+    private readonly IPersistence<IStockExchange> _persistence;
+    private readonly CommandOption<string> _stockFilePathOption;
+
+    /// <inheritdoc/>
+    public string Name => "latest";
+
+    /// <inheritdoc/>
+    public IList<CommandOption> Options { get; } = new List<CommandOption>();
+
+    /// <inheritdoc/>
+    public IList<ICommand> SubCommands { get; } = new List<ICommand>();
+
     /// <summary>
-    /// Contains logic for the download of stock data.
+    /// Default constructor.
     /// </summary>
-    public sealed class DownloadLatestCommand : ICommand
+    public DownloadLatestCommand(
+        IFileSystem fileSystem,
+        ILogger<DownloadLatestCommand> logger,
+        IReportLogger reportLogger,
+        IConfiguration config,
+        IPersistence<IStockExchange> persistence)
     {
-        private readonly IFileSystem _fileSystem;
-        private readonly ILogger _logger;
-        private readonly IReportLogger _reportLogger;
-        private readonly CommandOption<string> _stockFilePathOption;
+        _fileSystem = fileSystem;
+        _logger = logger;
+        _reportLogger = reportLogger;
+        _config = config;
+        _persistence = persistence;
+        _stockFilePathOption = new CommandOption<string>("stockFilePath", "FilePath to the stock database to add data to.");
+        Options.Add(_stockFilePathOption);
+    }
 
-        /// <inheritdoc/>
-        public string Name => "latest";
+    /// <inheritdoc/>
+    public void WriteHelp() => this.WriteHelp(_logger);
 
-        /// <inheritdoc/>
-        public IList<CommandOption> Options { get; } = new List<CommandOption>();
+    /// <inheritdoc/>
+    public bool Validate() => this.Validate(_config, _logger);
 
-        /// <inheritdoc/>
-        public IList<ICommand> SubCommands { get; } = new List<ICommand>();
-
-        /// <summary>
-        /// Default constructor.
-        /// </summary>
-        public DownloadLatestCommand(IFileSystem fileSystem, ILogger<DownloadLatestCommand> logger, IReportLogger reportLogger)
-        {
-            _fileSystem = fileSystem;
-            _logger = logger;
-            _reportLogger = reportLogger;
-            _stockFilePathOption = new CommandOption<string>("stockFilePath", "FilePath to the stock database to add data to.");
-            Options.Add(_stockFilePathOption);
-        }
-
-        /// <inheritdoc/>
-        public void WriteHelp() => this.WriteHelp(_logger);
-
-        /// <inheritdoc/>
-        public bool Validate(IConfiguration config) => this.Validate(config, _logger);
-
-        /// <inheritdoc/>
-        public int Execute(IConfiguration config)
-        {
-            var persistence = new ExchangePersistence();
-            var settings = ExchangePersistence.CreateOptions(_stockFilePathOption.Value, _fileSystem);
-            IStockExchange exchange = persistence.Load(settings, _reportLogger);
-            exchange.Download(_reportLogger).Wait();
-            persistence.Save(exchange, settings, _reportLogger);
-            return 0;
-        }
+    /// <inheritdoc/>
+    public int Execute()
+    {
+        var settings = ExchangePersistence.CreateOptions(_stockFilePathOption.Value, _fileSystem);
+        IStockExchange exchange = _persistence.Load(settings);
+        exchange.Download(_reportLogger).Wait();
+        _persistence.Save(exchange, settings);
+        return 0;
     }
 }

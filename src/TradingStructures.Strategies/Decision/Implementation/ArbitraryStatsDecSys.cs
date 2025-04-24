@@ -71,12 +71,11 @@ namespace Effanville.TradingStructures.Strategies.Decision.Implementation
             if (!estimatorType.Success)
             {
                 _estimatorResult = Estimator.Fit(estimatorType.Data, fitData, fitValues);
-                _ = logger?.Log(ReportSeverity.Critical, ReportType.Warning, ReportLocation.Unknown,
-                    $"Estimator Weights are {string.Join(",", _estimatorResult.Estimator)}");
+                logger?.Warn(nameof(ArbitraryStatsDecisionSystem), $"Estimator Weights are {string.Join(",", _estimatorResult.Estimator)}");
                 return;
             }
 
-            _ = logger?.Log(ReportSeverity.Critical, ReportType.Error, ReportLocation.Unknown,
+            logger?.Error(nameof(ArbitraryStatsDecisionSystem),
                 $"Created ArbitraryStats system without correct type.");
         }
 
@@ -109,14 +108,12 @@ namespace Effanville.TradingStructures.Strategies.Decision.Implementation
                 {
                     decision = TradeType.Sell;
                 }
-                _ = logger?.Log(ReportSeverity.Detailed, ReportType.Information, ReportLocation.Execution,
-                    $"Stock={stock.Name}, Inputs=[{string.Join(",",values)}], Output={value}, Decision={decision}.");
+                logger?.Info(nameof(ArbitraryStatsDecisionSystem), $"Stock={stock.Name}, Inputs=[{string.Join(",", values)}], Output={value}, Decision={decision}.");
 
                 decisions.Add(stock.Name, decision);
             }
 
-            _ = logger?.Log(ReportSeverity.Detailed, ReportType.Information, ReportLocation.Execution,
-                $"Decisions: {decisions}");
+            logger?.Info(nameof(ArbitraryStatsDecisionSystem), $"Decisions: {decisions}");
             return decisions;
         }
     }
