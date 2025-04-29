@@ -47,14 +47,9 @@ namespace Effanville.TradingStructures.Strategies.Decision.Implementation
                             StockDataStream.Open)
                         .Select(Convert.ToDouble)
                         .ToList();
-                    double normalisationConstant = 0.0;
 
-                    for (int j = 0; j < NumberStatistics; j++)
-                    {
-                        normalisationConstant += values[j];
-                    }
+                    double normaliseFactor = values[NumberStatistics - 1];
 
-                    normalisationConstant /= NumberStatistics;
                     for (int j = 0; j < NumberStatistics; j++)
                     {
                         if (values[j].Equals(double.NaN))
@@ -62,7 +57,7 @@ namespace Effanville.TradingStructures.Strategies.Decision.Implementation
                             values[j] = values[j + 1];
                         }
 
-                        fitData[i * settings.NumberStocks + stockIndex, j] = values[j] / normalisationConstant;
+                        fitData[i * settings.NumberStocks + stockIndex, j] = values[j] / normaliseFactor;
                     }
 
                     if (values.Last().Equals(double.NaN))
@@ -70,7 +65,7 @@ namespace Effanville.TradingStructures.Strategies.Decision.Implementation
                         values[values.Count - 1] = values[values.Count - 2];
                     }
 
-                    fitValues[i * settings.NumberStocks + stockIndex] = values.Last() / normalisationConstant;
+                    fitValues[i * settings.NumberStocks + stockIndex] = values.Last() / normaliseFactor;
                 }
             }
 
@@ -78,6 +73,7 @@ namespace Effanville.TradingStructures.Strategies.Decision.Implementation
             if (estimatorType.Success)
             {
                 _estimatorResult = Estimator.Fit(estimatorType.Data, fitData, fitValues);
+                var values = string.Join(",", _estimatorResult.Estimator);
                 logger.Warn(nameof(FiveDayStatsDecisionSystem), $"Estimator Weights are {string.Join(",", _estimatorResult.Estimator)}");
                 return;
             }
@@ -99,12 +95,12 @@ namespace Effanville.TradingStructures.Strategies.Decision.Implementation
                 TradeType decision = TradeType.Unknown;
                 double[] values = stock.Values(
                         day,
-                        5,
+                        NumberStatistics,
                         0,
                         StockDataStream.Open)
                     .Select(Convert.ToDouble)
                     .ToArray();
-                double normaliseFactor = values[0];
+                double normaliseFactor = values[NumberStatistics - 1];
                 for (int valueIndex = 0; valueIndex < values.Length; valueIndex++)
                 {
                     values[valueIndex] /= normaliseFactor;
