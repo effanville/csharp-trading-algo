@@ -3,22 +3,21 @@
 using Effanville.Common.Structure.Reporting;
 using Effanville.FinancialStructures.DataStructures;
 using Effanville.TradingStructures.Common;
-using Effanville.TradingStructures.Common.Services;
 using Effanville.TradingStructures.Common.Time;
 using Effanville.TradingStructures.Common.Trading;
 using Effanville.TradingStructures.Pricing;
 
 namespace Effanville.TradingStructures.Trading.Implementation
 {
-    public class SimulationExchange : IMarketExchange, IService
+    internal class SimulationExchange : IStockMarketAdapter
     {
         private readonly IClock? _clock;
         private readonly IPriceService? _priceService;
         private readonly IReportLogger _logger;
         private readonly TradeMechanismSettings _settings;
 
-        public event EventHandler<TradeCompletedEventArgs>? TradeCompleted;
-        
+        public event EventHandler<TradeResponseEventArgs>? TradeCompleted;
+
         public string Name => nameof(SimulationExchange);
 
         public SimulationExchange(
@@ -28,11 +27,11 @@ namespace Effanville.TradingStructures.Trading.Implementation
             _settings = settings;
             _logger = logger;
         }
-        
+
         public SimulationExchange(
-            TradeMechanismSettings settings, 
-            IPriceService priceService, 
-            IClock clock, 
+            TradeMechanismSettings settings,
+            IPriceService priceService,
+            IClock clock,
             IReportLogger logger)
         {
             _settings = settings;
@@ -46,7 +45,7 @@ namespace Effanville.TradingStructures.Trading.Implementation
         public void Restart() { }
 
         public void Shutdown() { }
-        public void OnTradeRequested(object? obj, TradeSubmittedEventArgs eventArgs)
+        public void OnTradeRequested(object? obj, TradeRequestEventArgs eventArgs)
         {
             if (_clock == null)
             {
@@ -55,24 +54,20 @@ namespace Effanville.TradingStructures.Trading.Implementation
 
             DateTime time = _clock.UtcNow();
             Trade trade = eventArgs.RequestedTrade;
-            var validatedTrade = Trade(time, trade, _priceService, eventArgs.AvailableFunds, _logger);
+            var validatedTrade = Trade(time, trade, _priceService);
             if (validatedTrade != null)
             {
-                TradeCompleted?.Invoke(null, new TradeCompletedEventArgs(trade, validatedTrade, true));
+                TradeCompleted?.Invoke(null, new TradeResponseEventArgs(eventArgs.Id, trade, validatedTrade, true));
                 return;
             }
-                
-            TradeCompleted?.Invoke(null, new TradeCompletedEventArgs(trade, null, false));
+
+            TradeCompleted?.Invoke(null, new TradeResponseEventArgs(eventArgs.Id, trade, null, false));
         }
-        
-        
-        /// <inheritdoc/>
-        public SecurityTrade? Trade(
+
+        private SecurityTrade? Trade(
             DateTime time,
             Trade trade,
-            IPriceService? priceService,
-            decimal availableFunds,
-            IReportLogger reportLogger)
+            IPriceService? priceService)
         {
             if (trade.BuySell != TradeType.Buy && trade.BuySell != TradeType.Sell)
             {
@@ -99,12 +94,6 @@ namespace Effanville.TradingStructures.Trading.Implementation
                 trade.NumberShares,
                 price,
                 _settings.TradeCost);
-
-            if (trade.BuySell == TradeType.Buy
-                && tradeDetails.TotalCost > availableFunds)
-            {
-                return null;
-            }
             return tradeDetails;
         }
     }

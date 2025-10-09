@@ -1,10 +1,8 @@
 ﻿using System;
 
-using Effanville.TradingStructures.Common.Time;
+namespace Effanville.TradingStructures.Common.Time;
 
-namespace Effanville.TradingSystem.Time;
-
-public sealed class RealTimeClock : IClock
+internal sealed class RealTimeClock : IClock
 {
     public DateTime NextEventTime { get; set; }
 
@@ -23,7 +21,7 @@ public sealed class RealTimeClock : IClock
 
     /// <inheritdoc/>
     public void Start() { }
-    
+
     /// <inheritdoc/>
     public void Stop() { }
 }

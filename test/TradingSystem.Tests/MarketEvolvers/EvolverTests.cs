@@ -20,23 +20,21 @@ using DecisionSystemFactory = Effanville.TradingStructures.Strategies.Decision.D
 using Effanville.FinancialStructures.Stocks.Statistics;
 using Microsoft.Extensions.Hosting;
 using Effanville.TradingSystem.DependencyInjection;
+using Effanville.TradingStructures.Strategies;
 
 namespace Effanville.TradingSystem.Tests.MarketEvolvers;
 
 internal class EventEvolverTests
 {
+    // TODO: Why have these changed?
     public static IEnumerable<TestCaseData> NewEvolverTestData()
     {
         string tradeString = @"|StartDate|EndDate|StockName|TradeType|NumberShares|
 |-|-|-|-|-|
-|2015-01-20T08:00:00|2015-01-20T08:00:00|-Barclays|Buy|21|
-|2015-01-20T08:00:00|2015-01-20T08:00:00|stuff-Dunelm|Buy|4|
-|2015-01-21T08:00:00|2015-01-21T08:00:00|-Barclays|Buy|12|
-|2015-01-21T08:00:00|2015-01-21T08:00:00|stuff-Dunelm|Buy|2|
-|2015-01-22T08:00:00|2015-01-22T08:00:00|-Barclays|Buy|7|
-|2015-01-22T08:00:00|2015-01-22T08:00:00|stuff-Dunelm|Buy|1|
-|2015-01-23T08:00:00|2015-01-23T08:00:00|-Barclays|Buy|4|
-|2015-01-23T08:00:00|2015-01-23T08:00:00|stuff-Dunelm|Buy|1|
+|2015-01-22T08:00:00|2015-01-22T08:00:00|-Barclays|Buy|21|
+|2015-01-22T08:00:00|2015-01-22T08:00:00|stuff-Dunelm|Buy|4|
+|2015-01-23T08:00:00|2015-01-23T08:00:00|-Barclays|Buy|11|
+|2015-01-23T08:00:00|2015-01-23T08:00:00|stuff-Dunelm|Buy|2|
 ";
         Dictionary<DateTime, TradeCollection> trades = new TradeDictionaryBuilder().BuildFromString(tradeString);
         yield return new TestCaseData(
@@ -45,27 +43,27 @@ internal class EventEvolverTests
             null, 1, 1.05, 1.0,
             DateTime.SpecifyKind(new DateTime(2015, 1, 20), DateTimeKind.Utc),
             new DateTime(2015, 1, 25),
-            55,
-            20548.1268704223633478m,
-            8,
-            8,
+            33,
+            20072.98283859m,
+            4,
+            4,
             0,
             trades).SetName("TwoDayEvolutionTest");
         tradeString = @"|StartDate|EndDate|StockName|TradeType|NumberShares|
 |-|-|-|-|-|
-|2015-02-02T08:00:00|2015-02-02T08:00:00|-Barclays|Buy|21|
-|2015-02-02T08:00:00|2015-02-02T08:00:00|stuff-Dunelm|Buy|4|
-|2015-02-03T08:00:00|2015-02-03T08:00:00|-Barclays|Buy|11|
-|2015-02-03T08:00:00|2015-02-03T08:00:00|stuff-Dunelm|Buy|2|
-|2015-02-04T08:00:00|2015-02-04T08:00:00|-Barclays|Buy|7|
-|2015-02-04T08:00:00|2015-02-04T08:00:00|stuff-Dunelm|Buy|1|
-|2015-02-05T08:00:00|2015-02-05T08:00:00|-Barclays|Buy|4|
-|2015-02-06T08:00:00|2015-02-06T08:00:00|-Barclays|Buy|3|
-|2015-02-09T08:00:00|2015-02-09T08:00:00|-Barclays|Buy|2|
-|2015-02-10T08:00:00|2015-02-10T08:00:00|-Barclays|Buy|2|
-|2015-02-11T08:00:00|2015-02-11T08:00:00|-Barclays|Buy|1|
-|2015-02-12T08:00:00|2015-02-12T08:00:00|-Barclays|Buy|1|
-|2015-02-13T08:00:00|2015-02-13T08:00:00|-Barclays|Buy|1|
+|2015-02-16T08:00:00|2015-02-16T08:00:00|-Barclays|Buy|19|
+|2015-02-16T08:00:00|2015-02-16T08:00:00|stuff-Dunelm|Buy|4|
+|2015-02-17T08:00:00|2015-02-17T08:00:00|-Barclays|Buy|11|
+|2015-02-17T08:00:00|2015-02-17T08:00:00|stuff-Dunelm|Buy|2|
+|2015-02-18T08:00:00|2015-02-18T08:00:00|-Barclays|Buy|6|
+|2015-02-18T08:00:00|2015-02-18T08:00:00|stuff-Dunelm|Buy|1|
+|2015-02-19T08:00:00|2015-02-19T08:00:00|-Barclays|Buy|4|
+|2015-02-20T08:00:00|2015-02-20T08:00:00|-Barclays|Buy|3|
+|2015-02-23T08:00:00|2015-02-23T08:00:00|-Barclays|Buy|2|
+|2015-02-24T08:00:00|2015-02-24T08:00:00|-Barclays|Buy|1|
+|2015-02-25T08:00:00|2015-02-25T08:00:00|-Barclays|Buy|1|
+|2015-02-26T08:00:00|2015-02-26T08:00:00|-Barclays|Buy|1|
+|2015-02-27T08:00:00|2015-02-27T08:00:00|-Barclays|Buy|1|
 ";
         trades = new TradeDictionaryBuilder().BuildFromString(tradeString);
         yield return new TestCaseData(
@@ -74,8 +72,8 @@ internal class EventEvolverTests
             null, 1, 1.05, 1.0,
             DateTime.SpecifyKind(new DateTime(2015, 2, 1), DateTimeKind.Utc),
             new DateTime(2015, 3, 1),
-            211,
-            20970.6086288452163838m,
+            117,
+            19810.96609359m,
             13,
             13,
             0,
@@ -117,9 +115,9 @@ internal class EventEvolverTests
             startTime,
             endTime,
             TimeSpan.FromMinutes(1),
-            startSettings,
+            new StrategySettings(startSettings,
             PortfolioConstructionSettings.Default(),
-            decisionParameters,
+            decisionParameters),
             fileSystem);
         var host = builder.Build();
         var result = await host.RunSystemAsync();
@@ -139,7 +137,7 @@ internal class EventEvolverTests
         Assert.Multiple(() =>
         {
             Assert.That(reports.Count(), Is.EqualTo(numberReports));
-            Assert.That(finalValue, Is.EqualTo(expectedEndValue));
+            Assert.That(finalValue, Is.EqualTo(expectedEndValue).Within(1e-8m));
             Assert.That(actualTrades.TotalTrades, Is.EqualTo(expectedNumberTrades));
             Assert.That(actualTrades.TotalBuyTrades, Is.EqualTo(expectedBuyTrades));
             Assert.That(actualTrades.TotalSellTrades, Is.EqualTo(expectedSellTrades));

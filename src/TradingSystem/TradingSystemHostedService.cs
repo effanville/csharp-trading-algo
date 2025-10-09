@@ -2,6 +2,7 @@ using System.Threading;
 using System.Threading.Tasks;
 
 using Effanville.Common.Structure.Reporting;
+using Effanville.TradingStructures.Strategies;
 using Effanville.TradingSystem.MarketEvolvers;
 
 using Microsoft.Extensions.Hosting;
@@ -17,9 +18,9 @@ public sealed class TradingSystemHostedService : IHostedService
     private readonly ILogger<TradingSystemHostedService> _logger;
     private readonly IReportLogger _reportLogger;
     private readonly IHostApplicationLifetime _applicationLifetime;
-    
-    public EvolverResult? Result { get; private set; }
-    
+
+    public StrategyHistory? Result { get; private set; }
+
     public TradingSystemHostedService(
         IEventEvolver evolver,
         ILogger<TradingSystemHostedService> logger,
@@ -31,23 +32,20 @@ public sealed class TradingSystemHostedService : IHostedService
         _reportLogger = reportLogger;
         _applicationLifetime = applicationLifetime;
     }
-    
-    public Task StartAsync(CancellationToken cancellationToken)    
+
+    public Task StartAsync(CancellationToken cancellationToken)
     {
         _logger.Log(LogLevel.Information, "Starting Processing.");
-        _applicationLifetime.ApplicationStarted.Register(() =>
-        {
-            Task.Run(RunInBackground, cancellationToken);
-        });
+        _ = _applicationLifetime.ApplicationStarted.Register(async () => await Task.Run(RunInBackground, cancellationToken));
         return Task.CompletedTask;
     }
-    
-    public Task StopAsync(CancellationToken cancellationToken)     
+
+    public Task StopAsync(CancellationToken cancellationToken)
     {
         _logger.Log(LogLevel.Information, "Completed processing. Shutting Down.");
         return Task.CompletedTask;
     }
-    
+
     private void RunInBackground()
     {
         try

@@ -1,13 +1,11 @@
 ﻿using System;
 
-using Effanville.TradingStructures.Common.Time;
-
-namespace Effanville.TradingSystem.Time;
+namespace Effanville.TradingStructures.Common.Time;
 
 /// <summary>
 /// Implementation of a <see cref="IClock"/> for simulation purposes.
 /// </summary>
-public sealed class SimulationEventBasedClock : IClock
+internal sealed class SimulationEventBasedClock : IClock
 {
     public DateTime NextEventTime
     {
@@ -36,7 +34,7 @@ public sealed class SimulationEventBasedClock : IClock
 
     /// <inheritdoc/>
     public void Start() { }
-    
+
     /// <inheritdoc/>
     public void Stop() { }
 }

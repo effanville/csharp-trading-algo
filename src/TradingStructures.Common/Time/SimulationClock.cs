@@ -1,14 +1,12 @@
 ﻿using System;
 using System.Timers;
 
-using Effanville.TradingStructures.Common.Time;
-
-namespace Effanville.TradingSystem.Time;
+namespace Effanville.TradingStructures.Common.Time;
 
 /// <summary>
 /// Implementation of a <see cref="IClock"/> for simulation purposes.
 /// </summary>
-public sealed class SimulationClock : IClock
+internal sealed class SimulationClock : IClock
 {
     private bool _started;
     private long _ticks;
@@ -16,6 +14,7 @@ public sealed class SimulationClock : IClock
     private readonly Timer _timer;
 
     public DateTime NextEventTime { get; set; }
+
     /// <summary>
     /// Construct an instance
     /// </summary>

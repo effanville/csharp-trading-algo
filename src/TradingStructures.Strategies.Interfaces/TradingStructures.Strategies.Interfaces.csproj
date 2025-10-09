@@ -5,6 +5,7 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\..\TradingStructures.OrderManagement.Interfaces\TradingStructures.OrderManagement.Interfaces.csproj" />
       <ProjectReference Include="..\TradingStructures.Common\TradingStructures.Common.csproj" />
       <ProjectReference Include="..\TradingStructures.Exchanges\TradingStructures.Exchanges.csproj" />
       <ProjectReference Include="..\TradingStructures.Pricing\TradingStructures.Pricing.csproj" />

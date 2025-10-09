@@ -4,7 +4,7 @@ using Effanville.TradingStructures.Common.Services;
 
 namespace Effanville.TradingStructures.Exchanges;
 
-public interface ITradingExchange : IService
+public interface IExchangeSessionService : IService
 {
     event EventHandler<ExchangeStatusChangedEventArgs>? ExchangeStatusChanged;
 }

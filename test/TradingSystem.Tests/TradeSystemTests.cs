@@ -11,6 +11,7 @@ using Effanville.FinancialStructures.Database;
 using Effanville.FinancialStructures.Database.Extensions.Values;
 using Effanville.FinancialStructures.Stocks.Statistics;
 using Effanville.TradingStructures.Common.Trading;
+using Effanville.TradingStructures.Strategies;
 using Effanville.TradingStructures.Strategies.Decision;
 using Effanville.TradingStructures.Strategies.Portfolio;
 using Effanville.TradingSystem.DependencyInjection;
@@ -33,22 +34,21 @@ namespace Effanville.TradingSystem.Tests
             string tradeString =
 @$"|StartDate|EndDate|StockName|TradeType|NumberShares|
 |-|-|-|-|-|
-|2015-01-05T08:00:00|2015-01-05T08:00:00|-Barclays|Buy|20|
-|2015-01-05T08:00:00|2015-01-05T08:00:00|stuff-Dunelm|Buy|4|
-|2015-01-06T08:00:00|2015-01-06T08:00:00|-Barclays|Buy|12|
-|2015-01-06T08:00:00|2015-01-06T08:00:00|stuff-Dunelm|Buy|2|
-|2015-01-07T08:00:00|2015-01-07T08:00:00|-Barclays|Buy|7|
-|2015-01-07T08:00:00|2015-01-07T08:00:00|stuff-Dunelm|Buy|1|
-|2015-01-08T08:00:00|2015-01-08T08:00:00|-Barclays|Buy|4|
-|2015-01-09T08:00:00|2015-01-09T08:00:00|-Barclays|Buy|3|
-|2015-01-12T08:00:00|2015-01-12T08:00:00|-Barclays|Buy|2|
-|2015-01-13T08:00:00|2015-01-13T08:00:00|-Barclays|Buy|2|
-|2015-01-14T08:00:00|2015-01-14T08:00:00|-Barclays|Buy|1|
-|2015-01-15T08:00:00|2015-01-15T08:00:00|-Barclays|Buy|1|
-|2015-01-16T08:00:00|2015-01-16T08:00:00|-Barclays|Buy|1|
-|2015-01-19T08:00:00|2015-01-19T08:00:00|-Barclays|Buy|1|
-|2016-01-15T08:00:00|2016-01-15T08:00:00|-Barclays|Buy|1|
-|2016-06-24T08:00:00|2016-06-24T08:00:00|-Barclays|Buy|1|";
+|2017-06-26T08:00:00|2017-06-26T08:00:00|-Barclays|Buy|25|
+|2017-06-26T08:00:00|2017-06-26T08:00:00|stuff-Dunelm|Buy|5|
+|2017-06-27T08:00:00|2017-06-27T08:00:00|-Barclays|Buy|14|
+|2017-06-27T08:00:00|2017-06-27T08:00:00|stuff-Dunelm|Buy|3|
+|2017-06-28T08:00:00|2017-06-28T08:00:00|-Barclays|Buy|9|
+|2017-06-28T08:00:00|2017-06-28T08:00:00|stuff-Dunelm|Buy|2|
+|2017-06-29T08:00:00|2017-06-29T08:00:00|-Barclays|Buy|5|
+|2017-06-29T08:00:00|2017-06-29T08:00:00|stuff-Dunelm|Buy|1|
+|2017-06-30T08:00:00|2017-06-30T08:00:00|-Barclays|Buy|3|
+|2017-07-03T08:00:00|2017-07-03T08:00:00|-Barclays|Buy|2|
+|2017-07-04T08:00:00|2017-07-04T08:00:00|-Barclays|Buy|1|
+|2017-07-05T08:00:00|2017-07-05T08:00:00|-Barclays|Buy|1|
+|2017-07-06T08:00:00|2017-07-06T08:00:00|-Barclays|Buy|1|
+|2017-07-07T08:00:00|2017-07-07T08:00:00|-Barclays|Buy|1|
+|2018-09-17T08:00:00|2018-09-17T08:00:00|-Barclays|Buy|1|";
             var trades = new TradeDictionaryBuilder().BuildFromString(tradeString);
             yield return new TestCaseData(
                 "example-database.xml",
@@ -56,30 +56,30 @@ namespace Effanville.TradingSystem.Tests
                 null, 1, 1.05, 1.0,
                 new DateTime(2015, 1, 4, 15, 0, 0, DateTimeKind.Utc),
                 new DateTime(2019, 12, 12, 8, 0, 0, DateTimeKind.Utc),
-                17381.74645m,
-                16,
-                16,
+                22922.298m,
+                15,
+                15,
                 0,
                 trades)
                 .SetName("BuyAll-2015-2019");
             tradeString =
     @$"|StartDate|EndDate|StockName|TradeType|NumberShares|
 |-|-|-|-|-|
-|2017-01-05T08:00:00|2017-01-05T08:00:00|-Barclays|Buy|21|
-|2017-01-05T08:00:00|2017-01-05T08:00:00|stuff-Dunelm|Buy|4|
-|2017-01-06T08:00:00|2017-01-06T08:00:00|-Barclays|Buy|12|
-|2017-01-06T08:00:00|2017-01-06T08:00:00|stuff-Dunelm|Buy|2|
-|2017-01-09T08:00:00|2017-01-09T08:00:00|-Barclays|Buy|7|
-|2017-01-09T08:00:00|2017-01-09T08:00:00|stuff-Dunelm|Buy|1|
-|2017-01-10T08:00:00|2017-01-10T08:00:00|-Barclays|Buy|5|
-|2017-01-10T08:00:00|2017-01-10T08:00:00|stuff-Dunelm|Buy|1|
-|2017-01-11T08:00:00|2017-01-11T08:00:00|-Barclays|Buy|3|
-|2017-01-12T08:00:00|2017-01-12T08:00:00|-Barclays|Buy|2|
-|2017-01-13T08:00:00|2017-01-13T08:00:00|-Barclays|Buy|2|
-|2017-01-16T08:00:00|2017-01-16T08:00:00|-Barclays|Buy|1|
-|2017-01-17T08:00:00|2017-01-17T08:00:00|-Barclays|Buy|1|
-|2017-02-02T08:00:00|2017-02-02T08:00:00|-Barclays|Buy|1|
-|2018-10-15T08:00:00|2018-10-15T08:00:00|-Barclays|Buy|1|";
+|2017-12-27T08:00:00|2017-12-27T08:00:00|-Barclays|Buy|24|
+|2017-12-27T08:00:00|2017-12-27T08:00:00|stuff-Dunelm|Buy|5|
+|2017-12-28T08:00:00|2017-12-28T08:00:00|-Barclays|Buy|14|
+|2017-12-28T08:00:00|2017-12-28T08:00:00|stuff-Dunelm|Buy|3|
+|2017-12-29T08:00:00|2017-12-29T08:00:00|-Barclays|Buy|8|
+|2017-12-29T08:00:00|2017-12-29T08:00:00|stuff-Dunelm|Buy|1|
+|2018-01-02T08:00:00|2018-01-02T08:00:00|-Barclays|Buy|5|
+|2018-01-02T08:00:00|2018-01-02T08:00:00|stuff-Dunelm|Buy|1|
+|2018-01-03T08:00:00|2018-01-03T08:00:00|-Barclays|Buy|3|
+|2018-01-04T08:00:00|2018-01-04T08:00:00|-Barclays|Buy|2|
+|2018-01-05T08:00:00|2018-01-05T08:00:00|-Barclays|Buy|2|
+|2018-01-08T08:00:00|2018-01-08T08:00:00|-Barclays|Buy|1|
+|2018-01-09T08:00:00|2018-01-09T08:00:00|-Barclays|Buy|1|
+|2018-01-10T08:00:00|2018-01-10T08:00:00|-Barclays|Buy|1|
+|2018-12-05T08:00:00|2018-12-05T08:00:00|-Barclays|Buy|1|";
             trades = new TradeDictionaryBuilder().BuildFromString(tradeString);
             yield return new TestCaseData(
                 "example-database.xml",
@@ -87,7 +87,7 @@ namespace Effanville.TradingSystem.Tests
                 null, 1, 1.0, 1.0,
                 new DateTime(2017, 1, 4, 15, 0, 0, DateTimeKind.Utc),
                 new DateTime(2018, 12, 12, 8, 0, 0, DateTimeKind.Utc),
-                13666.01604m,
+                15708.75146m,
                 15,
                 15,
                 0,
@@ -420,9 +420,9 @@ $@"|StartDate|EndDate|StockName|TradeType|NumberShares|
                 startTime,
                 endTime,
                 TimeSpan.FromDays(1),
-                portfolioStartSettings,
+                new StrategySettings(portfolioStartSettings,
                 PortfolioConstructionSettings.Default(),
-                decisionParameters,
+                decisionParameters),
                 fileSystem);
             var host = builder.Build();
             var output = await host.RunSystemAsync();
@@ -432,9 +432,9 @@ $@"|StartDate|EndDate|StockName|TradeType|NumberShares|
             logger.WriteReportsToFile($"logs\\{DateTime.Now:yyyy-MM-ddTHHmmss}{TestContext.CurrentContext.Test.Name}.log");
             Assert.Multiple(() =>
             {
-                Assert.That(20000 - portfolio.TotalValue(Totals.All, startTime.AddDays(-1)), Is.LessThan(tol), "Start value not correct.");
+                Assert.That(portfolio.TotalValue(Totals.All, startTime.AddDays(-1)), Is.EqualTo(20000m).Within(tol), "Start value not correct.");
                 decimal finalValue = portfolio.TotalValue(Totals.All, endTime);
-                Assert.That(Math.Abs(expectedEndValue - finalValue), Is.LessThan(tol), $"End value not correct. Expected {expectedEndValue} but was {finalValue}");
+                Assert.That(finalValue, Is.EqualTo(expectedEndValue).Within(tol), $"End value not correct. Expected {expectedEndValue} but was {finalValue}");
                 Assert.That(trades.TotalTrades, Is.EqualTo(expectedNumberTrades), "Number of trades wrong");
                 Assert.That(trades.TotalBuyTrades, Is.EqualTo(expectedBuyTrades), "Number of buy trades wrong.");
                 Assert.That(trades.TotalSellTrades, Is.EqualTo(expectedSellTrades), "Number of sell trades wrong.");

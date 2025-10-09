@@ -12,7 +12,7 @@ public interface IClock
     /// The time when the next event is going to fire.
     /// </summary>
     DateTime NextEventTime { get; set; }
-    
+
     /// <summary>
     /// Get the current time in the local time.
     /// </summary>
@@ -32,7 +32,7 @@ public interface IClock
     /// Start the clock running
     /// </summary>
     void Start();
-    
+
     /// <summary>
     /// Stop the clock from running
     /// </summary>

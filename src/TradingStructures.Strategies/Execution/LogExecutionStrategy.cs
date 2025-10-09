@@ -4,8 +4,8 @@ using Effanville.Common.Structure.Reporting;
 using Effanville.TradingStructures.Common;
 using Effanville.TradingStructures.Common.Time;
 using Effanville.TradingStructures.Exchanges;
+using Effanville.TradingStructures.OrderManagement;
 using Effanville.TradingStructures.Pricing;
-using Effanville.TradingStructures.Trading;
 
 namespace Effanville.TradingStructures.Strategies.Execution
 {

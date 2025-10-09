@@ -8,6 +8,8 @@ namespace Effanville.TradingStructures.Pricing
     /// </summary>
     public sealed class PriceCalculationSettings
     {
+       public PriceType PriceType { get; }
+
         /// <summary>
         /// Contains a random number generator for required points.
         /// </summary>
@@ -27,13 +29,15 @@ namespace Effanville.TradingStructures.Pricing
         /// Construct an instance.
         /// </summary>
         public PriceCalculationSettings(
+            PriceType priceType,
             double upTickProbability,
             double upTickSize)
         {
+            PriceType = priceType;
             UpTickProbability = upTickProbability;
             UpTickSize = upTickSize;
         }
 
-        public static PriceCalculationSettings Default() => new(0.5, 0.01);
+        public static PriceCalculationSettings Default() => new(PriceType.RandomWobble, 0.5, 0.01);
     }
 }

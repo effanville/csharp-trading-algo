@@ -7,24 +7,18 @@ namespace Effanville.TradingStructures.Trading;
 /// <summary>
 /// EventArgs for submitting a new trade to be enacted.
 /// </summary>
-public sealed class TradeSubmittedEventArgs
+public sealed class TradeRequestEventArgs
 {
-    public DateTime Time { get; set; }
-    public decimal AvailableFunds { get; set; }
-    
+    public Guid Id { get; set; }
+
     /// <summary>
     /// The trade that is requested.
     /// </summary>
     public Trade RequestedTrade { get; set; }
-    
-    public TradeSubmittedEventArgs(Trade requestedTrade)
+
+    public TradeRequestEventArgs(Guid id, Trade requestedTrade)
     {
+        Id = id;
         RequestedTrade = requestedTrade;
-    }
-    
-    public TradeSubmittedEventArgs(Trade requestedTrade, decimal availableFunds)
-    {
-        RequestedTrade = requestedTrade;
-        AvailableFunds = availableFunds;
     }
 }

@@ -12,6 +12,8 @@ namespace Effanville.TradingStructures.Strategies.Decision.Implementation
     /// </summary>
     internal sealed class BuyAllDecisionSystem : IDecisionSystem
     {
+        public int MinBurnInPeriod => 0;
+
         /// <summary>
         /// Construct and instance.
         /// </summary>

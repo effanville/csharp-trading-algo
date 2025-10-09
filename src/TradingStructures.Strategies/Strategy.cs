@@ -9,11 +9,12 @@ using Effanville.TradingStructures.Common;
 using Effanville.TradingStructures.Common.Time;
 using Effanville.TradingStructures.Common.Trading;
 using Effanville.TradingStructures.Exchanges;
+using Effanville.TradingStructures.OrderManagement;
 using Effanville.TradingStructures.Pricing;
-using Effanville.TradingStructures.Strategies.Decision;
 using Effanville.TradingStructures.Strategies.Execution;
 using Effanville.TradingStructures.Strategies.Portfolio;
-using Effanville.TradingStructures.Trading;
+
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Effanville.TradingStructures.Strategies;
 
@@ -22,38 +23,40 @@ public class Strategy : IStrategy
     private IPriceService? _priceService;
     private IClock? _clock;
     private readonly IReportLogger _logger;
+    private readonly IExecutionStrategy _executionStrategy;
+    private readonly IPortfolioManager _portfolioManager;
     public string Name => nameof(Strategy);
 
     /// <summary>
     /// Event to subscribe to for the dealing with Trades created.
     /// </summary>
     public event EventHandler<TradeSubmittedEventArgs>? SubmitTradeEvent;
-    public IDecisionSystem DecisionSystem { get; }
-    public IExecutionStrategy ExecutionStrategy { get; }
-    public IPortfolioManager PortfolioManager { get; }
+
+    public StrategyHistory History { get; }
 
     public Strategy(
-        IDecisionSystem decisionSystem,
         IExecutionStrategy executionStrategy,
         IPortfolioManager portfolioManager,
         IReportLogger logger)
     {
         _logger = logger;
-        DecisionSystem = decisionSystem;
-        ExecutionStrategy = executionStrategy;
-        PortfolioManager = portfolioManager;
+        _executionStrategy = executionStrategy;
+        _portfolioManager = portfolioManager;
+        History = new StrategyHistory(_portfolioManager.Portfolio);
+        _executionStrategy.SubmitTradeEvent += ExecutionStrategyOnSubmitTradeEvent;
     }
 
-    public void RegisterClock(IClock clock) => _clock = clock;
-
-    public void RegisterPriceService(IPriceService priceService) => _priceService = priceService;
+    public bool RegisterServices(IServiceProvider serviceProvider)
+    {
+        _clock = serviceProvider.GetService<IClock>();
+        _priceService = serviceProvider.GetService<IPriceService>();
+        return true;
+    }
 
     public void Initialize(EvolverSettings settings)
-
     {
-        ExecutionStrategy.Initialize(settings);
-        ExecutionStrategy.SubmitTradeEvent += ExecutionStrategyOnSubmitTradeEvent;
-        PortfolioManager.Initialize(settings);
+        _executionStrategy.Initialize(settings);
+        _portfolioManager.Initialize(settings);
     }
 
     private void ExecutionStrategyOnSubmitTradeEvent(object? sender, TradeSubmittedEventArgs e)
@@ -61,14 +64,14 @@ public class Strategy : IStrategy
         DateTime time = _clock?.UtcNow() ?? default;
         e.Time = time;
         var trade = e.RequestedTrade;
-        Trade? validatedTrade = PortfolioManager.ValidateTrade(e.Time, trade, _priceService);
+        Trade? validatedTrade = _portfolioManager.ValidateTrade(e.Time, trade, _priceService);
         if (validatedTrade == null)
         {
             _logger.Log(ReportType.Information, "Trading", $"{time:yyyy-MM-ddTHH:mm:ss} - Trade {trade} was not valid.");
             return;
         }
 
-        decimal availableFunds = PortfolioManager.AvailableFunds(e.Time);
+        decimal availableFunds = _portfolioManager.AvailableFunds(e.Time);
         if (availableFunds <= 0.0m)
         {
             _logger.Log(ReportType.Information, "Trading", $"{time:yyyy-MM-ddTHH:mm:ss} - No available funds.");
@@ -80,22 +83,16 @@ public class Strategy : IStrategy
         SubmitTradeEvent?.Invoke(sender, e);
     }
 
-    public void Restart()
-    {
-        ExecutionStrategy.Restart();
-        PortfolioManager.Restart();
-    }
-
     public void Shutdown()
     {
-        ExecutionStrategy.Shutdown();
-        PortfolioManager.Shutdown();
+        _executionStrategy.Shutdown();
+        _portfolioManager.Shutdown();
         DateTime time = _clock?.UtcNow() ?? default;
-        decimal latestValue = PortfolioManager.Portfolio.TotalValue(Totals.All, time);
-        DateTime earliestTime = PortfolioManager.Portfolio.FirstValueDate(Totals.All);
-        decimal startValue = PortfolioManager.Portfolio.TotalValue(Totals.All, earliestTime);
+        decimal latestValue = _portfolioManager.Portfolio.TotalValue(Totals.All, time);
+        DateTime earliestTime = _portfolioManager.Portfolio.FirstValueDate(Totals.All);
+        decimal startValue = _portfolioManager.Portfolio.TotalValue(Totals.All, earliestTime);
 
-        DateTime latestTime = PortfolioManager.Portfolio.LatestDate(Totals.All);
+        DateTime latestTime = _portfolioManager.Portfolio.LatestDate(Totals.All);
         double car = FinanceFunctions.CAR(new DailyValuation(earliestTime, startValue), new DailyValuation(latestTime, latestValue));
         _logger.Info("Ending", $"{time:yyyy-MM-ddTHH:mm:ss} total value {latestValue:C2}");
         _logger.Info("Ending", $"{time:yyyy-MM-ddTHH:mm:ss} total CAR {car}");
@@ -103,16 +100,34 @@ public class Strategy : IStrategy
 
     public void OnTimeIncrementUpdate(object? obj, TimeIncrementEventArgs eventArgs)
     {
-        ExecutionStrategy.OnTimeIncrementUpdate(obj, eventArgs);
-        PortfolioManager.ReportStatus(eventArgs.Time);
+        _executionStrategy.OnTimeIncrementUpdate(obj, eventArgs);
+        _portfolioManager.ReportStatus(eventArgs.Time);
     }
 
     public void OnExchangeStatusChanged(object? obj, ExchangeStatusChangedEventArgs eventArgs)
-        => ExecutionStrategy.OnExchangeStatusChanged(obj, eventArgs);
+        => _executionStrategy.OnExchangeStatusChanged(obj, eventArgs);
 
     public void OnPriceUpdate(object? obj, PriceUpdateEventArgs eventArgs)
     {
-        ExecutionStrategy.OnPriceUpdate(obj, eventArgs);
-        PortfolioManager.OnPriceUpdate(obj, eventArgs);
+        _executionStrategy.OnPriceUpdate(obj, eventArgs);
+        _portfolioManager.OnPriceUpdate(obj, eventArgs);
+    }
+
+    public void OnTradeConfirmed(object? obj, TradeCompletedEventArgs eventArgs)
+    {
+        var time = _clock.UtcNow();
+        if (eventArgs.TradeSuccessful)
+        {
+            Trade trade = eventArgs.RequestedTrade;
+            var tradeConfirmation = eventArgs.ConfirmedTrade;
+            _logger.Log(ReportType.Information, "Trading", $"{time:yyyy-MM-ddTHH:mm:ss} - Confirm trade '{tradeConfirmation}' reported and added.");
+            _ = _portfolioManager.AddTrade(time, trade, tradeConfirmation);
+            History.Trades.Add(time, trade);
+            History.Decisions.Add(time, trade);
+        }
+        else
+        {
+            _logger.Log(ReportType.Warning, "Trading", $"{time:yyyy-MM-ddTHH:mm:ss} - Requested trade '{eventArgs.RequestedTrade}' not successful.");
+        }
     }
 }

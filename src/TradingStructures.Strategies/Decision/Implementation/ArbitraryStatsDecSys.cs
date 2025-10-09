@@ -22,6 +22,8 @@ namespace Effanville.TradingStructures.Strategies.Decision.Implementation
         private readonly IReadOnlyList<IStockStatistic> _stockStatistics;
         private Estimator.Result? _estimatorResult;
 
+        public int MinBurnInPeriod => _stockStatistics.Count * 25;
+
         /// <summary>
         /// Construct an instance.
         /// </summary>
@@ -54,15 +56,15 @@ namespace Effanville.TradingStructures.Strategies.Decision.Implementation
                 {
                     for (int statisticIndex = 0; statisticIndex < numberStatistics; statisticIndex++)
                     {
-                        fitData[entryIndex * settings.Exchange.Stocks.Count + stockIndex, statisticIndex] =
+                        fitData[entryIndex * settings.ExchangeHistory.Stocks.Count + stockIndex, statisticIndex] =
                             _stockStatistics[statisticIndex]
                                 .Calculate(
                                     settings.StartTime.AddDays(delayTime + entryIndex),
-                                    settings.Exchange.Stocks[stockIndex]);
+                                    settings.ExchangeHistory.Stocks[stockIndex]);
                     }
 
-                    fitValues[entryIndex * settings.Exchange.Stocks.Count + stockIndex] = Convert.ToDouble(
-                        settings.Exchange.Stocks[stockIndex].Values(burnInLength.AddDays(delayTime + entryIndex), 0,
+                    fitValues[entryIndex * settings.ExchangeHistory.Stocks.Count + stockIndex] = Convert.ToDouble(
+                        settings.ExchangeHistory.Stocks[stockIndex].Values(burnInLength.AddDays(delayTime + entryIndex), 0,
                             _settings.DayAfterPredictor, StockDataStream.Open).Last() / 100m);
                 }
             }
