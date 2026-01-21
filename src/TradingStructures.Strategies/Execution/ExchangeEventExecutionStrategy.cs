@@ -41,11 +41,12 @@ public class ExchangeEventExecutionStrategy : IExecutionStrategy
 
     public void OnPriceUpdate(object? obj, PriceUpdateEventArgs eventArgs)
     {
-        var stock = _stockExchange.Stocks.First(stock => stock.Name.Equals(eventArgs.Instrument));
+        var stock = _stockExchange.Stocks.FirstOrDefault(stock => stock.Name.Equals(eventArgs.Instrument));
         if (stock == null)
         {
             var name = eventArgs.Instrument;
-            _stockExchange.Stocks.Add(new Stock(name.Ticker, name.Company, name.Name, name.Currency, name.Url));
+            stock = new Stock(name.Ticker, name.Company, name.Name, name.Currency, name.Url);
+            _stockExchange.Stocks.Add(stock);
         }
         stock.AddValue(eventArgs.Candle);
         _logger.Log(ReportType.Information, "PriceService", $"Update. Stock={eventArgs.Instrument.Ticker}, Time={eventArgs.Time:yyyy-MM-ddTHH:mm:ss}, Price={eventArgs.Price}");

@@ -3,6 +3,7 @@ using System.Linq;
 
 using Effanville.Common.Structure.Reporting;
 using Effanville.FinancialStructures.Stocks;
+using Effanville.FinancialStructures.Stocks.Implementation;
 using Effanville.TradingStructures.Common;
 using Effanville.TradingStructures.Common.Time;
 using Effanville.TradingStructures.Common.Trading;
@@ -40,7 +41,18 @@ public class ExchangeOpenCalcExecutionStrategy : IExecutionStrategy
 
     public void OnPriceUpdate(object? obj, PriceUpdateEventArgs eventArgs)
     {
-        _stockExchange.Stocks.First(stock => stock.Name.Equals(eventArgs.Instrument)).AddValue(eventArgs.Candle);
+        var stock = _stockExchange.Stocks.FirstOrDefault(stock => stock.Name.Equals(eventArgs.Instrument));
+        if (stock == null)
+        {
+            var name = eventArgs.Instrument;
+            stock = new Stock(name.Ticker, name.Company, name.Name, name.Currency, name.Url);
+            _stockExchange.Stocks.Add(stock);
+        }
+        if(stock.Valuations.Any(x => x.Start == eventArgs.Candle.Start))
+        {
+            stock.Valuations.RemoveAll(x => x.Start == eventArgs.Candle.Start);
+        }
+        stock.AddValue(eventArgs.Candle);
         _logger.Log(ReportType.Information, "PriceService", $"Update. Stock={eventArgs.Instrument.Ticker}, Time={eventArgs.Time:yyyy-MM-ddTHH:mm:ss}, Price={eventArgs.Price}");
         if (!_calibrated && _decisionSystem.MinBurnInPeriod < _stockExchange.NumberValuations())
         {
