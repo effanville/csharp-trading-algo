@@ -9,7 +9,6 @@ using Effanville.TradingStructures.Pricing;
 using Effanville.TradingStructures.Strategies;
 using Effanville.TradingStructures.Trading;
 using Effanville.TradingStructures.Trading.Implementation;
-using Effanville.TradingSystem.Time;
 using Effanville.TradingSystem.Trading;
 
 namespace Effanville.TradingSystem.MarketEvolvers;
