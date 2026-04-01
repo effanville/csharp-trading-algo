@@ -3,10 +3,9 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Timers;
 
-using Effanville.TradingStructures.Common.Scheduling;
 using Effanville.TradingStructures.Common.Time;
 
-namespace Effanville.TradingSystem
+namespace Effanville.TradingStructures.Common.Scheduling
 {
     public class Scheduler : IScheduler
     {
