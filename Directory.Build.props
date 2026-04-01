@@ -1,7 +1,7 @@
 <Project>
 
   <PropertyGroup>
-    <TargetFrameworks>net9.0</TargetFrameworks>
+    <TargetFrameworks>net10.0</TargetFrameworks>
     <Authors>Effanville</Authors>
     <RootNamespace>Effanville.$(MSBuildProjectName)</RootNamespace>
     <AssemblyName>Effanville.$(MSBuildProjectName)</AssemblyName>
