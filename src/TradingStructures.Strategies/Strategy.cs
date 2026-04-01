@@ -80,12 +80,6 @@ public class Strategy : IStrategy
         SubmitTradeEvent?.Invoke(sender, e);
     }
 
-    public void Restart()
-    {
-        ExecutionStrategy.Restart();
-        PortfolioManager.Restart();
-    }
-
     public void Shutdown()
     {
         ExecutionStrategy.Shutdown();

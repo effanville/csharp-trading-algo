@@ -6,6 +6,5 @@ public interface IService
 
     void Initialize(EvolverSettings settings);
 
-    void Restart();
     void Shutdown();
 }
