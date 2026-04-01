@@ -15,7 +15,7 @@ namespace Effanville.TradingStructures.Exchanges;
 /// <summary>
 /// Representation of a exchange and all instruments that are traded upon it.
 /// </summary>
-public sealed class TradingExchange : ITradingExchange
+public sealed class ExchangeSessionService : IExchangeSessionService
 {
     private readonly IScheduler _scheduler;
 
@@ -25,15 +25,13 @@ public sealed class TradingExchange : ITradingExchange
     /// The code for the country to determine trading days.
     /// </summary>
     private CountryCode CountryDateCode { get; set; }
-
-    [XmlIgnore] private readonly Dictionary<string, NameData> StockInstruments = new Dictionary<string, NameData>();
-
+    
     private static TimeOnly ExchangeOpen { get; set; }
     private static TimeOnly ExchangeClose { get; set; }
 
     public event EventHandler<ExchangeStatusChangedEventArgs>? ExchangeStatusChanged;
 
-    public TradingExchange(IScheduler scheduler, IStockExchange stockExchange)
+    public ExchangeSessionService(IScheduler scheduler, IStockExchange stockExchange)
     {
         Name = stockExchange.Name;
         _scheduler = scheduler;
@@ -94,10 +92,5 @@ public sealed class TradingExchange : ITradingExchange
         ExchangeOpen = stockExchange.ExchangeOpen;
         ExchangeClose = stockExchange.ExchangeClose;
         CountryDateCode = stockExchange.CountryDateCode;
-        foreach (var stock in stockExchange.Stocks)
-        {
-            string ticker = stock.Name.Ticker;
-            StockInstruments.Add(ticker, stock.Name);
-        }
     }
 }
