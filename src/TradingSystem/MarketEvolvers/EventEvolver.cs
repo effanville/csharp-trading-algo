@@ -1,15 +1,20 @@
 ﻿using Effanville.Common.Structure.Reporting;
 using Effanville.FinancialStructures.Stocks;
 using Effanville.TradingStructures.Common;
+using Effanville.TradingStructures.Common.DependencyInjection;
 using Effanville.TradingStructures.Common.Scheduling;
 using Effanville.TradingStructures.Common.Services;
 using Effanville.TradingStructures.Common.Time;
 using Effanville.TradingStructures.Exchanges;
+using Effanville.TradingStructures.Exchanges.DependencyInjection;
 using Effanville.TradingStructures.Pricing;
+using Effanville.TradingStructures.Pricing.DependencyInjection;
 using Effanville.TradingStructures.Strategies;
 using Effanville.TradingStructures.Trading;
-using Effanville.TradingStructures.Trading.Implementation;
+using Effanville.TradingStructures.Trading.DependencyInjection;
 using Effanville.TradingSystem.Trading;
+
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Effanville.TradingSystem.MarketEvolvers;
 
@@ -24,11 +29,12 @@ public sealed class EventEvolver : IEventEvolver
     readonly EvolverSettings _settings;
     readonly IReportLogger _logger;
     readonly IScheduler _scheduler;
+    private readonly ServiceProvider _serviceProvider;
     private readonly IPriceService _priceService;
     private readonly IExchangeSessionService _exchange;
-    private readonly SimulationExchange _simulationExchange;
+    private readonly IMarketExchange _simulationExchange;
     private readonly IOrderListener _orderListener;
-    private IStrategy _strategy;
+    private readonly IStrategy _strategy;
 
     /// <summary>
     /// Whether this evolution is still running.
@@ -51,18 +57,35 @@ public sealed class EventEvolver : IEventEvolver
     {
         _settings = settings;
         _logger = logger;
-        _clock = new SimulationEventBasedClock(settings.StartTime);
-        _scheduler = new Scheduler(_clock);
+        IServiceCollection serviceCollection = new ServiceCollection();
+        _ = serviceCollection
+            .AddSingleton(a => logger)
+            .AddCommonServices(settings.StartTime)
+            .AddSingleton(a => exchange)
+            .AddSingleton(a => strategy)
+            .AddSingleton<IService>(x => x.GetService<IStrategy>()!)
+            .AddExchangeServices()
 
-        _exchange = new ExchangeSessionService(_scheduler, exchange);
+            // the following two could be replace with actual exchange and price connections
+            // for live trading. The other parts should be able to stay as is.
+            .AddSimulationExchange()
+            .AddPriceService()
+            .AddSingleton(x => strategy.PortfolioManager)
+            .AddSingleton(Result)
+            .AddOrderManagement();
 
-        _priceService = PriceServiceFactory.Create(PriceType.RandomWobble, PriceCalculationSettings.Default(), exchange, _scheduler);
-        _strategy = strategy;
+        _serviceProvider = serviceCollection.BuildServiceProvider();
+
+        _clock = _serviceProvider.GetService<IClock>()!;
+        _scheduler = _serviceProvider.GetService<IScheduler>()!;
+        _exchange = _serviceProvider.GetService<IExchangeSessionService>()!;
+        _priceService = _serviceProvider.GetService<IPriceService>()!;
+        _orderListener = _serviceProvider.GetService<IOrderListener>()!;
+        _strategy = _serviceProvider.GetService<IStrategy>()!;
         strategy.RegisterClock(_clock);
         strategy.RegisterPriceService(_priceService);
 
-        _simulationExchange = new SimulationExchange(TradeMechanismSettings.Default(), _priceService, _clock, _logger);
-        _orderListener = new OrderListener(_clock, strategy.PortfolioManager, Result, _logger);
+        _simulationExchange = _serviceProvider.GetService<IMarketExchange>()!;
     }
 
     /// <summary>
@@ -70,10 +93,12 @@ public sealed class EventEvolver : IEventEvolver
     /// </summary>
     public void Initialise()
     {
-        _exchange.Initialize(_settings);
-        _priceService.Initialize(_settings);
-        _strategy.Initialize(_settings);
-        _simulationExchange.Initialize(_settings);
+        var services = _serviceProvider.GetServices<IService>();
+        foreach (IService service in services)
+        {
+            service.Initialize(_settings);
+        }
+
         _orderListener.Initialize(_settings);
         _strategy.SubmitTradeEvent += _orderListener.OnTradeRequested;
         _exchange.ExchangeStatusChanged += _strategy.OnExchangeStatusChanged;
@@ -118,10 +143,11 @@ public sealed class EventEvolver : IEventEvolver
     {
         _clock.Stop();
         _scheduler.Stop();
-        _exchange.Shutdown();
-        _priceService.Shutdown();
-        _strategy.Shutdown();
-        _simulationExchange.Shutdown();
+        foreach (IService service in _serviceProvider.GetServices<IService>())
+        {
+            service.Shutdown();
+        }
+
         _orderListener.Shutdown();
         Result.Portfolio = _strategy.PortfolioManager.Portfolio;
         IsActive = false;

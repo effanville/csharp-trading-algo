@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Xml.Serialization;
 
-using Effanville.FinancialStructures.NamingStructures;
 using Effanville.FinancialStructures.Stocks;
 using Effanville.TradingStructures.Common;
 using Effanville.TradingStructures.Common.Scheduling;
@@ -25,7 +22,7 @@ public sealed class ExchangeSessionService : IExchangeSessionService
     /// The code for the country to determine trading days.
     /// </summary>
     private CountryCode CountryDateCode { get; set; }
-    
+
     private static TimeOnly ExchangeOpen { get; set; }
     private static TimeOnly ExchangeClose { get; set; }
 

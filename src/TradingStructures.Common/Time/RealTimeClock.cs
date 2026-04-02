@@ -2,7 +2,7 @@
 
 namespace Effanville.TradingStructures.Common.Time;
 
-public sealed class RealTimeClock : IClock
+internal sealed class RealTimeClock : IClock
 {
     public DateTime NextEventTime { get; set; }
 

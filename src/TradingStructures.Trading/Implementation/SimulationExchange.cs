@@ -10,7 +10,7 @@ using Effanville.TradingStructures.Pricing;
 
 namespace Effanville.TradingStructures.Trading.Implementation
 {
-    public class SimulationExchange : IMarketExchange, IService
+    internal class SimulationExchange : IMarketExchange, IService
     {
         private readonly IClock? _clock;
         private readonly IPriceService? _priceService;

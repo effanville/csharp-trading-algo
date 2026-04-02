@@ -7,7 +7,7 @@ using Effanville.TradingStructures.Common.Time;
 
 namespace Effanville.TradingStructures.Common.Scheduling;
 
-public class Scheduler : IScheduler
+internal class Scheduler : IScheduler
 {
     private readonly Timer? _timer;
     private readonly IClock _internalClock;

@@ -5,7 +5,7 @@ namespace Effanville.TradingStructures.Common.Time;
 /// <summary>
 /// Implementation of a <see cref="IClock"/> for simulation purposes.
 /// </summary>
-public sealed class SimulationEventBasedClock : IClock
+internal sealed class SimulationEventBasedClock : IClock
 {
     public DateTime NextEventTime
     {
