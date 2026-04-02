@@ -29,5 +29,5 @@
   <Project Path="test/TradingConsole.Tests/TradingConsole.Tests.csproj" />
   <Project Path="test/TradingStructures.Strategies.Tests/TradingStructures.Strategies.Tests.csproj" />
   <Project Path="test/TradingSystem.Tests/TradingSystem.Tests.csproj" />
-  <Project Path="Unit.Tests.Common/Unit.Tests.Common.csproj" />
+  <Project Path="test/Unit.Tests.Common/Unit.Tests.Common.csproj" />
 </Solution>

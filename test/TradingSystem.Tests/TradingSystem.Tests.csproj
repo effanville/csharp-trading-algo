@@ -17,7 +17,7 @@
       <ProjectReference Include="..\..\src\TradingStructures.Strategies.Interfaces\TradingStructures.Strategies.Interfaces.csproj" />
       <ProjectReference Include="..\..\src\TradingStructures.Strategies\TradingStructures.Strategies.csproj" />
       <ProjectReference Include="..\..\src\TradingSystem\TradingSystem.csproj" />
-      <ProjectReference Include="..\..\Unit.Tests.Common\Unit.Tests.Common.csproj" />
+      <ProjectReference Include="..\Unit.Tests.Common\Unit.Tests.Common.csproj" />
     </ItemGroup>
 
 </Project>

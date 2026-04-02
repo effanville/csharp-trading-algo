@@ -13,7 +13,7 @@
       <ProjectReference Include="..\..\FinancialStructures\src\FinancialStructures.Stocks\FinancialStructures.Stocks.csproj" />
       <ProjectReference Include="..\..\src\TradingStructures.Common\TradingStructures.Common.csproj" />
       <ProjectReference Include="..\..\src\TradingStructures.Strategies\TradingStructures.Strategies.csproj" />
-      <ProjectReference Include="..\..\Unit.Tests.Common\Unit.Tests.Common.csproj" />
+      <ProjectReference Include="..\Unit.Tests.Common\Unit.Tests.Common.csproj" />
     </ItemGroup>
 
 </Project>
