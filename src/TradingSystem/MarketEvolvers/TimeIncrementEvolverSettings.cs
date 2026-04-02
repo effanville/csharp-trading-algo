@@ -61,8 +61,6 @@ namespace Effanville.TradingSystem.MarketEvolvers
             }
 
             StartTime = BurnInStart + EvolutionIncrement * (long)((EndTime - BurnInStart) / (2 * EvolutionIncrement));
-        }        
-        
-        public void DoesntRequireBurnIn() => StartTime = BurnInStart;
+        }
     }
 }

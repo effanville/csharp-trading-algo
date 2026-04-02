@@ -128,10 +128,6 @@ public static class RegistrationExtensions
                 decisionParameters,
                 decisionSettings,
                 reportLogger);
-            if (decisionSettings.BurnInEnd == decisionSettings.StartTime)
-            {
-                simulatorSettings.DoesntRequireBurnIn();
-            }
 
             return decisionSystem;
         }
