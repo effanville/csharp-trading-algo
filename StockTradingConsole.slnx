@@ -1,0 +1,33 @@
+<Solution>
+  <Folder Name="/Common/">
+    <Project Path="FinancialStructures/Common/src/Common.Console/Common.Console.csproj" />
+    <Project Path="FinancialStructures/Common/src/Common.ReportWriting/Common.ReportWriting.csproj" />
+    <Project Path="FinancialStructures/Common/src/Common.Structure/Common.Structure.csproj" />
+    <Project Path="FinancialStructures/Common/test/Common.Console.Tests/Common.Console.Tests.csproj" />
+    <Project Path="FinancialStructures/Common/test/Common.ReportWriting.Unit.Tests/Common.ReportWriting.Unit.Tests.csproj" />
+    <Project Path="FinancialStructures/Common/test/Common.Structure.Tests/Common.Structure.Tests.csproj" />
+  </Folder>
+  <Folder Name="/FinancialStructures/">
+    <File Path="FinancialStructures/Directory.Build.props" />
+    <Project Path="FinancialStructures/src/FinancialStructures.Stocks/FinancialStructures.Stocks.csproj" />
+    <Project Path="FinancialStructures/src/FinancialStructures/FinancialStructures.csproj" />
+    <Project Path="FinancialStructures/test/FinancialStructures.Stocks.Tests/FinancialStructures.Stocks.Tests.csproj" />
+    <Project Path="FinancialStructures/test/FinancialStructures.Tests/FinancialStructures.Tests.csproj" />
+  </Folder>
+  <Folder Name="/Solution Items/">
+    <File Path=".editorconfig" />
+    <File Path="Directory.Build.props" />
+  </Folder>
+  <Project Path="src/TradingConsole/TradingConsole.csproj" />
+  <Project Path="src/TradingStructures.Common/TradingStructures.Common.csproj" />
+  <Project Path="src/TradingStructures.Exchanges/TradingStructures.Exchanges.csproj" />
+  <Project Path="src/TradingStructures.Pricing/TradingStructures.Pricing.csproj" />
+  <Project Path="src/TradingStructures.Strategies.Interfaces/TradingStructures.Strategies.Interfaces.csproj" />
+  <Project Path="src/TradingStructures.Strategies/TradingStructures.Strategies.csproj" />
+  <Project Path="src/TradingStructures.Trading/TradingStructures.Trading.csproj" />
+  <Project Path="src/TradingSystem/TradingSystem.csproj" />
+  <Project Path="test/TradingConsole.Tests/TradingConsole.Tests.csproj" />
+  <Project Path="test/TradingStructures.Strategies.Tests/TradingStructures.Strategies.Tests.csproj" />
+  <Project Path="test/TradingSystem.Tests/TradingSystem.Tests.csproj" />
+  <Project Path="Unit.Tests.Common/Unit.Tests.Common.csproj" />
+</Solution>

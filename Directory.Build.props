@@ -5,7 +5,6 @@
     <Authors>Effanville</Authors>
     <RootNamespace>Effanville.$(MSBuildProjectName)</RootNamespace>
     <AssemblyName>Effanville.$(MSBuildProjectName)</AssemblyName>
-	  <Platforms>x64</Platforms>
   </PropertyGroup>
   
   <PropertyGroup>
