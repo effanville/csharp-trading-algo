@@ -4,8 +4,6 @@ using Effanville.TradingStructures.Common.Services;
 using Effanville.TradingStructures.Common.Time;
 using Effanville.TradingStructures.Exchanges;
 using Effanville.TradingStructures.Pricing;
-using Effanville.TradingStructures.Strategies.Decision;
-using Effanville.TradingStructures.Strategies.Execution;
 using Effanville.TradingStructures.Strategies.Portfolio;
 using Effanville.TradingStructures.Trading;
 
@@ -17,8 +15,6 @@ public interface IStrategy : IService
     /// Event to subscribe to for the dealing with Trades created.
     /// </summary>
     event EventHandler<TradeSubmittedEventArgs> SubmitTradeEvent;
-    public IDecisionSystem DecisionSystem { get; }
-    public IExecutionStrategy ExecutionStrategy { get; }
     public IPortfolioManager PortfolioManager { get; }
 
     /// <summary>

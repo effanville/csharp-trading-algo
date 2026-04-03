@@ -18,34 +18,22 @@ namespace Effanville.TradingStructures.Strategies.Portfolio
         /// <summary>
         /// Various settings used in the initial setup of the portfolio.
         /// </summary>
-        PortfolioStartSettings StartSettings
-        {
-            get;
-        }
+        PortfolioStartSettings StartSettings { get; }
 
         /// <summary>
         /// Various settings for the construction of a portfolio.
         /// </summary>
-        PortfolioConstructionSettings PortfolioConstructionSettings
-        {
-            get;
-        }
+        PortfolioConstructionSettings PortfolioConstructionSettings { get; }
 
         /// <summary>
         /// The portfolio at the start of the simulation.
         /// </summary>
-        public IPortfolio StartPortfolio
-        {
-            get;
-        }
+        public IPortfolio StartPortfolio { get; }
 
         /// <summary>
         /// The portfolio being constructed.
         /// </summary>
-        IPortfolio Portfolio
-        {
-            get;
-        }
+        IPortfolio Portfolio { get; }
 
         /// <summary>
         /// Validate that the following trade is suitable, and potentially alter

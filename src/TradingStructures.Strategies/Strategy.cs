@@ -10,7 +10,6 @@ using Effanville.TradingStructures.Common.Time;
 using Effanville.TradingStructures.Common.Trading;
 using Effanville.TradingStructures.Exchanges;
 using Effanville.TradingStructures.Pricing;
-using Effanville.TradingStructures.Strategies.Decision;
 using Effanville.TradingStructures.Strategies.Execution;
 using Effanville.TradingStructures.Strategies.Portfolio;
 using Effanville.TradingStructures.Trading;
@@ -24,26 +23,24 @@ public class Strategy : IStrategy
     private IPriceService? _priceService;
     private IClock? _clock;
     private readonly IReportLogger _logger;
+    private readonly IExecutionStrategy _executionStrategy;
     public string Name => nameof(Strategy);
 
     /// <summary>
     /// Event to subscribe to for the dealing with Trades created.
     /// </summary>
     public event EventHandler<TradeSubmittedEventArgs>? SubmitTradeEvent;
-    public IDecisionSystem DecisionSystem { get; }
-    public IExecutionStrategy ExecutionStrategy { get; }
     public IPortfolioManager PortfolioManager { get; }
 
     public Strategy(
-        IDecisionSystem decisionSystem,
         IExecutionStrategy executionStrategy,
         IPortfolioManager portfolioManager,
         IReportLogger logger)
     {
         _logger = logger;
-        DecisionSystem = decisionSystem;
-        ExecutionStrategy = executionStrategy;
+        _executionStrategy = executionStrategy;
         PortfolioManager = portfolioManager;
+        _executionStrategy.SubmitTradeEvent += ExecutionStrategyOnSubmitTradeEvent;
     }
 
     public bool RegisterServices(IServiceProvider serviceProvider)
@@ -54,10 +51,8 @@ public class Strategy : IStrategy
     }
 
     public void Initialize(EvolverSettings settings)
-
     {
-        ExecutionStrategy.Initialize(settings);
-        ExecutionStrategy.SubmitTradeEvent += ExecutionStrategyOnSubmitTradeEvent;
+        _executionStrategy.Initialize(settings);
         PortfolioManager.Initialize(settings);
     }
 
@@ -87,7 +82,7 @@ public class Strategy : IStrategy
 
     public void Shutdown()
     {
-        ExecutionStrategy.Shutdown();
+        _executionStrategy.Shutdown();
         PortfolioManager.Shutdown();
         DateTime time = _clock?.UtcNow() ?? default;
         decimal latestValue = PortfolioManager.Portfolio.TotalValue(Totals.All, time);
@@ -102,16 +97,16 @@ public class Strategy : IStrategy
 
     public void OnTimeIncrementUpdate(object? obj, TimeIncrementEventArgs eventArgs)
     {
-        ExecutionStrategy.OnTimeIncrementUpdate(obj, eventArgs);
+        _executionStrategy.OnTimeIncrementUpdate(obj, eventArgs);
         PortfolioManager.ReportStatus(eventArgs.Time);
     }
 
     public void OnExchangeStatusChanged(object? obj, ExchangeStatusChangedEventArgs eventArgs)
-        => ExecutionStrategy.OnExchangeStatusChanged(obj, eventArgs);
+        => _executionStrategy.OnExchangeStatusChanged(obj, eventArgs);
 
     public void OnPriceUpdate(object? obj, PriceUpdateEventArgs eventArgs)
     {
-        ExecutionStrategy.OnPriceUpdate(obj, eventArgs);
+        _executionStrategy.OnPriceUpdate(obj, eventArgs);
         PortfolioManager.OnPriceUpdate(obj, eventArgs);
     }
 }
