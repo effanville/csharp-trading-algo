@@ -18,29 +18,24 @@ public interface IStrategy : IService
     /// </summary>
     event EventHandler<TradeSubmittedEventArgs> SubmitTradeEvent;
     public IDecisionSystem DecisionSystem { get; }
-    public IExecutionStrategy ExecutionStrategy {get;}
+    public IExecutionStrategy ExecutionStrategy { get; }
     public IPortfolioManager PortfolioManager { get; }
 
     /// <summary>
-    /// Register the Clock for the strategy.
+    /// Register the simulation services for the strategy.
     /// </summary>
-    void RegisterClock(IClock clock);
-    
-    /// <summary>
-    /// Register the priceService for the strategy.
-    /// </summary>
-    void RegisterPriceService(IPriceService priceService);
-    
+    bool RegisterServices(IServiceProvider serviceProvider);
+
     /// <summary>
     /// Event that fires every short time period for checking strategy.
     /// </summary>
     void OnTimeIncrementUpdate(object? obj, TimeIncrementEventArgs eventArgs);
-    
+
     /// <summary>
     /// Event that is called at the point of the status of an exchange changing.
     /// </summary>
     void OnExchangeStatusChanged(object? obj, ExchangeStatusChangedEventArgs eventArgs);
-    
+
     /// <summary>
     /// Event that is called at the point of a price change occurring.
     /// </summary>

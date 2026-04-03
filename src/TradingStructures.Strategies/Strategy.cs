@@ -15,6 +15,8 @@ using Effanville.TradingStructures.Strategies.Execution;
 using Effanville.TradingStructures.Strategies.Portfolio;
 using Effanville.TradingStructures.Trading;
 
+using Microsoft.Extensions.DependencyInjection;
+
 namespace Effanville.TradingStructures.Strategies;
 
 public class Strategy : IStrategy
@@ -44,9 +46,12 @@ public class Strategy : IStrategy
         PortfolioManager = portfolioManager;
     }
 
-    public void RegisterClock(IClock clock) => _clock = clock;
-
-    public void RegisterPriceService(IPriceService priceService) => _priceService = priceService;
+    public bool RegisterServices(IServiceProvider serviceProvider)
+    {
+        _clock = serviceProvider.GetService<IClock>();
+        _priceService = serviceProvider.GetService<IPriceService>();
+        return true;
+    }
 
     public void Initialize(EvolverSettings settings)
 

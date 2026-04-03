@@ -82,8 +82,7 @@ public sealed class EventEvolver : IEventEvolver
         _priceService = _serviceProvider.GetService<IPriceService>()!;
         _orderListener = _serviceProvider.GetService<IOrderListener>()!;
         _strategy = _serviceProvider.GetService<IStrategy>()!;
-        strategy.RegisterClock(_clock);
-        strategy.RegisterPriceService(_priceService);
+        strategy.RegisterServices(_serviceProvider);
 
         _simulationExchange = _serviceProvider.GetService<IMarketExchange>()!;
     }
