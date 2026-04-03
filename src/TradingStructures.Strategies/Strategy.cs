@@ -30,6 +30,9 @@ public class Strategy : IStrategy
     /// Event to subscribe to for the dealing with Trades created.
     /// </summary>
     public event EventHandler<TradeSubmittedEventArgs>? SubmitTradeEvent;
+
+    public StrategyHistory History { get; }
+
     public IPortfolioManager PortfolioManager { get; }
 
     public Strategy(
@@ -40,6 +43,7 @@ public class Strategy : IStrategy
         _logger = logger;
         _executionStrategy = executionStrategy;
         PortfolioManager = portfolioManager;
+        History = new StrategyHistory(PortfolioManager.Portfolio);
         _executionStrategy.SubmitTradeEvent += ExecutionStrategyOnSubmitTradeEvent;
     }
 
@@ -108,5 +112,23 @@ public class Strategy : IStrategy
     {
         _executionStrategy.OnPriceUpdate(obj, eventArgs);
         PortfolioManager.OnPriceUpdate(obj, eventArgs);
+    }
+
+    public void OnTradeConfirmed(object? obj, TradeCompletedEventArgs eventArgs)
+    {
+        var time = _clock!.UtcNow();
+        if (eventArgs.TradeSuccessful)
+        {
+            Trade trade = eventArgs.RequestedTrade;
+            var tradeConfirmation = eventArgs.ConfirmedTrade;
+            _logger.Log(ReportType.Information, "Trading", $"{time:yyyy-MM-ddTHH:mm:ss} - Confirm trade '{tradeConfirmation}' reported and added.");
+            _ = PortfolioManager.AddTrade(time, trade, tradeConfirmation);
+            History.Trades.Add(time, trade);
+            History.Decisions.Add(time, trade);
+        }
+        else
+        {
+            _logger.Log(ReportType.Warning, "Trading", $"{time:yyyy-MM-ddTHH:mm:ss} - Requested trade '{eventArgs.RequestedTrade}' not successful.");
+        }
     }
 }

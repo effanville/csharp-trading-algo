@@ -15,6 +15,9 @@ public interface IStrategy : IService
     /// Event to subscribe to for the dealing with Trades created.
     /// </summary>
     event EventHandler<TradeSubmittedEventArgs> SubmitTradeEvent;
+
+    public StrategyHistory History { get; }
+
     public IPortfolioManager PortfolioManager { get; }
 
     /// <summary>
@@ -36,4 +39,9 @@ public interface IStrategy : IService
     /// Event that is called at the point of a price change occurring.
     /// </summary>
     void OnPriceUpdate(object? obj, PriceUpdateEventArgs eventArgs);
+
+    /// <summary>
+    /// Adds a trade into the portfolio.
+    /// </summary>
+    void OnTradeConfirmed(object? obj, TradeCompletedEventArgs eventArgs);
 }

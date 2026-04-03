@@ -12,7 +12,6 @@ using Effanville.TradingStructures.Pricing.DependencyInjection;
 using Effanville.TradingStructures.Strategies;
 using Effanville.TradingStructures.Trading;
 using Effanville.TradingStructures.Trading.DependencyInjection;
-using Effanville.TradingSystem.Trading;
 
 using Microsoft.Extensions.DependencyInjection;
 
@@ -33,7 +32,6 @@ public sealed class EventEvolver : IEventEvolver
     private readonly IPriceService _priceService;
     private readonly IExchangeSessionService _exchange;
     private readonly IMarketExchange _simulationExchange;
-    private readonly IOrderListener _orderListener;
     private readonly IStrategy _strategy;
 
     /// <summary>
@@ -44,10 +42,7 @@ public sealed class EventEvolver : IEventEvolver
         get; private set;
     }
 
-    public EvolverResult Result
-    {
-        get;
-    } = new();
+    public StrategyHistory? Result { get; private set; }
 
     public EventEvolver(
         EvolverSettings settings,
@@ -69,10 +64,7 @@ public sealed class EventEvolver : IEventEvolver
             // the following two could be replace with actual exchange and price connections
             // for live trading. The other parts should be able to stay as is.
             .AddSimulationExchange()
-            .AddPriceService()
-            .AddSingleton(x => strategy.PortfolioManager)
-            .AddSingleton(Result)
-            .AddOrderManagement();
+            .AddPriceService();
 
         _serviceProvider = serviceCollection.BuildServiceProvider();
 
@@ -80,7 +72,6 @@ public sealed class EventEvolver : IEventEvolver
         _scheduler = _serviceProvider.GetService<IScheduler>()!;
         _exchange = _serviceProvider.GetService<IExchangeSessionService>()!;
         _priceService = _serviceProvider.GetService<IPriceService>()!;
-        _orderListener = _serviceProvider.GetService<IOrderListener>()!;
         _strategy = _serviceProvider.GetService<IStrategy>()!;
         strategy.RegisterServices(_serviceProvider);
 
@@ -98,13 +89,11 @@ public sealed class EventEvolver : IEventEvolver
             service.Initialize(_settings);
         }
 
-        _orderListener.Initialize(_settings);
-        _strategy.SubmitTradeEvent += _orderListener.OnTradeRequested;
+        _strategy.SubmitTradeEvent += _simulationExchange.OnTradeRequested;
         _exchange.ExchangeStatusChanged += _strategy.OnExchangeStatusChanged;
         _priceService.PriceChanged += _strategy.OnPriceUpdate;
 
-        _orderListener.SubmitTrade += _simulationExchange.OnTradeRequested;
-        _simulationExchange.TradeCompleted += _orderListener.OnTradeConfirmed;
+        _simulationExchange.TradeCompleted += _strategy.OnTradeConfirmed;
         ScheduleShutdown();
         _scheduler.ScheduleNewEvent(TimeUpdate, _clock.UtcNow().AddDays(1));
         _isInitialised = true;
@@ -147,8 +136,7 @@ public sealed class EventEvolver : IEventEvolver
             service.Shutdown();
         }
 
-        _orderListener.Shutdown();
-        Result.Portfolio = _strategy.PortfolioManager.Portfolio;
+        Result = _strategy?.History;
         IsActive = false;
     }
 }

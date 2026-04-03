@@ -95,7 +95,7 @@ public static class RegistrationExtensions
         return serviceCollection;
     }
 
-    public static async Task<EvolverResult> RunSystemAsync(this IHost host)
+    public static async Task<StrategyHistory> RunSystemAsync(this IHost host)
     {
         var reportLogger = host.Services.GetService<IReportLogger>();
         var evolver = host.Services.GetService<IEventEvolver>();
