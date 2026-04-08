@@ -1,0 +1,6 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <ItemGroup>
+    <ProjectReference Include="..\..\FinancialStructures\src\FinancialStructures.Stocks\FinancialStructures.Stocks.csproj" />
+    <ProjectReference Include="..\TradingStructures.Common\TradingStructures.Common.csproj" />
+  </ItemGroup>
+</Project>

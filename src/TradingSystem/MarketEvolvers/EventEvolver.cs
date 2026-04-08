@@ -9,6 +9,7 @@ using Effanville.TradingStructures.Exchanges;
 using Effanville.TradingStructures.Exchanges.DependencyInjection;
 using Effanville.TradingStructures.Pricing;
 using Effanville.TradingStructures.Pricing.DependencyInjection;
+using Effanville.TradingStructures.StaticData.DependencyInjection;
 using Effanville.TradingStructures.Strategies;
 using Effanville.TradingStructures.Trading;
 using Effanville.TradingStructures.Trading.DependencyInjection;
@@ -58,7 +59,8 @@ public sealed class EventEvolver : IEventEvolver
             .AddCommonServices(settings.StartTime)
             .AddSingleton(a => exchange)
             .AddSingleton(a => strategy)
-            .AddSingleton<IService>(x => x.GetService<IStrategy>()!)
+            .AddSingleton<IService>(x => x.GetRequiredService<IStrategy>())
+            .AddStaticDataServices()
             .AddExchangeServices()
 
             // the following two could be replace with actual exchange and price connections
