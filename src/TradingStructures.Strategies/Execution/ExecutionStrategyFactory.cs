@@ -2,7 +2,6 @@
 
 using Effanville.Common.Structure.Reporting;
 using Effanville.FinancialStructures.Stocks;
-using Effanville.TradingStructures.Common.Time;
 using Effanville.TradingStructures.Strategies.Decision;
 
 namespace Effanville.TradingStructures.Strategies.Execution;
@@ -13,7 +12,7 @@ public static class ExecutionStrategyFactory
         StrategyType strategyType,
         IReportLogger logger,
         IStockExchange stockExchange,
-        IDecisionSystem decisionSystem) 
+        IDecisionSystem decisionSystem)
         => strategyType switch
         {
             StrategyType.LogExecution => new LogExecutionStrategy(logger),

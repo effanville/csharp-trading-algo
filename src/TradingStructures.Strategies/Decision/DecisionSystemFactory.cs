@@ -35,10 +35,6 @@ namespace Effanville.TradingStructures.Strategies.Decision
         {
             var decisionSystem = Create(settings);
             decisionSystem.Calibrate(decisionSettings, logger);
-            if (settings.IsBurnInRequired())
-            {
-                decisionSettings.DoesntRequireBurnIn();
-            }
 
             return decisionSystem;
         }

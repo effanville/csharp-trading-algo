@@ -8,6 +8,7 @@ using Effanville.TradingStructures.Common;
 using Effanville.TradingStructures.Common.Diagnostics;
 using Effanville.TradingStructures.Strategies;
 using Effanville.TradingStructures.Strategies.Decision;
+using Effanville.TradingStructures.Strategies.DependencyInjection;
 using Effanville.TradingStructures.Strategies.Execution;
 using Effanville.TradingStructures.Strategies.Portfolio;
 using Effanville.TradingSystem.MarketEvolvers;
@@ -71,23 +72,15 @@ public static class RegistrationExtensions
         serviceCollection.AddSingleton<EvolverSettings>(
             x => x.GetService<TimeIncrementEvolverSettings>()!);
 
-        serviceCollection.AddSingleton<IDecisionSystem>(
-            x => CreateDecisionSystem(
-                x.GetService<TimeIncrementEvolverSettings>()!,
-                decisionParameters,
-                x.GetService<IReportLogger>()!));
-
-        serviceCollection.AddSingleton<IPortfolioManager>(
-            x => CreatePortfolioManager(
-                x.GetService<IFileSystem>()!,
-                startSettings,
-                constructionSettings,
-                x.GetService<IReportLogger>()!));
+        serviceCollection.AddStrategy(
+            decisionParameters,
+            startSettings,
+            constructionSettings);
         serviceCollection.AddSingleton<IExecutionStrategy>(
             x => ExecutionStrategyFactory.Create(
                 StrategyType.ExchangeOpen,
                 x.GetService<IReportLogger>()!,
-                x.GetService<IStockExchange>()!,
+                x.GetRequiredService<IStockExchange>(),
                 x.GetService<IDecisionSystem>()!));
         serviceCollection.AddSingleton<IStrategy, Strategy>();
         serviceCollection.AddSingleton<IEventEvolver, EventEvolver>();
@@ -111,28 +104,6 @@ public static class RegistrationExtensions
 
         return evolver.Result;
     }
-
-    private static IDecisionSystem CreateDecisionSystem(
-        TimeIncrementEvolverSettings simulatorSettings,
-        DecisionSystemFactory.Settings decisionParameters,
-        IReportLogger reportLogger)
-    {
-        using (new Timer(reportLogger, "Calibrating"))
-        {
-            DecisionSystemSettings decisionSettings = new DecisionSystemSettings(
-                simulatorSettings.BurnInStart,
-                simulatorSettings.StartTime,
-                simulatorSettings.Exchange.Stocks.Count,
-                simulatorSettings.Exchange);
-            IDecisionSystem decisionSystem = DecisionSystemFactory.CreateAndCalibrate(
-                decisionParameters,
-                decisionSettings,
-                reportLogger);
-
-            return decisionSystem;
-        }
-    }
-
     private static IStockExchange CreateExchange(string filePath, IFileSystem fileSystem, IReportLogger logger)
     {
         using (new Timer(logger, "Loading Exchange"))
@@ -147,17 +118,6 @@ public static class RegistrationExtensions
             }
 
             return exchange;
-        }
-    }
-
-    private static IPortfolioManager CreatePortfolioManager(IFileSystem fileSystem,
-        PortfolioStartSettings startSettings,
-        PortfolioConstructionSettings constructionSettings,
-        IReportLogger logger)
-    {
-        using (new Timer(logger, "Loading Portfolio"))
-        {
-            return PortfolioManager.LoadFromFile(fileSystem, startSettings, constructionSettings, logger);
         }
     }
 }

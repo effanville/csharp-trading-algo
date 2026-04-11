@@ -12,12 +12,6 @@ namespace Effanville.TradingSystem.MarketEvolvers
     /// </summary>
     public sealed class TimeIncrementEvolverSettings : EvolverSettings
     {
-        public DateTime BurnInStart
-        {
-            get;
-            private set;
-        }
-        
         /// <summary>
         /// The code for the country to determine trading days.
         /// </summary>
@@ -38,7 +32,6 @@ namespace Effanville.TradingSystem.MarketEvolvers
         public TimeIncrementEvolverSettings(DateTime startTime, DateTime endTime, TimeSpan evolutionIncrement, IStockExchange exchange, CountryCode countryCode = CountryCode.GB)
             : base(startTime, endTime, evolutionIncrement)
         {
-            BurnInStart = startTime;
             CountryDateCode = countryCode;
             Exchange = exchange;
             EnsureStartDatesConsistent();
@@ -51,16 +44,14 @@ namespace Effanville.TradingSystem.MarketEvolvers
         {
             var earliest = Exchange.LatestEarliestDate();
             var latest = Exchange.LastDate();
-            if (BurnInStart < earliest)
+            if (StartTime < earliest)
             {
-                BurnInStart = earliest;
+                StartTime = earliest;
             }
             if (EndTime > latest)
             {
                 EndTime = latest;
             }
-
-            StartTime = BurnInStart + EvolutionIncrement * (long)((EndTime - BurnInStart) / (2 * EvolutionIncrement));
         }
     }
 }

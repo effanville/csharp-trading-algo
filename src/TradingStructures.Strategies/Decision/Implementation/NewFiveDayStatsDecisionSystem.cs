@@ -13,6 +13,8 @@ namespace Effanville.TradingStructures.Strategies.Decision.Implementation
     {
         private readonly ArbitraryStatsDecisionSystem _innerSystem;
 
+        public int MinBurnInPeriod => 5 * 25;
+        
         public Estimator.Result? Result => _innerSystem.Result;
 
         public NewFiveDayStatsDecisionSystem(DecisionSystemFactory.Settings settings)

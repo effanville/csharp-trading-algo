@@ -11,6 +11,8 @@ namespace Effanville.TradingStructures.Strategies.Decision
     /// </summary>
     public interface IDecisionSystem
     {
+        int MinBurnInPeriod { get; }
+
         /// <summary>
         /// Sets up various parameters required in the decision system.
         /// e.g. any parameters from an estimation are set at this point.

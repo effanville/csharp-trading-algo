@@ -51,11 +51,6 @@ namespace Effanville.TradingStructures.Strategies.Decision
             {
                 DecisionSystemType = decisionSystemType;
             }
-
-            /// <summary>
-            /// Do the settings require the dates to use a burn in period.
-            /// </summary>
-            public bool IsBurnInRequired() => DecisionSystemType == DecisionSystem.BuyAll;
         }
     }
 }

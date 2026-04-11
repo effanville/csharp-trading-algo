@@ -19,6 +19,8 @@ namespace Effanville.TradingStructures.Strategies.Decision.Implementation
         private readonly DecisionSystemFactory.Settings _settings;
         private Estimator.Result? _estimatorResult;
 
+        public int MinBurnInPeriod => 5 * 25;
+        
         public Estimator.Result? Result => _estimatorResult;
 
         /// <summary>
@@ -41,7 +43,7 @@ namespace Effanville.TradingStructures.Strategies.Decision.Implementation
             {
                 for (int stockIndex = 0; stockIndex < settings.NumberStocks; stockIndex++)
                 {
-                    List<double> values = settings.Exchange.Stocks[stockIndex]
+                    List<double> values = settings.ExchangeHistory.Stocks[stockIndex]
                         .Values(
                             settings.StartTime.AddDays(i),
                             0,
