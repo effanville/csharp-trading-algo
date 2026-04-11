@@ -15,6 +15,7 @@ using Effanville.TradingStructures.Strategies.Decision;
 using Effanville.TradingStructures.Strategies.Portfolio;
 using Effanville.TradingSystem.DependencyInjection;
 
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
 using NUnit.Framework;
@@ -60,7 +61,8 @@ namespace Effanville.TradingSystem.Tests
                 15,
                 15,
                 0,
-                trades)
+                trades,
+                null)
                 .SetName("BuyAll-2015-2019");
             tradeString =
     @$"|StartDate|EndDate|StockName|TradeType|NumberShares|
@@ -92,7 +94,8 @@ namespace Effanville.TradingSystem.Tests
                 15,
                 15,
                 0,
-                trades)
+                trades,
+                null)
                 .SetName("BuyAll-2017-2018");
             yield return new TestCaseData(
                 "example-database.xml",
@@ -104,7 +107,8 @@ namespace Effanville.TradingSystem.Tests
                 53,
                 36,
                 17,
-                new Dictionary<DateTime, TradeCollection>())
+                new Dictionary<DateTime, TradeCollection>(),
+                new double[] { 0.15981977461053987, -0.08690315430529694, -0.117986904882315, 0.2595991817606773, 0.7853817888233152 })
                 .SetName("FiveDayStatsLeastSquares-2015-2019");
             yield return new TestCaseData(
                 "example-database.xml",
@@ -116,7 +120,8 @@ namespace Effanville.TradingSystem.Tests
                 68,
                 48,
                 20,
-                new Dictionary<DateTime, TradeCollection>())
+                new Dictionary<DateTime, TradeCollection>(),
+                new double[] { -0.5797375312312147, -0.23344041222170067, 0.1502480743535537, 0.6819871825421964, 0.9828072407611318 })
                 .SetName("FiveDayStatsLasso-2015-2019");
             yield return new TestCaseData(
                 "example-database.xml",
@@ -128,7 +133,8 @@ namespace Effanville.TradingSystem.Tests
                 53,
                 36,
                 17,
-                new Dictionary<DateTime, TradeCollection>())
+                new Dictionary<DateTime, TradeCollection>(),
+                new double[] { 0.1597890724217308, -0.08686971285140999, -0.1179248207650403, 0.2595937338935528, 0.7853223215863636 })
                 .SetName("FiveDayStatsRidge-2015-2019");
             tradeString =
 @$"|StartDate|EndDate|StockName|TradeType|NumberShares|
@@ -160,7 +166,8 @@ namespace Effanville.TradingSystem.Tests
                 16,
                 9,
                 7,
-                trades)
+                trades,
+                null)
                 .SetName("FiveDayStatsLeastSquares-2015-2019-hardBuy");
             yield return new TestCaseData(
                 "example-database.xml",
@@ -172,7 +179,8 @@ namespace Effanville.TradingSystem.Tests
                 22,
                 16,
                 6,
-                new Dictionary<DateTime, TradeCollection>())
+                new Dictionary<DateTime, TradeCollection>(),
+                null)
                 .SetName("FiveDayStatsLasso-2015-2019-hardbuy");
             tradeString =
 @$"|StartDate|EndDate|StockName|TradeType|NumberShares|
@@ -204,7 +212,8 @@ namespace Effanville.TradingSystem.Tests
                 16,
                 9,
                 7,
-                trades)
+                trades,
+                null)
                 .SetName("FiveDayStatsRidge-2015-2019-hardbuy");
 
             yield return new TestCaseData(
@@ -217,7 +226,8 @@ namespace Effanville.TradingSystem.Tests
                 30,
                 23,
                 7,
-                new Dictionary<DateTime, TradeCollection>())
+                new Dictionary<DateTime, TradeCollection>(),
+                null)
                 .SetName("FiveDayStatsLeastSquares-2016-2018");
             tradeString =
 @$"|StartDate|EndDate|StockName|TradeType|NumberShares|
@@ -236,7 +246,8 @@ namespace Effanville.TradingSystem.Tests
                 3,
                 2,
                 1,
-                trades)
+                trades,
+                null)
                 .SetName("FiveDayStatsLeastSquares-2016-2018-hardbuy");
             yield return new TestCaseData(
                 "example-database.xml",
@@ -248,7 +259,8 @@ namespace Effanville.TradingSystem.Tests
                 69,
                 55,
                 14,
-                new Dictionary<DateTime, TradeCollection>())
+                new Dictionary<DateTime, TradeCollection>(),
+                null)
                 .SetName("FiveDayStatsLasso-2016-2018");
             tradeString =
 @$"|StartDate|EndDate|StockName|TradeType|NumberShares|
@@ -278,7 +290,8 @@ namespace Effanville.TradingSystem.Tests
                 14,
                 9,
                 5,
-                trades)
+                trades,
+                null)
                 .SetName("FiveDayStatsLasso-2016-2018-hardbuy");
             yield return new TestCaseData(
                 "example-database.xml",
@@ -290,7 +303,8 @@ namespace Effanville.TradingSystem.Tests
                 30,
                 23,
                 7,
-                new Dictionary<DateTime, TradeCollection>())
+                new Dictionary<DateTime, TradeCollection>(),
+                null)
                 .SetName("FiveDayStatsRidge-2016-2018");
             tradeString =
 @$"|StartDate|EndDate|StockName|TradeType|NumberShares|
@@ -309,7 +323,8 @@ namespace Effanville.TradingSystem.Tests
                 3,
                 2,
                 1,
-                trades)
+                trades,
+                null)
                 .SetName("FiveDayStatsRidge-2016-2018-hardbuy");
             tradeString =
 $@"|StartDate|EndDate|StockName|TradeType|NumberShares|
@@ -340,7 +355,8 @@ $@"|StartDate|EndDate|StockName|TradeType|NumberShares|
                 15,
                 14,
                 1,
-                trades)
+                trades,
+                null)
                 .SetName("FiveDayStatsRidge-small-db-2016-2018-hardbuy");
 
             tradeString = @"|StartDate|EndDate|StockName|TradeType|NumberShares|
@@ -372,7 +388,8 @@ $@"|StartDate|EndDate|StockName|TradeType|NumberShares|
                 16,
                 12,
                 4,
-                trades)
+                trades,
+                null)
                 .SetName("FiveDayStatsRidge-small-db-2016-2018-hardbuy-5daylater");
             yield return new TestCaseData(
                 "small-exchange.xml",
@@ -384,7 +401,8 @@ $@"|StartDate|EndDate|StockName|TradeType|NumberShares|
                 70,
                 63,
                 7,
-                new Dictionary<DateTime, TradeCollection>())
+                new Dictionary<DateTime, TradeCollection>(),
+                null)
                 .SetName("FiveDayStatsRidge-small-db-2016-2018-5 day later");
         }
 
@@ -402,7 +420,8 @@ $@"|StartDate|EndDate|StockName|TradeType|NumberShares|
             int expectedNumberTrades,
             int expectedBuyTrades,
             int expectedSellTrades,
-            Dictionary<DateTime, TradeCollection> expectedTrades)
+            Dictionary<DateTime, TradeCollection> expectedTrades,
+            double[]? expectedEstimator)
         {
             decimal tol = 1e-2m;
             var portfolioStartSettings = new PortfolioStartSettings("", startTime, 20000);
@@ -431,6 +450,13 @@ $@"|StartDate|EndDate|StockName|TradeType|NumberShares|
             var trades = output.Trades;
 
             logger.WriteReportsToFile($"logs\\{DateTime.Now:yyyy-MM-ddTHHmmss}{TestContext.CurrentContext.Test.Name}.log");
+
+            var decisionSystem = host.Services.GetRequiredService<IDecisionSystem>();
+            if (decisionSystem is ICalibratedDecisionSystem calibratedDecisionSystem && expectedEstimator != null)
+            {
+                Assert.That(calibratedDecisionSystem.Result?.Estimator, Is.EquivalentTo(expectedEstimator));
+            }
+
             Assert.Multiple(() =>
             {
                 Assert.That(20000 - portfolio.TotalValue(Totals.All, startTime.AddDays(-1)), Is.LessThan(tol), "Start value not correct.");

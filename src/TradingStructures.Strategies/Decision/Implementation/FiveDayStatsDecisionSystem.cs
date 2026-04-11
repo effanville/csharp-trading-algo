@@ -13,11 +13,13 @@ namespace Effanville.TradingStructures.Strategies.Decision.Implementation
     /// <summary>
     /// Decision system based upon the 5 previous stock days prices.
     /// </summary>
-    internal sealed class FiveDayStatsDecisionSystem : IDecisionSystem
+    internal sealed class FiveDayStatsDecisionSystem : ICalibratedDecisionSystem
     {
         private const int NumberStatistics = 5;
         private readonly DecisionSystemFactory.Settings _settings;
         private Estimator.Result? _estimatorResult;
+
+        public Estimator.Result? Result => _estimatorResult;
 
         /// <summary>
         /// Construct and instance.

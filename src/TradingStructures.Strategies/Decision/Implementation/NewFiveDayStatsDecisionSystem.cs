@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 
+using Effanville.Common.Structure.MathLibrary.ParameterEstimation;
 using Effanville.Common.Structure.Reporting;
 using Effanville.FinancialStructures.Stocks;
 using Effanville.FinancialStructures.Stocks.Statistics;
@@ -8,9 +9,11 @@ using Effanville.TradingStructures.Common.Trading;
 
 namespace Effanville.TradingStructures.Strategies.Decision.Implementation
 {
-    internal sealed class NewFiveDayStatsDecisionSystem : IDecisionSystem
+    internal sealed class NewFiveDayStatsDecisionSystem : ICalibratedDecisionSystem
     {
         private readonly ArbitraryStatsDecisionSystem _innerSystem;
+
+        public Estimator.Result? Result => _innerSystem.Result;
 
         public NewFiveDayStatsDecisionSystem(DecisionSystemFactory.Settings settings)
         {

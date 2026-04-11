@@ -16,11 +16,13 @@ namespace Effanville.TradingStructures.Strategies.Decision.Implementation
     /// squares regression estimator to obtain the best fit to these
     /// statistics.
     /// </summary>
-    internal sealed class ArbitraryStatsDecisionSystem : IDecisionSystem
+    internal sealed class ArbitraryStatsDecisionSystem : ICalibratedDecisionSystem
     {
         private readonly DecisionSystemFactory.Settings _settings;
         private readonly IReadOnlyList<IStockStatistic> _stockStatistics;
         private Estimator.Result? _estimatorResult;
+
+        public Estimator.Result? Result => _estimatorResult;
 
         /// <summary>
         /// Construct an instance.
