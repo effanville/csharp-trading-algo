@@ -7,6 +7,7 @@ using Effanville.Common.Console.Options;
 using Effanville.Common.Structure.Reporting;
 using Effanville.FinancialStructures.Stocks.Statistics;
 using Effanville.TradingStructures.Common.Diagnostics;
+using Effanville.TradingStructures.Strategies;
 using Effanville.TradingStructures.Strategies.Decision;
 using Effanville.TradingSystem.DependencyInjection;
 
@@ -98,9 +99,9 @@ public sealed partial class SimulationCommand : ICommand
                 settings.StartTime,
                 settings.EndTime,
                 settings.EvolutionIncrement,
-                settings.PortfolioSettings,
+                new StrategySettings(settings.PortfolioSettings,
                 settings.PortfolioConstructionSettings,
-                settings.DecisionSystemSettings,
+                settings.DecisionSystemSettings),
                 _fileSystem);
             builder.Build().Run();
 

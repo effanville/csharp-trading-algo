@@ -44,9 +44,7 @@ public static class RegistrationExtensions
         DateTime startTime,
         DateTime endTime,
         TimeSpan evolutionIncrement,
-        PortfolioStartSettings startSettings,
-        PortfolioConstructionSettings constructionSettings,
-        DecisionSystemFactory.Settings decisionParameters,
+        TradingStructures.Strategies.StrategySettings strategySettings,
         IFileSystem? fileSystem = null)
     {
         if (fileSystem == null)
@@ -73,16 +71,7 @@ public static class RegistrationExtensions
             x => x.GetService<TimeIncrementEvolverSettings>()!);
 
         serviceCollection.AddStrategy(
-            decisionParameters,
-            startSettings,
-            constructionSettings);
-        serviceCollection.AddSingleton<IExecutionStrategy>(
-            x => ExecutionStrategyFactory.Create(
-                StrategyType.ExchangeOpen,
-                x.GetService<IReportLogger>()!,
-                x.GetRequiredService<IStockExchange>(),
-                x.GetService<IDecisionSystem>()!));
-        serviceCollection.AddSingleton<IStrategy, Strategy>();
+            strategySettings);
         serviceCollection.AddSingleton<IEventEvolver, EventEvolver>();
         serviceCollection.AddHostedService<TradingSystemHostedService>();
         return serviceCollection;

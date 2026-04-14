@@ -117,9 +117,10 @@ internal class EventEvolverTests
             startTime,
             endTime,
             TimeSpan.FromMinutes(1),
-            startSettings,
-            PortfolioConstructionSettings.Default(),
-            decisionParameters,
+            new(
+                startSettings,
+                PortfolioConstructionSettings.Default(),
+                decisionParameters),
             fileSystem);
         var host = builder.Build();
         var result = await host.RunSystemAsync();

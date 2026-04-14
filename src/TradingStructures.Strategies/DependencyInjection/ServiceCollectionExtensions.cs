@@ -1,8 +1,10 @@
 using System.IO.Abstractions;
 
 using Effanville.Common.Structure.Reporting;
+using Effanville.FinancialStructures.Stocks;
 using Effanville.TradingStructures.Common.Diagnostics;
 using Effanville.TradingStructures.Strategies.Decision;
+using Effanville.TradingStructures.Strategies.Execution;
 using Effanville.TradingStructures.Strategies.Portfolio;
 
 using Microsoft.Extensions.DependencyInjection;
@@ -11,22 +13,28 @@ namespace Effanville.TradingStructures.Strategies.DependencyInjection;
 
 public static class ServiceCollectionExtensions
 {
-    public static IServiceCollection AddStrategy(this IServiceCollection serviceCollection,
-        DecisionSystemFactory.Settings decisionParameters,
-        PortfolioStartSettings startSettings,
-        PortfolioConstructionSettings constructionSettings)
+    public static IServiceCollection AddStrategy(
+        this IServiceCollection serviceCollection,
+        StrategySettings strategySettings)
     {
         return serviceCollection
             .AddSingleton(
                 x => CreateDecisionSystem(
-                    decisionParameters,
+                    strategySettings.DecisionParameters,
                     x.GetRequiredService<IReportLogger>()))
             .AddSingleton(
                 x => CreatePortfolioManager(
                     x.GetRequiredService<IFileSystem>(),
-                    startSettings,
-                    constructionSettings,
-                    x.GetRequiredService<IReportLogger>()));
+                    strategySettings.StartSettings,
+                    strategySettings.ConstructionSettings,
+                    x.GetRequiredService<IReportLogger>()))
+            .AddSingleton(
+            x => ExecutionStrategyFactory.Create(
+                StrategyType.ExchangeOpen,
+                x.GetRequiredService<IReportLogger>(),
+                x.GetRequiredService<IStockExchange>(),
+                x.GetRequiredService<IDecisionSystem>()))
+            .AddSingleton<IStrategy, Strategy>();
     }
 
     private static IDecisionSystem CreateDecisionSystem(

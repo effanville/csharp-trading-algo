@@ -452,9 +452,9 @@ $@"|StartDate|EndDate|StockName|TradeType|NumberShares|
                 startTime,
                 endTime,
                 TimeSpan.FromDays(1),
-                portfolioStartSettings,
-                PortfolioConstructionSettings.Default(),
-                decisionParameters,
+                new (portfolioStartSettings,
+                    PortfolioConstructionSettings.Default(),
+                    decisionParameters),
                 fileSystem);
             var host = builder.Build();
             var output = await host.RunSystemAsync();
