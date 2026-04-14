@@ -24,6 +24,7 @@ public class Strategy : IStrategy
     private IClock? _clock;
     private readonly IReportLogger _logger;
     private readonly IExecutionStrategy _executionStrategy;
+    private readonly IPortfolioManager _portfolioManager;
     public string Name => nameof(Strategy);
 
     /// <summary>
@@ -33,7 +34,6 @@ public class Strategy : IStrategy
 
     public StrategyHistory History { get; }
 
-    public IPortfolioManager PortfolioManager { get; }
 
     public Strategy(
         IExecutionStrategy executionStrategy,
@@ -42,8 +42,8 @@ public class Strategy : IStrategy
     {
         _logger = logger;
         _executionStrategy = executionStrategy;
-        PortfolioManager = portfolioManager;
-        History = new StrategyHistory(PortfolioManager.Portfolio);
+        _portfolioManager = portfolioManager;
+        History = new StrategyHistory(_portfolioManager.Portfolio);
         _executionStrategy.SubmitTradeEvent += ExecutionStrategyOnSubmitTradeEvent;
     }
 
@@ -57,7 +57,7 @@ public class Strategy : IStrategy
     public void Initialize(EvolverSettings settings)
     {
         _executionStrategy.Initialize(settings);
-        PortfolioManager.Initialize(settings);
+        _portfolioManager.Initialize(settings);
     }
 
     private void ExecutionStrategyOnSubmitTradeEvent(object? sender, TradeSubmittedEventArgs e)
@@ -65,14 +65,14 @@ public class Strategy : IStrategy
         DateTime time = _clock?.UtcNow() ?? default;
         e.Time = time;
         var trade = e.RequestedTrade;
-        Trade? validatedTrade = PortfolioManager.ValidateTrade(e.Time, trade, _priceService);
+        Trade? validatedTrade = _portfolioManager.ValidateTrade(e.Time, trade, _priceService);
         if (validatedTrade == null)
         {
             _logger.Log(ReportType.Information, "Trading", $"{time:yyyy-MM-ddTHH:mm:ss} - Trade {trade} was not valid.");
             return;
         }
 
-        decimal availableFunds = PortfolioManager.AvailableFunds(e.Time);
+        decimal availableFunds = _portfolioManager.AvailableFunds(e.Time);
         if (availableFunds <= 0.0m)
         {
             _logger.Log(ReportType.Information, "Trading", $"{time:yyyy-MM-ddTHH:mm:ss} - No available funds.");
@@ -87,13 +87,13 @@ public class Strategy : IStrategy
     public void Shutdown()
     {
         _executionStrategy.Shutdown();
-        PortfolioManager.Shutdown();
+        _portfolioManager.Shutdown();
         DateTime time = _clock?.UtcNow() ?? default;
-        decimal latestValue = PortfolioManager.Portfolio.TotalValue(Totals.All, time);
-        DateTime earliestTime = PortfolioManager.Portfolio.FirstValueDate(Totals.All);
-        decimal startValue = PortfolioManager.Portfolio.TotalValue(Totals.All, earliestTime);
+        decimal latestValue = _portfolioManager.Portfolio.TotalValue(Totals.All, time);
+        DateTime earliestTime = _portfolioManager.Portfolio.FirstValueDate(Totals.All);
+        decimal startValue = _portfolioManager.Portfolio.TotalValue(Totals.All, earliestTime);
 
-        DateTime latestTime = PortfolioManager.Portfolio.LatestDate(Totals.All);
+        DateTime latestTime = _portfolioManager.Portfolio.LatestDate(Totals.All);
         double car = FinanceFunctions.CAR(new DailyValuation(earliestTime, startValue), new DailyValuation(latestTime, latestValue));
         _logger.Info("Ending", $"{time:yyyy-MM-ddTHH:mm:ss} total value {latestValue:C2}");
         _logger.Info("Ending", $"{time:yyyy-MM-ddTHH:mm:ss} total CAR {car}");
@@ -102,7 +102,7 @@ public class Strategy : IStrategy
     public void OnTimeIncrementUpdate(object? obj, TimeIncrementEventArgs eventArgs)
     {
         _executionStrategy.OnTimeIncrementUpdate(obj, eventArgs);
-        PortfolioManager.ReportStatus(eventArgs.Time);
+        _portfolioManager.ReportStatus(eventArgs.Time);
     }
 
     public void OnExchangeStatusChanged(object? obj, ExchangeStatusChangedEventArgs eventArgs)
@@ -111,7 +111,7 @@ public class Strategy : IStrategy
     public void OnPriceUpdate(object? obj, PriceUpdateEventArgs eventArgs)
     {
         _executionStrategy.OnPriceUpdate(obj, eventArgs);
-        PortfolioManager.OnPriceUpdate(obj, eventArgs);
+        _portfolioManager.OnPriceUpdate(obj, eventArgs);
     }
 
     public void OnTradeConfirmed(object? obj, TradeCompletedEventArgs eventArgs)
@@ -122,7 +122,7 @@ public class Strategy : IStrategy
             Trade trade = eventArgs.RequestedTrade;
             var tradeConfirmation = eventArgs.ConfirmedTrade;
             _logger.Log(ReportType.Information, "Trading", $"{time:yyyy-MM-ddTHH:mm:ss} - Confirm trade '{tradeConfirmation}' reported and added.");
-            _ = PortfolioManager.AddTrade(time, trade, tradeConfirmation);
+            _ = _portfolioManager.AddTrade(time, trade, tradeConfirmation);
             History.Trades.Add(time, trade);
             History.Decisions.Add(time, trade);
         }

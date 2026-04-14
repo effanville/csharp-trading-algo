@@ -4,7 +4,6 @@ using Effanville.TradingStructures.Common.Services;
 using Effanville.TradingStructures.Common.Time;
 using Effanville.TradingStructures.Exchanges;
 using Effanville.TradingStructures.Pricing;
-using Effanville.TradingStructures.Strategies.Portfolio;
 using Effanville.TradingStructures.Trading;
 
 namespace Effanville.TradingStructures.Strategies;
@@ -17,8 +16,6 @@ public interface IStrategy : IService
     event EventHandler<TradeSubmittedEventArgs> SubmitTradeEvent;
 
     public StrategyHistory History { get; }
-
-    public IPortfolioManager PortfolioManager { get; }
 
     /// <summary>
     /// Register the simulation services for the strategy.
