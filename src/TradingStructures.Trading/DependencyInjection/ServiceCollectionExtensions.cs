@@ -11,7 +11,7 @@ public static class ServiceCollectionExtensions
     {
         return serviceCollection
             .AddSingleton(a => TradeMechanismSettings.Default())
-            .AddSingleton<IMarketExchange, SimulationExchange>()
-            .AddSingleton<IService>(x => x.GetService<IMarketExchange>()!);
+            .AddSingleton<IStockMarketAdapter, SimulationExchange>()
+            .AddSingleton<IService>(x => x.GetService<IStockMarketAdapter>()!);
     }
 }

@@ -32,7 +32,7 @@ public sealed class EventEvolver : IEventEvolver
     private readonly ServiceProvider _serviceProvider;
     private readonly IPriceService _priceService;
     private readonly IExchangeSessionService _exchange;
-    private readonly IMarketExchange _simulationExchange;
+    private readonly IStockMarketAdapter _simulationExchange;
     private readonly IStrategy _strategy;
 
     /// <summary>
@@ -77,7 +77,7 @@ public sealed class EventEvolver : IEventEvolver
         _strategy = _serviceProvider.GetService<IStrategy>()!;
         strategy.RegisterServices(_serviceProvider);
 
-        _simulationExchange = _serviceProvider.GetService<IMarketExchange>()!;
+        _simulationExchange = _serviceProvider.GetService<IStockMarketAdapter>()!;
     }
 
     /// <summary>

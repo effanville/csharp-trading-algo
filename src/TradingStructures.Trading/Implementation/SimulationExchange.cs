@@ -10,7 +10,7 @@ using Effanville.TradingStructures.Pricing;
 
 namespace Effanville.TradingStructures.Trading.Implementation
 {
-    internal class SimulationExchange : IMarketExchange, IService
+    internal class SimulationExchange : IStockMarketAdapter, IService
     {
         private readonly IClock? _clock;
         private readonly IPriceService? _priceService;
@@ -18,7 +18,7 @@ namespace Effanville.TradingStructures.Trading.Implementation
         private readonly TradeMechanismSettings _settings;
 
         public event EventHandler<TradeCompletedEventArgs>? TradeCompleted;
-        
+
         public string Name => nameof(SimulationExchange);
 
         public SimulationExchange(
@@ -28,11 +28,11 @@ namespace Effanville.TradingStructures.Trading.Implementation
             _settings = settings;
             _logger = logger;
         }
-        
+
         public SimulationExchange(
-            TradeMechanismSettings settings, 
-            IPriceService priceService, 
-            IClock clock, 
+            TradeMechanismSettings settings,
+            IPriceService priceService,
+            IClock clock,
             IReportLogger logger)
         {
             _settings = settings;
@@ -61,11 +61,11 @@ namespace Effanville.TradingStructures.Trading.Implementation
                 TradeCompleted?.Invoke(null, new TradeCompletedEventArgs(trade, validatedTrade, true));
                 return;
             }
-                
+
             TradeCompleted?.Invoke(null, new TradeCompletedEventArgs(trade, null, false));
         }
-        
-        
+
+
         /// <inheritdoc/>
         public SecurityTrade? Trade(
             DateTime time,

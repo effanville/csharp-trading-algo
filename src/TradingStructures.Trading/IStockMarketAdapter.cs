@@ -8,12 +8,12 @@ using Effanville.TradingStructures.Pricing;
 
 namespace Effanville.TradingStructures.Trading;
 
-public interface IMarketExchange : IService
+public interface IStockMarketAdapter : IService
 {
     void OnTradeRequested(object? obj, TradeSubmittedEventArgs eventArgs);
 
     event EventHandler<TradeCompletedEventArgs>? TradeCompleted;
-    
+
     /// <summary>
     /// Enact a trade which was submitted at a given time.
     /// </summary>
