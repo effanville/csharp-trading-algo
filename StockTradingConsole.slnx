@@ -21,6 +21,8 @@
   <Project Path="src/TradingConsole/TradingConsole.csproj" />
   <Project Path="src/TradingStructures.Common/TradingStructures.Common.csproj" />
   <Project Path="src/TradingStructures.Exchanges/TradingStructures.Exchanges.csproj" />
+  <Project Path="src/TradingStructures.OrderManagement.Interfaces/TradingStructures.OrderManagement.Interfaces.csproj" Id="ecc76610-34d6-4584-96cb-1a9510275d77" />
+  <Project Path="src/TradingStructures.OrderManagement/TradingStructures.OrderManagement.csproj" Id="e26bb5bf-893d-409c-8128-810724fcf49c" />
   <Project Path="src/TradingStructures.Pricing/TradingStructures.Pricing.csproj" />
   <Project Path="src/TradingStructures.StaticData/TradingStructures.StaticData.csproj" Id="b895fb97-5ba5-4f2b-b8d0-7836d8add6f8" />
   <Project Path="src/TradingStructures.Strategies.Interfaces/TradingStructures.Strategies.Interfaces.csproj" />

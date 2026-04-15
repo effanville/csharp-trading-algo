@@ -34,7 +34,7 @@ namespace Effanville.TradingSystem.MarketEvolvers
         {
             CountryDateCode = countryCode;
             Exchange = exchange;
-            EnsureStartDatesConsistent();
+            //EnsureStartDatesConsistent();
         }
 
         /// <summary>
