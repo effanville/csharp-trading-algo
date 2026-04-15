@@ -65,9 +65,7 @@ namespace Effanville.TradingStructures.Trading.Implementation
             TradeCompleted?.Invoke(null, new TradeCompletedEventArgs(trade, null, false));
         }
 
-
-        /// <inheritdoc/>
-        public SecurityTrade? Trade(
+        private SecurityTrade? Trade(
             DateTime time,
             Trade trade,
             IPriceService? priceService,
