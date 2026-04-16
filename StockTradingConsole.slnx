@@ -17,6 +17,7 @@
   <Folder Name="/Solution Items/">
     <File Path=".editorconfig" />
     <File Path="Directory.Build.props" />
+    <File Path="Directory.Packages.props" />
   </Folder>
   <Project Path="src/TradingConsole/TradingConsole.csproj" />
   <Project Path="src/TradingStructures.Common/TradingStructures.Common.csproj" />
