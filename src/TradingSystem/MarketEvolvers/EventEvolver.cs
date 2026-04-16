@@ -16,6 +16,7 @@ using Effanville.TradingStructures.Strategies;
 using Effanville.TradingStructures.Trading.DependencyInjection;
 
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 
 namespace Effanville.TradingSystem.MarketEvolvers;
 
@@ -28,7 +29,8 @@ public sealed class EventEvolver : IEventEvolver
     bool _isInitialised;
     private readonly IClock _clock;
     readonly EvolverSettings _settings;
-    readonly IReportLogger _logger;
+    readonly IReportLogger _reportLogger;
+    private readonly ILogger<EventEvolver> _logger;
     readonly IScheduler _scheduler;
     private readonly ServiceProvider _serviceProvider;
     private readonly IPriceService _priceService;
@@ -47,16 +49,18 @@ public sealed class EventEvolver : IEventEvolver
     public StrategyHistory? Result { get; private set; }
 
     public EventEvolver(
+        ILogger<EventEvolver> logger,
         EvolverSettings settings,
         IStockExchange exchange,
         IStrategy strategy,
-        IReportLogger logger)
+        IReportLogger reportLogger)
     {
-        _settings = settings;
         _logger = logger;
+        _settings = settings;
+        _reportLogger = reportLogger;
         IServiceCollection serviceCollection = new ServiceCollection();
         _ = serviceCollection
-            .AddSingleton(a => logger)
+            .AddSingleton(a => reportLogger)
             .AddCommonServices(settings.StartTime)
             .AddSingleton(a => exchange)
             .AddSingleton(a => strategy)
@@ -101,7 +105,7 @@ public sealed class EventEvolver : IEventEvolver
         ScheduleShutdown();
         _scheduler.ScheduleNewEvent(TimeUpdate, _clock.UtcNow().AddDays(1));
         _isInitialised = true;
-        _logger.Log(ReportType.Information, nameof(EventEvolver), "Initialization complete");
+        _logger.LogInformation("Initialization complete");
     }
 
     private void TimeUpdate()

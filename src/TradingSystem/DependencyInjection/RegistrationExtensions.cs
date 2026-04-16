@@ -61,14 +61,11 @@ public static class RegistrationExtensions
                 stockFilePath,
                 x.GetService<IFileSystem>()!,
                 x.GetService<IReportLogger>()!));
-        serviceCollection.AddSingleton<TimeIncrementEvolverSettings>(
-            x => new TimeIncrementEvolverSettings(
+        serviceCollection.AddSingleton(
+            x => new EvolverSettings(
                 startTime,
                 endTime,
-                evolutionIncrement,
-                x.GetService<IStockExchange>()!));
-        serviceCollection.AddSingleton<EvolverSettings>(
-            x => x.GetService<TimeIncrementEvolverSettings>()!);
+                evolutionIncrement));
 
         serviceCollection.AddStrategy(
             strategySettings);
