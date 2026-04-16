@@ -1,14 +1,12 @@
 using System.Threading;
 using System.Threading.Tasks;
 
-using Effanville.Common.Structure.Reporting;
+using Effanville.TradingStructures.Common.Diagnostics;
 using Effanville.TradingStructures.Strategies;
 using Effanville.TradingSystem.MarketEvolvers;
 
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-
-using Timer = Effanville.TradingStructures.Common.Diagnostics.Timer;
 
 namespace Effanville.TradingSystem;
 
@@ -16,7 +14,7 @@ public sealed class TradingSystemHostedService : IHostedService
 {
     private readonly IEventEvolver _evolver;
     private readonly ILogger<TradingSystemHostedService> _logger;
-    private readonly IReportLogger _reportLogger;
+    private readonly ITimerFactory _timerFactory;
     private readonly IHostApplicationLifetime _applicationLifetime;
 
     public StrategyHistory? Result { get; private set; }
@@ -24,18 +22,18 @@ public sealed class TradingSystemHostedService : IHostedService
     public TradingSystemHostedService(
         IEventEvolver evolver,
         ILogger<TradingSystemHostedService> logger,
-        IReportLogger reportLogger,
+        ITimerFactory timerFactory,
         IHostApplicationLifetime applicationLifetime)
     {
         _evolver = evolver;
         _logger = logger;
-        _reportLogger = reportLogger;
+        _timerFactory = timerFactory;
         _applicationLifetime = applicationLifetime;
     }
 
     public Task StartAsync(CancellationToken cancellationToken)
     {
-        _logger.Log(LogLevel.Information, "Starting Processing.");
+        _logger.LogInformation("Starting Processing.");
         _applicationLifetime.ApplicationStarted.Register(() =>
         {
             Task.Run(RunInBackground, cancellationToken);
@@ -45,7 +43,7 @@ public sealed class TradingSystemHostedService : IHostedService
 
     public Task StopAsync(CancellationToken cancellationToken)
     {
-        _logger.Log(LogLevel.Information, "Completed processing. Shutting Down.");
+        _logger.LogInformation("Completed processing. Shutting Down.");
         return Task.CompletedTask;
     }
 
@@ -53,7 +51,7 @@ public sealed class TradingSystemHostedService : IHostedService
     {
         try
         {
-            using (new Timer(_reportLogger, "Execution"))
+            using (_timerFactory.Create("Execution"))
             {
                 _evolver.Initialise();
                 _evolver.Start();

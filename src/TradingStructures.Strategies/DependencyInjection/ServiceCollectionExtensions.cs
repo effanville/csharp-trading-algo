@@ -21,13 +21,14 @@ public static class ServiceCollectionExtensions
             .AddSingleton(
                 x => CreateDecisionSystem(
                     strategySettings.DecisionParameters,
-                    x.GetRequiredService<IReportLogger>()))
+                    x.GetRequiredService<ITimerFactory>()))
             .AddSingleton(
                 x => CreatePortfolioManager(
                     x.GetRequiredService<IFileSystem>(),
                     strategySettings.StartSettings,
                     strategySettings.ConstructionSettings,
-                    x.GetRequiredService<IReportLogger>()))
+                    x.GetRequiredService<IReportLogger>(),
+                    x.GetRequiredService<ITimerFactory>()))
             .AddSingleton(
             x => ExecutionStrategyFactory.Create(
                 StrategyType.ExchangeOpen,
@@ -39,9 +40,9 @@ public static class ServiceCollectionExtensions
 
     private static IDecisionSystem CreateDecisionSystem(
         DecisionSystemFactory.Settings decisionParameters,
-        IReportLogger reportLogger)
+        ITimerFactory timerFactory)
     {
-        using (new Timer(reportLogger, "Calibrating"))
+        using (timerFactory.Create("Calibrating"))
         {
             IDecisionSystem decisionSystem = DecisionSystemFactory.Create(
                 decisionParameters);
@@ -50,14 +51,16 @@ public static class ServiceCollectionExtensions
         }
     }
 
-    private static IPortfolioManager CreatePortfolioManager(IFileSystem fileSystem,
+    private static IPortfolioManager CreatePortfolioManager(
+        IFileSystem fileSystem,
         PortfolioStartSettings startSettings,
         PortfolioConstructionSettings constructionSettings,
-        IReportLogger logger)
+        IReportLogger reportLogger,
+        ITimerFactory timerFactory)
     {
-        using (new Timer(logger, "Loading Portfolio"))
+        using (timerFactory.Create("Loading Portfolio"))
         {
-            return PortfolioManager.LoadFromFile(fileSystem, startSettings, constructionSettings, logger);
+            return PortfolioManager.LoadFromFile(fileSystem, startSettings, constructionSettings, reportLogger);
         }
     }
 }

@@ -1,6 +1,5 @@
 ﻿using System;
 
-using Effanville.Common.Structure.Reporting;
 using Effanville.FinancialStructures.DataStructures;
 using Effanville.TradingStructures.Common;
 
@@ -12,9 +11,8 @@ namespace Effanville.TradingStructures.Trading.Implementation
 {
     internal class SimulationExchange : IStockMarketAdapter
     {
-        private readonly IClock? _clock;
-        private readonly IPriceService? _priceService;
-        private readonly IReportLogger _logger;
+        private readonly IClock _clock;
+        private readonly IPriceService _priceService;
         private readonly TradeMechanismSettings _settings;
 
         public event EventHandler<TradeResponseEventArgs>? TradeCompleted;
@@ -23,22 +21,12 @@ namespace Effanville.TradingStructures.Trading.Implementation
 
         public SimulationExchange(
             TradeMechanismSettings settings,
-            IReportLogger logger)
-        {
-            _settings = settings;
-            _logger = logger;
-        }
-
-        public SimulationExchange(
-            TradeMechanismSettings settings,
             IPriceService priceService,
-            IClock clock,
-            IReportLogger logger)
+            IClock clock)
         {
             _settings = settings;
             _priceService = priceService;
             _clock = clock;
-            _logger = logger;
         }
 
         public void Initialize(EvolverSettings settings) { }

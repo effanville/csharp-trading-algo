@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 
-using Effanville.Common.Structure.Reporting;
+using Microsoft.Extensions.Logging;
 
 namespace Effanville.TradingStructures.Common.Diagnostics
 {
@@ -12,9 +12,9 @@ namespace Effanville.TradingStructures.Common.Diagnostics
     public sealed class Timer : IDisposable
     {
         private readonly Stopwatch _watch;
-        private readonly IReportLogger _logger;
+        private readonly ILogger<Timer> _logger;
         private readonly string _operation;
-        public Timer(IReportLogger logger, string operation)
+        public Timer(ILogger<Timer> logger, string operation)
         {
             _watch = new Stopwatch();
             _logger = logger;
@@ -30,7 +30,7 @@ namespace Effanville.TradingStructures.Common.Diagnostics
         public void Dispose()
         {
             _watch.Stop();
-            _logger.Warn(nameof(Timer), $"{_operation}: Time took {TimeSpanFriendlyString(_watch.Elapsed)}");
+            _logger.LogInformation($"{_operation}: Time took {TimeSpanFriendlyString(_watch.Elapsed)}");
         }
 
         private static string TimeSpanFriendlyString(TimeSpan timeSpan)

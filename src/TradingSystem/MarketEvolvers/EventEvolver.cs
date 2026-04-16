@@ -29,7 +29,6 @@ public sealed class EventEvolver : IEventEvolver
     bool _isInitialised;
     private readonly IClock _clock;
     readonly EvolverSettings _settings;
-    readonly IReportLogger _reportLogger;
     private readonly ILogger<EventEvolver> _logger;
     readonly IScheduler _scheduler;
     private readonly ServiceProvider _serviceProvider;
@@ -57,7 +56,6 @@ public sealed class EventEvolver : IEventEvolver
     {
         _logger = logger;
         _settings = settings;
-        _reportLogger = reportLogger;
         IServiceCollection serviceCollection = new ServiceCollection();
         _ = serviceCollection
             .AddSingleton(a => reportLogger)

@@ -48,7 +48,9 @@ public sealed partial class SimulationCommand : ICommand
     /// <summary>
     /// Construct an instance.
     /// </summary>
-    public SimulationCommand(IFileSystem fileSystem, ILogger<SimulationCommand> logger,
+    public SimulationCommand(
+        IFileSystem fileSystem,
+        ILogger<SimulationCommand> logger,
         IReportLogger reportLogger,
         IConfiguration config)
     {

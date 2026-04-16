@@ -7,10 +7,10 @@ using Effanville.FinancialStructures.Stocks;
 using Effanville.TradingStructures.Common;
 using Effanville.TradingStructures.Common.Diagnostics;
 using Effanville.TradingStructures.Strategies;
-using Effanville.TradingStructures.Strategies.Decision;
+
 using Effanville.TradingStructures.Strategies.DependencyInjection;
-using Effanville.TradingStructures.Strategies.Execution;
-using Effanville.TradingStructures.Strategies.Portfolio;
+
+
 using Effanville.TradingSystem.MarketEvolvers;
 
 using Microsoft.Extensions.DependencyInjection;
@@ -44,7 +44,7 @@ public static class RegistrationExtensions
         DateTime startTime,
         DateTime endTime,
         TimeSpan evolutionIncrement,
-        TradingStructures.Strategies.StrategySettings strategySettings,
+        StrategySettings strategySettings,
         IFileSystem? fileSystem = null)
     {
         if (fileSystem == null)
@@ -56,11 +56,18 @@ public static class RegistrationExtensions
             serviceCollection.AddSingleton(fileSystem);
         }
 
+        serviceCollection.AddSingleton<ITimerFactory, TimerFactory>();
+
         serviceCollection.AddSingleton<IStockExchange>(
-            x => CreateExchange(
-                stockFilePath,
-                x.GetService<IFileSystem>()!,
-                x.GetService<IReportLogger>()!));
+            x =>
+            {
+                var timerFactory = x.GetRequiredService<ITimerFactory>();
+                return CreateExchange(
+                                stockFilePath,
+                                x.GetRequiredService<IFileSystem>(),
+                                x.GetRequiredService<IReportLogger>(),
+                                timerFactory);
+            });
         serviceCollection.AddSingleton(
             x => new EvolverSettings(
                 startTime,
@@ -76,9 +83,9 @@ public static class RegistrationExtensions
 
     public static async Task<StrategyHistory> RunSystemAsync(this IHost host)
     {
-        var reportLogger = host.Services.GetService<IReportLogger>();
-        var evolver = host.Services.GetService<IEventEvolver>();
-        using (new Timer(reportLogger, "Execution"))
+        var timerFactory = host.Services.GetRequiredService<ITimerFactory>();
+        var evolver = host.Services.GetRequiredService<IEventEvolver>();
+        using (timerFactory.Create("Execution"))
         {
             evolver.Initialise();
             evolver.Start();
@@ -90,9 +97,9 @@ public static class RegistrationExtensions
 
         return evolver.Result;
     }
-    private static IStockExchange CreateExchange(string filePath, IFileSystem fileSystem, IReportLogger logger)
+    private static IStockExchange CreateExchange(string filePath, IFileSystem fileSystem, IReportLogger logger, ITimerFactory timerFactory)
     {
-        using (new Timer(logger, "Loading Exchange"))
+        using (timerFactory.Create("Loading Exchange"))
         {
             var exchange = StockExchangeFactory.Create(filePath, fileSystem, logger);
             foreach (var stock in exchange.Stocks)
