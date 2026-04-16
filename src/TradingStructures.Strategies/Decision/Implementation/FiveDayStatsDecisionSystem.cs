@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 
 using Effanville.Common.Structure.MathLibrary.ParameterEstimation;
-using Effanville.Common.Structure.Reporting;
 using Effanville.FinancialStructures.DataStructures;
 using Effanville.FinancialStructures.Stocks;
 using Effanville.TradingStructures.Common.Trading;
+
+using Microsoft.Extensions.Logging;
 
 namespace Effanville.TradingStructures.Strategies.Decision.Implementation
 {
@@ -15,24 +16,26 @@ namespace Effanville.TradingStructures.Strategies.Decision.Implementation
     /// </summary>
     internal sealed class FiveDayStatsDecisionSystem : ICalibratedDecisionSystem
     {
+        private readonly ILogger<FiveDayStatsDecisionSystem> _logger;
         private const int NumberStatistics = 5;
         private readonly DecisionSystemFactory.Settings _settings;
         private Estimator.Result? _estimatorResult;
 
         public int MinBurnInPeriod => 5 * 25;
-        
+
         public Estimator.Result? Result => _estimatorResult;
 
         /// <summary>
         /// Construct and instance.
         /// </summary>
-        public FiveDayStatsDecisionSystem(DecisionSystemFactory.Settings settings)
+        public FiveDayStatsDecisionSystem(DecisionSystemFactory.Settings settings, ILogger<FiveDayStatsDecisionSystem> logger)
         {
             _settings = settings;
+            _logger = logger;
         }
 
         /// <inheritdoc />
-        public void Calibrate(DecisionSystemSettings settings, IReportLogger logger)
+        public void Calibrate(DecisionSystemSettings settings)
         {
             DateTime burnInLength = settings.BurnInEnd;
             int numberEntries = ((burnInLength - settings.StartTime).Days - 5) * 5 / 7;
@@ -78,15 +81,15 @@ namespace Effanville.TradingStructures.Strategies.Decision.Implementation
             {
                 _estimatorResult = Estimator.Fit(estimatorType.Data, fitData, fitValues);
                 var values = string.Join(",", _estimatorResult.Estimator);
-                logger.Warn(nameof(FiveDayStatsDecisionSystem), $"Estimator Weights are {string.Join(",", _estimatorResult.Estimator)}");
+                _logger.LogWarning($"Estimator Weights are {string.Join(",", _estimatorResult.Estimator)}");
                 return;
             }
 
-            logger.Info(nameof(FiveDayStatsDecisionSystem), $"Created FiveDayStats system without five day stats type.");
+            _logger.LogInformation($"Created FiveDayStats system without five day stats type.");
         }
 
         /// <inheritdoc />
-        public TradeCollection? Decide(DateTime day, IStockExchange stockExchange, IReportLogger logger)
+        public TradeCollection? Decide(DateTime day, IStockExchange stockExchange)
         {
             if (_estimatorResult == null)
             {
@@ -121,12 +124,12 @@ namespace Effanville.TradingStructures.Strategies.Decision.Implementation
                     decision = TradeType.Sell;
                 }
 
-                logger?.Info(nameof(FiveDayStatsDecisionSystem), $"Stock={stock.Name}, Inputs=[{string.Join(",", values)}], Output={value}, Decision={decision}.");
+                _logger.LogInformation($"Stock={stock.Name}, Inputs=[{string.Join(",", values)}], Output={value}, Decision={decision}.");
 
                 decisions.Add(stock.Name, decision);
             }
 
-            logger?.Info(nameof(FiveDayStatsDecisionSystem), $"Decisions={decisions}");
+            _logger.LogInformation($"Decisions={decisions}");
             return decisions;
         }
     }

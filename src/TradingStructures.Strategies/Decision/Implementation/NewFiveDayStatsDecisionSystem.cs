@@ -1,11 +1,13 @@
 using System;
 using System.Collections.Generic;
 
+
 using Effanville.Common.Structure.MathLibrary.ParameterEstimation;
-using Effanville.Common.Structure.Reporting;
 using Effanville.FinancialStructures.Stocks;
 using Effanville.FinancialStructures.Stocks.Statistics;
 using Effanville.TradingStructures.Common.Trading;
+
+using Microsoft.Extensions.Logging;
 
 namespace Effanville.TradingStructures.Strategies.Decision.Implementation
 {
@@ -14,10 +16,10 @@ namespace Effanville.TradingStructures.Strategies.Decision.Implementation
         private readonly ArbitraryStatsDecisionSystem _innerSystem;
 
         public int MinBurnInPeriod => 5 * 25;
-        
+
         public Estimator.Result? Result => _innerSystem.Result;
 
-        public NewFiveDayStatsDecisionSystem(DecisionSystemFactory.Settings settings)
+        public NewFiveDayStatsDecisionSystem(DecisionSystemFactory.Settings settings, ILoggerFactory loggerFactory)
         {
             var newSettings = new DecisionSystemFactory.Settings(
                 settings.DecisionSystemType,
@@ -32,13 +34,13 @@ namespace Effanville.TradingStructures.Strategies.Decision.Implementation
                 settings.BuyThreshold,
                 settings.SellThreshold,
                 settings.DayAfterPredictor);
-            _innerSystem = new ArbitraryStatsDecisionSystem(newSettings);
+            _innerSystem = new ArbitraryStatsDecisionSystem(newSettings, loggerFactory.CreateLogger<ArbitraryStatsDecisionSystem>());
         }
 
-        public void Calibrate(DecisionSystemSettings settings, IReportLogger? logger)
-            => _innerSystem.Calibrate(settings, logger);
+        public void Calibrate(DecisionSystemSettings settings)
+            => _innerSystem.Calibrate(settings);
 
-        public TradeCollection? Decide(DateTime day, IStockExchange stockExchange, IReportLogger? logger)
-            => _innerSystem.Decide(day, stockExchange, logger);
+        public TradeCollection? Decide(DateTime day, IStockExchange stockExchange)
+            => _innerSystem.Decide(day, stockExchange);
     }
 }

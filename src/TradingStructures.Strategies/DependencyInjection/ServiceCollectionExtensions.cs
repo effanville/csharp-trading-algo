@@ -1,8 +1,4 @@
-using System.IO.Abstractions;
-
-using Effanville.Common.Structure.Reporting;
 using Effanville.FinancialStructures.Stocks;
-using Effanville.TradingStructures.Common.Diagnostics;
 using Effanville.TradingStructures.Strategies.Decision;
 using Effanville.TradingStructures.Strategies.Execution;
 using Effanville.TradingStructures.Strategies.Portfolio;
@@ -18,49 +14,30 @@ public static class ServiceCollectionExtensions
         StrategySettings strategySettings)
     {
         return serviceCollection
+            .AddSingleton<IDecisionSystemFactory, DecisionSystemFactory>()
             .AddSingleton(
-                x => CreateDecisionSystem(
-                    strategySettings.DecisionParameters,
-                    x.GetRequiredService<ITimerFactory>()))
+                x =>
+                {
+                    IDecisionSystemFactory decisionSystemFactory = x.GetRequiredService<IDecisionSystemFactory>();
+                    return decisionSystemFactory.Create(strategySettings.DecisionParameters);
+                })
+            .AddSingleton<IPortfolioManagerFactory, PortfolioManagerFactory>()
             .AddSingleton(
-                x => CreatePortfolioManager(
-                    x.GetRequiredService<IFileSystem>(),
-                    strategySettings.StartSettings,
-                    strategySettings.ConstructionSettings,
-                    x.GetRequiredService<IReportLogger>(),
-                    x.GetRequiredService<ITimerFactory>()))
+                x =>
+                {
+                    IPortfolioManagerFactory portfolioManagerFactory = x.GetRequiredService<IPortfolioManagerFactory>();
+                    return portfolioManagerFactory.LoadFromFile(strategySettings.StartSettings, strategySettings.ConstructionSettings);
+                })
+            .AddSingleton<IExecutionStrategyFactory, ExecutionStrategyFactory>()
             .AddSingleton(
-            x => ExecutionStrategyFactory.Create(
-                StrategyType.ExchangeOpen,
-                x.GetRequiredService<IReportLogger>(),
-                x.GetRequiredService<IStockExchange>(),
-                x.GetRequiredService<IDecisionSystem>()))
+                x =>
+                {
+                    IExecutionStrategyFactory factory = x.GetRequiredService<IExecutionStrategyFactory>();
+                    return factory.Create(
+                        StrategyType.ExchangeOpen,
+                        x.GetRequiredService<IStockExchange>(),
+                        x.GetRequiredService<IDecisionSystem>());
+                })
             .AddSingleton<IStrategy, Strategy>();
-    }
-
-    private static IDecisionSystem CreateDecisionSystem(
-        DecisionSystemFactory.Settings decisionParameters,
-        ITimerFactory timerFactory)
-    {
-        using (timerFactory.Create("Calibrating"))
-        {
-            IDecisionSystem decisionSystem = DecisionSystemFactory.Create(
-                decisionParameters);
-
-            return decisionSystem;
-        }
-    }
-
-    private static IPortfolioManager CreatePortfolioManager(
-        IFileSystem fileSystem,
-        PortfolioStartSettings startSettings,
-        PortfolioConstructionSettings constructionSettings,
-        IReportLogger reportLogger,
-        ITimerFactory timerFactory)
-    {
-        using (timerFactory.Create("Loading Portfolio"))
-        {
-            return PortfolioManager.LoadFromFile(fileSystem, startSettings, constructionSettings, reportLogger);
-        }
     }
 }

@@ -16,6 +16,8 @@ using Effanville.TradingStructures.Common;
 using Effanville.TradingStructures.Common.Trading;
 using Effanville.TradingStructures.Pricing;
 
+using Microsoft.Extensions.Logging;
+
 namespace Effanville.TradingStructures.Strategies.Portfolio
 {
     /// <summary>
@@ -24,7 +26,7 @@ namespace Effanville.TradingStructures.Strategies.Portfolio
     /// </summary>
     public sealed class PortfolioManager : IPortfolioManager
     {
-        private readonly IReportLogger _logger;
+        private readonly ILogger<PortfolioManager> _logger;
 
         /// <inheritdoc/>
         public PortfolioConstructionSettings PortfolioConstructionSettings
@@ -56,7 +58,7 @@ namespace Effanville.TradingStructures.Strategies.Portfolio
             IPortfolio portfolio,
             PortfolioStartSettings startSettings,
             PortfolioConstructionSettings constructionSettings,
-            IReportLogger logger)
+            ILogger<PortfolioManager> logger)
         {
             _logger = logger;
             Portfolio = portfolio;
@@ -76,9 +78,10 @@ namespace Effanville.TradingStructures.Strategies.Portfolio
             IFileSystem fileSystem,
             PortfolioStartSettings startSettings,
             PortfolioConstructionSettings constructionSettings,
-            IReportLogger logger)
+            IReportLogger reportLogger,
+            ILogger<PortfolioManager> logger)
         {
-            var portfolio = LoadStartPortfolio(startSettings, fileSystem, logger);
+            var portfolio = LoadStartPortfolio(startSettings, fileSystem, reportLogger);
             return new PortfolioManager(portfolio, startSettings, constructionSettings, logger);
         }
 
@@ -169,7 +172,7 @@ namespace Effanville.TradingStructures.Strategies.Portfolio
             if (!Portfolio.Exists(Account.Security, trade.StockName.ToTwoName()))
             {
                 var result = Portfolio.TryAdd(Account.Security, new NameData(trade.StockName.Company, trade.StockName.Name, trade.StockName.Currency, trade.StockName.Url, new HashSet<string>()));
-                _logger.Info(nameof(PortfolioManager), result.ToString());
+                _logger.LogInformation(result.ToString());
             }
             _ = Portfolio.TryAddOrEditTradeData(Account.Security, trade.StockName, tradeConfirmation, tradeConfirmation);
 
@@ -178,7 +181,7 @@ namespace Effanville.TradingStructures.Strategies.Portfolio
             decimal afterTradeCashValue = cashAvailable - trade.BuySell.Sign() * tradeConfirmation.TotalCost;
             var value = new DailyValuation(time, afterTradeCashValue);
             _ = Portfolio.TryAddOrEditData(Account.BankAccount, StartSettings.DefaultBankAccName, value, value);
-            _logger.Warn("Execution", $"Date {time:yyyy-MM-ddTHH:mm:ss} bought {trade.StockName} Cost {tradeConfirmation.TotalCost:C2} price");
+            _logger.LogWarning($"Date {time:yyyy-MM-ddTHH:mm:ss} bought {trade.StockName} Cost {tradeConfirmation.TotalCost:C2} price");
             return true;
         }
 
@@ -205,7 +208,7 @@ namespace Effanville.TradingStructures.Strategies.Portfolio
                 return;
             }
 
-            _logger.Log(ReportType.Information, nameof(PortfolioManager), $"Date: {time}. TotalVal: {Portfolio.TotalValue(Totals.All):C2}. TotalCash: {Portfolio.TotalValue(Totals.BankAccount):C2}");
+            _logger.LogInformation($"Date: {time}. TotalVal: {Portfolio.TotalValue(Totals.All):C2}. TotalCash: {Portfolio.TotalValue(Totals.BankAccount):C2}");
         }
 
         /// <inheritdoc/>

@@ -6,6 +6,10 @@ using Effanville.TradingStructures.Common.Trading;
 using Effanville.TradingStructures.Strategies.Decision;
 using Effanville.TradingStructures.Strategies.Decision.Implementation;
 
+using Microsoft.Extensions.Logging;
+
+using NSubstitute;
+
 using NUnit.Framework;
 
 namespace Effanville.TradingStructures.Strategies.Tests.Decisions
@@ -19,8 +23,8 @@ namespace Effanville.TradingStructures.Strategies.Tests.Decisions
             exchange.Stocks.Add(new Stock("MyTicker", "MyCompany", "MyName", "GBP", ""));
             exchange.Stocks[0].AddValue(DateTime.Today, 43, 47, 40, 41, 1);
 
-            IDecisionSystem decisionSystem = new BuyAllDecisionSystem();
-            TradeCollection status = decisionSystem.Decide(DateTime.Today, exchange, logger: null);
+            IDecisionSystem decisionSystem = new BuyAllDecisionSystem(Substitute.For<ILogger<BuyAllDecisionSystem>>());
+            TradeCollection status = decisionSystem.Decide(DateTime.Today, exchange);
 
             Assert.That(status.GetBuyDecisions().Count, Is.EqualTo(1));
             Assert.That(status.GetSellDecisions().Count, Is.EqualTo(0));

@@ -8,6 +8,10 @@ using Effanville.FinancialStructures.Stocks;
 using Effanville.TradingStructures.Strategies.Decision;
 using Effanville.TradingStructures.Strategies.Decision.Implementation;
 
+using Microsoft.Extensions.Logging;
+
+using NSubstitute;
+
 using NUnit.Framework;
 
 using TradingConsole.Tests;
@@ -28,24 +32,23 @@ namespace Effanville.TradingStructures.Strategies.Tests.Decisions
             var logger = new LogReporter(null, new SingleTaskQueue(), saveInternally: true);
             var stockExchange = StockExchangeFactory.Create(testFilePath, fileSystem, logger);
             var settings = new DecisionSystemFactory.Settings(
-                DecisionSystem.FiveDayStatsLeastSquares, 
+                DecisionSystem.FiveDayStatsLeastSquares,
                 null,
-                1.05, 
-                1.0, 
+                1.05,
+                1.0,
                 1);
-            var decisionSystem = new FiveDayStatsDecisionSystem(settings);
+            var decisionSystem = new FiveDayStatsDecisionSystem(settings, Substitute.For<ILogger<FiveDayStatsDecisionSystem>>());
             var systemSettings = new DecisionSystemSettings(
                 DateTime.SpecifyKind(new DateTime(2015, 1, 1), DateTimeKind.Utc),
-                
-                DateTime.SpecifyKind(new DateTime(2015, 2, 1), DateTimeKind.Utc), 
+
+                DateTime.SpecifyKind(new DateTime(2015, 2, 1), DateTimeKind.Utc),
                 2,
                 stockExchange);
-            decisionSystem.Calibrate(systemSettings, logger);
+            decisionSystem.Calibrate(systemSettings);
 
             var decision = decisionSystem.Decide(
                 DateTime.SpecifyKind(new DateTime(2015, 2, 2), DateTimeKind.Utc),
-                stockExchange,
-                logger);
+                stockExchange);
             Assert.That(decision.GetBuyDecisions().Count, Is.EqualTo(0));
             Assert.That(decision.GetSellDecisions().Count, Is.EqualTo(2));
         }

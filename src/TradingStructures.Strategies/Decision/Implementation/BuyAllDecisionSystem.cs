@@ -1,9 +1,10 @@
 ﻿using System;
 
-using Effanville.Common.Structure.Reporting;
 using Effanville.FinancialStructures.DataStructures;
 using Effanville.FinancialStructures.Stocks;
 using Effanville.TradingStructures.Common.Trading;
+
+using Microsoft.Extensions.Logging;
 
 namespace Effanville.TradingStructures.Strategies.Decision.Implementation
 {
@@ -12,22 +13,22 @@ namespace Effanville.TradingStructures.Strategies.Decision.Implementation
     /// </summary>
     internal sealed class BuyAllDecisionSystem : IDecisionSystem
     {
+        private readonly ILogger<BuyAllDecisionSystem> _logger;
+
+        public BuyAllDecisionSystem(ILogger<BuyAllDecisionSystem> logger)
+        {
+            _logger = logger;
+        }
+
         public int MinBurnInPeriod => 0;
 
-        /// <summary>
-        /// Construct and instance.
-        /// </summary>
-        public BuyAllDecisionSystem()
+        /// <inheritdoc />
+        public void Calibrate(DecisionSystemSettings settings)
         {
         }
 
         /// <inheritdoc />
-        public void Calibrate(DecisionSystemSettings settings, IReportLogger? logger)
-        {
-        }
-
-        /// <inheritdoc />
-        public TradeCollection Decide(DateTime day, IStockExchange stockExchange, IReportLogger? logger)
+        public TradeCollection Decide(DateTime day, IStockExchange stockExchange)
         {
             var decisions = new TradeCollection(day, day);
             foreach (IStock stock in stockExchange.Stocks)
@@ -35,7 +36,7 @@ namespace Effanville.TradingStructures.Strategies.Decision.Implementation
                 decisions.Add(stock.Name, TradeType.Buy);
             }
 
-            logger?.Info(nameof(BuyAllDecisionSystem), $"Decisions: {decisions}");
+            _logger.LogInformation($"Decisions: {decisions}");
             return decisions;
         }
     }

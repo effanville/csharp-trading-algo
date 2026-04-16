@@ -1,6 +1,5 @@
 ﻿using System;
 
-using Effanville.Common.Structure.Reporting;
 using Effanville.FinancialStructures.Stocks;
 using Effanville.TradingStructures.Common.Trading;
 
@@ -18,11 +17,11 @@ namespace Effanville.TradingStructures.Strategies.Decision
         /// e.g. any parameters from an estimation are set at this point.
         /// This may alter the simulation parameters (e.g. the start time of the simulation).
         /// </summary>
-        void Calibrate(DecisionSystemSettings settings, IReportLogger? logger);
+        void Calibrate(DecisionSystemSettings settings);
 
         /// <summary>
         /// The process by which a decision on each stock in the exchange is made.
         /// </summary>
-        TradeCollection? Decide(DateTime day, IStockExchange stockExchange, IReportLogger? logger);
+        TradeCollection? Decide(DateTime day, IStockExchange stockExchange);
     }
 }

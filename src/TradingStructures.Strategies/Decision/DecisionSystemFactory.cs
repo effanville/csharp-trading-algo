@@ -1,42 +1,38 @@
-﻿using Effanville.Common.Structure.Reporting;
+﻿using Effanville.TradingStructures.Common.Diagnostics;
 using Effanville.TradingStructures.Strategies.Decision.Implementation;
 
-namespace Effanville.TradingStructures.Strategies.Decision
+using Microsoft.Extensions.Logging;
+
+namespace Effanville.TradingStructures.Strategies.Decision;
+
+/// <summary>
+/// Factory for creating a decision system.
+/// </summary>
+public partial class DecisionSystemFactory : IDecisionSystemFactory
 {
-    /// <summary>
-    /// Factory for creating a decision system.
-    /// </summary>
-    public static partial class DecisionSystemFactory
+    private readonly ILoggerFactory _loggerFactory;
+    private readonly ITimerFactory _timerFactory;
+
+    public DecisionSystemFactory(ILoggerFactory loggerFactory, ITimerFactory timerFactory)
     {
-        public static IDecisionSystem Create(Settings settings)
+        _loggerFactory = loggerFactory;
+        _timerFactory = timerFactory;
+    }
+
+    public IDecisionSystem Create(Settings settings)
+    {
+        using (_timerFactory.Create("Calibrating"))
         {
-            switch (settings.DecisionSystemType)
+            return settings.DecisionSystemType switch
             {
-                case DecisionSystem.BuyAll:
-                    return new BuyAllDecisionSystem();
-
-                case DecisionSystem.ArbitraryStatsLeastSquares:
-                    return new ArbitraryStatsDecisionSystem(settings);
-                case DecisionSystem.ArbitraryStatsLasso:
-                    return new ArbitraryStatsDecisionSystem(settings);
-                case DecisionSystem.ArbitraryStatsRidge:
-                    return new ArbitraryStatsDecisionSystem(settings);
-                case DecisionSystem.FiveDayStatsLasso:
-                    return new FiveDayStatsDecisionSystem(settings);
-                case DecisionSystem.FiveDayStatsRidge:
-                    return new FiveDayStatsDecisionSystem(settings);
-                case DecisionSystem.FiveDayStatsLeastSquares:
-                default:
-                    return new FiveDayStatsDecisionSystem(settings);
-            }
-        }
-
-        public static IDecisionSystem CreateAndCalibrate(Settings settings, DecisionSystemSettings decisionSettings, IReportLogger logger)
-        {
-            var decisionSystem = Create(settings);
-            decisionSystem.Calibrate(decisionSettings, logger);
-
-            return decisionSystem;
+                DecisionSystem.BuyAll => new BuyAllDecisionSystem(_loggerFactory.CreateLogger<BuyAllDecisionSystem>()),
+                DecisionSystem.ArbitraryStatsLeastSquares => new ArbitraryStatsDecisionSystem(settings, _loggerFactory.CreateLogger<ArbitraryStatsDecisionSystem>()),
+                DecisionSystem.ArbitraryStatsLasso => new ArbitraryStatsDecisionSystem(settings, _loggerFactory.CreateLogger<ArbitraryStatsDecisionSystem>()),
+                DecisionSystem.ArbitraryStatsRidge => new ArbitraryStatsDecisionSystem(settings, _loggerFactory.CreateLogger<ArbitraryStatsDecisionSystem>()),
+                DecisionSystem.FiveDayStatsLasso => new FiveDayStatsDecisionSystem(settings, _loggerFactory.CreateLogger<FiveDayStatsDecisionSystem>()),
+                DecisionSystem.FiveDayStatsRidge => new FiveDayStatsDecisionSystem(settings, _loggerFactory.CreateLogger<FiveDayStatsDecisionSystem>()),
+                _ => new FiveDayStatsDecisionSystem(settings, _loggerFactory.CreateLogger<FiveDayStatsDecisionSystem>()),
+            };
         }
     }
 }

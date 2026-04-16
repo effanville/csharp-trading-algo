@@ -24,6 +24,7 @@ namespace Effanville.TradingConsole.Commands.Execution;
 public sealed partial class SimulationCommand : ICommand
 {
     private readonly IFileSystem _fileSystem;
+    private readonly ITimerFactory _timerFactory;
     private readonly ILogger _logger;
     private readonly IReportLogger _reportLogger;
     private readonly IConfiguration _config;
@@ -50,11 +51,13 @@ public sealed partial class SimulationCommand : ICommand
     /// </summary>
     public SimulationCommand(
         IFileSystem fileSystem,
+        ITimerFactory timerFactory,
         ILogger<SimulationCommand> logger,
         IReportLogger reportLogger,
         IConfiguration config)
     {
         _fileSystem = fileSystem;
+        _timerFactory = timerFactory;
         _logger = logger;
         _reportLogger = reportLogger;
         _config = config;
@@ -84,7 +87,7 @@ public sealed partial class SimulationCommand : ICommand
 
     public int Execute()
     {
-        using (new Timer(_reportLogger, "TotalTime"))
+        using (_timerFactory.Create("TotalTime"))
         {
             Settings? settings = Settings.CreateSettings(Options, _fileSystem);
             if (settings == null)
@@ -92,7 +95,7 @@ public sealed partial class SimulationCommand : ICommand
                 return 1;
             }
 
-            _logger.Log(LogLevel.Information, settings.StockFilePath);
+            _logger.LogInformation(settings.StockFilePath);
 
             var builder = new HostApplicationBuilder();
             builder.Logging.RegisterLogging(_reportLogger);

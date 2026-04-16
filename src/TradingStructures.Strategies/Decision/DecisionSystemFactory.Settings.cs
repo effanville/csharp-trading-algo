@@ -4,7 +4,7 @@ using Effanville.FinancialStructures.Stocks.Statistics;
 
 namespace Effanville.TradingStructures.Strategies.Decision
 {
-    public static partial class DecisionSystemFactory
+    public partial class DecisionSystemFactory
     {
         public sealed class Settings
         {

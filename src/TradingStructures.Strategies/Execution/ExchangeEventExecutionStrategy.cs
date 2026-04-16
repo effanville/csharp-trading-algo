@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Linq;
 
-using Effanville.Common.Structure.Reporting;
 using Effanville.FinancialStructures.Stocks;
 using Effanville.FinancialStructures.Stocks.Implementation;
 using Effanville.TradingStructures.Common;
@@ -12,12 +11,14 @@ using Effanville.TradingStructures.Pricing;
 using Effanville.TradingStructures.Strategies.Decision;
 using Effanville.TradingStructures.Trading;
 
+using Microsoft.Extensions.Logging;
+
 namespace Effanville.TradingStructures.Strategies.Execution;
 
 public class ExchangeEventExecutionStrategy : IExecutionStrategy
 {
     public event EventHandler<TradeSubmittedEventArgs>? SubmitTradeEvent;
-    private readonly IReportLogger _logger;
+    private readonly ILogger<ExchangeEventExecutionStrategy> _logger;
     private readonly IStockExchange _stockExchange;
     private readonly IDecisionSystem _decisionSystem;
     private TradeCollection? _tradeCollection;
@@ -26,7 +27,7 @@ public class ExchangeEventExecutionStrategy : IExecutionStrategy
     public string Name => nameof(ExchangeEventExecutionStrategy);
 
     public ExchangeEventExecutionStrategy(
-        IReportLogger logger,
+        ILogger<ExchangeEventExecutionStrategy> logger,
         IStockExchange stockExchange,
         IDecisionSystem decisionSystem)
     {
@@ -56,7 +57,7 @@ public class ExchangeEventExecutionStrategy : IExecutionStrategy
             stock.Valuations.RemoveAll(x => x.Start == eventArgs.Candle.Start);
         }
         stock.AddValue(eventArgs.Candle);
-        _logger.Log(ReportType.Information, "PriceService", $"Update. Stock={eventArgs.Instrument.Ticker}, Time={eventArgs.Time:yyyy-MM-ddTHH:mm:ss}, Price={eventArgs.Price}");
+        _logger.LogInformation($"Update. Stock={eventArgs.Instrument.Ticker}, Time={eventArgs.Time:yyyy-MM-ddTHH:mm:ss}, Price={eventArgs.Price}");
         int numberVals = _stockExchange.NumberValuations();
         if (!_calibrated && _decisionSystem.MinBurnInPeriod < _stockExchange.NumberValuations())
         {
@@ -65,14 +66,14 @@ public class ExchangeEventExecutionStrategy : IExecutionStrategy
                     eventArgs.Time,
                     _stockExchange.Stocks.Count,
                     _stockExchange);
-            _decisionSystem.Calibrate(settings, _logger);
+            _decisionSystem.Calibrate(settings);
             _calibrated = true;
         }
     }
 
     public void OnExchangeStatusChanged(object? obj, ExchangeStatusChangedEventArgs eventArgs)
     {
-        _logger.Log(ReportType.Information, "ExchangeService", $"SessionChange. Time={eventArgs.Time:yyyy-MM-ddTHH:mm:ss}, Old={eventArgs.PreviousSession}, New={eventArgs.NewSession}");
+        _logger.LogInformation($"SessionChange. Time={eventArgs.Time:yyyy-MM-ddTHH:mm:ss}, Old={eventArgs.PreviousSession}, New={eventArgs.NewSession}");
         var newSession = eventArgs.NewSession;
         if (newSession == ExchangeSession.Continuous)
         {
@@ -88,7 +89,7 @@ public class ExchangeEventExecutionStrategy : IExecutionStrategy
     {
         if (_tradeCollection == null)
         {
-            _logger.Log(ReportType.Information, "MarketOpen", $"{time:yyyy-MM-ddTHH:mm:ss} - No Trades to enact");
+            _logger.LogInformation($"MarketOpen. {time:yyyy-MM-ddTHH:mm:ss} - No Trades to enact");
             return;
         }
 
@@ -107,7 +108,7 @@ public class ExchangeEventExecutionStrategy : IExecutionStrategy
 
     private void MarketClose(DateTime time) =>
         // Decide which stocks to buy, sell or do nothing with.
-        _tradeCollection = _decisionSystem.Decide(time, _stockExchange, _logger);
+        _tradeCollection = _decisionSystem.Decide(time, _stockExchange);
 
     public void Shutdown() { }
 }

@@ -3,11 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 
 using Effanville.Common.Structure.MathLibrary.ParameterEstimation;
-using Effanville.Common.Structure.Reporting;
 using Effanville.FinancialStructures.DataStructures;
 using Effanville.FinancialStructures.Stocks;
 using Effanville.FinancialStructures.Stocks.Statistics;
 using Effanville.TradingStructures.Common.Trading;
+
+using Microsoft.Extensions.Logging;
 
 namespace Effanville.TradingStructures.Strategies.Decision.Implementation
 {
@@ -19,6 +20,7 @@ namespace Effanville.TradingStructures.Strategies.Decision.Implementation
     internal sealed class ArbitraryStatsDecisionSystem : ICalibratedDecisionSystem
     {
         private readonly DecisionSystemFactory.Settings _settings;
+        private readonly ILogger<ArbitraryStatsDecisionSystem> _logger;
         private readonly IReadOnlyList<IStockStatistic> _stockStatistics;
         private Estimator.Result? _estimatorResult;
         public int MinBurnInPeriod => _stockStatistics.Count * 25;
@@ -28,7 +30,8 @@ namespace Effanville.TradingStructures.Strategies.Decision.Implementation
         /// <summary>
         /// Construct an instance.
         /// </summary>
-        public ArbitraryStatsDecisionSystem(DecisionSystemFactory.Settings decisionParameters)
+        public ArbitraryStatsDecisionSystem(DecisionSystemFactory.Settings decisionParameters,
+            ILogger<ArbitraryStatsDecisionSystem> logger)
         {
             List<IStockStatistic> stockStatistics = new List<IStockStatistic>();
             if (decisionParameters.Statistics != null)
@@ -37,11 +40,12 @@ namespace Effanville.TradingStructures.Strategies.Decision.Implementation
             }
 
             _settings = decisionParameters;
+            _logger = logger;
             _stockStatistics = stockStatistics;
         }
 
         /// <inheritdoc/>
-        public void Calibrate(DecisionSystemSettings settings, IReportLogger? logger)
+        public void Calibrate(DecisionSystemSettings settings)
         {
             DateTime burnInLength = settings.BurnInEnd;
 
@@ -74,16 +78,15 @@ namespace Effanville.TradingStructures.Strategies.Decision.Implementation
             if (!estimatorType.Success)
             {
                 _estimatorResult = Estimator.Fit(estimatorType.Data, fitData, fitValues);
-                logger?.Warn(nameof(ArbitraryStatsDecisionSystem), $"Estimator Weights are {string.Join(",", _estimatorResult.Estimator)}");
+                _logger.LogWarning($"Estimator Weights are {string.Join(",", _estimatorResult.Estimator)}");
                 return;
             }
 
-            logger?.Error(nameof(ArbitraryStatsDecisionSystem),
-                $"Created ArbitraryStats system without correct type.");
+            _logger.LogError($"Created ArbitraryStats system without correct type.");
         }
 
         /// <inheritdoc/>
-        public TradeCollection? Decide(DateTime day, IStockExchange stockExchange, IReportLogger? logger)
+        public TradeCollection? Decide(DateTime day, IStockExchange stockExchange)
         {
             if (_estimatorResult == null)
             {
@@ -111,12 +114,12 @@ namespace Effanville.TradingStructures.Strategies.Decision.Implementation
                 {
                     decision = TradeType.Sell;
                 }
-                logger?.Info(nameof(ArbitraryStatsDecisionSystem), $"Stock={stock.Name}, Inputs=[{string.Join(",", values)}], Output={value}, Decision={decision}.");
+                _logger.LogInformation($"Stock={stock.Name}, Inputs=[{string.Join(",", values)}], Output={value}, Decision={decision}.");
 
                 decisions.Add(stock.Name, decision);
             }
 
-            logger?.Info(nameof(ArbitraryStatsDecisionSystem), $"Decisions: {decisions}");
+            _logger.LogInformation($"Decisions: {decisions}");
             return decisions;
         }
     }

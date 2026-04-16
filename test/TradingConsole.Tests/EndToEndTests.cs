@@ -7,6 +7,7 @@ using Effanville.Common.Structure.Reporting;
 using Effanville.FinancialStructures.Stocks.Persistence;
 using Effanville.TradingConsole.Commands.ExchangeCreation;
 using Effanville.TradingConsole.Commands.Execution;
+using Effanville.TradingStructures.Common.Diagnostics;
 
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
@@ -105,7 +106,7 @@ namespace Effanville.TradingConsole.Tests
                 .AddCommandLine(new ConsoleCommandArgs(args).GetEffectiveArgs())
                 .AddEnvironmentVariables()
                 .Build();
-            var simulationCommand = new SimulationCommand(mockFileSystem, logger, reportLogger, config);
+            var simulationCommand = new SimulationCommand(mockFileSystem, new TimerFactory(new LoggerFactory()), logger, reportLogger, config);
 
             bool isValidated = simulationCommand.Validate();
             Assert.That(isValidated, Is.True);
@@ -134,7 +135,7 @@ namespace Effanville.TradingConsole.Tests
                 .AddCommandLine(new ConsoleCommandArgs(args).GetEffectiveArgs())
                 .AddEnvironmentVariables()
                 .Build();
-            var simulationCommand = new SimulationCommand(mockFileSystem, logger, reportLogger, config);
+            var simulationCommand = new SimulationCommand(mockFileSystem, new TimerFactory(new LoggerFactory()), logger, reportLogger, config);
 
             bool isValidated = simulationCommand.Validate();
             Assert.That(isValidated, Is.True);

@@ -2,7 +2,6 @@ using System;
 
 using Effanville.Common.Structure.DataStructures;
 using Effanville.Common.Structure.MathLibrary.Finance;
-using Effanville.Common.Structure.Reporting;
 using Effanville.FinancialStructures.Database;
 using Effanville.FinancialStructures.Database.Extensions.Values;
 using Effanville.TradingStructures.Common;
@@ -16,6 +15,7 @@ using Effanville.TradingStructures.Strategies.Portfolio;
 using Effanville.TradingStructures.Trading;
 
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 
 namespace Effanville.TradingStructures.Strategies;
 
@@ -23,7 +23,7 @@ public class Strategy : IStrategy
 {
     private IPriceService? _priceService;
     private IClock? _clock;
-    private readonly IReportLogger _logger;
+    private readonly ILogger<Strategy> _logger;
     private readonly IExecutionStrategy _executionStrategy;
     private readonly IPortfolioManager _portfolioManager;
     public string Name => nameof(Strategy);
@@ -39,7 +39,7 @@ public class Strategy : IStrategy
     public Strategy(
         IExecutionStrategy executionStrategy,
         IPortfolioManager portfolioManager,
-        IReportLogger logger)
+        ILogger<Strategy> logger)
     {
         _logger = logger;
         _executionStrategy = executionStrategy;
@@ -69,14 +69,14 @@ public class Strategy : IStrategy
         Trade? validatedTrade = _portfolioManager.ValidateTrade(e.Time, trade, _priceService);
         if (validatedTrade == null)
         {
-            _logger.Log(ReportType.Information, "Trading", $"{time:yyyy-MM-ddTHH:mm:ss} - Trade {trade} was not valid.");
+            _logger.LogInformation($"{time:yyyy-MM-ddTHH:mm:ss} - Trade {trade} was not valid.");
             return;
         }
 
         decimal availableFunds = _portfolioManager.AvailableFunds(e.Time);
         if (availableFunds <= 0.0m)
         {
-            _logger.Log(ReportType.Information, "Trading", $"{time:yyyy-MM-ddTHH:mm:ss} - No available funds.");
+            _logger.LogInformation($"{time:yyyy-MM-ddTHH:mm:ss} - No available funds.");
             return;
         }
 
@@ -96,8 +96,8 @@ public class Strategy : IStrategy
 
         DateTime latestTime = _portfolioManager.Portfolio.LatestDate(Totals.All);
         double car = FinanceFunctions.CAR(new DailyValuation(earliestTime, startValue), new DailyValuation(latestTime, latestValue));
-        _logger.Info("Ending", $"{time:yyyy-MM-ddTHH:mm:ss} total value {latestValue:C2}");
-        _logger.Info("Ending", $"{time:yyyy-MM-ddTHH:mm:ss} total CAR {car}");
+        _logger.LogInformation($"{time:yyyy-MM-ddTHH:mm:ss} total value {latestValue:C2}");
+        _logger.LogInformation($"{time:yyyy-MM-ddTHH:mm:ss} total CAR {car}");
     }
 
     public void OnTimeIncrementUpdate(object? obj, TimeIncrementEventArgs eventArgs)
@@ -122,14 +122,14 @@ public class Strategy : IStrategy
         {
             Trade trade = eventArgs.RequestedTrade;
             var tradeConfirmation = eventArgs.ConfirmedTrade;
-            _logger.Log(ReportType.Information, "Trading", $"{time:yyyy-MM-ddTHH:mm:ss} - Confirm trade '{tradeConfirmation}' reported and added.");
+            _logger.LogInformation($"{time:yyyy-MM-ddTHH:mm:ss} - Confirm trade '{tradeConfirmation}' reported and added.");
             _ = _portfolioManager.AddTrade(time, trade, tradeConfirmation);
             History.Trades.Add(time, trade);
             History.Decisions.Add(time, trade);
         }
         else
         {
-            _logger.Log(ReportType.Warning, "Trading", $"{time:yyyy-MM-ddTHH:mm:ss} - Requested trade '{eventArgs.RequestedTrade}' not successful.");
+            _logger.LogInformation($"{time:yyyy-MM-ddTHH:mm:ss} - Requested trade '{eventArgs.RequestedTrade}' not successful.");
         }
     }
 }

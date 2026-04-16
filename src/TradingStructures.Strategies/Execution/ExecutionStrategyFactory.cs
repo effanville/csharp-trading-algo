@@ -1,23 +1,33 @@
 ﻿using System;
 
-using Effanville.Common.Structure.Reporting;
 using Effanville.FinancialStructures.Stocks;
 using Effanville.TradingStructures.Strategies.Decision;
 
+using Microsoft.Extensions.Logging;
+
 namespace Effanville.TradingStructures.Strategies.Execution;
 
-public static class ExecutionStrategyFactory
+public sealed class ExecutionStrategyFactory : IExecutionStrategyFactory
 {
-    public static IExecutionStrategy Create(
+    private readonly ILoggerFactory _loggerFactory;
+
+    public ExecutionStrategyFactory(ILoggerFactory loggerFactory)
+    {
+        _loggerFactory = loggerFactory;
+    }
+
+    public IExecutionStrategy Create(
         StrategyType strategyType,
-        IReportLogger logger,
         IStockExchange stockExchange,
         IDecisionSystem decisionSystem)
         => strategyType switch
         {
-            StrategyType.LogExecution => new LogExecutionStrategy(logger),
-            StrategyType.ExchangeOpen => new ExchangeOpenCalcExecutionStrategy(logger, stockExchange, decisionSystem),
-            StrategyType.ExchangeEvent => new ExchangeEventExecutionStrategy(logger, stockExchange, decisionSystem),
+            StrategyType.LogExecution => new LogExecutionStrategy(_loggerFactory.CreateLogger<LogExecutionStrategy>(), null),
+            StrategyType.ExchangeOpen => new ExchangeOpenCalcExecutionStrategy(_loggerFactory.CreateLogger<ExchangeOpenCalcExecutionStrategy>(), stockExchange, decisionSystem),
+            StrategyType.ExchangeEvent => new ExchangeEventExecutionStrategy(
+                _loggerFactory.CreateLogger<ExchangeEventExecutionStrategy>(),
+                stockExchange,
+                decisionSystem),
             _ => throw new ArgumentOutOfRangeException($"StrategyType {strategyType} invalid."),
         };
 }
