@@ -3,10 +3,8 @@ using System.IO.Abstractions;
 
 using Effanville.Common.Console.Commands;
 using Effanville.Common.Console.Options;
-using Effanville.Common.Structure.Reporting;
 using Effanville.FinancialStructures.Persistence;
 using Effanville.FinancialStructures.Stocks;
-using Effanville.FinancialStructures.Stocks.Implementation;
 using Effanville.FinancialStructures.Stocks.Persistence;
 
 using Microsoft.Extensions.Configuration;
@@ -21,9 +19,9 @@ public sealed class ConfigureCommand : ICommand
 {
     private readonly IFileSystem _fileSystem;
     private readonly ILogger _logger;
-    private readonly IReportLogger _reportLogger;
     private readonly IConfiguration _config;
     private readonly IPersistence<IStockExchange> _persistence;
+    private readonly IStockExchangeFactory _stockExchangeFactory;
     private readonly CommandOption<string> _stockFilePathOption;
 
     /// <inheritdoc/>
@@ -41,15 +39,15 @@ public sealed class ConfigureCommand : ICommand
     public ConfigureCommand(
         IFileSystem fileSystem,
         ILogger<ConfigureCommand> logger,
-        IReportLogger reportLogger,
         IConfiguration config,
-        IPersistence<IStockExchange> persistence)
+        IPersistence<IStockExchange> persistence,
+        IStockExchangeFactory stockExchangeFactory)
     {
         _fileSystem = fileSystem;
         _logger = logger;
-        _reportLogger = reportLogger;
         _config = config;
         _persistence = persistence;
+        _stockExchangeFactory = stockExchangeFactory;
         _stockFilePathOption = new CommandOption<string>("stockFilePath", "FilePath to the stock database to add data to.", inputString => !string.IsNullOrWhiteSpace(inputString));
         Options.Add(_stockFilePathOption);
     }
@@ -60,9 +58,9 @@ public sealed class ConfigureCommand : ICommand
     /// <inheritdoc/>
     public int Execute()
     {
-        IStockExchange exchange = new StockExchange();
+        IStockExchange exchange = _stockExchangeFactory.Create();
         string inputPath = _stockFilePathOption.Value;
-        exchange.Configure(inputPath, _fileSystem, _reportLogger);
+        _stockExchangeFactory.Configure(exchange, new(inputPath));
         string filePath = _fileSystem.Path.ChangeExtension(inputPath, "xml");
 
         var settings = ExchangePersistence.CreateOptions(filePath, _fileSystem);

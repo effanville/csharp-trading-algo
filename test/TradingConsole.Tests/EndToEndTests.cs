@@ -4,6 +4,7 @@ using System.IO.Abstractions.TestingHelpers;
 using Effanville.Common.Console;
 using Effanville.Common.Structure.DataStructures;
 using Effanville.Common.Structure.Reporting;
+using Effanville.FinancialStructures.Stocks;
 using Effanville.FinancialStructures.Stocks.Persistence;
 using Effanville.TradingConsole.Commands.ExchangeCreation;
 using Effanville.TradingConsole.Commands.Execution;
@@ -33,15 +34,22 @@ namespace Effanville.TradingConsole.Tests
             mockFileSystem.AddFile(testFilePath, configureFile);
             string[] args = new[] { "configure", "--stockFilePath", testFilePath };
 
-            var reportLogger = new LogReporter(null, new SingleTaskQueue(), saveInternally: true);
-            var persistence = new ExchangePersistence(reportLogger);
+            var persistence = new ExchangePersistence(new LoggerFactory());
             ILogger<ConfigureCommand> logger = Substitute.For<ILogger<ConfigureCommand>>();
             IConfiguration config = new ConfigurationBuilder()
                 .AddJsonFile("appsettings.json")
                 .AddCommandLine(new ConsoleCommandArgs(args).GetEffectiveArgs())
                 .AddEnvironmentVariables()
                 .Build();
-            var statisticsCommand = new ConfigureCommand(mockFileSystem, logger, reportLogger, config, persistence);
+            var statisticsCommand = new ConfigureCommand(
+                mockFileSystem,
+                logger,
+                config,
+                persistence,
+                new StockExchangeFactory(
+                    Substitute.For<ILogger<StockExchangeFactory>>(),
+                    new LoggerFactory(),
+                    mockFileSystem));
             bool isValidated = statisticsCommand.Validate();
 
             Assert.That(isValidated, Is.True);
@@ -51,10 +59,10 @@ namespace Effanville.TradingConsole.Tests
             {
                 Assert.That(executed, Is.EqualTo(0));
                 Assert.That(mockFileSystem.File.Exists("c:/temp/exampleFile.xml"), Is.True);
-                var reports = reportLogger.Reports;
-                Assert.That(reports.Count(), Is.EqualTo(2));
-                Assert.That(reports[0].Message, Is.EqualTo("Configured StockExchange from file c:/temp/exampleFile.csv."));
-                Assert.That(reports[1].Message, Is.EqualTo("Save. Saved StockExchange at c:/temp/exampleFile.xml"));
+                string file = mockFileSystem.File.ReadAllText("c:/temp/exampleFile.xml");
+                Assert.That(file, Contains.Substring("<StockExchange "));
+                Assert.That(file, Contains.Substring("<Stocks>"));
+                Assert.That(file, Contains.Substring("<Company>Barclays</Company>"));
             });
         }
 
@@ -68,7 +76,7 @@ namespace Effanville.TradingConsole.Tests
             string[] args = new[] { "download", "all", "--stockFilePath", testFilePath, "--start", "1/1/2010", "--end", "1/1/2023" };
 
             var reportLogger = new LogReporter(null, new SingleTaskQueue(), saveInternally: true);
-            var persistence = new ExchangePersistence(reportLogger);
+            var persistence = new ExchangePersistence(new LoggerFactory());
 
             ILogger<DownloadAllCommand> logger = Substitute.For<ILogger<DownloadAllCommand>>();
             IConfiguration config = new ConfigurationBuilder()

@@ -58,14 +58,15 @@ public static class RegistrationExtensions
 
         serviceCollection.AddSingleton<ITimerFactory, TimerFactory>();
 
-        serviceCollection.AddSingleton<IStockExchange>(
+        serviceCollection
+            .AddSingleton<IStockExchangeFactory, StockExchangeFactory>()
+            .AddSingleton(
             x =>
             {
                 var timerFactory = x.GetRequiredService<ITimerFactory>();
                 return CreateExchange(
                                 stockFilePath,
-                                x.GetRequiredService<IFileSystem>(),
-                                x.GetRequiredService<IReportLogger>(),
+                                x.GetRequiredService<IStockExchangeFactory>(),
                                 timerFactory);
             });
         serviceCollection.AddSingleton(
@@ -97,11 +98,12 @@ public static class RegistrationExtensions
 
         return evolver.Result;
     }
-    private static IStockExchange CreateExchange(string filePath, IFileSystem fileSystem, IReportLogger logger, ITimerFactory timerFactory)
+
+    private static IStockExchange CreateExchange(string filePath, IStockExchangeFactory stockExchangeFactory, ITimerFactory timerFactory)
     {
         using (timerFactory.Create("Loading Exchange"))
         {
-            var exchange = StockExchangeFactory.Create(filePath, fileSystem, logger);
+            var exchange = stockExchangeFactory.Create(new (filePath));
             foreach (var stock in exchange.Stocks)
             {
                 foreach (var value in stock.Valuations)

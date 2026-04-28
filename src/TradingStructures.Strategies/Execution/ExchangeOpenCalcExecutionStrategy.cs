@@ -29,11 +29,12 @@ public class ExchangeOpenCalcExecutionStrategy : IExecutionStrategy
 
     public ExchangeOpenCalcExecutionStrategy(
         ILogger<ExchangeOpenCalcExecutionStrategy> logger,
+        IStockExchangeFactory stockExchangeFactory,
         IStockExchange stockExchange,
         IDecisionSystem decisionSystem)
     {
         _logger = logger;
-        _stockExchange = StockExchangeFactory.Create(stockExchange, DateTime.MinValue);
+        _stockExchange = stockExchangeFactory.Create(stockExchange, DateTime.MinValue);
         _decisionSystem = decisionSystem;
     }
 
