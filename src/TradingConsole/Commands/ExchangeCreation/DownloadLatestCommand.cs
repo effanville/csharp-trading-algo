@@ -3,9 +3,9 @@ using System.IO.Abstractions;
 
 using Effanville.Common.Console.Commands;
 using Effanville.Common.Console.Options;
-using Effanville.Common.Structure.Reporting;
 using Effanville.FinancialStructures.Persistence;
 using Effanville.FinancialStructures.Stocks;
+using Effanville.FinancialStructures.Stocks.Download;
 using Effanville.FinancialStructures.Stocks.Persistence;
 
 using Microsoft.Extensions.Configuration;
@@ -20,7 +20,7 @@ public sealed class DownloadLatestCommand : ICommand
 {
     private readonly IFileSystem _fileSystem;
     private readonly ILogger _logger;
-    private readonly IReportLogger _reportLogger;
+    private readonly IStockDownloaderFactory _stockDownloaderFactory;
     private readonly IConfiguration _config;
     private readonly IPersistence<IStockExchange> _persistence;
     private readonly CommandOption<string> _stockFilePathOption;
@@ -40,13 +40,13 @@ public sealed class DownloadLatestCommand : ICommand
     public DownloadLatestCommand(
         IFileSystem fileSystem,
         ILogger<DownloadLatestCommand> logger,
-        IReportLogger reportLogger,
+        IStockDownloaderFactory stockDownloaderFactory,
         IConfiguration config,
         IPersistence<IStockExchange> persistence)
     {
         _fileSystem = fileSystem;
         _logger = logger;
-        _reportLogger = reportLogger;
+        _stockDownloaderFactory = stockDownloaderFactory;
         _config = config;
         _persistence = persistence;
         _stockFilePathOption = new CommandOption<string>("stockFilePath", "FilePath to the stock database to add data to.");
@@ -64,7 +64,12 @@ public sealed class DownloadLatestCommand : ICommand
     {
         var settings = ExchangePersistence.CreateOptions(_stockFilePathOption.Value, _fileSystem);
         IStockExchange exchange = _persistence.Load(settings);
-        exchange.Download(_reportLogger).Wait();
+        foreach (var stock in exchange.Stocks)
+        {
+            var downloader = _stockDownloaderFactory.Retrieve(stock.Name.Url);
+            downloader.TryGetLatestPriceData(stock).Wait();
+        }
+
         _persistence.Save(exchange, settings);
         return 0;
     }

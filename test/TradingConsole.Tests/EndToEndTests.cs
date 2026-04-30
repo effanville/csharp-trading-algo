@@ -4,7 +4,9 @@ using System.IO.Abstractions.TestingHelpers;
 using Effanville.Common.Console;
 using Effanville.Common.Structure.DataStructures;
 using Effanville.Common.Structure.Reporting;
+using Effanville.Common.Structure.WebAccess;
 using Effanville.FinancialStructures.Stocks;
+using Effanville.FinancialStructures.Stocks.Download;
 using Effanville.FinancialStructures.Stocks.Persistence;
 using Effanville.TradingConsole.Commands.ExchangeCreation;
 using Effanville.TradingConsole.Commands.Execution;
@@ -75,27 +77,29 @@ namespace Effanville.TradingConsole.Tests
             mockFileSystem.AddFile(testFilePath, configureFile);
             string[] args = new[] { "download", "all", "--stockFilePath", testFilePath, "--start", "1/1/2010", "--end", "1/1/2023" };
 
-            var reportLogger = new LogReporter(null, new SingleTaskQueue(), saveInternally: true);
             var persistence = new ExchangePersistence(new LoggerFactory());
-
+            StockPriceDownloaderFactory downloaderFactory = new StockPriceDownloaderFactory(
+                new LoggerFactory(),
+                new WebDownloader(Substitute.For<ILogger<WebDownloader>>()));
             ILogger<DownloadAllCommand> logger = Substitute.For<ILogger<DownloadAllCommand>>();
             IConfiguration config = new ConfigurationBuilder()
                 .AddJsonFile("appsettings.json")
                 .AddCommandLine(new ConsoleCommandArgs(args).GetEffectiveArgs())
                 .AddEnvironmentVariables()
                 .Build();
-            var downloadAllCommand = new DownloadAllCommand(mockFileSystem, logger, reportLogger, config, persistence);
+            var downloadAllCommand = new DownloadAllCommand(mockFileSystem, logger, config, persistence, downloaderFactory);
 
             bool isValidated = downloadAllCommand.Validate();
 
             Assert.That(isValidated, Is.True);
 
             int executed = downloadAllCommand.Execute();
-            Assert.Multiple(() =>
+            using (Assert.EnterMultipleScope())
             {
-                Assert.That(executed, Is.EqualTo(0));
-                Assert.That(reportLogger.Reports.Count(), Is.GreaterThanOrEqualTo(2));
-            });
+                Assert.That(executed, Is.Zero);
+                IStockExchange stockExchange = persistence.Load(ExchangePersistence.CreateOptions(testFilePath, mockFileSystem));
+                stockExchange.Stocks.ForEach(x => Assert.That(x.Valuations, Has.Count.GreaterThan(1000)));
+            }
         }
 
         [Test]

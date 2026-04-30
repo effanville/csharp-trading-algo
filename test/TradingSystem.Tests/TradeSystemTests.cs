@@ -448,11 +448,12 @@ $@"|StartDate|EndDate|StockName|TradeType|NumberShares|
             var builder = new HostApplicationBuilder();
             _ = builder.Logging.RegisterLogging(logger);
             _ = builder.Services.RegisterTradingServices(
-                testFilePath,
-                startTime,
-                endTime,
-                TimeSpan.FromDays(1),
-                new (portfolioStartSettings,
+                new TradingStructures.Common.EvolverSettings(
+                    testFilePath,
+                    startTime,
+                    endTime,
+                    TimeSpan.FromDays(1)),
+                new(portfolioStartSettings,
                     PortfolioConstructionSettings.Default(),
                     decisionParameters),
                 fileSystem);

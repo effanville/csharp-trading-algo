@@ -95,18 +95,16 @@ public sealed partial class SimulationCommand : ICommand
                 return 1;
             }
 
-            _logger.LogInformation(settings.StockFilePath);
+            _logger.LogInformation(settings.EvolverSettings.StockFilePath);
 
             var builder = new HostApplicationBuilder();
-            builder.Logging.RegisterLogging(_reportLogger);
-            builder.Services.RegisterTradingServices(
-                settings.StockFilePath,
-                settings.StartTime,
-                settings.EndTime,
-                settings.EvolutionIncrement,
-                new StrategySettings(settings.PortfolioSettings,
-                settings.PortfolioConstructionSettings,
-                settings.DecisionSystemSettings),
+            _ = builder.Logging.RegisterLogging(_reportLogger);
+            _ = builder.Services.RegisterTradingServices(
+                settings.EvolverSettings,
+                new StrategySettings(
+                    settings.PortfolioSettings,
+                    settings.PortfolioConstructionSettings,
+                    settings.DecisionSystemSettings),
                 _fileSystem);
             builder.Build().Run();
 

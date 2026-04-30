@@ -40,22 +40,11 @@ public static class RegistrationExtensions
 
     public static IServiceCollection RegisterTradingServices(
         this IServiceCollection serviceCollection,
-        string stockFilePath,
-        DateTime startTime,
-        DateTime endTime,
-        TimeSpan evolutionIncrement,
+        EvolverSettings settings,
         StrategySettings strategySettings,
-        IFileSystem? fileSystem = null)
+        IFileSystem? fileSystem)
     {
-        if (fileSystem == null)
-        {
-            serviceCollection.AddSingleton<IFileSystem, FileSystem>();
-        }
-        else
-        {
-            serviceCollection.AddSingleton(fileSystem);
-        }
-
+        serviceCollection.AddSingleton(fileSystem);
         serviceCollection.AddSingleton<ITimerFactory, TimerFactory>();
 
         serviceCollection
@@ -65,21 +54,16 @@ public static class RegistrationExtensions
             {
                 var timerFactory = x.GetRequiredService<ITimerFactory>();
                 return CreateExchange(
-                                stockFilePath,
+                                settings.StockFilePath,
                                 x.GetRequiredService<IStockExchangeFactory>(),
                                 timerFactory);
             });
-        serviceCollection.AddSingleton(
-            x => new EvolverSettings(
-                startTime,
-                endTime,
-                evolutionIncrement));
-
-        serviceCollection.AddStrategy(
-            strategySettings);
-        serviceCollection.AddSingleton<IEventEvolver, EventEvolver>();
-        serviceCollection.AddHostedService<TradingSystemHostedService>();
-        return serviceCollection;
+        return serviceCollection
+            .AddSingleton(settings)
+            .AddStrategy(
+            strategySettings)
+            .AddSingleton<IEventEvolver, EventEvolver>()
+            .AddHostedService<TradingSystemHostedService>();
     }
 
     public static async Task<StrategyHistory> RunSystemAsync(this IHost host)

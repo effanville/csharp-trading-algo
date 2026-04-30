@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 
 using Effanville.Common.Console.DependencyInjection;
+using Effanville.Common.Structure.WebAccess;
 using Effanville.FinancialStructures.Persistence;
 using Effanville.FinancialStructures.Stocks;
+using Effanville.FinancialStructures.Stocks.Download;
 using Effanville.FinancialStructures.Stocks.Persistence;
 using Effanville.TradingConsole.Commands.ExchangeCreation;
 using Effanville.TradingConsole.Commands.Execution;
@@ -19,7 +21,9 @@ internal static class Program
     private static async Task Main(string[] args)
     {
         HostApplicationBuilder builder = Host.CreateApplicationBuilder(args);
-        builder.Services.AddScoped<IPersistence<IStockExchange>, ExchangePersistence>();
+        builder.Services.AddScoped<IPersistence<IStockExchange>, ExchangePersistence>()
+            .AddScoped<WebDownloader>()
+            .AddScoped<IStockDownloaderFactory, StockPriceDownloaderFactory>();
         IHost host = builder.SetupConsole(
                 args,
                 new List<Type>()

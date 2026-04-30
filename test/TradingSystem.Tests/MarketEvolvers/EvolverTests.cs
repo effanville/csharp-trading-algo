@@ -113,10 +113,9 @@ internal class EventEvolverTests
         var builder = new HostApplicationBuilder();
         _ = builder.Logging.RegisterLogging(logger);
         _ = builder.Services.RegisterTradingServices(
-            testFilePath,
-            startTime,
-            endTime,
-            TimeSpan.FromMinutes(1),
+            new(testFilePath, startTime,
+                endTime,
+                TimeSpan.FromMinutes(1)),
             new(
                 startSettings,
                 PortfolioConstructionSettings.Default(),

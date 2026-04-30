@@ -7,6 +7,8 @@ using Effanville.Common.Console.Options;
 using Effanville.Common.Structure.Reporting;
 using Effanville.FinancialStructures.Persistence;
 using Effanville.FinancialStructures.Stocks;
+using Effanville.FinancialStructures.Stocks.Download;
+using Effanville.FinancialStructures.Stocks.Implementation;
 using Effanville.FinancialStructures.Stocks.Persistence;
 
 using Microsoft.Extensions.Configuration;
@@ -21,8 +23,8 @@ public sealed class DownloadAllCommand : ICommand
 {
     private readonly IFileSystem _fileSystem;
     private readonly ILogger _logger;
-    private readonly IReportLogger _reportLogger;
     private readonly IConfiguration _config;
+    private readonly IStockDownloaderFactory _stockDownloaderFactory;
     private readonly IPersistence<IStockExchange> _persistence;
     private readonly CommandOption<string> _stockFilePathOption;
     private readonly CommandOption<DateTime> _startDateOption;
@@ -43,13 +45,12 @@ public sealed class DownloadAllCommand : ICommand
     public DownloadAllCommand(
         IFileSystem fileSystem,
         ILogger<DownloadAllCommand> logger,
-        IReportLogger reportLogger,
         IConfiguration config,
-        IPersistence<IStockExchange> persistence)
+        IPersistence<IStockExchange> persistence,
+        IStockDownloaderFactory stockDownloaderFactory)
     {
         _fileSystem = fileSystem;
         _logger = logger;
-        _reportLogger = reportLogger;
         _config = config;
         _persistence = persistence;
         _stockFilePathOption = new CommandOption<string>("stockFilePath", "FilePath to the stock database to add data to.");
@@ -60,6 +61,7 @@ public sealed class DownloadAllCommand : ICommand
 
         _endDateOption = new CommandOption<DateTime>("end", "The end date to add data to.");
         Options.Add(_endDateOption);
+        _stockDownloaderFactory = stockDownloaderFactory;
     }
 
     /// <inheritdoc/>
@@ -73,7 +75,13 @@ public sealed class DownloadAllCommand : ICommand
     {
         var settings = ExchangePersistence.CreateOptions(_stockFilePathOption.Value, _fileSystem);
         IStockExchange exchange = _persistence.Load(settings);
-        exchange.Download(_startDateOption.Value, _endDateOption.Value, _reportLogger).Wait();
+
+        foreach (Stock stock in exchange.Stocks)
+        {
+            var downloader = _stockDownloaderFactory.Retrieve(stock.Name.Url);
+            downloader.TryGetFullPriceHistory(stock, _startDateOption.Value, _endDateOption.Value).Wait();
+        }
+
         _persistence.Save(exchange, settings);
         return 0;
     }

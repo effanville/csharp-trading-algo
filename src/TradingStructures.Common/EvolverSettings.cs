@@ -5,8 +5,13 @@ namespace Effanville.TradingStructures.Common
     /// <summary>
     /// Settings required for a simulator to simulate.
     /// </summary>
-    public class EvolverSettings
+    /// <remarks>
+    /// Construct an instance.
+    /// </remarks>
+    public class EvolverSettings(string stockFilePath, DateTime startTime, DateTime endTime, TimeSpan evolutionIncrement)
     {
+        public string StockFilePath { get; set; } = stockFilePath;
+
         /// <summary>
         /// The start time of the simulation. This is the latest of the
         /// user specified time and the suitable start time from the Exchange data.
@@ -15,7 +20,7 @@ namespace Effanville.TradingStructures.Common
         {
             get;
             protected set;
-        }
+        } = startTime;
 
         /// <summary>
         /// The end time of the simulation. This is the earliest of the
@@ -26,7 +31,7 @@ namespace Effanville.TradingStructures.Common
         {
             get;
             protected set;
-        }
+        } = endTime;
 
         /// <summary>
         /// The increment between times to trade at.
@@ -35,16 +40,6 @@ namespace Effanville.TradingStructures.Common
         {
             get;
             private set;
-        }
-
-        /// <summary>
-        /// Construct an instance.
-        /// </summary>
-        public EvolverSettings(DateTime startTime, DateTime endTime, TimeSpan evolutionIncrement)
-        {
-            StartTime = startTime;
-            EndTime = endTime;
-            EvolutionIncrement = evolutionIncrement.Seconds != 0 ? evolutionIncrement : new TimeSpan(1, 0, 0, 0);
-        }
+        } = evolutionIncrement.Seconds != 0 ? evolutionIncrement : new TimeSpan(1, 0, 0, 0);
     }
 }
