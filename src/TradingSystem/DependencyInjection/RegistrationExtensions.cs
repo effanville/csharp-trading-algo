@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.IO.Abstractions;
 using System.Threading.Tasks;
 
@@ -61,12 +62,12 @@ public static class RegistrationExtensions
         return serviceCollection
             .AddSingleton(settings)
             .AddStrategy(
-            strategySettings)
+                strategySettings)
             .AddSingleton<IEventEvolver, EventEvolver>()
             .AddHostedService<TradingSystemHostedService>();
     }
 
-    public static async Task<StrategyHistory> RunSystemAsync(this IHost host)
+    public static async Task<IReadOnlyDictionary<IStrategy, StrategyHistory?>> RunSystemAsync(this IHost host)
     {
         var timerFactory = host.Services.GetRequiredService<ITimerFactory>();
         var evolver = host.Services.GetRequiredService<IEventEvolver>();
@@ -87,7 +88,7 @@ public static class RegistrationExtensions
     {
         using (timerFactory.Create("Loading Exchange"))
         {
-            var exchange = stockExchangeFactory.Create(new (filePath));
+            var exchange = stockExchangeFactory.Create(new(filePath));
             foreach (var stock in exchange.Stocks)
             {
                 foreach (var value in stock.Valuations)

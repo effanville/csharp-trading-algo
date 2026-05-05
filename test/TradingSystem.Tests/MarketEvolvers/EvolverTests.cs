@@ -20,6 +20,8 @@ using DecisionSystemFactory = Effanville.TradingStructures.Strategies.Decision.D
 using Effanville.FinancialStructures.Stocks.Statistics;
 using Microsoft.Extensions.Hosting;
 using Effanville.TradingSystem.DependencyInjection;
+using Effanville.TradingStructures.Strategies;
+using System.Linq;
 
 namespace Effanville.TradingSystem.Tests.MarketEvolvers;
 
@@ -116,10 +118,10 @@ internal class EventEvolverTests
             new(testFilePath, startTime,
                 endTime,
                 TimeSpan.FromMinutes(1)),
-            new(
-                startSettings,
+            new StrategySettings(
+                [new(startSettings,
                 PortfolioConstructionSettings.Default(),
-                decisionParameters),
+                decisionParameters)]),
             fileSystem);
         var host = builder.Build();
         var result = await host.RunSystemAsync();
@@ -133,9 +135,9 @@ internal class EventEvolverTests
         var reports = logger.Reports;
         Assert.That(reports, Is.Not.Null);
 
-        var actualTrades = result.Trades;
+        var actualTrades = result.Values.First().Trades;
         string mdTable = actualTrades.ConvertToTable();
-        decimal finalValue = result.Portfolio.TotalValue(Totals.All);
+        decimal finalValue = result.Values.First().Portfolio.TotalValue(Totals.All);
         Assert.Multiple(() =>
         {
             Assert.That(reports.Count(), Is.EqualTo(numberReports));

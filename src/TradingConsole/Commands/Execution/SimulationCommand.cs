@@ -101,10 +101,10 @@ public sealed partial class SimulationCommand : ICommand
             _ = builder.Logging.RegisterLogging(_reportLogger);
             _ = builder.Services.RegisterTradingServices(
                 settings.EvolverSettings,
-                new StrategySettings(
-                    settings.PortfolioSettings,
+                new StrategySettings([
+                    new(settings.PortfolioSettings,
                     settings.PortfolioConstructionSettings,
-                    settings.DecisionSystemSettings),
+                    settings.DecisionSystemSettings)]),
                 _fileSystem);
             builder.Build().Run();
 

@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -17,7 +18,7 @@ public sealed class TradingSystemHostedService : IHostedService
     private readonly ITimerFactory _timerFactory;
     private readonly IHostApplicationLifetime _applicationLifetime;
 
-    public StrategyHistory? Result { get; private set; }
+    public IReadOnlyDictionary<IStrategy, StrategyHistory?>? Result { get; private set; }
 
     public TradingSystemHostedService(
         IEventEvolver evolver,

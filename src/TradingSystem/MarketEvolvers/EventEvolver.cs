@@ -1,4 +1,7 @@
-﻿using Effanville.Common.Structure.Reporting;
+﻿using System.Collections.Generic;
+using System.Linq;
+
+using Effanville.Common.Structure.Reporting;
 using Effanville.FinancialStructures.Stocks;
 using Effanville.TradingStructures.Common;
 using Effanville.TradingStructures.Common.DependencyInjection;
@@ -34,7 +37,7 @@ public sealed class EventEvolver : IEventEvolver
     private readonly ServiceProvider _serviceProvider;
     private readonly IPriceService _priceService;
     private readonly IExchangeSessionService _exchange;
-    private readonly IStrategy _strategy;
+    private readonly IReadOnlyList<IStrategy> _strategies;
     private readonly IOrderManagementService _oms;
 
     /// <summary>
@@ -45,13 +48,13 @@ public sealed class EventEvolver : IEventEvolver
         get; private set;
     }
 
-    public StrategyHistory? Result { get; private set; }
+    public IReadOnlyDictionary<IStrategy, StrategyHistory?>? Result { get; private set; }
 
     public EventEvolver(
         ILogger<EventEvolver> logger,
         EvolverSettings settings,
         IStockExchange exchange,
-        IStrategy strategy,
+        IEnumerable<IStrategy> strategies,
         IReportLogger reportLogger)
     {
         _logger = logger;
@@ -61,8 +64,6 @@ public sealed class EventEvolver : IEventEvolver
             .AddSingleton(a => reportLogger)
             .AddCommonServices(settings.StartTime)
             .AddSingleton(a => exchange)
-            .AddSingleton(a => strategy)
-            .AddSingleton<IService>(x => x.GetRequiredService<IStrategy>())
             .AddStaticDataServices()
             .AddExchangeServices()
 
@@ -72,6 +73,13 @@ public sealed class EventEvolver : IEventEvolver
             .AddPriceService()
             .AddOrderManagement();
 
+        foreach (IStrategy strategy in strategies)
+        {
+            _ = serviceCollection
+                .AddSingleton(strategy)
+                .AddSingleton<IService>(strategy);
+        }
+
         _serviceProvider = serviceCollection.BuildServiceProvider();
 
         _clock = _serviceProvider.GetService<IClock>()!;
@@ -80,8 +88,11 @@ public sealed class EventEvolver : IEventEvolver
         _priceService = _serviceProvider.GetService<IPriceService>()!;
         _oms = _serviceProvider.GetRequiredService<IOrderManagementService>();
 
-        _strategy = _serviceProvider.GetService<IStrategy>()!;
-        _ = strategy.RegisterServices(_serviceProvider);
+        _strategies = _serviceProvider.GetServices<IStrategy>().ToList();
+        foreach (IStrategy strategy in _strategies)
+        {
+            _ = strategy.RegisterServices(_serviceProvider);
+        }
     }
 
     /// <summary>
@@ -95,11 +106,15 @@ public sealed class EventEvolver : IEventEvolver
             service.Initialize(_settings);
         }
 
-        _strategy.SubmitTradeEvent += _oms.OnTradeRequested;
-        _exchange.ExchangeStatusChanged += _strategy.OnExchangeStatusChanged;
-        _priceService.PriceChanged += _strategy.OnPriceUpdate;
+        foreach (IStrategy strategy in _strategies)
+        {
+            strategy.SubmitTradeEvent += _oms.OnTradeRequested;
+            _exchange.ExchangeStatusChanged += strategy.OnExchangeStatusChanged;
+            _priceService.PriceChanged += strategy.OnPriceUpdate;
 
-        _oms.TradeCompleted += _strategy.OnTradeConfirmed;
+            _oms.TradeCompleted += strategy.OnTradeConfirmed;
+        }
+
         ScheduleShutdown();
         _scheduler.ScheduleNewEvent(TimeUpdate, _clock.UtcNow().AddDays(1));
         _isInitialised = true;
@@ -109,7 +124,11 @@ public sealed class EventEvolver : IEventEvolver
     private void TimeUpdate()
     {
         var time = _clock.UtcNow();
-        _strategy.OnTimeIncrementUpdate(null, new TimeIncrementEventArgs(time));
+        foreach (IStrategy strategy in _strategies)
+        {
+            strategy.OnTimeIncrementUpdate(null, new TimeIncrementEventArgs(time));
+        }
+
         _scheduler.ScheduleNewEvent(TimeUpdate, time.AddDays(1));
     }
 
@@ -141,8 +160,13 @@ public sealed class EventEvolver : IEventEvolver
         {
             service.Shutdown();
         }
+        var results = new Dictionary<IStrategy, StrategyHistory?>(); ;
+        foreach (IStrategy strategy in _strategies)
+        {
+            results[strategy] = strategy?.History;
+        }
+        Result = results;
 
-        Result = _strategy?.History;
         IsActive = false;
     }
 }

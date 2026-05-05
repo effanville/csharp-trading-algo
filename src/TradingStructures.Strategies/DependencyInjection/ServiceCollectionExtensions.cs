@@ -4,6 +4,7 @@ using Effanville.TradingStructures.Strategies.Execution;
 using Effanville.TradingStructures.Strategies.Portfolio;
 
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 
 namespace Effanville.TradingStructures.Strategies.DependencyInjection;
 
@@ -13,31 +14,33 @@ public static class ServiceCollectionExtensions
         this IServiceCollection serviceCollection,
         StrategySettings strategySettings)
     {
-        return serviceCollection
+        _ = serviceCollection
             .AddSingleton<IDecisionSystemFactory, DecisionSystemFactory>()
-            .AddSingleton(
-                x =>
-                {
-                    IDecisionSystemFactory decisionSystemFactory = x.GetRequiredService<IDecisionSystemFactory>();
-                    return decisionSystemFactory.Create(strategySettings.DecisionParameters);
-                })
             .AddSingleton<IPortfolioManagerFactory, PortfolioManagerFactory>()
-            .AddSingleton(
-                x =>
-                {
-                    IPortfolioManagerFactory portfolioManagerFactory = x.GetRequiredService<IPortfolioManagerFactory>();
-                    return portfolioManagerFactory.LoadFromFile(strategySettings.StartSettings, strategySettings.ConstructionSettings);
-                })
-            .AddSingleton<IExecutionStrategyFactory, ExecutionStrategyFactory>()
-            .AddSingleton(
-                x =>
-                {
-                    IExecutionStrategyFactory factory = x.GetRequiredService<IExecutionStrategyFactory>();
-                    return factory.Create(
-                        StrategyType.ExchangeOpen,
-                        x.GetRequiredService<IStockExchange>(),
-                        x.GetRequiredService<IDecisionSystem>());
-                })
-            .AddSingleton<IStrategy, Strategy>();
+            .AddSingleton<IExecutionStrategyFactory, ExecutionStrategyFactory>();
+        foreach (SingleStrategySettings settings in strategySettings.Settings)
+        {
+            _ = serviceCollection
+                .AddSingleton<IStrategy, Strategy>(
+                    x =>
+                    {
+                        IDecisionSystemFactory decisionSystemFactory = x.GetRequiredService<IDecisionSystemFactory>();
+                        IDecisionSystem decisionSystem = decisionSystemFactory.Create(settings.DecisionParameters);
+
+                        IPortfolioManagerFactory portfolioManagerFactory = x.GetRequiredService<IPortfolioManagerFactory>();
+                        IPortfolioManager portfolioManager = portfolioManagerFactory.LoadFromFile(settings.StartSettings, settings.ConstructionSettings);
+
+                        IExecutionStrategyFactory factory = x.GetRequiredService<IExecutionStrategyFactory>();
+                        IExecutionStrategy executionStrategy = factory.Create(
+                            StrategyType.ExchangeOpen,
+                            x.GetRequiredService<IStockExchange>(),
+                            decisionSystem);
+
+                        ILogger<Strategy> logger = x.GetRequiredService<ILogger<Strategy>>();
+                        return new Strategy(executionStrategy, portfolioManager, logger);
+                    });
+        }
+
+        return serviceCollection;
     }
 }

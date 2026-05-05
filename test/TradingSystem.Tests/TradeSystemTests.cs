@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.IO;
 using System.IO.Abstractions.TestingHelpers;
+using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 
 using Effanville.Common.Structure.DataStructures;
@@ -11,7 +13,9 @@ using Effanville.FinancialStructures.Database;
 using Effanville.FinancialStructures.Database.Extensions.Values;
 using Effanville.FinancialStructures.Stocks.Statistics;
 using Effanville.TradingStructures.Common.Trading;
+using Effanville.TradingStructures.Strategies;
 using Effanville.TradingStructures.Strategies.Decision;
+using Effanville.TradingStructures.Strategies.Execution;
 using Effanville.TradingStructures.Strategies.Portfolio;
 using Effanville.TradingSystem.DependencyInjection;
 
@@ -453,18 +457,22 @@ $@"|StartDate|EndDate|StockName|TradeType|NumberShares|
                     startTime,
                     endTime,
                     TimeSpan.FromDays(1)),
-                new(portfolioStartSettings,
+                new([new(portfolioStartSettings,
                     PortfolioConstructionSettings.Default(),
-                    decisionParameters),
+                    decisionParameters)]),
                 fileSystem);
             var host = builder.Build();
             var output = await host.RunSystemAsync();
-            var portfolio = output.Portfolio;
-            var trades = output.Trades;
+            var portfolio = output.Values.Single().Portfolio;
+            var trades = output.Values.Single().Trades;
 
             logger.WriteReportsToFile($"logs\\{DateTime.Now:yyyy-MM-ddTHHmmss}{TestContext.CurrentContext.Test.Name}.log");
 
-            var decisionSystem = host.Services.GetRequiredService<IDecisionSystem>();
+            var strategy = host.Services.GetRequiredService<IStrategy>();
+            FieldInfo field = typeof(Strategy).GetField("_executionStrategy", BindingFlags.Instance | BindingFlags.NonPublic);
+            IExecutionStrategy value = (IExecutionStrategy)field.GetValue(strategy);
+            field = typeof(ExchangeOpenCalcExecutionStrategy).GetField("_decisionSystem", BindingFlags.Instance | BindingFlags.NonPublic);
+            IDecisionSystem decisionSystem = (IDecisionSystem)field.GetValue(value);
             if (decisionSystem is ICalibratedDecisionSystem calibratedDecisionSystem && expectedEstimator != null)
             {
                 Assert.That(calibratedDecisionSystem.Result?.Estimator, Is.EquivalentTo(expectedEstimator));
