@@ -13,6 +13,7 @@
     <ProjectReference Include="..\..\FinancialStructures\Common\src\Common.Structure\Common.Structure.csproj" />
     <ProjectReference Include="..\TradingStructures.Common\TradingStructures.Common.csproj" />
     <ProjectReference Include="..\TradingStructures.Exchanges\TradingStructures.Exchanges.csproj" />
+    <ProjectReference Include="..\TradingStructures.Exchanges.Interfaces\TradingStructures.Exchanges.Interfaces.csproj" />
     <ProjectReference Include="..\TradingStructures.OrderManagement.Interfaces\TradingStructures.OrderManagement.Interfaces.csproj" />
     <ProjectReference Include="..\TradingStructures.OrderManagement\TradingStructures.OrderManagement.csproj" />
     <ProjectReference Include="..\TradingStructures.Pricing\TradingStructures.Pricing.csproj" />

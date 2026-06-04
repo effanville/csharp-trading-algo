@@ -4,6 +4,7 @@
       <ProjectReference Include="..\..\FinancialStructures\src\FinancialStructures.Stocks\FinancialStructures.Stocks.csproj" />
       <ProjectReference Include="..\..\FinancialStructures\src\FinancialStructures\FinancialStructures.csproj" />
       <ProjectReference Include="..\TradingStructures.Common\TradingStructures.Common.csproj" />
+      <ProjectReference Include="..\TradingStructures.Exchanges.Interfaces\TradingStructures.Exchanges.Interfaces.csproj" />
     </ItemGroup>
 
 </Project>
