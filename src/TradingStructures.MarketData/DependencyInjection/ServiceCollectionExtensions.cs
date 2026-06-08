@@ -4,7 +4,7 @@ using Effanville.TradingStructures.Common.Services;
 
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Effanville.TradingStructures.Pricing.DependencyInjection;
+namespace Effanville.TradingStructures.MarketData.DependencyInjection;
 
 public static class ServiceCollectionExtensions
 {

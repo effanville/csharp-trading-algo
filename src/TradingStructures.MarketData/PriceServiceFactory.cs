@@ -1,10 +1,10 @@
-﻿﻿using System;
+﻿using System;
 
 using Effanville.FinancialStructures.Stocks;
 using Effanville.TradingStructures.Common.Scheduling;
-using Effanville.TradingStructures.Pricing.Implementation;
+using Effanville.TradingStructures.MarketData.Implementation;
 
-namespace Effanville.TradingStructures.Pricing;
+namespace Effanville.TradingStructures.MarketData;
 
 public class PriceServiceFactory : IPriceServiceFactory
 {

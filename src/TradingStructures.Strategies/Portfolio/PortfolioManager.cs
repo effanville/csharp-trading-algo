@@ -14,7 +14,7 @@ using Effanville.FinancialStructures.Persistence;
 using Effanville.FinancialStructures.Stocks;
 using Effanville.TradingStructures.Common;
 using Effanville.TradingStructures.Common.Trading;
-using Effanville.TradingStructures.Pricing;
+using Effanville.TradingStructures.MarketData;
 
 using Microsoft.Extensions.Logging;
 

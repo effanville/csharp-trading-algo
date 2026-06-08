@@ -14,9 +14,10 @@
     <ProjectReference Include="..\TradingStructures.Common\TradingStructures.Common.csproj" />
     <ProjectReference Include="..\TradingStructures.Exchanges\TradingStructures.Exchanges.csproj" />
     <ProjectReference Include="..\TradingStructures.Exchanges.Interfaces\TradingStructures.Exchanges.Interfaces.csproj" />
+    <ProjectReference Include="..\TradingStructures.MarketData.Interfaces\TradingStructures.MarketData.Interfaces.csproj" />
+    <ProjectReference Include="..\TradingStructures.MarketData\TradingStructures.MarketData.csproj" />
     <ProjectReference Include="..\TradingStructures.OrderManagement.Interfaces\TradingStructures.OrderManagement.Interfaces.csproj" />
     <ProjectReference Include="..\TradingStructures.OrderManagement\TradingStructures.OrderManagement.csproj" />
-    <ProjectReference Include="..\TradingStructures.Pricing\TradingStructures.Pricing.csproj" />
     <ProjectReference Include="..\TradingStructures.StaticData\TradingStructures.StaticData.csproj" />
     <ProjectReference Include="..\TradingStructures.Strategies.Interfaces\TradingStructures.Strategies.Interfaces.csproj" />
     <ProjectReference Include="..\TradingStructures.Strategies\TradingStructures.Strategies.csproj" />

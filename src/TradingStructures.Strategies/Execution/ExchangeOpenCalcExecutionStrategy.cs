@@ -8,7 +8,7 @@ using Effanville.TradingStructures.Common;
 using Effanville.TradingStructures.Common.Time;
 using Effanville.TradingStructures.Common.Trading;
 using Effanville.TradingStructures.Exchanges;
-using Effanville.TradingStructures.Pricing;
+using Effanville.TradingStructures.MarketData;
 using Effanville.TradingStructures.Strategies.Decision;
 using Effanville.TradingStructures.Trading;
 

@@ -2,7 +2,7 @@
     
     <ItemGroup>
       <ProjectReference Include="..\TradingStructures.Common\TradingStructures.Common.csproj" />
-      <ProjectReference Include="..\TradingStructures.Pricing\TradingStructures.Pricing.csproj" />
+      <ProjectReference Include="..\TradingStructures.MarketData.Interfaces\TradingStructures.MarketData.Interfaces.csproj" />
     </ItemGroup>
 
 </Project>

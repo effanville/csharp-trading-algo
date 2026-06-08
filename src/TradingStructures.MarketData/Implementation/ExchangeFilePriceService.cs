@@ -6,7 +6,7 @@ using Effanville.FinancialStructures.Stocks.Implementation;
 using Effanville.TradingStructures.Common;
 using Effanville.TradingStructures.Common.Scheduling;
 
-namespace Effanville.TradingStructures.Pricing.Implementation
+namespace Effanville.TradingStructures.MarketData.Implementation
 {
     /// <summary>
     /// Price service where the price data is retrieved from a file.

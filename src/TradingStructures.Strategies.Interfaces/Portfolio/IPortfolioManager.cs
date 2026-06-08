@@ -5,7 +5,7 @@ using Effanville.FinancialStructures.DataStructures;
 using Effanville.FinancialStructures.Stocks;
 using Effanville.TradingStructures.Common.Services;
 using Effanville.TradingStructures.Common.Trading;
-using Effanville.TradingStructures.Pricing;
+using Effanville.TradingStructures.MarketData;
 
 namespace Effanville.TradingStructures.Strategies.Portfolio
 {

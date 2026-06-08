@@ -1,7 +1,7 @@
 ﻿using Effanville.FinancialStructures.Stocks;
 using Effanville.TradingStructures.Common.Scheduling;
 
-namespace Effanville.TradingStructures.Pricing;
+namespace Effanville.TradingStructures.MarketData;
 
 public interface IPriceServiceFactory
 {
