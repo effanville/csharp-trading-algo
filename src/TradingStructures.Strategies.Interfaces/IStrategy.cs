@@ -5,7 +5,6 @@ using Effanville.TradingStructures.Common.Time;
 using Effanville.TradingStructures.Exchanges;
 using Effanville.TradingStructures.MarketData;
 using Effanville.TradingStructures.OrderManagement;
-using Effanville.TradingStructures.Trading;
 
 namespace Effanville.TradingStructures.Strategies;
 

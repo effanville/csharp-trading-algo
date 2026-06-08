@@ -1,9 +1,9 @@
-﻿namespace Effanville.TradingStructures.Trading
+﻿namespace Effanville.TradingStructures.StockMarket
 {
     /// <summary>
     /// Contains options for
     /// </summary>
-    public sealed class TradeMechanismSettings
+    public sealed class StockMarketAdapterSettings
     {
         /// <summary>
         /// The fixed cost associated with each trade.
@@ -13,11 +13,11 @@
         /// <summary>
         /// Construct an instance.
         /// </summary>
-        public TradeMechanismSettings(decimal tradeCost)
+        public StockMarketAdapterSettings(decimal tradeCost)
         {
             TradeCost = tradeCost;
         }
 
-        public static TradeMechanismSettings Default() => new TradeMechanismSettings(6);
+        public static StockMarketAdapterSettings Default() => new StockMarketAdapterSettings(6);
     }
 }

@@ -16,7 +16,7 @@ using Effanville.TradingStructures.OrderManagement;
 using Effanville.TradingStructures.OrderManagement.DependencyInjection;
 using Effanville.TradingStructures.StaticData.DependencyInjection;
 using Effanville.TradingStructures.Strategies;
-using Effanville.TradingStructures.Trading.DependencyInjection;
+using Effanville.TradingStructures.StockMarket.DependencyInjection;
 
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;

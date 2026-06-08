@@ -12,7 +12,6 @@ using Effanville.TradingStructures.MarketData;
 using Effanville.TradingStructures.OrderManagement;
 using Effanville.TradingStructures.Strategies.Execution;
 using Effanville.TradingStructures.Strategies.Portfolio;
-using Effanville.TradingStructures.Trading;
 
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;

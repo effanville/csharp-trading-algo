@@ -8,7 +8,9 @@ public static class ServiceCollectionExtensions
 {
     public static IServiceCollection AddOrderManagement(this IServiceCollection serviceCollection)
     {
-        return serviceCollection.AddSingleton<IOrderManagementService, OrderManagementService>()
+        return serviceCollection
+            .AddSingleton(sp => OrderManagementSettings.Default())
+            .AddSingleton<IOrderManagementService, OrderManagementService>()
             .AddSingleton<IService>(a => a.GetRequiredService<IOrderManagementService>());
     }
 

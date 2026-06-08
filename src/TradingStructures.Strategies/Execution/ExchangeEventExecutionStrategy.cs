@@ -8,8 +8,8 @@ using Effanville.TradingStructures.Common.Time;
 using Effanville.TradingStructures.Common.Trading;
 using Effanville.TradingStructures.Exchanges;
 using Effanville.TradingStructures.MarketData;
+using Effanville.TradingStructures.OrderManagement;
 using Effanville.TradingStructures.Strategies.Decision;
-using Effanville.TradingStructures.Trading;
 
 using Microsoft.Extensions.Logging;
 

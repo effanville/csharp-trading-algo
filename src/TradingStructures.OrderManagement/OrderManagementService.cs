@@ -5,7 +5,7 @@ using Effanville.FinancialStructures.DataStructures;
 using Effanville.TradingStructures.Common;
 using Effanville.TradingStructures.Common.Time;
 using Effanville.TradingStructures.Common.Trading;
-using Effanville.TradingStructures.Trading;
+using Effanville.TradingStructures.StockMarket;
 
 namespace Effanville.TradingStructures.OrderManagement;
 
@@ -13,7 +13,7 @@ public sealed class OrderManagementService : IOrderManagementService
 {
     private readonly IClock _clock;
     private readonly IStockMarketAdapter _stockMarketAdapter;
-    private readonly TradeMechanismSettings _settings;
+    private readonly OrderManagementSettings _settings;
     private readonly Dictionary<Guid, TradeSubmittedEventArgs> _pendingTrades = new Dictionary<Guid, TradeSubmittedEventArgs>();
 
     public string Name => nameof(OrderManagementService);
@@ -22,7 +22,7 @@ public sealed class OrderManagementService : IOrderManagementService
     public OrderManagementService(
         IClock clock,
         IStockMarketAdapter stockMarketAdapter,
-        TradeMechanismSettings settings)
+        OrderManagementSettings settings)
     {
         _clock = clock;
         _stockMarketAdapter = stockMarketAdapter;

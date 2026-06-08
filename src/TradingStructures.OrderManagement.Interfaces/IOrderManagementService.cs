@@ -1,7 +1,6 @@
 ﻿using System;
 
 using Effanville.TradingStructures.Common.Services;
-using Effanville.TradingStructures.Trading;
 
 namespace Effanville.TradingStructures.OrderManagement;
 

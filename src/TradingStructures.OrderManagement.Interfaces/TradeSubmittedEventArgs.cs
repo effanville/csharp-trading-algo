@@ -2,7 +2,7 @@
 
 using Effanville.TradingStructures.Common.Trading;
 
-namespace Effanville.TradingStructures.Trading;
+namespace Effanville.TradingStructures.OrderManagement;
 
 /// <summary>
 /// EventArgs for submitting a new trade to be enacted.

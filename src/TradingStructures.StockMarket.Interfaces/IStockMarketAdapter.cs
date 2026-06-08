@@ -2,7 +2,7 @@ using System;
 
 using Effanville.TradingStructures.Common.Services;
 
-namespace Effanville.TradingStructures.Trading;
+namespace Effanville.TradingStructures.StockMarket;
 
 public interface IStockMarketAdapter : IService
 {

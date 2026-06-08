@@ -7,20 +7,20 @@ using Effanville.TradingStructures.Common.Time;
 using Effanville.TradingStructures.Common.Trading;
 using Effanville.TradingStructures.MarketData;
 
-namespace Effanville.TradingStructures.Trading.Implementation
+namespace Effanville.TradingStructures.StockMarket.Implementation
 {
     internal class SimulationExchange : IStockMarketAdapter
     {
         private readonly IClock _clock;
         private readonly IPriceService _priceService;
-        private readonly TradeMechanismSettings _settings;
+        private readonly StockMarketAdapterSettings _settings;
 
         public event EventHandler<TradeResponseEventArgs>? TradeCompleted;
 
         public string Name => nameof(SimulationExchange);
 
         public SimulationExchange(
-            TradeMechanismSettings settings,
+            StockMarketAdapterSettings settings,
             IPriceService priceService,
             IClock clock)
         {

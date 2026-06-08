@@ -1,11 +1,10 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
+	
   <PropertyGroup>
-    <RootNamespace>Effanville.TradingStructures.OrderManagement</RootNamespace>
+    <RootNamespace>Effanville.TradingStructures.StockMarket</RootNamespace>
   </PropertyGroup>
-
+	
   <ItemGroup>
     <ProjectReference Include="..\TradingStructures.Common\TradingStructures.Common.csproj" />
   </ItemGroup>
-
 </Project>

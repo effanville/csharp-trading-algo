@@ -4,7 +4,7 @@ using Effanville.TradingStructures.Common.Services;
 using Effanville.TradingStructures.Common.Time;
 using Effanville.TradingStructures.Exchanges;
 using Effanville.TradingStructures.MarketData;
-using Effanville.TradingStructures.Trading;
+using Effanville.TradingStructures.OrderManagement;
 
 namespace Effanville.TradingStructures.Strategies.Execution;
 

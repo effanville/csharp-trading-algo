@@ -2,7 +2,7 @@
   
   <ItemGroup>
     <ProjectReference Include="..\TradingStructures.OrderManagement.Interfaces\TradingStructures.OrderManagement.Interfaces.csproj" />
-    <ProjectReference Include="..\TradingStructures.Trading\TradingStructures.Trading.csproj" />
+    <ProjectReference Include="..\TradingStructures.StockMarket.Interfaces\TradingStructures.StockMarket.Interfaces.csproj" />
   </ItemGroup>
 
 </Project>
