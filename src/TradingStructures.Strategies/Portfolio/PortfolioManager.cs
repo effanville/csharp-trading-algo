@@ -52,8 +52,6 @@ namespace Effanville.TradingStructures.Strategies.Portfolio
             get;
         }
 
-        public string Name => nameof(PortfolioManager);
-
         public PortfolioManager(
             IPortfolio portfolio,
             PortfolioStartSettings startSettings,
@@ -66,10 +64,6 @@ namespace Effanville.TradingStructures.Strategies.Portfolio
             StartSettings = startSettings;
             PortfolioConstructionSettings = constructionSettings;
         }
-
-        public void Initialize(EvolverSettings settings) { }
-        public void Restart() { }
-        public void Shutdown() { }
 
         /// <summary>
         /// Create a portfolioManager from a settings object.

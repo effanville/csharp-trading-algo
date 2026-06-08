@@ -3,7 +3,6 @@
 using Effanville.FinancialStructures.Database;
 using Effanville.FinancialStructures.DataStructures;
 using Effanville.FinancialStructures.Stocks;
-using Effanville.TradingStructures.Common.Services;
 using Effanville.TradingStructures.Common.Trading;
 using Effanville.TradingStructures.MarketData;
 
@@ -13,7 +12,7 @@ namespace Effanville.TradingStructures.Strategies.Portfolio
     /// An interface dealing with the construction of a portfolio. For example
     /// an implementor could try to create a Markowitz portfolio.
     /// </summary>
-    public interface IPortfolioManager : IService
+    public interface IPortfolioManager
     {
         /// <summary>
         /// Various settings used in the initial setup of the portfolio.

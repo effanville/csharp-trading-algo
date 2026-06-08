@@ -25,6 +25,4 @@ internal sealed class StaticDataService : IStaticDataService
     {
 
     }
-
-    public void Shutdown() { }
 }

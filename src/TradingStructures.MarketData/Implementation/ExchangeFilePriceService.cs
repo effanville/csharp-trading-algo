@@ -52,9 +52,6 @@ namespace Effanville.TradingStructures.MarketData.Implementation
             }
         }
 
-        public void Restart() { }
-        public void Shutdown() { }
-
         private void RaisePriceChanged(object? obj, PriceUpdateEventArgs args) => PriceChanged?.Invoke(obj, args);
 
         public decimal GetPrice(DateTime time, string ticker) => _stockExchange.GetValue(ticker, time);

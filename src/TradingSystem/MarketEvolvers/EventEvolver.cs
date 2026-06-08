@@ -156,15 +156,18 @@ public sealed class EventEvolver : IEventEvolver
     {
         _clock.Stop();
         _scheduler.Stop();
-        foreach (IService service in _serviceProvider.GetServices<IService>())
+
+        foreach (IStrategy strategy in _strategies)
         {
-            service.Shutdown();
+            strategy.Shutdown();
         }
+
         var results = new Dictionary<IStrategy, StrategyHistory?>(); ;
         foreach (IStrategy strategy in _strategies)
         {
             results[strategy] = strategy?.History;
         }
+
         Result = results;
 
         IsActive = false;

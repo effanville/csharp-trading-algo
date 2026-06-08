@@ -54,11 +54,7 @@ public class Strategy : IStrategy
         return true;
     }
 
-    public void Initialize(EvolverSettings settings)
-    {
-        _executionStrategy.Initialize(settings);
-        _portfolioManager.Initialize(settings);
-    }
+    public void Initialize(EvolverSettings settings) { }
 
     private void ExecutionStrategyOnSubmitTradeEvent(object? sender, TradeSubmittedEventArgs e)
     {
@@ -86,8 +82,6 @@ public class Strategy : IStrategy
 
     public void Shutdown()
     {
-        _executionStrategy.Shutdown();
-        _portfolioManager.Shutdown();
         DateTime time = _clock?.UtcNow() ?? default;
         decimal latestValue = _portfolioManager.Portfolio.TotalValue(Totals.All, time);
         DateTime earliestTime = _portfolioManager.Portfolio.FirstValueDate(Totals.All);

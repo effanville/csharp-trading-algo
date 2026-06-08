@@ -31,9 +31,6 @@ namespace Effanville.TradingStructures.StockMarket.Implementation
 
         public void Initialize(EvolverSettings settings) { }
 
-        public void Restart() { }
-
-        public void Shutdown() { }
         public void OnTradeRequested(object? obj, TradeRequestEventArgs eventArgs)
         {
             if (_clock == null)

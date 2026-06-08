@@ -1,6 +1,5 @@
 ﻿using System;
 
-using Effanville.TradingStructures.Common.Services;
 using Effanville.TradingStructures.Common.Time;
 using Effanville.TradingStructures.Exchanges;
 using Effanville.TradingStructures.MarketData;
@@ -11,7 +10,7 @@ namespace Effanville.TradingStructures.Strategies.Execution;
 /// <summary>
 /// Contains all necessary methods for the execution of a stock market trading strategy
 /// </summary>
-public interface IExecutionStrategy : IService
+public interface IExecutionStrategy
 {
     /// <summary>
     /// Event to subscribe to for the dealing with Trades created.

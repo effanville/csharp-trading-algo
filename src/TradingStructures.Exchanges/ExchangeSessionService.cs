@@ -74,9 +74,6 @@ public sealed class ExchangeSessionService : IExchangeSessionService
         }
     }
 
-    public void Restart() { }
-    public void Shutdown() { }
-
     private void RaiseExchangeStatusChanged(object? obj, ExchangeStatusChangedEventArgs eventArgs)
     {
         EventHandler<ExchangeStatusChangedEventArgs>? handler = ExchangeStatusChanged;

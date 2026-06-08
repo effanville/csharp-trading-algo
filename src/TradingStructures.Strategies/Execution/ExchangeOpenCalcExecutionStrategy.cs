@@ -4,7 +4,6 @@ using System.Linq;
 using Effanville.FinancialStructures.NamingStructures;
 using Effanville.FinancialStructures.Stocks;
 using Effanville.FinancialStructures.Stocks.Implementation;
-using Effanville.TradingStructures.Common;
 using Effanville.TradingStructures.Common.Time;
 using Effanville.TradingStructures.Common.Trading;
 using Effanville.TradingStructures.Exchanges;
@@ -25,8 +24,6 @@ public class ExchangeOpenCalcExecutionStrategy : IExecutionStrategy
     private TradeCollection? _tradeCollection;
     private bool _calibrated;
 
-    public string Name => nameof(ExchangeOpenCalcExecutionStrategy);
-
     public ExchangeOpenCalcExecutionStrategy(
         ILogger<ExchangeOpenCalcExecutionStrategy> logger,
         IStockExchangeFactory stockExchangeFactory,
@@ -37,10 +34,6 @@ public class ExchangeOpenCalcExecutionStrategy : IExecutionStrategy
         _stockExchange = stockExchangeFactory.Create(stockExchange, DateTime.MinValue);
         _decisionSystem = decisionSystem;
     }
-
-    public void Initialize(EvolverSettings settings) { }
-
-    public void Restart() { }
 
     public void OnTimeIncrementUpdate(object? obj, TimeIncrementEventArgs eventArgs) { }
 
@@ -110,6 +103,4 @@ public class ExchangeOpenCalcExecutionStrategy : IExecutionStrategy
     private void MarketClose(DateTime time) =>
         // Decide which stocks to buy, sell or do nothing with.
         _tradeCollection = _decisionSystem.Decide(time, _stockExchange);
-
-    public void Shutdown() { }
 }

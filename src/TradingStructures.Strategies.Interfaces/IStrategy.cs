@@ -41,4 +41,9 @@ public interface IStrategy : IService
     /// Adds a trade into the portfolio.
     /// </summary>
     void OnTradeConfirmed(object? obj, TradeCompletedEventArgs eventArgs);
+
+    /// <summary>
+    /// Perform any final updates when stopping the strategy from running.
+    /// </summary>
+    void Shutdown();
 }

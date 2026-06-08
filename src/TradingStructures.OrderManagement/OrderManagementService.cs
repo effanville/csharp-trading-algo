@@ -65,6 +65,4 @@ public sealed class OrderManagementService : IOrderManagementService
             eventArgs.ConfirmedTrade,
             eventArgs.TradeSuccessful));
     }
-
-    public void Shutdown() { }
 }

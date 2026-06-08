@@ -5,6 +5,4 @@ public interface IService
     string Name { get; }
 
     void Initialize(EvolverSettings settings);
-
-    void Shutdown();
 }
