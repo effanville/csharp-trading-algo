@@ -98,12 +98,14 @@ public sealed partial class SimulationCommand : ICommand
             _logger.LogInformation(settings.EvolverSettings.StockFilePath);
 
             var builder = new HostApplicationBuilder();
+
+            _ = builder.Configuration.AddConfiguration(_config);
+
             _ = builder.Logging.RegisterLogging(_reportLogger);
             _ = builder.Services.RegisterTradingServices(
                 settings.EvolverSettings,
                 new StrategySettings([
-                    new(settings.PortfolioSettings,
-                    settings.PortfolioConstructionSettings,
+                    new("Default",
                     settings.DecisionSystemSettings)]),
                 _fileSystem);
             builder.Build().Run();

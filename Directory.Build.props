@@ -9,6 +9,7 @@
   
   <PropertyGroup>
     <Nullable>enable</Nullable>
+    <EnableConfigurationBindingGenerator>true</EnableConfigurationBindingGenerator>
   </PropertyGroup>
 
   <ItemGroup Condition="$(MSBuildProjectFile.Contains('.Tests'))">

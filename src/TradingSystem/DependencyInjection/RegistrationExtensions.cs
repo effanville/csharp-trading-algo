@@ -45,10 +45,10 @@ public static class RegistrationExtensions
         StrategySettings strategySettings,
         IFileSystem? fileSystem)
     {
-        serviceCollection.AddSingleton(fileSystem);
-        serviceCollection.AddSingleton<ITimerFactory, TimerFactory>();
+        _ = serviceCollection.AddOptions();
 
-        serviceCollection
+        _ = serviceCollection.AddSingleton(fileSystem)
+            .AddSingleton<ITimerFactory, TimerFactory>()
             .AddSingleton<IStockExchangeFactory, StockExchangeFactory>()
             .AddSingleton(
             x =>
@@ -61,8 +61,7 @@ public static class RegistrationExtensions
             });
         return serviceCollection
             .AddSingleton(settings)
-            .AddStrategy(
-                strategySettings)
+            .AddStrategy(strategySettings)
             .AddSingleton<IEventEvolver, EventEvolver>()
             .AddHostedService<TradingSystemHostedService>();
     }

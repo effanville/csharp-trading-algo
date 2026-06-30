@@ -2,59 +2,33 @@
 
 using Effanville.FinancialStructures.NamingStructures;
 
-namespace Effanville.TradingStructures.Strategies.Portfolio
+namespace Effanville.TradingStructures.Strategies.Portfolio;
+
+/// <summary>
+/// Settings for constructing the start portfolio.
+/// </summary>
+public class PortfolioStartSettings
 {
+    public const string OptionsName = nameof(PortfolioStartSettings);
+
     /// <summary>
-    /// Settings for constructing the start portfolio.
+    /// The filepath for the start portfolio.
     /// </summary>
-    public sealed class PortfolioStartSettings
-    {
-        /// <summary>
-        /// The filepath for the start portfolio.
-        /// </summary>
-        public string PortfolioFilePath
-        {
-            get;
-            private set;
-        }
+    public string? PortfolioFilePath { get; set; }
 
-        /// <summary>
-        /// The start time of the simulation. This is the latest of the
-        /// user specified time and the suitable start time from the Exchange data.
-        /// </summary>
-        public DateTime StartTime
-        {
-            get;
-            private set;
-        }
+    /// <summary>
+    /// The start time of the simulation. This is the latest of the
+    /// user specified time and the suitable start time from the Exchange data.
+    /// </summary>
+    public DateTime StartTime { get; set; }
 
-        /// <summary>
-        /// The starting cash.
-        /// </summary>
-        public decimal StartingCash
-        {
-            get;
-            private set;
-        }
+    /// <summary>
+    /// The starting cash.
+    /// </summary>
+    public decimal StartingCash { get; set; }
 
-        /// <summary>
-        /// The default bank account name to use.
-        /// </summary>
-        public TwoName DefaultBankAccName
-        {
-            get;
-            private set;
-        }
-
-        /// <summary>
-        /// Construct an instance.
-        /// </summary>
-        public PortfolioStartSettings(string portfolioFilePath, DateTime startDate, decimal startingCash)
-        {
-            PortfolioFilePath = portfolioFilePath;
-            StartTime = startDate;
-            StartingCash = startingCash;
-            DefaultBankAccName = new TwoName("Cash", "Portfolio");
-        }
-    }
+    /// <summary>
+    /// The default bank account name to use.
+    /// </summary>
+    public TwoName DefaultBankAccName { get; set; } = new TwoName("Cash", "Portfolio");
 }

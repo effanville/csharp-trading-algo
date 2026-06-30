@@ -19,6 +19,7 @@ using Effanville.TradingStructures.Strategies.Execution;
 using Effanville.TradingStructures.Strategies.Portfolio;
 using Effanville.TradingSystem.DependencyInjection;
 
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
@@ -440,7 +441,6 @@ $@"|StartDate|EndDate|StockName|TradeType|NumberShares|
             double[]? expectedEstimator)
         {
             decimal tol = 1e-2m;
-            var portfolioStartSettings = new PortfolioStartSettings("", startTime, 20000);
             var decisionParameters = new DecisionSystemFactory.Settings(decisions, stockStatistics, buyThreshold, sellThreshold, dayAfterPredictor);
             var fileSystem = new MockFileSystem();
             string configureFile = File.ReadAllText(Path.Combine(TestConstants.ExampleFilesLocation, databaseName));
@@ -450,6 +450,15 @@ $@"|StartDate|EndDate|StockName|TradeType|NumberShares|
             var logger = new LogReporter(null, new SingleTaskQueue(), saveInternally: true);
 
             var builder = new HostApplicationBuilder();
+
+            Dictionary<string, string?> memorySettings = new Dictionary<string, string?>
+                {
+                    { $"Default:{PortfolioStartSettings.OptionsName}:{nameof(PortfolioStartSettings.PortfolioFilePath)}", ""},
+                    { $"Default:{PortfolioStartSettings.OptionsName}:{nameof(PortfolioStartSettings.StartTime)}", startTime.ToString("yyyy-MM-ddTHH:mm:ss")},
+                    { $"Default:{PortfolioStartSettings.OptionsName}:{nameof(PortfolioStartSettings.StartingCash)}", "20000"},
+                };
+            _ = builder.Configuration.AddInMemoryCollection(memorySettings);
+
             _ = builder.Logging.RegisterLogging(logger);
             _ = builder.Services.RegisterTradingServices(
                 new TradingStructures.Common.EvolverSettings(
@@ -457,8 +466,7 @@ $@"|StartDate|EndDate|StockName|TradeType|NumberShares|
                     startTime,
                     endTime,
                     TimeSpan.FromDays(1)),
-                new([new(portfolioStartSettings,
-                    PortfolioConstructionSettings.Default(),
+                new([new("Default",
                     decisionParameters)]),
                 fileSystem);
             var host = builder.Build();

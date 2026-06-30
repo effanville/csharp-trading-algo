@@ -2,26 +2,28 @@
 using System.Collections.Generic;
 using System.IO;
 using System.IO.Abstractions.TestingHelpers;
+using System.Linq;
 using System.Threading.Tasks;
 
 using Effanville.Common.Structure.DataStructures;
 using Effanville.Common.Structure.Reporting;
 using Effanville.FinancialStructures.Database;
 using Effanville.FinancialStructures.Database.Extensions.Values;
+using Effanville.FinancialStructures.Stocks.Statistics;
+using Effanville.TradingStructures.Common.Trading;
+using Effanville.TradingStructures.Strategies;
 using Effanville.TradingStructures.Strategies.Decision;
 using Effanville.TradingStructures.Strategies.Portfolio;
-using Effanville.TradingStructures.Common.Trading;
+using Effanville.TradingSystem.DependencyInjection;
+
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Hosting;
 
 using NUnit.Framework;
 
 using TradingConsole.Tests;
 
 using DecisionSystemFactory = Effanville.TradingStructures.Strategies.Decision.DecisionSystemFactory;
-using Effanville.FinancialStructures.Stocks.Statistics;
-using Microsoft.Extensions.Hosting;
-using Effanville.TradingSystem.DependencyInjection;
-using Effanville.TradingStructures.Strategies;
-using System.Linq;
 
 namespace Effanville.TradingSystem.Tests.MarketEvolvers;
 
@@ -101,7 +103,6 @@ internal class EventEvolverTests
         int expectedSellTrades,
         Dictionary<DateTime, TradeCollection> expectedTrades)
     {
-        var startSettings = new PortfolioStartSettings("", startTime, 20000m);
         var decisionParameters = new DecisionSystemFactory.Settings(decisions, stockStatistics, buyThreshold, sellThreshold, dayAfterPredictor);
 
         var fileSystem = new MockFileSystem();
@@ -113,14 +114,22 @@ internal class EventEvolverTests
         var logger = new LogReporter(null, new SingleTaskQueue(), saveInternally: true);
 
         var builder = new HostApplicationBuilder();
+
+        Dictionary<string, string?> memorySettings = new Dictionary<string, string?>
+                {
+                    { $"Default:{PortfolioStartSettings.OptionsName}:{nameof(PortfolioStartSettings.PortfolioFilePath)}", ""},
+                    { $"Default:{PortfolioStartSettings.OptionsName}:{nameof(PortfolioStartSettings.StartTime)}", startTime.ToString("yyyy-MM-ddTHH:mm:ss")},
+                    { $"Default:{PortfolioStartSettings.OptionsName}:{nameof(PortfolioStartSettings.StartingCash)}", "20000"},
+                };
+        _ = builder.Configuration.AddInMemoryCollection(memorySettings);
+
         _ = builder.Logging.RegisterLogging(logger);
         _ = builder.Services.RegisterTradingServices(
             new(testFilePath, startTime,
                 endTime,
                 TimeSpan.FromMinutes(1)),
             new StrategySettings(
-                [new(startSettings,
-                PortfolioConstructionSettings.Default(),
+                [new("Default",
                 decisionParameters)]),
             fileSystem);
         var host = builder.Build();

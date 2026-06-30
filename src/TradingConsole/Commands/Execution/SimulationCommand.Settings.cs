@@ -18,10 +18,6 @@ namespace Effanville.TradingConsole.Commands.Execution
         {
             public EvolverSettings EvolverSettings { get; private set; }
 
-            public PortfolioStartSettings PortfolioSettings { get; private set; }
-
-            public PortfolioConstructionSettings PortfolioConstructionSettings { get; private set; }
-
             public DecisionSystemFactory.Settings DecisionSystemSettings { get; private set; }
 
             private Settings() { }
@@ -63,17 +59,6 @@ namespace Effanville.TradingConsole.Commands.Execution
                     CommandOption<List<StockStatisticType>>? decisionSystemStats = options.GetOption<List<StockStatisticType>>(DecisionSystemStatsName);
 
                     settings.EvolverSettings = new EvolverSettings(stockFilePath, startTime, endTime, evolutionIncrement);
-                    settings.PortfolioSettings = new PortfolioStartSettings(
-                        portfolioFilePath?.Value ?? string.Empty,
-                        startTime,
-                        startingCash?.Value ?? 20000m);
-                    settings.DecisionSystemSettings = new DecisionSystemFactory.Settings(
-                        decisionType?.Value ?? DecisionSystem.FiveDayStatsLeastSquares,
-                        decisionSystemStats?.Value,
-                        1.05,
-                        1.0,
-                        1);
-                    settings.PortfolioConstructionSettings = new PortfolioConstructionSettings(fractionInvest?.Value ?? 0.25m);
                     return settings;
                 }
             }
