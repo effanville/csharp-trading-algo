@@ -3,10 +3,7 @@ using System.Collections.Generic;
 using System.IO.Abstractions;
 
 using Effanville.Common.Console.Options;
-using Effanville.FinancialStructures.Stocks.Statistics;
 using Effanville.TradingStructures.Common;
-using Effanville.TradingStructures.Strategies.Decision;
-using Effanville.TradingStructures.Strategies.Portfolio;
 
 using Newtonsoft.Json;
 
@@ -17,8 +14,6 @@ namespace Effanville.TradingConsole.Commands.Execution
         public sealed class Settings
         {
             public EvolverSettings EvolverSettings { get; private set; }
-
-            public DecisionSystemFactory.Settings DecisionSystemSettings { get; private set; }
 
             private Settings() { }
 
@@ -50,13 +45,6 @@ namespace Effanville.TradingConsole.Commands.Execution
                     var endTime = endDate?.Value ?? new DateTime(2020, 01, 01);
                     CommandOption<TimeSpan>? gap = options.GetOption<TimeSpan>(IncrementName);
                     var evolutionIncrement = gap?.Value ?? new TimeSpan(3000);
-
-
-                    CommandOption<decimal>? fractionInvest = options.GetOption<decimal>(FractionInvestName);
-                    CommandOption<DecisionSystem>? decisionType = options.GetOption<DecisionSystem>(DecisionSystemName);
-                    CommandOption<decimal>? startingCash = options.GetOption<decimal>(StartingCashName);
-                    CommandOption<string>? portfolioFilePath = options.GetOption<string>(PortfolioFilePathName);
-                    CommandOption<List<StockStatisticType>>? decisionSystemStats = options.GetOption<List<StockStatisticType>>(DecisionSystemStatsName);
 
                     settings.EvolverSettings = new EvolverSettings(stockFilePath, startTime, endTime, evolutionIncrement);
                     return settings;

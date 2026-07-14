@@ -1,6 +1,4 @@
 using System;
-using System.Collections.Generic;
-
 
 using Effanville.Common.Structure.MathLibrary.ParameterEstimation;
 using Effanville.FinancialStructures.Stocks;
@@ -21,19 +19,21 @@ namespace Effanville.TradingStructures.Strategies.Decision.Implementation
 
         public NewFiveDayStatsDecisionSystem(DecisionSystemFactory.Settings settings, ILoggerFactory loggerFactory)
         {
-            var newSettings = new DecisionSystemFactory.Settings(
-                settings.DecisionSystemType,
-                new List<StockStatisticType>()
-                {
+            var newSettings = new DecisionSystemFactory.Settings()
+            {
+                DecisionSystemType = settings.DecisionSystemType,
+                Statistics =
+                [
                     StockStatisticType.PrevDayOpen,
                     StockStatisticType.PrevTwoOpen,
                     StockStatisticType.PrevThreeOpen,
                     StockStatisticType.PrevFourOpen,
                     StockStatisticType.PrevFiveOpen
-                },
-                settings.BuyThreshold,
-                settings.SellThreshold,
-                settings.DayAfterPredictor);
+                ],
+                BuyThreshold = settings.BuyThreshold,
+                SellThreshold = settings.SellThreshold,
+                DayAfterPredictor = settings.DayAfterPredictor
+            };
             _innerSystem = new ArbitraryStatsDecisionSystem(newSettings, loggerFactory.CreateLogger<ArbitraryStatsDecisionSystem>());
         }
 

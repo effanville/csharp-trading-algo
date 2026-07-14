@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.IO.Abstractions.TestingHelpers;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 
 using Effanville.Common.Structure.DataStructures;
@@ -22,8 +23,6 @@ using Microsoft.Extensions.Hosting;
 using NUnit.Framework;
 
 using TradingConsole.Tests;
-
-using DecisionSystemFactory = Effanville.TradingStructures.Strategies.Decision.DecisionSystemFactory;
 
 namespace Effanville.TradingSystem.Tests.MarketEvolvers;
 
@@ -103,8 +102,6 @@ internal class EventEvolverTests
         int expectedSellTrades,
         Dictionary<DateTime, TradeCollection> expectedTrades)
     {
-        var decisionParameters = new DecisionSystemFactory.Settings(decisions, stockStatistics, buyThreshold, sellThreshold, dayAfterPredictor);
-
         var fileSystem = new MockFileSystem();
         string configureFile =
             File.ReadAllText(Path.Combine(TestConstants.ExampleFilesLocation, databaseName));
@@ -116,12 +113,26 @@ internal class EventEvolverTests
         var builder = new HostApplicationBuilder();
 
         Dictionary<string, string?> memorySettings = new Dictionary<string, string?>
-                {
-                    { $"Default:{PortfolioStartSettings.OptionsName}:{nameof(PortfolioStartSettings.PortfolioFilePath)}", ""},
-                    { $"Default:{PortfolioStartSettings.OptionsName}:{nameof(PortfolioStartSettings.StartTime)}", startTime.ToString("yyyy-MM-ddTHH:mm:ss")},
-                    { $"Default:{PortfolioStartSettings.OptionsName}:{nameof(PortfolioStartSettings.StartingCash)}", "20000"},
-                };
-        _ = builder.Configuration.AddInMemoryCollection(memorySettings);
+            {
+                { $"Default:{PortfolioStartSettings.OptionsName}:{nameof(PortfolioStartSettings.PortfolioFilePath)}", ""},
+                { $"Default:{PortfolioStartSettings.OptionsName}:{nameof(PortfolioStartSettings.StartTime)}", startTime.ToString("yyyy-MM-ddTHH:mm:ss")},
+                { $"Default:{PortfolioStartSettings.OptionsName}:{nameof(PortfolioStartSettings.StartingCash)}", "20000"},
+            };
+        StringBuilder jsonConfig = new StringBuilder("{");
+        jsonConfig.Append("\"Default\": { \"DecisionSystemSettings\": {");
+        jsonConfig.Append("\"DecisionSystemType\": \"").Append(decisions).Append("\",");
+        jsonConfig.Append("\"BuyThreshold\": ").Append(buyThreshold).Append(",");
+        jsonConfig.Append("\"SellThreshold\": ").Append(sellThreshold).Append(",");
+        jsonConfig.Append("\"DayAfterPredictor\": ").Append(dayAfterPredictor);
+        jsonConfig.Append("}");
+        jsonConfig.Append("}");
+        jsonConfig.Append("}");
+
+        byte[] byteArray = Encoding.UTF8.GetBytes(jsonConfig.ToString());
+        using MemoryStream stream = new MemoryStream(byteArray);
+        _ = builder.Configuration
+            .AddInMemoryCollection(memorySettings)
+            .AddJsonStream(stream);
 
         _ = builder.Logging.RegisterLogging(logger);
         _ = builder.Services.RegisterTradingServices(
@@ -129,8 +140,7 @@ internal class EventEvolverTests
                 endTime,
                 TimeSpan.FromMinutes(1)),
             new StrategySettings(
-                [new("Default",
-                decisionParameters)]),
+                [new("Default")]),
             fileSystem);
         var host = builder.Build();
         var result = await host.RunSystemAsync();

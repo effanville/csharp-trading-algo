@@ -27,19 +27,23 @@ public static class ServiceCollectionExtensions
                 .BindConfiguration($"{settings.Name}:{PortfolioStartSettings.OptionsName}");
             _ = serviceCollection.AddOptions<PortfolioConstructionSettings>(settings.Name)
                 .BindConfiguration($"{settings.Name}:{PortfolioConstructionSettings.OptionsName}");
+            _ = serviceCollection.AddOptions<DecisionSystemFactory.Settings>(settings.Name)
+                .BindConfiguration($"{settings.Name}:{DecisionSystemFactory.Settings.OptionsName}");
 
             _ = serviceCollection
                 .AddSingleton<IStrategy, Strategy>(
-                    x => ResolveStrategy(x, settings.Name, settings));
+                    x => ResolveStrategy(x, settings.Name));
         }
 
         return serviceCollection;
     }
 
-    private static Strategy ResolveStrategy(this IServiceProvider sp, string name, SingleStrategySettings settings)
+    private static Strategy ResolveStrategy(this IServiceProvider sp, string name)
     {
         IDecisionSystemFactory decisionSystemFactory = sp.GetRequiredService<IDecisionSystemFactory>();
-        IDecisionSystem decisionSystem = decisionSystemFactory.Create(settings.DecisionParameters);
+        IOptionsSnapshot<DecisionSystemFactory.Settings> decisionOptions = sp.GetRequiredService<IOptionsSnapshot<DecisionSystemFactory.Settings>>();
+        DecisionSystemFactory.Settings decisionSettings = decisionOptions.Get(name);
+        IDecisionSystem decisionSystem = decisionSystemFactory.Create(decisionSettings);
 
         IPortfolioManagerFactory portfolioManagerFactory = sp.GetRequiredService<IPortfolioManagerFactory>();
 

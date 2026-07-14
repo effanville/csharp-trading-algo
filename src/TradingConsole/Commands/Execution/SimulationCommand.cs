@@ -5,10 +5,8 @@ using System.IO.Abstractions;
 using Effanville.Common.Console.Commands;
 using Effanville.Common.Console.Options;
 using Effanville.Common.Structure.Reporting;
-using Effanville.FinancialStructures.Stocks.Statistics;
 using Effanville.TradingStructures.Common.Diagnostics;
 using Effanville.TradingStructures.Strategies;
-using Effanville.TradingStructures.Strategies.Decision;
 using Effanville.TradingSystem.DependencyInjection;
 
 using Microsoft.Extensions.Configuration;
@@ -30,13 +28,8 @@ public sealed partial class SimulationCommand : ICommand
     private readonly IConfiguration _config;
     private const string StartDateName = "start";
     private const string EndDateName = "end";
-    private const string FractionInvestName = "invFrac";
-    private const string DecisionSystemName = "decision";
-    private const string PortfolioFilePathName = "portfolioFilePath";
     private const string IncrementName = "gap";
     private const string StockFilePathName = "stockFilePath";
-    private const string StartingCashName = "startCash";
-    private const string DecisionSystemStatsName = "decidingStats";
 
     /// <inheritdoc/>
     public string Name => "simulate";
@@ -63,20 +56,11 @@ public sealed partial class SimulationCommand : ICommand
         _config = config;
         Options.Add(new CommandOption<string>("jsonSettingsPath", "The path to the json file containing the options for this execution."));
 
-        // Portfolio Setup options
-        Options.Add(new CommandOption<string>(PortfolioFilePathName, "The path at which to locate the starting portfolio"));
-        Options.Add(new CommandOption<decimal>(StartingCashName, "The starting amount of cash to create the simulation with."));
-
         // Simulation run options.
         Options.Add(new CommandOption<string>(StockFilePathName, "The path at which to locate the Stock Exchange data."));
         Options.Add(new CommandOption<DateTime>(StartDateName, "The date to start on."));
         Options.Add(new CommandOption<DateTime>(EndDateName, "The date to end on."));
         Options.Add(new CommandOption<TimeSpan>(IncrementName, "The interval between evaluations."));
-
-        // Decision system options.
-        Options.Add(new CommandOption<DecisionSystem>(DecisionSystemName, "The type of decision system to use."));
-        Options.Add(new CommandOption<List<StockStatisticType>>(DecisionSystemStatsName, ""));
-        Options.Add(new CommandOption<decimal>(FractionInvestName, "The maximum fraction of available cash to put in any purchase."));
     }
 
     /// <inheritdoc/>
@@ -105,8 +89,7 @@ public sealed partial class SimulationCommand : ICommand
             _ = builder.Services.RegisterTradingServices(
                 settings.EvolverSettings,
                 new StrategySettings([
-                    new("Default",
-                    settings.DecisionSystemSettings)]),
+                    new("Default")]),
                 _fileSystem);
             builder.Build().Run();
 

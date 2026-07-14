@@ -4,6 +4,7 @@ using System.IO;
 using System.IO.Abstractions.TestingHelpers;
 using System.Linq;
 using System.Reflection;
+using System.Text;
 using System.Threading.Tasks;
 
 using Effanville.Common.Structure.DataStructures;
@@ -26,8 +27,6 @@ using Microsoft.Extensions.Hosting;
 using NUnit.Framework;
 
 using TradingConsole.Tests;
-
-using DecisionSystemFactory = Effanville.TradingStructures.Strategies.Decision.DecisionSystemFactory;
 
 namespace Effanville.TradingSystem.Tests
 {
@@ -441,7 +440,6 @@ $@"|StartDate|EndDate|StockName|TradeType|NumberShares|
             double[]? expectedEstimator)
         {
             decimal tol = 1e-2m;
-            var decisionParameters = new DecisionSystemFactory.Settings(decisions, stockStatistics, buyThreshold, sellThreshold, dayAfterPredictor);
             var fileSystem = new MockFileSystem();
             string configureFile = File.ReadAllText(Path.Combine(TestConstants.ExampleFilesLocation, databaseName));
             string testFilePath = "c:/temp/exampleFile.xml";
@@ -457,7 +455,22 @@ $@"|StartDate|EndDate|StockName|TradeType|NumberShares|
                     { $"Default:{PortfolioStartSettings.OptionsName}:{nameof(PortfolioStartSettings.StartTime)}", startTime.ToString("yyyy-MM-ddTHH:mm:ss")},
                     { $"Default:{PortfolioStartSettings.OptionsName}:{nameof(PortfolioStartSettings.StartingCash)}", "20000"},
                 };
-            _ = builder.Configuration.AddInMemoryCollection(memorySettings);
+
+            StringBuilder jsonConfig = new StringBuilder("{");
+            _ = jsonConfig.Append("\"Default\": { \"DecisionSystemSettings\": {")
+                .Append("\"DecisionSystemType\": \"").Append(decisions).Append("\",")
+                .Append("\"BuyThreshold\": ").Append(buyThreshold).Append(",")
+                .Append("\"SellThreshold\": ").Append(sellThreshold).Append(",")
+                .Append("\"DayAfterPredictor\": ").Append(dayAfterPredictor)
+                .Append("}")
+                .Append("}")
+                .Append("}");
+
+            byte[] byteArray = Encoding.UTF8.GetBytes(jsonConfig.ToString());
+            using MemoryStream stream = new MemoryStream(byteArray);
+            _ = builder.Configuration
+                .AddInMemoryCollection(memorySettings)
+                .AddJsonStream(stream);
 
             _ = builder.Logging.RegisterLogging(logger);
             _ = builder.Services.RegisterTradingServices(
@@ -466,8 +479,7 @@ $@"|StartDate|EndDate|StockName|TradeType|NumberShares|
                     startTime,
                     endTime,
                     TimeSpan.FromDays(1)),
-                new([new("Default",
-                    decisionParameters)]),
+                new([new("Default")]),
                 fileSystem);
             var host = builder.Build();
             var output = await host.RunSystemAsync();
@@ -477,10 +489,8 @@ $@"|StartDate|EndDate|StockName|TradeType|NumberShares|
             logger.WriteReportsToFile($"logs\\{DateTime.Now:yyyy-MM-ddTHHmmss}{TestContext.CurrentContext.Test.Name}.log");
 
             var strategy = host.Services.GetRequiredService<IStrategy>();
-            FieldInfo field = typeof(Strategy).GetField("_executionStrategy", BindingFlags.Instance | BindingFlags.NonPublic);
-            IExecutionStrategy value = (IExecutionStrategy)field.GetValue(strategy);
-            field = typeof(ExchangeOpenCalcExecutionStrategy).GetField("_decisionSystem", BindingFlags.Instance | BindingFlags.NonPublic);
-            IDecisionSystem decisionSystem = (IDecisionSystem)field.GetValue(value);
+            IExecutionStrategy? value = GetInstanceNonPublic<IExecutionStrategy>(typeof(Strategy), "_executionStrategy", strategy);
+            IDecisionSystem? decisionSystem = GetInstanceNonPublic<IDecisionSystem>(typeof(ExchangeOpenCalcExecutionStrategy), "_decisionSystem", value);
             if (decisionSystem is ICalibratedDecisionSystem calibratedDecisionSystem && expectedEstimator != null)
             {
                 Assert.That(calibratedDecisionSystem.Result?.Estimator, Is.EquivalentTo(expectedEstimator));
@@ -501,7 +511,12 @@ $@"|StartDate|EndDate|StockName|TradeType|NumberShares|
                     Assert.That(trades.DailyTrades, Is.EquivalentTo(expectedTrades));
                 }
             }
+        }
 
+        private T? GetInstanceNonPublic<T>(Type type, string fieldName, object? instance)
+        {
+            FieldInfo? field = type.GetField(fieldName, BindingFlags.Instance | BindingFlags.NonPublic);
+            return (T?)field?.GetValue(instance);
         }
     }
 }

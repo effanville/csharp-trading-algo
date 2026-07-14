@@ -32,12 +32,14 @@ namespace Effanville.TradingStructures.Strategies.Tests.Decisions
             var logger = new LogReporter(null, new SingleTaskQueue(), saveInternally: true);
             var stockExchange = new StockExchangeFactory(Substitute.For<ILogger<StockExchangeFactory>>(), new LoggerFactory(), fileSystem)
                 .Create(new(testFilePath));
-            var settings = new DecisionSystemFactory.Settings(
-                DecisionSystem.FiveDayStatsLeastSquares,
-                null,
-                1.05,
-                1.0,
-                1);
+            var settings = new DecisionSystemFactory.Settings()
+            {
+                DecisionSystemType = DecisionSystem.FiveDayStatsLeastSquares,
+                Statistics = null,
+                BuyThreshold = 1.05,
+                SellThreshold = 1.0,
+                DayAfterPredictor = 1
+            };
             var decisionSystem = new FiveDayStatsDecisionSystem(settings, Substitute.For<ILogger<FiveDayStatsDecisionSystem>>());
             var systemSettings = new DecisionSystemSettings(
                 DateTime.SpecifyKind(new DateTime(2015, 1, 1), DateTimeKind.Utc),

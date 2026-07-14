@@ -8,49 +8,17 @@ namespace Effanville.TradingStructures.Strategies.Decision
     {
         public sealed class Settings
         {
-            public DecisionSystem DecisionSystemType
-            {
-                get;
-            }
+            public const string OptionsName = "DecisionSystemSettings";
 
-            public IReadOnlyList<StockStatisticType>? Statistics
-            {
-                get;
-            }
+            public DecisionSystem DecisionSystemType { get; set; }
 
-            public int DayAfterPredictor
-            {
-                get;
-            }
+            public IReadOnlyList<StockStatisticType>? Statistics { get; set; }
 
-            public double BuyThreshold
-            {
-                get;
-            }
+            public int DayAfterPredictor { get; set; }
 
-            public double SellThreshold
-            {
-                get;
-            }
+            public double BuyThreshold { get; set; }
 
-            public Settings(
-                DecisionSystem decisionSystemType,
-                IReadOnlyList<StockStatisticType>? statistics,
-                double buyThreshold,
-                double sellThreshold,
-                int dayAfterPredictor)
-                 : this(decisionSystemType)
-            {
-                Statistics = statistics;
-                BuyThreshold = buyThreshold;
-                SellThreshold = sellThreshold;
-                DayAfterPredictor = dayAfterPredictor;
-            }
-
-            public Settings(DecisionSystem decisionSystemType)
-            {
-                DecisionSystemType = decisionSystemType;
-            }
+            public double SellThreshold { get; set; }
         }
     }
 }
