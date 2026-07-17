@@ -134,7 +134,7 @@ internal class EventEvolverTests
             .AddInMemoryCollection(memorySettings)
             .AddJsonStream(stream);
 
-        _ = builder.Logging.RegisterLogging(logger);
+        _ = builder.Logging.AddReportLogger(logger);
         _ = builder.Services.RegisterTradingServices(
             new(testFilePath, startTime,
                 endTime,

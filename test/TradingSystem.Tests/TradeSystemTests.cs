@@ -472,7 +472,7 @@ $@"|StartDate|EndDate|StockName|TradeType|NumberShares|
                 .AddInMemoryCollection(memorySettings)
                 .AddJsonStream(stream);
 
-            _ = builder.Logging.RegisterLogging(logger);
+            _ = builder.Logging.AddReportLogger(logger);
             _ = builder.Services.RegisterTradingServices(
                 new TradingStructures.Common.EvolverSettings(
                     testFilePath,

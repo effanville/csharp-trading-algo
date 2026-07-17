@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.IO.Abstractions;
 using System.Threading.Tasks;
 
-using Effanville.Common.Structure.Reporting;
 using Effanville.FinancialStructures.Stocks;
 using Effanville.TradingStructures.Common;
 using Effanville.TradingStructures.Common.Diagnostics;
@@ -16,29 +15,11 @@ using Effanville.TradingSystem.MarketEvolvers;
 
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 
 namespace Effanville.TradingSystem.DependencyInjection;
 
 public static class RegistrationExtensions
 {
-    public static ILoggingBuilder RegisterLogging(
-        this ILoggingBuilder loggingBuilder,
-        IReportLogger? reportLogger = null)
-    {
-        if (reportLogger == null)
-        {
-            loggingBuilder
-                .ClearProviders()
-                .AddReportLogger(config => config.MinimumLogLevel = ReportType.Information);
-        }
-        else
-        {
-            loggingBuilder.AddReportLogger(reportLogger);
-        }
-        return loggingBuilder;
-    }
-
     public static IServiceCollection RegisterTradingServices(
         this IServiceCollection serviceCollection,
         EvolverSettings settings,
