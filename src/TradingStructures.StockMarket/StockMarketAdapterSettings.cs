@@ -1,23 +1,10 @@
-﻿namespace Effanville.TradingStructures.StockMarket
+﻿namespace Effanville.TradingStructures.StockMarket;
+
+public sealed class StockMarketAdapterSettings
 {
+    public const string OptionsName = nameof(StockMarketAdapterSettings);
     /// <summary>
-    /// Contains options for
+    /// The fixed cost associated with each trade.
     /// </summary>
-    public sealed class StockMarketAdapterSettings
-    {
-        /// <summary>
-        /// The fixed cost associated with each trade.
-        /// </summary>
-        public decimal TradeCost { get; }
-
-        /// <summary>
-        /// Construct an instance.
-        /// </summary>
-        public StockMarketAdapterSettings(decimal tradeCost)
-        {
-            TradeCost = tradeCost;
-        }
-
-        public static StockMarketAdapterSettings Default() => new StockMarketAdapterSettings(6);
-    }
+    public decimal TradeCost { get; set; } = 6;
 }

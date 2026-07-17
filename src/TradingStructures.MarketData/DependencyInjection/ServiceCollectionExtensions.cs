@@ -3,6 +3,7 @@ using Effanville.TradingStructures.Common.Scheduling;
 using Effanville.TradingStructures.Common.Services;
 
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 
 namespace Effanville.TradingStructures.MarketData.DependencyInjection;
 
@@ -11,8 +12,9 @@ public static class ServiceCollectionExtensions
     public static IServiceCollection AddPriceService(
         this IServiceCollection serviceCollection)
     {
+        _ = serviceCollection.AddOptions<PriceCalculationSettings>();
         return serviceCollection
-            .AddSingleton(a => PriceCalculationSettings.Default())
+            .AddSingleton(sp => sp.GetRequiredService<IOptions<PriceCalculationSettings>>().Value)
             .AddSingleton<IPriceServiceFactory, PriceServiceFactory>()
             .AddSingleton(a =>
             {

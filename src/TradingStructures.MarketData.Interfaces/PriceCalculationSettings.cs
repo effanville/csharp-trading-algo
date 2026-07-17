@@ -6,15 +6,10 @@ namespace Effanville.TradingStructures.MarketData;
 /// Settings for the BuySell system.
 /// These are inherent settings for how the system works.
 /// </summary>
-/// <remarks>
-/// Construct an instance.
-/// </remarks>
-public sealed class PriceCalculationSettings(
-    PriceType priceType,
-    double upTickProbability,
-    double upTickSize)
+public sealed class PriceCalculationSettings
 {
-    public PriceType PriceType { get; } = priceType;
+    public const string OptionsName = nameof(PriceCalculationSettings);
+    public PriceType PriceType { get; set; } = PriceType.RandomWobble;
 
     /// <summary>
     /// Contains a random number generator for required points.
@@ -24,12 +19,10 @@ public sealed class PriceCalculationSettings(
     /// <summary>
     /// The probability that a stock will have gone up from the opening price.
     /// </summary>
-    public double UpTickProbability { get; } = upTickProbability;
+    public double UpTickProbability { get; set; } = 0.5d;
 
     /// <summary>
     /// The relative size that a stock will have increased from the opening price.
     /// </summary>
-    public double UpTickSize { get; } = upTickSize;
-
-    public static PriceCalculationSettings Default() => new(PriceType.RandomWobble, 0.5, 0.01);
+    public double UpTickSize { get; set; } = 0.01;
 }
