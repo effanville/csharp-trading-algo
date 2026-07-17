@@ -1,6 +1,7 @@
 namespace Effanville.TradingStructures.Strategies;
 
-public sealed record StrategySettings(SingleStrategySettings[] Settings);
-
-public sealed record SingleStrategySettings(
-    string Name);
+public sealed record StrategySettings
+{
+    public const string OptionsName = nameof(StrategySettings);
+    public string[]? StrategyNames { get; set; }
+}

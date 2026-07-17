@@ -87,9 +87,8 @@ public sealed partial class SimulationCommand : ICommand
 
             _ = builder.Logging.AddReportLogger(_reportLogger);
             _ = builder.Services.RegisterTradingServices(
+                builder.Configuration,
                 settings.EvolverSettings,
-                new StrategySettings([
-                    new("Default")]),
                 _fileSystem);
             builder.Build().Run();
 

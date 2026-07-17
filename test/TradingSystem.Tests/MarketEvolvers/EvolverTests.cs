@@ -114,9 +114,12 @@ internal class EventEvolverTests
 
         Dictionary<string, string?> memorySettings = new Dictionary<string, string?>
             {
+                { $"{StrategySettings.OptionsName}:{nameof(StrategySettings.StrategyNames)}:0", "Default" },
                 { $"Default:{PortfolioStartSettings.OptionsName}:{nameof(PortfolioStartSettings.PortfolioFilePath)}", ""},
                 { $"Default:{PortfolioStartSettings.OptionsName}:{nameof(PortfolioStartSettings.StartTime)}", startTime.ToString("yyyy-MM-ddTHH:mm:ss")},
                 { $"Default:{PortfolioStartSettings.OptionsName}:{nameof(PortfolioStartSettings.StartingCash)}", "20000"},
+                { $"Default:{StockSelectorSettings.OptionsName}:{nameof(StockSelectorSettings.StockTickers)}:0", "BARC.L"},
+                { $"Default:{StockSelectorSettings.OptionsName}:{nameof(StockSelectorSettings.StockTickers)}:1", "DNLM.L"},
             };
         StringBuilder jsonConfig = new StringBuilder("{");
         jsonConfig.Append("\"Default\": { \"DecisionSystemSettings\": {");
@@ -136,11 +139,10 @@ internal class EventEvolverTests
 
         _ = builder.Logging.AddReportLogger(logger);
         _ = builder.Services.RegisterTradingServices(
+            builder.Configuration,
             new(testFilePath, startTime,
                 endTime,
                 TimeSpan.FromMinutes(1)),
-            new StrategySettings(
-                [new("Default")]),
             fileSystem);
         var host = builder.Build();
         var result = await host.RunSystemAsync();

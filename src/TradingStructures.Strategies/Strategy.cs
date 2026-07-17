@@ -25,6 +25,8 @@ public class Strategy : IStrategy
     private readonly ILogger<Strategy> _logger;
     private readonly IExecutionStrategy _executionStrategy;
     private readonly IPortfolioManager _portfolioManager;
+    private readonly IStockSelector _stockSelector;
+
     public string Name => nameof(Strategy);
 
     /// <summary>
@@ -34,15 +36,16 @@ public class Strategy : IStrategy
 
     public StrategyHistory History { get; }
 
-
-    public Strategy(
+    internal Strategy(
         IExecutionStrategy executionStrategy,
         IPortfolioManager portfolioManager,
+        IStockSelector stockSelector,
         ILogger<Strategy> logger)
     {
         _logger = logger;
         _executionStrategy = executionStrategy;
         _portfolioManager = portfolioManager;
+        _stockSelector = stockSelector;
         History = new StrategyHistory(_portfolioManager.Portfolio);
         _executionStrategy.SubmitTradeEvent += ExecutionStrategyOnSubmitTradeEvent;
     }
@@ -104,6 +107,9 @@ public class Strategy : IStrategy
 
     public void OnPriceUpdate(object? obj, PriceUpdateEventArgs eventArgs)
     {
+        if (!_stockSelector.IsStockInUniverse(eventArgs.Instrument))
+            return;
+
         _executionStrategy.OnPriceUpdate(obj, eventArgs);
         _portfolioManager.OnPriceUpdate(obj, eventArgs);
     }

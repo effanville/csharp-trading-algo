@@ -13,6 +13,7 @@ using Effanville.TradingStructures.Strategies.DependencyInjection;
 
 using Effanville.TradingSystem.MarketEvolvers;
 
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
@@ -22,8 +23,8 @@ public static class RegistrationExtensions
 {
     public static IServiceCollection RegisterTradingServices(
         this IServiceCollection serviceCollection,
+        IConfigurationManager config,
         EvolverSettings settings,
-        StrategySettings strategySettings,
         IFileSystem? fileSystem)
     {
         _ = serviceCollection.AddOptions();
@@ -42,7 +43,7 @@ public static class RegistrationExtensions
             });
         return serviceCollection
             .AddSingleton(settings)
-            .AddStrategy(strategySettings)
+            .AddStrategy(config)
             .AddSingleton<IEventEvolver, EventEvolver>()
             .AddHostedService<TradingSystemHostedService>();
     }

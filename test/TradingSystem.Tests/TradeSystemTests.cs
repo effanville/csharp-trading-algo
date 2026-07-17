@@ -451,10 +451,16 @@ $@"|StartDate|EndDate|StockName|TradeType|NumberShares|
 
             Dictionary<string, string?> memorySettings = new Dictionary<string, string?>
                 {
+                    { $"{StrategySettings.OptionsName}:{nameof(StrategySettings.StrategyNames)}:0", "Default" },
                     { $"Default:{PortfolioStartSettings.OptionsName}:{nameof(PortfolioStartSettings.PortfolioFilePath)}", ""},
                     { $"Default:{PortfolioStartSettings.OptionsName}:{nameof(PortfolioStartSettings.StartTime)}", startTime.ToString("yyyy-MM-ddTHH:mm:ss")},
                     { $"Default:{PortfolioStartSettings.OptionsName}:{nameof(PortfolioStartSettings.StartingCash)}", "20000"},
                 };
+            if (databaseName != "small-exchange.xml")
+            {
+                memorySettings[$"Default:{StockSelectorSettings.OptionsName}:{nameof(StockSelectorSettings.StockTickers)}:0"] = "BARC.L";
+                memorySettings[$"Default:{StockSelectorSettings.OptionsName}:{nameof(StockSelectorSettings.StockTickers)}:1"] = "DNLM.L";
+            }
 
             StringBuilder jsonConfig = new StringBuilder("{");
             _ = jsonConfig.Append("\"Default\": { \"DecisionSystemSettings\": {")
@@ -474,12 +480,12 @@ $@"|StartDate|EndDate|StockName|TradeType|NumberShares|
 
             _ = builder.Logging.AddReportLogger(logger);
             _ = builder.Services.RegisterTradingServices(
+                builder.Configuration,
                 new TradingStructures.Common.EvolverSettings(
                     testFilePath,
                     startTime,
                     endTime,
                     TimeSpan.FromDays(1)),
-                new([new("Default")]),
                 fileSystem);
             var host = builder.Build();
             var output = await host.RunSystemAsync();
