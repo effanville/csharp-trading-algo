@@ -1,7 +1,9 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <RootNamespace>Effanville.TradingStructures.StaticData</RootNamespace>
+  </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\FinancialStructures\src\FinancialStructures.Stocks\FinancialStructures.Stocks.csproj" />
     <ProjectReference Include="..\TradingStructures.Common\TradingStructures.Common.csproj" />
-    <ProjectReference Include="..\TradingStructures.StaticData.Interfaces\TradingStructures.StaticData.Interfaces.csproj" />
   </ItemGroup>
 </Project>

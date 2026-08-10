@@ -24,8 +24,8 @@ public static class ServiceCollectionExtensions
             .AddSingleton<IDecisionSystemFactory, DecisionSystemFactory>()
             .AddSingleton<IPortfolioManagerFactory, PortfolioManagerFactory>()
             .AddSingleton<IExecutionStrategyFactory, ExecutionStrategyFactory>()
-            .AddSingleton<IStockSelector, StockSelector>;
-        var options = config
+            .AddSingleton<IStockSelector, StockSelector>();
+        StrategySettings? options = config
             .GetSection(nameof(StrategySettings))
             .Get<StrategySettings>();
         foreach (string strategyName in options.StrategyNames)
