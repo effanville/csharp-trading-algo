@@ -5,6 +5,7 @@ using Effanville.Common.Structure.Reporting;
 using Effanville.FinancialStructures.Stocks;
 using Effanville.TradingStructures.Common;
 using Effanville.TradingStructures.Common.DependencyInjection;
+using Effanville.TradingStructures.Common.Diagnostics;
 using Effanville.TradingStructures.Common.Scheduling;
 using Effanville.TradingStructures.Common.Services;
 using Effanville.TradingStructures.Common.Time;
@@ -15,8 +16,9 @@ using Effanville.TradingStructures.MarketData.DependencyInjection;
 using Effanville.TradingStructures.OrderManagement;
 using Effanville.TradingStructures.OrderManagement.DependencyInjection;
 using Effanville.TradingStructures.StaticData.DependencyInjection;
-using Effanville.TradingStructures.Strategies;
 using Effanville.TradingStructures.StockMarket.DependencyInjection;
+using Effanville.TradingStructures.Strategies;
+using Effanville.TradingSystem.DependencyInjection;
 
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -53,7 +55,8 @@ public sealed class EventEvolver : IEventEvolver
     public EventEvolver(
         ILogger<EventEvolver> logger,
         EvolverSettings settings,
-        IStockExchange exchange,
+        ITimerFactory timerFactory,
+        IStockExchangeFactory stockExchangeFactory,
         IEnumerable<IStrategy> strategies,
         IReportLogger reportLogger)
     {
@@ -62,8 +65,19 @@ public sealed class EventEvolver : IEventEvolver
         IServiceCollection serviceCollection = new ServiceCollection();
         _ = serviceCollection
             .AddSingleton(a => reportLogger)
+            .AddSingleton(timerFactory)
+            .AddSingleton(stockExchangeFactory)
             .AddCommonServices(settings.StartTime)
-            .AddSingleton(a => exchange)
+            .AddSingleton<IStockExchangeFactory, StockExchangeFactory>()
+            .AddSingleton(
+            x =>
+            {
+                ITimerFactory timerFactory = x.GetRequiredService<ITimerFactory>();
+                return RegistrationExtensions.CreateExchange(
+                                _settings.StockFilePath,
+                                x.GetRequiredService<IStockExchangeFactory>(),
+                                timerFactory);
+            })
             .AddStaticDataServices()
             .AddExchangeServices()
 

@@ -10,7 +10,6 @@ using Effanville.TradingStructures.Strategies;
 
 using Effanville.TradingStructures.Strategies.DependencyInjection;
 
-
 using Effanville.TradingSystem.MarketEvolvers;
 
 using Microsoft.Extensions.Configuration;
@@ -25,22 +24,13 @@ public static class RegistrationExtensions
         this IServiceCollection serviceCollection,
         IConfigurationManager config,
         EvolverSettings settings,
-        IFileSystem? fileSystem)
+        IFileSystem fileSystem)
     {
         _ = serviceCollection.AddOptions();
 
         _ = serviceCollection.AddSingleton(fileSystem)
             .AddSingleton<ITimerFactory, TimerFactory>()
-            .AddSingleton<IStockExchangeFactory, StockExchangeFactory>()
-            .AddSingleton(
-            x =>
-            {
-                var timerFactory = x.GetRequiredService<ITimerFactory>();
-                return CreateExchange(
-                                settings.StockFilePath,
-                                x.GetRequiredService<IStockExchangeFactory>(),
-                                timerFactory);
-            });
+            .AddSingleton<IStockExchangeFactory, StockExchangeFactory>();
         return serviceCollection
             .AddSingleton(settings)
             .AddStrategy(config)
@@ -65,7 +55,7 @@ public static class RegistrationExtensions
         return evolver.Result;
     }
 
-    private static IStockExchange CreateExchange(string filePath, IStockExchangeFactory stockExchangeFactory, ITimerFactory timerFactory)
+    internal static IStockExchange CreateExchange(string filePath, IStockExchangeFactory stockExchangeFactory, ITimerFactory timerFactory)
     {
         using (timerFactory.Create("Loading Exchange"))
         {
