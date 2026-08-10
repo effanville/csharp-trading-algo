@@ -23,7 +23,8 @@ public static class ServiceCollectionExtensions
         _ = serviceCollection
             .AddSingleton<IDecisionSystemFactory, DecisionSystemFactory>()
             .AddSingleton<IPortfolioManagerFactory, PortfolioManagerFactory>()
-            .AddSingleton<IExecutionStrategyFactory, ExecutionStrategyFactory>();
+            .AddSingleton<IExecutionStrategyFactory, ExecutionStrategyFactory>()
+            .AddSingleton<IStockSelector, StockSelector>;
         var options = config
             .GetSection(nameof(StrategySettings))
             .Get<StrategySettings>();
@@ -64,6 +65,8 @@ public static class ServiceCollectionExtensions
 
         IPortfolioManager portfolioManager = portfolioManagerFactory.LoadFromFile(portfolioStartSettings, portfolioConstructionSettings);
 
+        IStockSelector stockSelector = sp.GetRequiredService<IStockSelector>();
+
         IExecutionStrategyFactory factory = sp.GetRequiredService<IExecutionStrategyFactory>();
         IExecutionStrategy executionStrategy = factory.Create(
             StrategyType.ExchangeOpen,
@@ -71,6 +74,6 @@ public static class ServiceCollectionExtensions
             decisionSystem);
 
         ILogger<Strategy> logger = sp.GetRequiredService<ILogger<Strategy>>();
-        return new Strategy(executionStrategy, portfolioManager, new StockSelector(stockSelectorSettings), logger);
+        return new Strategy(executionStrategy, portfolioManager, stockSelector, logger);
     }
 }
